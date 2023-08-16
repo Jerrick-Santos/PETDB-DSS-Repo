@@ -16,6 +16,11 @@ code {
   cursor: pointer;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
+
 .clickable-row:hover {
   background-color: #000000; /* Change to your preferred hover color */
 }

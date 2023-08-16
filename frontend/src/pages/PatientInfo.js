@@ -2,6 +2,12 @@ import '../index.css';
 import React from 'react';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
+import edit from '../assets/edit.png';
+import user from '../assets/user.png';
+import distance from '../assets/distance.png';
+import assessment from '../assets/assessment.png';
+import treatment from '../assets/treatment.png';
+
 
 const PatientInfo = () => {
 
@@ -13,12 +19,23 @@ const PatientInfo = () => {
       {/* Navigation within the page, Patient Info Page is highlighted and directs user to another page when clicked */}
       <Navbar expand="lg" className="mt-4 justify-content-center align-items-center">
         <Nav>
-        <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderRadius: 0 }} type="button">Patient Profile</button>
-        <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderRadius: 0 }} type="button">Close Contacts</button>
-        <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderRadius: 0 }} type="button">Assessment</button>
-        <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderRadius: 0 }} type="button">Treatments</button>
+        <button className="btn ms-1 me-3" style={{ color: "white", backgroundColor: '#0077B6'}} type="button">
+          <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
+        </button>
+        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
+          <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
+        </button>
+        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
+           <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
+        </button>
+        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
+        <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
+        </button>
+        
         </Nav>
+       
       </Navbar>
+      <hr />
 
       
       
@@ -28,7 +45,7 @@ const PatientInfo = () => {
       
       {/* Personal Information of the Patient */}
       <Row className="mt-5 justify-content-center">
-      <Col lg="6">
+      <Col lg="5">
       <p style={{fontSize:"25px"}}> Personal Information </p>
         <Card className="mb-4">
           <Card.Body>
@@ -160,11 +177,10 @@ const PatientInfo = () => {
           </Card.Body>
         </Card>
       </Col>
-    </Row>
 
-     {/* Patient Record of the Patient */}
-    <Row className="mt-5 justify-content-center">
-    <Col lg="6">
+      <Col lg="5">
+      
+    <Col>
       <p style={{fontSize:"25px"}}> Patient Record</p>
         <Card className="mb-4">
           <Card.Body>
@@ -197,11 +213,11 @@ const PatientInfo = () => {
           </Card.Body>
         </Card>
       </Col>
-    </Row>
 
-    {/* Contact Numbers of the Patient */}
-    <Row className="mt-5 justify-content-center">
-    <Col lg="6">
+
+
+
+      <Col className="mt-4">
       <p style={{fontSize:"25px"}}> Contact Numbers </p>
         <Card className="mb-4">
           <Card.Body>
@@ -270,6 +286,16 @@ const PatientInfo = () => {
           </Card.Body>
         </Card>
       </Col>
+      
+      </Col>
+    </Row>
+
+     {/* Patient Record of the Patient */}
+    
+
+    {/* Contact Numbers of the Patient */}
+    <Row className="mt-5 justify-content-center">
+    
     </Row>
 
 

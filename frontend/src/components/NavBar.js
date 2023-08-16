@@ -10,7 +10,7 @@ const NavBar = () => {
           <Nav.Link className="text-light" href="#add-patient">Add Patient</Nav.Link>
         </Nav>
          <Nav className="ms-auto me-2">
-          <Button  className="ms-auto me-2" style={{color:"white", backgroundColor: '#03045E'}}  >Log Out</Button>
+          <Button  className="ms-auto me-2" style={{color:'#0077B6', backgroundColor: "white"}} ><strong>Log Out</strong></Button>
         </Nav>
       
     </Navbar>
