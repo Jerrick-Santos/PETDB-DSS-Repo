@@ -7,7 +7,7 @@ router.post('/newpatient', (req, res) => {
     const {caseid} = req.params
     const {} = req.body 
 
-
+    
 
 });
 
