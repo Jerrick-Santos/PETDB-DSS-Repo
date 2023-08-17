@@ -4,7 +4,14 @@ const mysql = require('mysql')
 const MainRoutes = require('./routes/mainRoute')
 const kaloyRoute = require('./routes/kaloyRoute')
 const raymondRoute = require('./routes/raymondRoute')
+const cors = require("cors");
 //CONNECTIONS
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true, // Enable sending cookies in cross-origin requests
+}));
+
 const db = mysql.createConnection({
     user: 'PEDTBDSSADMIN',
     port: 19459,
