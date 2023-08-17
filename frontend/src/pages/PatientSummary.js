@@ -2,6 +2,8 @@ import search from '../assets/search.png';
 import '../index.css';
 import React from 'react';
 import NavBar from '../components/NavBar';
+import { Link } from 'react-router-dom';
+
 
 const PatientSummary = () => {
 
@@ -77,11 +79,7 @@ const PatientSummary = () => {
     <caption className=' fs-4'>Patient Records</caption>
     <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Middle Initial</th>
-                        <th scope="col">Nickname</th>
+                        <th scope="col">Full Name</th>    
                         <th scope="col">Birthdate</th>
                         <th scope="col">Sex</th>
                         <th scope="col">Age</th>
@@ -89,72 +87,56 @@ const PatientSummary = () => {
                     </tr>
                 </thead>
                 <tbody>
-                <tr className="clickable-row" onClick={() => window.location.href = "link-to-details-page-for-row-1"}>
-                        <th scope="row">1</th>
-                        <td>Emma </td>
-                        <td>Johnson</td>
-                        <td>E</td>
-                        <td>Em</td>
-                        <td>2015-08-10</td>
-                        <td>Female</td>
-                        <td>7</td>
-                        <td>Closed Case</td>
+                <tr>
+                    <td> {/* Spanning across all columns */}
+                        <Link to="/PatientInfo">
+                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
+                        </Link>
+                    </td>
+                    <td>2015-08-10</td>
+                    <td>Female</td>
+                    <td>7</td>
+                    <td>Closed Case</td>
                     </tr>
+
                     <tr>
-                        <th scope="row">2</th>
-                        <td>Noah</td>
-                        <td>Smith</td>
-                        <td>N</td>
-                        <td>Noah</td>
-                        <td>2014-06-20</td>
-                        <td>Male</td>
-                        <td>8</td>
-                        <td>Ongoing Treatment</td>
+                    <td> {/* Spanning across all columns */}
+                        <Link to="/PatientInfo">
+                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
+                        </Link>
+                    </td>
+                    <td>2015-08-10</td>
+                    <td>Female</td>
+                    <td>7</td>
+                    <td>Closed Case</td>
                     </tr>
+
                     <tr>
-                        <th scope="row">3</th>
-                        <td>Ava</td>
-                        <td>Williams</td>
-                        <td>A</td>
-                        <td>Avie</td>
-                        <td>2016-11-30</td>
-                        <td>Female</td>
-                        <td>5</td>
-                        <td>Ongoing Treatment</td>
+                    <td> {/* Spanning across all columns */}
+                        <Link to="/PatientInfo">
+                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
+                        </Link>
+                    </td>
+                    <td>2015-08-10</td>
+                    <td>Female</td>
+                    <td>7</td>
+                    <td>Closed Case</td>
                     </tr>
+
                     <tr>
-                        <th scope="row">4</th>
-                        <td>Liam</td>
-                        <td>Miller</td>
-                        <td>L</td>
-                        <td>Lili</td>
-                        <td>2017-08-15</td>
-                        <td>Male</td>
-                        <td>4</td>
-                        <td>Ongoing Treatment</td>
+                    <td> {/* Spanning across all columns */}
+                        <Link to="/PatientInfo">
+                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
+                        </Link>
+                    </td>
+                    <td>2015-08-10</td>
+                    <td>Female</td>
+                    <td>7</td>
+                    <td>Closed Case</td>
                     </tr>
-                    <tr>
-                        <th scope="row">5</th>
-                        <td>Mia</td>
-                        <td>Johnson</td>
-                        <td>M</td>
-                        <td>Mia</td>
-                        <td>2018-03-10</td>
-                        <td>Female</td>
-                        <td>3</td>
-                        <td>Ongoing Treatment</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">6</th>
-                        <td>Ethan</td>
-                        <td>Davis</td>
-                        <td>E</td>
-                        <td>Ethan</td>
-                        <td>2019-09-25</td>
-                        <td>Male</td>
-                        <td>2</td>
-                         <td>Ongoing Treatment</td>
-                    </tr>
+                   
+                
+
                 </tbody>
             </table>
         </div>

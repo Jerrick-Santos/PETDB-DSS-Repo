@@ -7,6 +7,7 @@ import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
+import { Link } from 'react-router-dom';
 
 const Treatments = () => {
 
@@ -21,18 +22,25 @@ const Treatments = () => {
      
         <Navbar expand="sm" className="mt-4 pb-0">
           <Nav>
+          <Link to={"/patientinfo"}>
           <button className="btn ms-1" style={{color: "#03045E", backgroundColor: 'white' , borderBottomLeftRadius: "0", borderBottomRightRadius: "0"  }} type="button">
             <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
           </button>
+          </Link>
+          <Link to={"/closecontacts"}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
           </button>
+          </Link>
+          <Link to={"/assessment"}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
           </button>
+          </Link>
           <button className="btn ms-1 " style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
           </button>
+          
           
           </Nav>
         

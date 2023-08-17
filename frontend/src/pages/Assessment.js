@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
-import edit from '../assets/edit.png';
+
 import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
@@ -11,6 +11,7 @@ import treatment from '../assets/treatment.png';
 import AddXrayModal from '../components/AddXrayModal';
 import AddHIVTestModal from '../components/AddHIVTestModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
+import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
 
 const Assessment = () => {
 
@@ -25,18 +26,24 @@ const Assessment = () => {
        
           <Navbar expand="sm" className="mt-4 pb-0">
             <Nav>
-            <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white' }} type="button">
+              <Link to={"/patientinfo"}>
+            <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white' }} type="button">
               <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
             </button>
-            <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
+            </Link>
+            <Link to={"/closecontacts"}>
+            <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
               <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
             </button>
-            <button className="btn ms-1 me-3" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+            </Link>
+            <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
               <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
             </button>
-            <button className="btn ms-1 me-3 " style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
+            <Link to={"/treatments"}>
+            <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
             <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
             </button>
+            </Link>
             
             </Nav>
           
@@ -803,6 +810,14 @@ const Assessment = () => {
                 <Card.Text> <strong> Presumptive TB </strong>, the following tests are needed for further evaluation: <br/>
                   (1) X-RAY <br/><br/>
                   Please advice patient and parent to avoid close contact to contain the spread of TB. </Card.Text>
+              </Col>
+            </Row>
+            <Row className="justify-content-center">
+              <Col sm="2" >
+               
+              
+              <AssessmentSummaryModal/>
+         
               </Col>
             </Row>
            

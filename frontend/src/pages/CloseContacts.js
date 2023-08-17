@@ -8,6 +8,8 @@ import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
 import add from '../assets/add.png';
+import { Link } from 'react-router-dom';
+import AddCloseContactModal from '../components/AddCloseContactModal';
 
 const PatientInfo = () => {
 
@@ -22,18 +24,24 @@ const PatientInfo = () => {
      
         <Navbar expand="sm" className="mt-4 pb-0">
           <Nav>
+          <Link to={"/patientinfo"}>
           <button className="btn ms-1" style={{color: "#03045E", backgroundColor: 'white' , borderBottomLeftRadius: "0", borderBottomRightRadius: "0"  }} type="button">
             <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
           </button>
+          </Link>
           <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
           </button>
+          <Link to={"/assessment"}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
           </button>
+          </Link>
+          <Link to={"/treatments"}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
           </button>
+          </Link>
           
           </Nav>
         
@@ -47,7 +55,7 @@ const PatientInfo = () => {
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
 
       {/*Shows general patient information details */}
-      <p style={{fontSize:"25px"}}> Patient Information </p>
+      
       <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
         <Col className="ms-5" lg="12">
           <Row>
@@ -78,8 +86,7 @@ const PatientInfo = () => {
                         <th scope="col">Contact Number</th>
                         <th scope="col">Contact Email</th>
                         <th scope="col">Contact Relationship</th>
-                        <th scope="col">Last Contacted</th>
-                        <th scope="col">Update</th>
+                        <th scope="col">Patient</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,8 +98,10 @@ const PatientInfo = () => {
                         <td>09165189888</td>
                         <td>josefina_johsnons@dlsu.edu.ph</td>
                         <td> Mother </td>
-                        <td>12/21/2023</td>
-                        <td><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Update</button></td>
+                        <td><Link to="/addpatient"><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">
+                          Convert</button>
+                          </Link>
+                          </td>
                     </tr>
                     <tr>
                         <td>Noah</td>
@@ -102,8 +111,7 @@ const PatientInfo = () => {
                         <td>09165189888</td>
                         <td>josefina_johsnons@dlsu.edu.ph</td>
                         <td> Mother </td>
-                        <td>12/21/2023</td>
-                        <td><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Update</button></td>
+                        <td><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Convert</button></td>
                     </tr>
                     <tr>
                         <td>Ava</td>
@@ -113,8 +121,7 @@ const PatientInfo = () => {
                         <td>09165189888</td>
                         <td>josefina_johsnons@dlsu.edu.ph</td>
                         <td> Mother </td>
-                        <td>12/21/2023</td>
-                        <td><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Update</button></td>
+                        <td><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Convert</button></td>
                     </tr>
  
                 </tbody>
@@ -122,9 +129,7 @@ const PatientInfo = () => {
                
             </table>
             <div className="d-flex justify-content-end me-5 mb-5" >
-              <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button">
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a Close Contact
-              </button>
+              <AddCloseContactModal/>
           </div>
 
 
