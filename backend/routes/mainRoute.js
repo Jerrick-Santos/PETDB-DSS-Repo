@@ -4,10 +4,10 @@ const router = express.Router();
 // Define your route handlers using the db connection
 router.post('/newpatient', (req, res) => {
 
-    const {caseid} = req.params
-    const {} = req.body 
+    const {last_name, first_name, middle_initial, age, sex} = req.body //kinuha mo lang ung inputs/fields sa react
 
-    
+    db.query('INSERT INTO table_name (last_name, first_name, middle_initial, age, sex) VALUES (?, ?, ?, ?, ?)', 
+    [last_name, first_name, middle_initial, age, sex])
 
 });
 
