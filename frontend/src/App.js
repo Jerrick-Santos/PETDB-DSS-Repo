@@ -14,11 +14,11 @@ function App() {
       <>
       <BrowserRouter>
                 <Routes>
-                    <Route path="/patientinfo" element={<PatientInfo/>}/>
+                    <Route path="/patient/:id" element={<PatientInfo/>}/>
                     <Route path="/" element={<PatientSummary/>} />
-                    <Route path="/closecontacts" element={<CloseContacts/>}/>
-                    <Route path="/assessment" element={<Assessment/>}/>
-                    <Route path="/treatments" element={<Treatments/>}/>
+                    <Route path="/closecontacts/:id" element={<CloseContacts/>}/>
+                    <Route path="/assessment/:id" element={<Assessment/>}/>
+                    <Route path="/treatments/:id" element={<Treatments/>}/>
                     <Route path="/addpatient" element={<AddPatient/>}/>
                     
                 </Routes>
