@@ -1,13 +1,30 @@
 import search from '../assets/search.png';
 import '../index.css';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import NavBar from '../components/NavBar';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 
 
 const PatientSummary = () => {
 
+    const [patientsData, setPatientsData] = useState([]);
+
+    useEffect(() => {
+      axios.get("http://localhost:4000/api/allpatients")
+        .then(response => {
+          setPatientsData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching patients:', error);
+        });
+    }, []);
+
+    console.log(patientsData)
    
+
   return (
     <div>
     <NavBar/>
@@ -87,56 +104,23 @@ const PatientSummary = () => {
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td> {/* Spanning across all columns */}
-                        <Link to="/PatientInfo">
-                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
+                    {patientsData.map((patient, index) => (
+                    <tr key={index}>
+                        <td>
+                        <Link to={`/PatientInfo`}>
+                            <p style={{ color: 'black' }}>
+                            <u>{patient.fullname}</u>
+                            </p>
                         </Link>
-                    </td>
-                    <td>2015-08-10</td>
-                    <td>Female</td>
-                    <td>7</td>
-                    <td>Closed Case</td>
-                    </tr>
+                        </td>
+                        <td>{new Date(patient.birthdate).toLocaleDateString()}</td>
 
-                    <tr>
-                    <td> {/* Spanning across all columns */}
-                        <Link to="/PatientInfo">
-                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
-                        </Link>
-                    </td>
-                    <td>2015-08-10</td>
-                    <td>Female</td>
-                    <td>7</td>
-                    <td>Closed Case</td>
-                    </tr>
+                        <td>{patient.sex === 'M' ? 'Male' : 'Female'}</td>
+                        <td>{patient.age}</td>
+                        <td>{patient.status === 'O' ? 'Closed Case' : 'Active Case'}</td>
 
-                    <tr>
-                    <td> {/* Spanning across all columns */}
-                        <Link to="/PatientInfo">
-                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
-                        </Link>
-                    </td>
-                    <td>2015-08-10</td>
-                    <td>Female</td>
-                    <td>7</td>
-                    <td>Closed Case</td>
                     </tr>
-
-                    <tr>
-                    <td> {/* Spanning across all columns */}
-                        <Link to="/PatientInfo">
-                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
-                        </Link>
-                    </td>
-                    <td>2015-08-10</td>
-                    <td>Female</td>
-                    <td>7</td>
-                    <td>Closed Case</td>
-                    </tr>
-                   
-                
-
+                    ))}
                 </tbody>
             </table>
         </div>

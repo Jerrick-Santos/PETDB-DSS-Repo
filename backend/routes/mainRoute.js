@@ -11,7 +11,7 @@ module.exports = (db) => {
             pt.birthdate,
             pt.sex,
             pt.age,
-            pc.CaseNo
+            pc.case_status
         FROM PEDTBDSS_new.TD_PTINFORMATION pt
         JOIN PEDTBDSS_new.TD_PTCASE pc ON pt.PatientNo = pc.PatientNo;
     `, (err, results) => {
