@@ -32,14 +32,25 @@ const AddPatient = () => {
             
       
             <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-6">
-                    <label for="inputFullName">Full Name</label>
-                    <input type="text" class="form-control" id="inputFullName" placeholder="Full Name"/>
+                <div className="form-group col-md-5">
+                    <label for="inputFirstName">First Name</label>
+                    <input type="text" class="form-control" id="inputFirstName" placeholder="First Name"/>
                 </div>
-              
+
+                <div className="form-group col-md-2">
+                    <label for="inputMI">M.I.</label>
+                    <input type="text" class="form-control" id="inputMI" placeholder="M.I."/>
+                </div>
+
+                <div className="form-group col-md-4">
+                    <label for="inputLastName">Last Name</label>
+                    <input type="text" class="form-control" id="inputLastName" placeholder="Last Name"/>
+                </div>
+              </Row>
+              <Row className="mb-3 justify-content-center">
                 <div className="form-group col-md-2">
                     <label for="inputBirthdate">Birthdate</label>
-                    <input type="date" class="form-control" id="inputBirthdate" placeholder="Age"/>
+                    <input type="date" class="form-control" id="inputBirthdate"/>
                 </div>
                 
                 <div className="form-group col-md-2">
@@ -53,27 +64,23 @@ const AddPatient = () => {
 
                 <div className="form-group col-md-1">
                     <label for="inputAge">Age</label>
-                    <input type="text" class="form-control" id="inputAge" placeholder="Age"/>
+                    <input type="number" class="form-control" id="inputAge" placeholder="Age"/>
                 </div>
-            </Row>
 
-            <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-6">
+                <div className="form-group col-md-2">
                     <label for="inputNationality">Nationality</label>
                     <input type="text" class="form-control" id="inputNationality" placeholder="Nationality"/>
                 </div>
                 
                 <div className="form-group col-md-2">
                     <label for="inputWeight">Body Weight</label>
-                    <input type="text" class="form-control" id="inputWeight" placeholder="Weight (kg)"/> 
+                    <input type="number" class="form-control" id="inputWeight" placeholder="Weight (kg)"/> 
                 </div>
                 
                 <div className="form-group col-md-2">
                     <label for="inputHeight">Height</label>
-                    <input type="text" class="form-control" id="inputHeight" placeholder="Height (ft)"/>
+                    <input type="number" class="form-control" id="inputHeight" placeholder="Height (ft)"/>
                 </div>
-                <div className="form-group col-md-1"/>
-               
             </Row>
             
             <Row className="mb-3 justify-content-center">
