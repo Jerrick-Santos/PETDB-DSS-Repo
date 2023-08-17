@@ -34,7 +34,30 @@ module.exports = (db) => {
             pt.birthdate,
             pt.sex,
             pt.age,
-            pc.CaseNo
+            pc.CaseNo,
+            pt.initial_bodyweight,
+            pt.initial_height,
+            pt.nationality,
+            pt.address_1,
+            pt.address_2,
+            pt.city,
+            pt.admission_date,
+            pt.mother_name,
+            pt.m_birthdate,
+            pt.m_contactno,
+            pt.m_email,
+            pt.mother_name,
+            pt.m_birthdate,
+            pt.m_contactno,
+            pt.m_email,
+            pt.father_name,
+            pt.f_birthdate,
+            pt.f_contactno,
+            pt.f_email,
+            pt.emergency_name,
+            pt.e_birthdate,
+            pt.e_contactno,
+            pt.e_email
         FROM PEDTBDSS_new.TD_PTINFORMATION pt
         JOIN PEDTBDSS_new.TD_PTCASE pc ON pt.PatientNo = pc.PatientNo
         WHERE pt.PatientNo = ${id};

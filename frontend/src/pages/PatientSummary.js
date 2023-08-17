@@ -107,7 +107,7 @@ const PatientSummary = () => {
                     {patientsData.map((patient, index) => (
                     <tr key={index}>
                         <td>
-                        <Link to={`/PatientInfo`}>
+                        <Link to={`/patient/${patient.PatientNo}`}>
                             <p style={{ color: 'black' }}>
                             <u>{patient.fullname}</u>
                             </p>
