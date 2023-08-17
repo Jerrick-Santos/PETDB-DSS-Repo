@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const mysql = require('mysql')
 const MainRoutes = require('./routes/mainRoute')
+const kaloyRoute = require('./routes/kaloyRoute')
+const raymondRoute = require('./routes/raymondRoute')
 //CONNECTIONS
 const db = mysql.createConnection({
     user: 'PEDTBDSSADMIN',
@@ -27,4 +29,6 @@ app.use((req, res, next) => {
 })
 
 app.use('/api', MainRoutes(db))
+app.use('/api', kaloyRoute(db))
+app.use('/api', raymondRoute(db))
 

@@ -1,17 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Define your route handlers using the db connection
-router.post('/newpatient', (req, res) => {
-
-    const {caseid} = req.params
-    const {} = req.body 
-
-    
-
-});
-
-// ... Define more route handlers using the 'db' connection
+//Enter routes here
 
 // Export the router with the attached 'db' connection
 module.exports = (db) => {
