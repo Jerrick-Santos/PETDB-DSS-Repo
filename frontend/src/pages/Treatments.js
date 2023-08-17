@@ -13,34 +13,42 @@ const Treatments = () => {
    
   return (
     <div>
-      <NavBar/>
+    <NavBar/>
 
-      {/* Navigation within the page, Patient Info Page is highlighted and directs user to another page when clicked */}
-      <Navbar expand="lg" className="mt-4 justify-content-center align-items-center">
-        <Nav>
-        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
-          <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
-        </button>
-        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
-          <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
-        </button>
-        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
-           <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
-        </button>
-        <button className="btn ms-1 me-3" style={{ color: "white", backgroundColor: '#0077B6'}} type="button">
-        <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
-        </button>
+     {/* Navigation within the page, Patient Info Page is highlighted and directs user to another page when clicked */}
+     <Row className="justify-content-center">
+        <Col lg="10">
+     
+        <Navbar expand="sm" className="mt-4 pb-0">
+          <Nav>
+          <button className="btn ms-1" style={{color: "#03045E", backgroundColor: 'white' , borderBottomLeftRadius: "0", borderBottomRightRadius: "0"  }} type="button">
+            <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
+          </button>
+          <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+            <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
+          </button>
+          <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+            <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
+          </button>
+          <button className="btn ms-1 " style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
+          </button>
+          
+          </Nav>
         
-        </Nav>
+        </Navbar>
        
-      </Navbar>
-      <hr />
+      </Col>
+    </Row>
     
+    {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
+    <Row className="justify-content-center" >
+      <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
 
+      {/*Shows general patient information details */}
       
-       {/*Shows general patient information details */}
-       <Row className="mt-5 justify-content-center">
-        <Col lg="7">
+      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+        <Col className="ms-5" lg="12">
           <Row>
             <Col> <strong> Patient Name: </strong> Miguel Josh C. Perez</Col>
           </Row>
@@ -62,7 +70,7 @@ const Treatments = () => {
      
 
     {/* Laboratory Tests of the Patient*/}
-      <Col lg="7">
+      <Col lg="11">
       <p style={{fontSize:"25px"}}> Treatments </p>
         <Card className="mb-4">
           <Card.Body>
@@ -131,14 +139,16 @@ const Treatments = () => {
           </Card.Body>
           
         </Card>
-        <button className="btn ms-1" style={{color: "white", backgroundColor: '#0077B6'}} type="button"> Treatment Accomplished </button>
+        <button className="btn ms-1 mb-5" style={{color: "white", backgroundColor: '#0077B6'}} type="button"> Treatment Accomplished </button>
       </Col>
     </Row>
 
-      
 
-   
-    </div>
+    </Col>
+  </Row>
+
+  </div>
+    
   );
 };
 

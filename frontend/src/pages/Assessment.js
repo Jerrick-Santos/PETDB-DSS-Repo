@@ -19,31 +19,38 @@ const Assessment = () => {
     <div>
       <NavBar/>
 
-      {/* Navigation within the page, Patient Info Page is highlighted and directs user to another page when clicked */}
-      <Navbar expand="lg" className="mt-4 justify-content-center align-items-center">
-        <Nav>
-        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
-          <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
-        </button>
-        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
-          <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
-        </button>
-        <button className="btn ms-1 me-3" style={{ color: "white", backgroundColor: '#0077B6'}} type="button">
-           <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
-        </button>
-        <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
-        <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
-        </button>
-        
-        </Nav>
+       {/* Navigation within the page, Patient Info Page is highlighted and directs user to another page when clicked */}
+       <Row className="justify-content-center">
+          <Col lg="10">
        
-      </Navbar>
-      <hr />
+          <Navbar expand="sm" className="mt-4 pb-0">
+            <Nav>
+            <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white' }} type="button">
+              <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
+            </button>
+            <button className="btn ms-1 me-3" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
+              <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
+            </button>
+            <button className="btn ms-1 me-3" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+              <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
+            </button>
+            <button className="btn ms-1 me-3 " style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
+            <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
+            </button>
+            
+            </Nav>
+          
+          </Navbar>
+         
+        </Col>
+      </Row>
       
-
+      
+      <Row className="justify-content-center" >
+        <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       {/*Shows general patient information details */}
       <Row className="mt-5 justify-content-center">
-        <Col lg="10">
+        <Col lg="11">
           <Row>
             <Col> <strong> Patient Name: </strong> Miguel Josh C. Perez</Col>
           </Row>
@@ -62,7 +69,7 @@ const Assessment = () => {
       
       {/* Symptoms of the Patient */}
       <Row className="mt-5 justify-content-center">
-  <Col lg="3">
+  <Col lg="5">
     <p> <strong> Cardinal Symptoms</strong> </p>
     <Card className="mb-4">
       <Card.Body>
@@ -130,7 +137,7 @@ const Assessment = () => {
   </Col>
 
 
-  <Col lg="5">
+  <Col lg="6">
     <p> <strong> TB Contact</strong> </p>
     <Card className="mb-4">
       <Card.Body>
@@ -214,7 +221,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB1" value="no" checked />
+                  <input type="radio" className="ms-4" name="EPTB1" value="no"/>
                   No
                 </label>
               </Card.Text>
@@ -233,7 +240,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB2" value="no" checked/>
+                  <input type="radio" className="ms-4" name="EPTB2" value="no" />
                   No
                 </label>
               </Card.Text>
@@ -252,7 +259,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB3" value="no" checked />
+                  <input type="radio" className="ms-4" name="EPTB3" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -271,7 +278,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB4" value="no" checked />
+                  <input type="radio" className="ms-4" name="EPTB4" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -290,7 +297,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB5" value="no" checked />
+                  <input type="radio" className="ms-4" name="EPTB5" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -309,7 +316,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB6" value="no" checked />
+                  <input type="radio" className="ms-4" name="EPTB6" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -328,7 +335,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB7" value="no" checked/>
+                  <input type="radio" className="ms-4" name="EPTB7" value="no" />
                   No
                 </label>
               </Card.Text>
@@ -347,7 +354,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB8" value="no" checked/>
+                  <input type="radio" className="ms-4" name="EPTB8" value="no" />
                   No
                 </label>
               </Card.Text>
@@ -366,7 +373,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="EPTB9" value="no" checked />
+                  <input type="radio" className="ms-4" name="EPTB9" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -394,7 +401,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA1" value="no" checked />
+                  <input type="radio" className="ms-4" name="OA1" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -413,7 +420,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA2" value="no" checked/>
+                  <input type="radio" className="ms-4" name="OA2" value="no" />
                   No
                 </label>
               </Card.Text>
@@ -432,7 +439,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA3" value="no" checked />
+                  <input type="radio" className="ms-4" name="OA3" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -451,7 +458,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA4" value="no" checked />
+                  <input type="radio" className="ms-4" name="OA4" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -470,7 +477,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA5" value="no" checked />
+                  <input type="radio" className="ms-4" name="OA5" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -489,7 +496,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA6" value="no" checked />
+                  <input type="radio" className="ms-4" name="OA6" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -508,7 +515,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA7" value="no" checked/>
+                  <input type="radio" className="ms-4" name="OA7" value="no" />
                   No
                 </label>
               </Card.Text>
@@ -527,7 +534,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA8" value="no" checked/>
+                  <input type="radio" className="ms-4" name="OA8" value="no" />
                   No
                 </label>
               </Card.Text>
@@ -546,7 +553,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA9" value="no" checked />
+                  <input type="radio" className="ms-4" name="OA9" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -565,7 +572,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA10" value="no" checked />
+                  <input type="radio" className="ms-4" name="OA10" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -584,7 +591,7 @@ const Assessment = () => {
                   Yes
                 </label>
                 <label>
-                  <input type="radio" className="ms-4" name="OA11" value="no" checked />
+                  <input type="radio" className="ms-4" name="OA11" value="no"  />
                   No
                 </label>
               </Card.Text>
@@ -805,8 +812,9 @@ const Assessment = () => {
       </Col>
 
     </Row>
+      </Col>
+    </Row>
 
-   
     </div>
   );
 };

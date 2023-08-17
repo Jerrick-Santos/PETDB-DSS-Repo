@@ -52,7 +52,12 @@ code {
   border-radius: 5px !important;
 }
 
-
+.folder {
+  color: "white"; 
+  background-color: '#0077B6';
+  border-bottom-left-radius: "0"; 
+  border-bottom-right-radius: "0";
+}
 
 .fa,
 i {
@@ -127,3 +132,4 @@ max-width: 60px;
 
 
 }
+
