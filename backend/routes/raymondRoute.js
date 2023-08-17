@@ -35,12 +35,7 @@ module.exports = (db) => {
 
         const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, patient_id} = req.body
 
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const day = String(currentDate.getDate()).padStart(2, '0');
-
-        const formattedDate = `${year}-${month}-${day}`;
+        const formattedDate = new Date().toISOString().split('T')[0];
 
         /**TESTING */
         console.log(req.body);
@@ -57,11 +52,11 @@ module.exports = (db) => {
                         console.error(err);
                     }
                     else {
-                        case_no = result;
-
+                        case_no = result[0].MAXCaseNo;
+                        console.log();
                          /** Query Goal: Add the necessary close contact data to the latest case of a specificed patient */
 
-                        await db.query('INSERT INTO PEDTB-DSS_new.MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, CaseNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                        await db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, CaseNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
                         [last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, case_no]);
                     }
                 });
@@ -70,6 +65,8 @@ module.exports = (db) => {
     router.post('/convertContact', (req, res) => {
 
         /** ROUTER GOAL: Collect the contact information and insert it as new patient */
+        
+
     })
 
 

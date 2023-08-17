@@ -29,6 +29,10 @@ app.listen(4000, () => {
     console.log("Server is RUNNINF ON PORT 4000")
 })
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 //log tracker - middleware
 app.use((req, res, next) => {
     console.log(req.path, res.method)
