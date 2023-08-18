@@ -11,12 +11,27 @@ module.exports = (db) => {
 
         /** Query Goals: Collect and return all of the close contacts of a specific patient's LATEST case */
 
-        const patient_id = req.query.patient_id;
+        const patient_id = req.query.PatientNo;
+        const case_id = req.query.CaseNo;
         const query = `
-            SELECT mdct.last_name, mdct.first_name, mdct.middle_initial, mdct.birthdate, mdct.sex, mdct.contact_person, mdct.contact_num, mdct.contact_email, mdct.contact_relationship, mdct.date_added, mdct.remarks, mdct.refno
-            FROM (SELECT p.PatientNo, MAX(c.CaseNo) AS latest_case_no FROM PEDTBDSS_new.TD_PTINFORMATION p INNER JOIN PEDTBDSS_new.TD_PTCASE c ON p.PatientNo = c.PatientNo WHERE p.PatientNo = ${patient_id} GROUP BY p.PatientNo) AS pc
-            JOIN PEDTBDSS_new.TD_PTCASE c ON pc.PatientNo = c.PatientNo AND pc.latest_case_no = c.CaseNo
-            JOIN PEDTBDSS_new.MD_CONTACTTRACING mdct ON c.CaseNo = mdct.CaseNo;
+                    SELECT 
+                        ct.last_name,
+                        ct.first_name,
+                        ct.middle_initial,
+                        ct.birthdate,
+                        ct.sex,
+                        ct.contact_person,
+                        ct.contact_num,
+                        ct.contact_email,
+                        ct.contact_relationship,
+                        ct.date_added,
+                        ct.CaseNo,
+                        ct.PatientNo
+                    FROM PEDTBDSS_new.MD_CONTACTTRACING ct
+                    JOIN PEDTBDSS_new.TD_PTCASE ptc ON ct.CaseNo = ptc.CaseNo
+                    JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
+                    WHERE pi.PatientNo = ${patient_id}
+                    AND ptc.CaseNo = ${case_id};
         `;
 
     
@@ -71,11 +86,18 @@ module.exports = (db) => {
         // Get necesary data
             // either passing the contact_no of the contact or;
             // their currently available information that was passed into the frontend already
-        
-        // query insert a new patient using the acquired information
+        const contact_no = req.query.ContactNo;
 
+        // query insert a new patient using the acquired information
+        db.query(`SELECT * FROM PEDTB-DSS_new.MD_CONTACTTRACING WHERE ContactNo = ${contact_no}`, (err, result) => {
+            if (err) {console.log(err);}
+            else {
+                
+            }
+        });
         // return value
         
+
 
 
 
@@ -86,6 +108,9 @@ module.exports = (db) => {
         /** ROUTER GOAL: Match the first name, last name and middle initial
          *               of a to-be-added close contact and check if they are already
          *               added in the database as a patient
+         *  CASES:
+         *      1. Patient exists in Patient DB but is not in the Contact Tracing -- Add as new close contact
+         * 
         */
 
         // Request sent data
