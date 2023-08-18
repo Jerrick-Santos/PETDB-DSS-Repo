@@ -121,7 +121,7 @@ console.log(patientData)
             <hr />
             <Row>
               <Col sm="6">
-                <Card.Text>Height</Card.Text>
+                <Card.Text>Initial Height</Card.Text>
               </Col>
               <Col sm="6">
                 <Card.Text className="text-muted">{patientData.initial_height} meters </Card.Text>
@@ -130,7 +130,7 @@ console.log(patientData)
             <hr />
             <Row>
               <Col sm="6">
-                <Card.Text>Weight</Card.Text>
+                <Card.Text>Initial Weight</Card.Text>
               </Col>
               <Col sm="6">
                 <Card.Text className="text-muted">{patientData.initial_bodyweight} kg</Card.Text>

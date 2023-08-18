@@ -37,8 +37,8 @@ const PatientSummary = () => {
             <div className='col-md-3 p-1'>
                 <div className='p-3 shadow-sm d-flex justify-content-around align-items-center rounded' style={{backgroundColor: '#03045E'}}>
                     <div>
-                        <h3 className='text-light fs-2'>230</h3>
-                        <p className='text-light fs-5'>Total Number of Patients</p>
+                        <h3 className='text-light fs-1'>25</h3>
+                        <p className='text-light fs-5'>Presumptive TB Cases</p>
                     </div>
                     <i className='bi bi-cart-plus p-3 fs-1'></i>
                 </div>
@@ -46,8 +46,8 @@ const PatientSummary = () => {
             <div className='col-md-3 p-1'>
                 <div className='p-3 shadow-sm d-flex justify-content-around align-items-center rounded' style={{backgroundColor: '#0077B6'}}>
                     <div>
-                        <h3 className='text-light fs-2'>2450</h3>
-                        <p className='text-light fs-5'>Patients with Active Cases</p>
+                        <h3 className='text-light fs-1'>10</h3>
+                        <p className='text-light fs-5'>Pulmonary TB Cases</p>
                     </div>
                     <i className='bi bi-currency-dollar p-3 fs-1'></i>
                 </div>
@@ -55,8 +55,8 @@ const PatientSummary = () => {
             <div className='col-md-3 p-1'>
                 <div className='p-3 shadow-sm d-flex justify-content-around align-items-center rounded'style={{backgroundColor: '#03045E'}}>
                     <div>
-                        <h3 className='text-light fs-2'>2250</h3>
-                        <p className='text-light fs-5'>Patients with Ongoing Treatments</p>
+                        <h3 className='text-light fs-1'>15</h3>
+                        <p className='text-light fs-5'>ExtraPulmonary TB Cases</p>
                     </div>
                     <i className='bi bi-truck p-3 fs-1'></i>
                 </div>
@@ -64,8 +64,8 @@ const PatientSummary = () => {
             <div className='col-md-3 p-1'>
                 <div className='p-3 shadow-sm d-flex justify-content-around align-items-center rounded' style={{backgroundColor: '#0077B6'}}>
                     <div>
-                        <h3 className='text-light fs-2'>200</h3>
-                        <p className='text-light fs-5'>Patients with Closed Cases</p>
+                        <h3 className='text-light fs-1'>20</h3>
+                        <p className='text-light fs-5'>Closed Cases</p>
                     </div>
                     <i className='bi bi-graph-up-arrow p-3 fs-1'></i>
                 </div>
@@ -100,7 +100,11 @@ const PatientSummary = () => {
                         <th scope="col">Birthdate</th>
                         <th scope="col">Sex</th>
                         <th scope="col">Age</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Mother's Name</th>
+                        <th scope="col">Father's Name</th>
+                        <th scope="col">Emergency Contact's Name</th>
+                        <th scope="col">Date Added</th>
+                        <th scope="col">Case Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,6 +121,10 @@ const PatientSummary = () => {
 
                         <td>{patient.sex === 'M' ? 'Male' : 'Female'}</td>
                         <td>{patient.age}</td>
+                        <td>{patient.mother_name}</td>
+                        <td>{patient.father_name}</td>
+                        <td>{patient.emergency_name}</td>
+                        <td>{new Date(patient.admission_date).toLocaleDateString()}</td>
                         <td>{patient.status === 'O' ? 'Closed Case' : 'Active Case'}</td>
 
                     </tr>

@@ -163,7 +163,7 @@ const Assessment = () => {
 
 
   <Col lg="6">
-    <p> <strong> TB Contact</strong> </p>
+    <p> <strong> Additional Symptoms if with TB Contact</strong> </p>
     <Card className="mb-4">
       <Card.Body>
         <Row>
@@ -232,12 +232,12 @@ const Assessment = () => {
 
 <Row className="mt-2 justify-content-center">
 <Col lg="8">
-    <p> <strong> Presumptive EPTB</strong> </p>
+    <p> <strong> Additional Symptoms to Verify EPTB (Is the Patient Experiencing the Following:)</strong> </p>
     <Card className="mb-4">
       <Card.Body>
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing Gibbus Deformity?</Card.Text>
+            <Card.Text>Gibbus Deformity?</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
@@ -675,11 +675,11 @@ const Assessment = () => {
 
         <Row>
           <Col sm="8">
-            <Card.Text>Other Comborbidities</Card.Text>
+            <Card.Text>Other Co-morbidities</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
-                <input type="text" className="form-control " placeholder='Comorbidities' />
+                <input type="text" className="form-control " placeholder='Co-morbidities' />
               </Card.Text>
           </Col>
         </Row>
@@ -796,7 +796,7 @@ const Assessment = () => {
       {/* Shows the recommended next course of action */}
       <Row className="mt-5 justify-content-center">
       <Col lg="10">
-      <p style={{fontSize:"25px"}}> Evaluations </p>
+      <p style={{fontSize:"25px"}}> Diagnosis </p>
         <Card className="mb-4">
           <Card.Body>
             <Row>
