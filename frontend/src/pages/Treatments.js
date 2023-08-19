@@ -1,5 +1,5 @@
 import '../index.css';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
@@ -7,11 +7,30 @@ import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const Treatments = () => {
 
-   
+  const { id } = useParams();
+  var patientNum = id
+  
+  const [patientData, setPatientData] = useState([]);
+
+  useEffect(() => {
+
+    axios.get(`http://localhost:4000/api/patient/${patientNum}`)
+      .then((response) => {
+        setPatientData(response.data[0])
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
+    
+
+}, []);
+
   return (
     <div>
     <NavBar/>
@@ -22,17 +41,17 @@ const Treatments = () => {
      
         <Navbar expand="sm" className="mt-4 pb-0">
           <Nav>
-          <Link to={"/patientinfo"}>
+          <Link to={`/patient/${patientNum}`}>
           <button className="btn ms-1" style={{color: "#03045E", backgroundColor: 'white' , borderBottomLeftRadius: "0", borderBottomRightRadius: "0"  }} type="button">
             <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
           </button>
           </Link>
-          <Link to={"/closecontacts"}>
+          <Link to={`/closecontacts/${patientNum}`}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
           </button>
           </Link>
-          <Link to={"/assessment"}>
+          <Link to={`/assessment/${patientNum}`}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
           </button>
@@ -56,15 +75,12 @@ const Treatments = () => {
       {/*Shows general patient information details */}
       
       <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
-        <Col className="ms-5" lg="12">
+        <Col  lg="11">
           <Row>
-            <Col> <strong> Patient Name: </strong> Miguel Josh C. Perez</Col>
+            <Col> <strong> Patient Name: </strong> {patientData.fullname}</Col>
           </Row>
           <Row>
-            <Col> <strong> Birthdate:  </strong>12/31/2023</Col>
-          </Row>
-          <Row>
-            <Col> <strong>Patient ID:</strong> 0305667</Col>
+            <Col> <strong> Birthdate:  </strong> {new Date(patientData.birthdate).toLocaleDateString()}</Col>
           </Row>
         </Col>
       </Row>

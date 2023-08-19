@@ -1,13 +1,30 @@
 import search from '../assets/search.png';
 import '../index.css';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import NavBar from '../components/NavBar';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 
 
 const PatientSummary = () => {
 
+    const [patientsData, setPatientsData] = useState([]);
+
+    useEffect(() => {
+      axios.get("http://localhost:4000/api/allpatients")
+        .then(response => {
+          setPatientsData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching patients:', error);
+        });
+    }, []);
+
+    console.log(patientsData)
    
+
   return (
     <div>
     <NavBar/>
@@ -20,8 +37,8 @@ const PatientSummary = () => {
             <div className='col-md-3 p-1'>
                 <div className='p-3 shadow-sm d-flex justify-content-around align-items-center rounded' style={{backgroundColor: '#03045E'}}>
                     <div>
-                        <h3 className='text-light fs-2'>230</h3>
-                        <p className='text-light fs-5'>Total Number of Patients</p>
+                        <h3 className='text-light fs-1'>25</h3>
+                        <p className='text-light fs-5'>Presumptive TB Cases</p>
                     </div>
                     <i className='bi bi-cart-plus p-3 fs-1'></i>
                 </div>
@@ -29,8 +46,8 @@ const PatientSummary = () => {
             <div className='col-md-3 p-1'>
                 <div className='p-3 shadow-sm d-flex justify-content-around align-items-center rounded' style={{backgroundColor: '#0077B6'}}>
                     <div>
-                        <h3 className='text-light fs-2'>2450</h3>
-                        <p className='text-light fs-5'>Patients with Active Cases</p>
+                        <h3 className='text-light fs-1'>10</h3>
+                        <p className='text-light fs-5'>Pulmonary TB Cases</p>
                     </div>
                     <i className='bi bi-currency-dollar p-3 fs-1'></i>
                 </div>
@@ -38,8 +55,8 @@ const PatientSummary = () => {
             <div className='col-md-3 p-1'>
                 <div className='p-3 shadow-sm d-flex justify-content-around align-items-center rounded'style={{backgroundColor: '#03045E'}}>
                     <div>
-                        <h3 className='text-light fs-2'>2250</h3>
-                        <p className='text-light fs-5'>Patients with Ongoing Treatments</p>
+                        <h3 className='text-light fs-1'>15</h3>
+                        <p className='text-light fs-5'>ExtraPulmonary TB Cases</p>
                     </div>
                     <i className='bi bi-truck p-3 fs-1'></i>
                 </div>
@@ -47,8 +64,8 @@ const PatientSummary = () => {
             <div className='col-md-3 p-1'>
                 <div className='p-3 shadow-sm d-flex justify-content-around align-items-center rounded' style={{backgroundColor: '#0077B6'}}>
                     <div>
-                        <h3 className='text-light fs-2'>200</h3>
-                        <p className='text-light fs-5'>Patients with Closed Cases</p>
+                        <h3 className='text-light fs-1'>20</h3>
+                        <p className='text-light fs-5'>Closed Cases</p>
                     </div>
                     <i className='bi bi-graph-up-arrow p-3 fs-1'></i>
                 </div>
@@ -57,89 +74,7 @@ const PatientSummary = () => {
         </div>
     </div>
 
-
-    {/* Simple search based on a keyword and a button for advanced Search*/}
-    <div className="d-flex ms-2 mb-2 mt-5">
-    <div className="input-group" style={{ maxWidth: '290px' }}>
-        {/* Adjust the max-width to control the width of the input field */}
-        <input type="search"  className="form-control" id="searchInput" placeholder="Keyword" />
-        <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} type="button">  <img src={search} style={{height:"20px"}}alt="" /></button>
     </div>
-    <div className="ms-4">
-        {/* Adjust the width of the Advanced Search button */}
-        <button className="btn" style={{ color: "white", backgroundColor: '#0077B6' }} type="button">Advanced Search</button>
-    </div>
-    </div>
-
-
-
-    {/* Showing overall patient records in a table formatting. Hard-coded for frontend. Revise once backend
-        is implemented */}
-    <table className="table caption-top bg-white rounded mt-2 ms-4">
-    <caption className=' fs-4'>Patient Records</caption>
-    <thead>
-                    <tr>
-                        <th scope="col">Full Name</th>    
-                        <th scope="col">Birthdate</th>
-                        <th scope="col">Sex</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td> {/* Spanning across all columns */}
-                        <Link to="/PatientInfo">
-                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
-                        </Link>
-                    </td>
-                    <td>2015-08-10</td>
-                    <td>Female</td>
-                    <td>7</td>
-                    <td>Closed Case</td>
-                    </tr>
-
-                    <tr>
-                    <td> {/* Spanning across all columns */}
-                        <Link to="/PatientInfo">
-                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
-                        </Link>
-                    </td>
-                    <td>2015-08-10</td>
-                    <td>Female</td>
-                    <td>7</td>
-                    <td>Closed Case</td>
-                    </tr>
-
-                    <tr>
-                    <td> {/* Spanning across all columns */}
-                        <Link to="/PatientInfo">
-                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
-                        </Link>
-                    </td>
-                    <td>2015-08-10</td>
-                    <td>Female</td>
-                    <td>7</td>
-                    <td>Closed Case</td>
-                    </tr>
-
-                    <tr>
-                    <td> {/* Spanning across all columns */}
-                        <Link to="/PatientInfo">
-                       <p style={{color:"black"}}><u>Michael John Andrews </u></p>
-                        </Link>
-                    </td>
-                    <td>2015-08-10</td>
-                    <td>Female</td>
-                    <td>7</td>
-                    <td>Closed Case</td>
-                    </tr>
-                   
-                
-
-                </tbody>
-            </table>
-        </div>
     </div>
   );
 };

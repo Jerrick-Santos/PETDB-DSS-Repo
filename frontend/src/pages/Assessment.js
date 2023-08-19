@@ -1,10 +1,11 @@
 import '../index.css';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
-
+import axios from 'axios';
 import user from '../assets/user.png';
+
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
@@ -12,9 +13,29 @@ import AddXrayModal from '../components/AddXrayModal';
 import AddHIVTestModal from '../components/AddHIVTestModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
+import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
+import XrayRecomModal from '../components/XrayRecomModal';
 
 const Assessment = () => {
 
+  const { id } = useParams();
+  var patientNum = id
+  
+  const [patientData, setPatientData] = useState([]);
+
+  useEffect(() => {
+
+    axios.get(`http://localhost:4000/api/patient/${patientNum}`)
+      .then((response) => {
+        setPatientData(response.data[0])
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
+    
+
+}, []);
    
   return (
     <div>
@@ -26,12 +47,12 @@ const Assessment = () => {
        
           <Navbar expand="sm" className="mt-4 pb-0">
             <Nav>
-              <Link to={"/patientinfo"}>
+              <Link to={`/patient/${patientNum}`}>
             <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white' }} type="button">
               <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
             </button>
             </Link>
-            <Link to={"/closecontacts"}>
+            <Link to={`/closecontacts/${patientNum}`}>
             <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
               <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
             </button>
@@ -39,7 +60,7 @@ const Assessment = () => {
             <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
               <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
             </button>
-            <Link to={"/treatments"}>
+            <Link to={`/treatments/${patientNum}`}>
             <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white'}} type="button">
             <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
             </button>
@@ -56,16 +77,13 @@ const Assessment = () => {
       <Row className="justify-content-center" >
         <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       {/*Shows general patient information details */}
-      <Row className="mt-5 justify-content-center">
-        <Col lg="11">
+      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+        <Col  lg="11">
           <Row>
-            <Col> <strong> Patient Name: </strong> Miguel Josh C. Perez</Col>
+            <Col> <strong> Patient Name: </strong> {patientData.fullname}</Col>
           </Row>
           <Row>
-            <Col> <strong> Birthdate:  </strong>12/31/2023</Col>
-          </Row>
-          <Row>
-            <Col> <strong>Patient ID:</strong> 0305667</Col>
+            <Col> <strong> Birthdate:  </strong> {new Date(patientData.birthdate).toLocaleDateString()}</Col>
           </Row>
         </Col>
       </Row>
@@ -145,7 +163,7 @@ const Assessment = () => {
 
 
   <Col lg="6">
-    <p> <strong> TB Contact</strong> </p>
+    <p> <strong> Additional Symptoms if with TB Contact</strong> </p>
     <Card className="mb-4">
       <Card.Body>
         <Row>
@@ -214,12 +232,12 @@ const Assessment = () => {
 
 <Row className="mt-2 justify-content-center">
 <Col lg="8">
-    <p> <strong> Presumptive EPTB</strong> </p>
+    <p> <strong> Additional Symptoms to Verify EPTB (Is the Patient Experiencing the Following:)</strong> </p>
     <Card className="mb-4">
       <Card.Body>
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing Gibbus Deformity?</Card.Text>
+            <Card.Text>Gibbus Deformity?</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
@@ -657,11 +675,11 @@ const Assessment = () => {
 
         <Row>
           <Col sm="8">
-            <Card.Text>Other Comborbidities</Card.Text>
+            <Card.Text>Other Co-morbidities</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
-                <input type="text" className="form-control " placeholder='Comorbidities' />
+                <input type="text" className="form-control " placeholder='Co-morbidities' />
               </Card.Text>
           </Col>
         </Row>
@@ -765,7 +783,7 @@ const Assessment = () => {
           </Card.Body>
         </Card>
         <div className="d-flex justify-content-end">
-              <button className="btn mt-3" style={{ color: "white", backgroundColor: '#0077B6'}} type="button">Save Assessment</button>
+              <ShowDiagnosisModal/>
           </div>
       </Col>
     
@@ -778,7 +796,7 @@ const Assessment = () => {
       {/* Shows the recommended next course of action */}
       <Row className="mt-5 justify-content-center">
       <Col lg="10">
-      <p style={{fontSize:"25px"}}> Evaluations </p>
+      <p style={{fontSize:"25px"}}> Diagnosis </p>
         <Card className="mb-4">
           <Card.Body>
             <Row>
@@ -807,9 +825,24 @@ const Assessment = () => {
                 <Card.Text> Xray - With Signs of Pedia TB <br/> </Card.Text>
               </Col>
               <Col sm="4">
-                <Card.Text> <strong> Presumptive TB </strong>, the following tests are needed for further evaluation: <br/>
-                  (1) X-RAY <br/><br/>
-                  Please advice patient and parent to avoid close contact to contain the spread of TB. </Card.Text>
+                <Card.Text>
+                <Row className="mt-2">
+                    <Col><strong> Diagnosis: </strong>  Presumptive TB</Col>
+                </Row>
+
+                <Row className="mt-4">
+                    <Col>The following tests are needed for further evaluation:</Col>
+                </Row>
+
+                <Row className="mt-4">
+                    <Col><XrayRecomModal/> </Col>
+                </Row>
+
+                <Row className="mt-4">
+                    <Col> Please advice patient and parent to avoid close contact to contain the spread of TB.</Col>
+                </Row>
+
+                </Card.Text>
               </Col>
             </Row>
             <Row className="justify-content-center">
