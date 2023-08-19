@@ -17,10 +17,10 @@ const Case = () => {
   var patientNum = id
 
   const [patientData, setPatientData] = useState([]);
-
+  console.log(patientNum)
   useEffect(() => {
 
-    axios.get(`http://localhost:4000/api/patient/${patientNum}`)
+    axios.get(`http://localhost:4000/api/patientcase/${patientNum}`)
       .then((response) => {
         setPatientData(response.data[0])
       })
@@ -35,7 +35,7 @@ const Case = () => {
 
 
 
-
+  console.log(patientData)
    
   return (
 
