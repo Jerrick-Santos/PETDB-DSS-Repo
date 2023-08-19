@@ -8,6 +8,7 @@ import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
+import { useNavigate } from 'react-router-dom';
 
 const AddPatient = () => {
     const [patient, setPatient] = useState({
@@ -45,6 +46,7 @@ const AddPatient = () => {
         e_birthdate: "",
         e_contactno: "",
         e_email: "",
+        case_refno: "",
     });
 
     const handleChange = (e) => {
@@ -235,7 +237,7 @@ const AddPatient = () => {
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputMotherEmail">Email</label>
-                    <input type="email" class="form-control" id="inputMotherEmail" name='m_email' onChange={handleChange} placeholder="sample@sample.com"/>
+                    <input type="text" class="form-control" id="inputMotherEmail" name='m_email' onChange={handleChange} placeholder="sample@sample.com"/>
                 </div>
             </Row>
 
@@ -254,7 +256,7 @@ const AddPatient = () => {
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputFatherEmail">Email</label>
-                    <input type="email" class="form-control" id="inputFatherEmail" name='f_email' onChange={handleChange} placeholder="sample@sample.com"/>
+                    <input type="text" class="form-control" id="inputFatherEmail" name='f_email' onChange={handleChange} placeholder="sample@sample.com"/>
                 </div>
             </Row>
 
@@ -273,9 +275,25 @@ const AddPatient = () => {
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputEmergencyEmail">Email</label>
-                    <input type="email" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com"/>
+                    <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com"/>
                 </div>
             </Row>
+
+            <hr/>
+
+            <Row className="mb-2 justify-content-center">
+                 <div className="form-group col-md-11">
+                    <p style={{fontSize:"25px"}}> <strong> Initial Case Reference  </strong> </p>
+                </div>
+            </Row>
+
+            <Row className="mt-2 mb-3 justify-content-center">
+                <div class="form-group col-md-3">
+                    <label for="inputCaseRefno">Initial Case Reference No.</label>
+                    <input type="text" class="form-control" id="inputCaseRefno" name='case_refno' onChange={handleChange} placeholder="Case Ref No."/>
+                </div>
+            </Row>
+  
             <div className="d-flex justify-content-center mt-5 mb-4" >
               <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleClick}>
                 Save Information
