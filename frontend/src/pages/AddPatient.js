@@ -20,14 +20,23 @@ const AddPatient = () => {
         initial_bodyweight: null,
         initial_height: null,
         nationality: "",
-        address_1:"",
-        address_2: "",
-        city: "",
+        per_houseno:"",
+        per_street: "",
+        per_barangay: "",
+        per_city: "",
+        per_region: "",
+        per_zipcode: "",
+        curr_houseno:"",
+        curr_street: "",
+        curr_barangay: "",
+        curr_city: "",
+        curr_region: "",
+        curr_zipcode: "",
         admission_date: new Date().toISOString().split('T')[0],
         mother_name: "",
         m_birthdate: "",
-        f_contactno: "",
-        f_email: "",
+        m_contactno: "",
+        m_email: "",
         father_name: "",
         f_birthdate: "",
         f_contactno: "",
@@ -65,8 +74,8 @@ const AddPatient = () => {
         <Col lg="9" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       
              {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
-      <form className="mt-3 justify-content-center">
-            <Row className="mb-3 justify-content-center">
+      <form className="mt-4 justify-content-center">
+            <Row className="mb-2 justify-content-center">
                  <div className="form-group col-md-11">
                     <p style={{fontSize:"25px"}}> <strong> New Patient Information  </strong> </p>
                 </div>
@@ -89,7 +98,7 @@ const AddPatient = () => {
                     <input type="text" class="form-control" id="inputLastName" name='last_name' onChange={handleChange} placeholder="Last Name"/>
                 </div>
               </Row>
-              <Row className="mb-3 justify-content-center">
+              <Row className="mb-5 justify-content-center">
                 <div className="form-group col-md-2">
                     <label for="inputBirthdate">Birthdate</label>
                     <input type="date" class="form-control" id="inputBirthdate" name='birthdate' onChange={handleChange} />
@@ -124,30 +133,88 @@ const AddPatient = () => {
                     <input type="number" class="form-control" id="inputHeight"  name='initial_height' onChange={handleChange} placeholder="Height (ft)"/>
                 </div>
             </Row>
+            <hr/>
+
+            <Row className="mb-2 justify-content-center">
+                 <div className="form-group col-md-11">
+                    <p style={{fontSize:"25px"}}> <strong> Permanent Address  </strong> </p>
+                </div>
+            </Row>
             
-            <Row className="mb-3 justify-content-center">
-                <div class="form-group col-md-11">
-                    <label for="inputAddress1">Address 1</label>
-                    <input type="text" class="form-control" id="inputAddress1" name='address_1' onChange={handleChange}  placeholder="House # / Street Name"/>
+            <Row className="mb-5 justify-content-center">
+                <div class="form-group col-md-2">
+                    <label for="inputPermHouseNo">House No.</label>
+                    <input type="text" class="form-control" id="inputPermHouseNo" name='per_houseno' onChange={handleChange}  placeholder="House No."/>
+                </div>
+                
+                <div class="form-group col-md-2">
+                    <label for="inputPermStreet">Street</label>
+                    <input type="text" class="form-control" id="inputPermStreet" name='per_street' onChange={handleChange}  placeholder="Street"/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputPermBarangay">Barangay</label>
+                    <input type="text" class="form-control" id="inputPermBarangay" name='per_barangay' onChange={handleChange}  placeholder="Street"/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputPermCity">City</label>
+                    <input type="text" class="form-control" id="inputPermCity" name='per_city' onChange={handleChange}  placeholder="City"/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputPermRegion">Region</label>
+                    <input type="text" class="form-control" id="inputPermRegion" name='per_region' onChange={handleChange}  placeholder="Region"/>
+                </div>
+
+                <div class="form-group col-md-1">
+                    <label for="inputPermZip">Zip Code</label>
+                    <input type="text" class="form-control" id="inputPermZip" name='per_zipcode' onChange={handleChange}  placeholder="Zip"/>
                 </div>
                 
             </Row>
 
-            <Row className="mb-4 justify-content-center">
-                <div class="form-group col-md-8">
-                    <label for="inputAddress2">Address 2</label>
-                    <input type="text" class="form-control" id="inputAddress2" name='address_2' onChange={handleChange} placeholder="District Name / Barangay"/>
+            <Row className="mb-2 justify-content-center">
+                 <div className="form-group col-md-11">
+                    <p style={{fontSize:"25px"}}> <strong> Current Address  </strong> </p>
+                </div>
+            </Row>
+
+            <Row className="mb-5 justify-content-center">
+            <div class="form-group col-md-2">
+                    <label for="inputCurrHouseNo">House No.</label>
+                    <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' onChange={handleChange}  placeholder="House No."/>
+                </div>
+                
+                <div class="form-group col-md-2">
+                    <label for="inputCurrStreet">Street</label>
+                    <input type="text" class="form-control" id="inputCurrStreet" name='curr_street' onChange={handleChange}  placeholder="Street"/>
                 </div>
 
-                <div class="form-group col-md-3">
-                    <label for="inputCity">City</label>
-                    <input type="text" class="form-control" id="inputCity" name='city' onChange={handleChange} placeholder="City"/>
+                <div class="form-group col-md-2">
+                    <label for="inputCurrBarangay">Barangay</label>
+                    <input type="text" class="form-control" id="inputCurrBarangay" name='curr_barangay' onChange={handleChange}  placeholder="Street"/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputCurrCity">City</label>
+                    <input type="text" class="form-control" id="inputCurrCity" name='curr_city' onChange={handleChange}  placeholder="City"/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputCurrRegion">Region</label>
+                    <input type="text" class="form-control" id="inputCurrRegion" name='curr_region' onChange={handleChange}  placeholder="Region"/>
+                </div>
+
+                <div class="form-group col-md-1">
+                    <label for="inputCurrZip">Zip Code</label>
+                    <input type="text" class="form-control" id="inputCurrZip" name='curr_zipcode' onChange={handleChange}  placeholder="Zip"/>
                 </div>
                 
             </Row>
             <hr/>
 
-            <Row className="mb-3 justify-content-center">
+            <Row className="mb-2 justify-content-center">
                  <div className="form-group col-md-11">
                     <p style={{fontSize:"25px"}}> <strong> Contacts  </strong> </p>
                 </div>
