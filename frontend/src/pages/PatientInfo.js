@@ -32,7 +32,7 @@ const PatientInfo = () => {
 
 }, []);
 
-console.log(patientData)
+
 
 
 
@@ -51,21 +51,12 @@ console.log(patientData)
             <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0"  }} type="button">
               <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
             </button>
-            <Link to={`/closecontacts/${patientNum}`}>
+            <Link to={`/case/${patientNum}`}>
             <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-              <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
+              <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Cases
             </button>
             </Link>
-            <Link to={`/assessment/${patientNum}`}>
-            <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-              <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
-            </button>
-            </Link>
-            <Link to={`/treatments/${patientNum}`}>
-            <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-            <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
-            </button>
-            </Link>
+            
             
             </Nav>
           

@@ -6,6 +6,8 @@ import Assessment from './pages/Assessment';
 import CloseContacts from './pages/CloseContacts'
 import Treatments from './pages/Treatments'
 import AddPatient from './pages/AddPatient';
+import ViewPatient from './pages/ViewPatient';
+import Case from './pages/Case';
 
 
 
@@ -20,6 +22,8 @@ function App() {
                     <Route path="/assessment/:id" element={<Assessment/>}/>
                     <Route path="/treatments/:id" element={<Treatments/>}/>
                     <Route path="/addpatient" element={<AddPatient/>}/>
+                    <Route path="/allpatient" element={<ViewPatient/>}/>
+                    <Route path="/case/:id" element={<Case/>}/>
                     
                 </Routes>
             </BrowserRouter>
