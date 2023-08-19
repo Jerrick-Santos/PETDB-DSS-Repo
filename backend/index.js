@@ -5,7 +5,6 @@ const mysql = require('mysql')
 const MainRoutes = require('./routes/mainRoute')
 const kaloyRoute = require('./routes/kaloyRoute')
 const raymondRoute = require('./routes/raymondRoute')
-const cors = require("cors");
 //CONNECTIONS
 
 app.use(cors({
