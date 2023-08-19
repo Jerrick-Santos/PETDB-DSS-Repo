@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const mysql = require('mysql')
 const MainRoutes = require('./routes/mainRoute')
@@ -17,11 +18,11 @@ db.connect(function(err) {
     if (err) throw err;  
     console.log("SQL DB is now Connected!");  
   });  
-
+app.use(cors({origin: 'http://localhost:3000'}));
 app.listen(4000, () => {
     console.log("Server is RUNNINF ON PORT 4000")
 })
-
+app.use(express.json());
 //log tracker - middleware
 app.use((req, res, next) => {
     console.log(req.path, res.method)
