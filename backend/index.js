@@ -24,7 +24,7 @@ db.connect(function(err) {
     if (err) throw err;  
     console.log("SQL DB is now Connected!");  
   });  
-app.use(cors({origin: 'http://localhost:3000'}));
+
 app.listen(4000, () => {
     console.log("Server is RUNNINF ON PORT 4000")
 })
