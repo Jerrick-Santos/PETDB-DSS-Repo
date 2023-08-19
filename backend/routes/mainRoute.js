@@ -117,23 +117,6 @@ module.exports = (db) => {
     });
     });
 
-
-    // ... Define more route handlers using the 'db' connection
-    router.post('/newpatient', (req, res) => {
-
-        const {last_name, first_name, middle_initial, age, sex, birthdate, initial_bodyweight, initial_height, nationality, address_1, address_2, city, mother_name, m_birthdate, m_contactno, m_email, father_name, f_birthdate, f_contactno, f_email, emergency_name, e_birthdate, e_contactno, e_email} = req.body //kinuha mo lang ung inputs/fields sa react
-    
-        db.query('INSERT INTO TD_PTINFORMATION (last_name, first_name, middle_initial, age, sex, birthdate, initial_bodyweight, initial_height, nationality, address_1, address_2, city, admission_date, mother_name, m_birthdate, m_contactno, m_email, father_name, f_birthdate, f_contactno, f_email, emergency_name, e_birthdate, e_contactno, e_email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, curdate(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-        [last_name, first_name, middle_initial, age, sex, birthdate, initial_bodyweight, initial_height, nationality, address_1, address_2, city, mother_name, m_birthdate, m_contactno, m_email, father_name, f_birthdate, f_contactno, f_email, emergency_name, e_birthdate, e_contactno, e_email],
-        (err, result) => {
-            if (err) {
-                console.log(err)
-            } else {
-                res.send("Values inserted!")
-            }
-        })
-    
-    });
     return router;
 };
 
