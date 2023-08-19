@@ -32,7 +32,7 @@ const PatientInfo = () => {
 
 }, []);
 
-
+console.log(patientData)
 
 
 

@@ -13,23 +13,7 @@ import axios from 'axios';
 const Treatments = () => {
 
   const { id } = useParams();
-  var patientNum = id
-  
-  const [patientData, setPatientData] = useState([]);
-
-  useEffect(() => {
-
-    axios.get(`http://localhost:4000/api/patient/${patientNum}`)
-      .then((response) => {
-        setPatientData(response.data[0])
-      })
-      .catch((error) => {
-        // Handle any errors that occurred during the request
-        console.error('Error fetching data:', error);
-      });
-    
-
-}, []);
+  var caseNum = id
 
   return (
     <div>
@@ -41,19 +25,24 @@ const Treatments = () => {
      
         <Navbar expand="sm" className="mt-4 pb-0">
           <Nav>
-          <Link to={`/patient/${patientNum}`}>
-          <button className="btn ms-1" style={{color: "#03045E", backgroundColor: 'white' , borderBottomLeftRadius: "0", borderBottomRightRadius: "0"  }} type="button">
-            <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
-          </button>
-          </Link>
-          <Link to={`/closecontacts/${patientNum}`}>
+          <Link to={`/closecontacts/${caseNum}`}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
           </button>
           </Link>
-          <Link to={`/assessment/${patientNum}`}>
+          <Link to={`/assessment/${caseNum}`}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
+          </button>
+          </Link>
+          <Link to={`/labtest/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+          </button>
+          </Link>
+          <Link to={`/diagnosis/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
           </button>
           </Link>
           <button className="btn ms-1 " style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
@@ -72,18 +61,9 @@ const Treatments = () => {
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
 
-      {/*Shows general patient information details */}
+   
       
-      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
-        <Col  lg="11">
-          <Row>
-            <Col> <strong> Patient Name: </strong> {patientData.fullname}</Col>
-          </Row>
-          <Row>
-            <Col> <strong> Birthdate:  </strong> {new Date(patientData.birthdate).toLocaleDateString()}</Col>
-          </Row>
-        </Col>
-      </Row>
+      
       
       
       

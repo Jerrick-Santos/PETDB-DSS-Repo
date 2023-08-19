@@ -13,7 +13,7 @@ import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 
 
-const Diagnosis = () => {
+const LaboratoryTest = () => {
 
   {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
   const { id } = useParams();
@@ -39,14 +39,14 @@ const Diagnosis = () => {
             <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
           </button>
           </Link>
-          <Link to={`/labtest/${caseNum}`}> 
-          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <button className="btn ms-1 " style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
           </button>
-          </Link>
-          <button className="btn ms-1 " style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <Link to={`/diagnosis/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
           </button>
+          </Link>
           <Link to={`/treatments/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
@@ -79,4 +79,4 @@ const Diagnosis = () => {
   );
 };
 
-export default Diagnosis;
+export default LaboratoryTest;

@@ -16,9 +16,6 @@ module.exports = (db) => {
             pt.initial_bodyweight,
             pt.initial_height,
             pt.nationality,
-            pt.address_1,
-            pt.address_2,
-            pt.city,
             pt.admission_date,
             pt.mother_name,
             pt.m_birthdate,
@@ -51,7 +48,7 @@ module.exports = (db) => {
     });
 
     //get all patient info of 1 patient 
-    //:id patient no.
+    //id is PatientNo
     router.get('/patient/:id', (req, res) => {
         const id = req.params.id;
         console.log(id)
@@ -63,9 +60,6 @@ module.exports = (db) => {
             pt.initial_bodyweight,
             pt.initial_height,
             pt.nationality,
-            pt.address_1,
-            pt.address_2,
-            pt.city,
             pt.admission_date,
             pt.mother_name,
             pt.m_birthdate,
@@ -98,13 +92,37 @@ module.exports = (db) => {
     });
 
     //Get all cases of 1 patient
+    //id is PatientNo
     router.get('/patientcase/:id', (req, res) => {
+        const id = req.params.id;
+        console.log(id)
+        db.query(`
+        SELECT pc.CaseNo,
+        pc.PatientNo,
+        pc.case_refno
+        FROM PEDTBDSS_new.TD_PTCASE pc
+        WHERE pc.PatientNo = ${id};
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                 result.fullname;
+            });
+            res.send(results)
+        }
+    });
+    });
+
+    //Get 1 case details
+    //id is CaseNo
+    router.get('/case/:id', (req, res) => {
         const id = req.params.id;
         console.log(id)
         db.query(`
         SELECT *
         FROM PEDTBDSS_new.TD_PTCASE pc
-        WHERE pc.PatientNo = ${id};
+        WHERE pc.CaseNo = ${id};
     `, (err, results) => {
         if (err) {
             console.log(err)

@@ -16,13 +16,13 @@ const Case = () => {
   const { id } = useParams();
   var patientNum = id
 
-  const [patientData, setPatientData] = useState([]);
-  console.log(patientNum)
+  const [caseData, setCaseData] = useState([]);
+
   useEffect(() => {
 
     axios.get(`http://localhost:4000/api/patientcase/${patientNum}`)
       .then((response) => {
-        setPatientData(response.data[0])
+        setCaseData(response.data)
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
@@ -34,9 +34,6 @@ const Case = () => {
 
 
 
-
-  console.log(patientData)
-   
   return (
 
     <div>
@@ -73,8 +70,13 @@ const Case = () => {
 
 
         {/*TODO: Input Frontend Here and Delete all <br/>*/}
-      <br/><br/><br/><br/><br/><br/>
-
+        
+        {caseData.map((singleCase, index) => (
+        <div key={index}>
+        <Link to={`/closecontacts/${caseData[index].CaseNo}`}>Case {index + 1}</Link>  
+        </div>
+      ))}
+       
       </Col>
     </Row>
 

@@ -13,27 +13,11 @@ import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 
 
-const PatientInfo = () => {
-  
+const CloseContacts = () => {
+
+  {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
   const { id } = useParams();
-  var patientNum = id
-  
-  const [patientData, setPatientData] = useState([]);
-
-  useEffect(() => {
-
-    axios.get(`http://localhost:4000/api/patient/${patientNum}`)
-      .then((response) => {
-        setPatientData(response.data[0])
-      })
-      .catch((error) => {
-        // Handle any errors that occurred during the request
-        console.error('Error fetching data:', error);
-      });
-    
-
-}, []);
-console.log(patientData)
+  var caseNum = id
 
   return (
     <div>
@@ -45,20 +29,25 @@ console.log(patientData)
      
         <Navbar expand="sm" className="mt-4 pb-0">
           <Nav>
-          <Link to={`/patient/${patientNum}`}>
-          <button className="btn ms-1" style={{color: "#03045E", backgroundColor: 'white' , borderBottomLeftRadius: "0", borderBottomRightRadius: "0"  }} type="button">
-            <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
-          </button>
-          </Link>
           <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
           </button>
-          <Link to={`/assessment/${patientNum}`}>
+          <Link to={`/assessment/${caseNum}`}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
           </button>
           </Link>
-          <Link to={`/treatments/${patientNum}`}> 
+          <Link to={`/labtest/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+          </button>
+          </Link>
+          <Link to={`/diagnosis/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
+          </button>
+          </Link>
+          <Link to={`/treatments/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
           </button>
@@ -80,10 +69,10 @@ console.log(patientData)
       <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
         <Col className="ms-5" lg="12">
           <Row>
-            <Col> <strong> Patient Name: </strong> {patientData.fullname}</Col>
+            <Col> <strong> Patient Name: </strong> </Col>
           </Row>
           <Row>
-            <Col> <strong> Birthdate:  </strong> {new Date(patientData.birthdate).toLocaleDateString()}</Col>
+            <Col> <strong> Birthdate:  </strong> </Col>
           </Row>
         </Col>
       </Row>
@@ -163,4 +152,4 @@ console.log(patientData)
   );
 };
 
-export default PatientInfo;
+export default CloseContacts;

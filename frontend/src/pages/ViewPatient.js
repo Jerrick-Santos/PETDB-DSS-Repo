@@ -22,7 +22,7 @@ const ViewPatient = () => {
         });
     }, []);
 
-    console.log(patientsData)
+    console.log(typeof patientsData)
    
 
   return (
@@ -62,7 +62,7 @@ const ViewPatient = () => {
                         <th scope="col">Father's Name</th>
                         <th scope="col">Emergency Contact's Name</th>
                         <th scope="col">Date Added</th>
-                        <th scope="col">Case Status</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -83,7 +83,7 @@ const ViewPatient = () => {
                         <td>{patient.father_name}</td>
                         <td>{patient.emergency_name}</td>
                         <td>{new Date(patient.admission_date).toLocaleDateString()}</td>
-                        <td>{patient.status === 'O' ? 'Closed Case' : 'Active Case'}</td>
+                      
 
                     </tr>
                     ))}
