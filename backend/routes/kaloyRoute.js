@@ -8,6 +8,7 @@ const router = express.Router();
 module.exports = (db) => {
     // Attach the 'db' connection to all route handlers before returning the router
     router.post('/newpatient', (req, res) => {
+        let targetPatientID = null
         const q = "INSERT INTO TD_PTINFORMATION (`last_name`, `first_name`, `middle_initial`, `age`, `sex`, `birthdate`, `initial_bodyweight`, `initial_height`, `nationality`, `per_houseno`, `per_street`, `per_barangay`, `per_city`, `per_region`, `per_zipcode`, `curr_houseno`, `curr_street`, `curr_barangay`, `curr_city`, `curr_region`, `curr_zipcode`, `admission_date`, `mother_name`, `m_birthdate`, `m_contactno`, `m_email`, `father_name`, `f_birthdate`, `f_contactno`, `f_email`, `emergency_name`, `e_birthdate`, `e_contactno`, `e_email`) VALUES (?)"
         const values = [
             req.body.last_name,
@@ -65,23 +66,25 @@ module.exports = (db) => {
                     console.log(err)
                 } else {
                     console.log("Query executed successfully:", results)
-                    if (results.length[0]) {
-                        const targetPatientID = results[0].PatientNo;
-                        console.log("Successfully queried PatientNo:", targetPatientID)
-    
-                        const thirdq = "INSERT INTO TD_PTCASE (`PatientNo`, `case_refno`, `SRNo`, `start_date`, `case_status`) VALUES (?)"
-                        db.query(thirdq, [targetPatientID, refno, 2, req.body.admission_date, "O"], (err, data) => {
-                            if(err) {
-                                return res.json(err)
-                            }
-                            return res.json(data)
-                        });
-                    } else {
-                        console.log("No matching patient found.")
-                    }
+                    targetPatientID = results[0].PatientNo;
+                    console.log("Successfully queried PatientNo:", targetPatientID)
+
+                    const thirdq = "INSERT INTO TD_PTCASE (`PatientNo`, `case_refno`, `SRNo`, `start_date`, `case_status`) VALUES (?, ?, ?, ?, ?)"
+                    const secvalues = [targetPatientID, refno, 2, req.body.admission_date, "O"]
+                    console.log("Values for case:", secvalues)
+                    db.query(thirdq, secvalues, (err, data) => {
+                        if(err) {
+                            console.log("Error inserting into TD_PTCASE:", err);
+                            return res.json(err)
+                        }
+                        console.log("Successfully inserted into TD_PTCASE:", data);
+                        return res.json(data)
+                    }); 
+
                 }
             });
 
+           
         
     });
     return router;
