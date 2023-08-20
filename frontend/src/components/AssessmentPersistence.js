@@ -16,7 +16,7 @@ import AssessmentSummaryModal from './AssessmentSummaryModal';
 import ShowDiagnosisModal from './ShowDiagnosisModal';
 import XrayRecomModal from './XrayRecomModal';
 
-const AssessmentFormNew = () => {
+const AssessmentPersistence = () => {
   return (
     <div>
     {/* Shows all medical information in relation to the patient's ongoing case*/}
@@ -35,7 +35,7 @@ const AssessmentFormNew = () => {
             <Card.Text>Symptomatic</Card.Text>
           </Col>
           <Col sm="3">
-            <Card.Text>2weeks</Card.Text>
+            <Card.Text>2 weeks</Card.Text>
           </Col>
           <Col sm="3">
             <Card.Text>Persistence</Card.Text>
@@ -47,10 +47,13 @@ const AssessmentFormNew = () => {
           <Col sm="4">
             <Card.Text className="text-muted">Cough</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
             <input type="checkbox" />
           </Col>
-          <Col sm="4">
+          <Col sm="3">
+            <input type="checkbox"/>
+          </Col>
+          <Col sm="2">
             <input type="checkbox"/>
           </Col>
         </Row>
@@ -59,10 +62,13 @@ const AssessmentFormNew = () => {
           <Col sm="4">
             <Card.Text className="text-muted">Fever</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
             <input type="checkbox" />
           </Col>
-          <Col sm="4">
+          <Col sm="3">
+            <input type="checkbox"/>
+          </Col>
+          <Col sm="2">
             <input type="checkbox"/>
           </Col>
         </Row>
@@ -71,11 +77,14 @@ const AssessmentFormNew = () => {
           <Col sm="4">
             <Card.Text className="text-muted">Night Sweats</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
             <input type="checkbox" />
           </Col>
-          <Col sm="4">
-            <input type="checkbox" />
+          <Col sm="3">
+            <input type="checkbox"/>
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
@@ -83,10 +92,13 @@ const AssessmentFormNew = () => {
           <Col sm="4">
             <Card.Text className="text-muted">Weight Loss</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="3">
             <input type="checkbox"/>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
             <input type="checkbox"/>
           </Col>
         </Row>
@@ -100,13 +112,16 @@ const AssessmentFormNew = () => {
     <Card className="mb-4">
       <Card.Body>
         <Row>
-          <Col sm="4">
+          <Col sm="3">
             <Card.Text>Symptom</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <Card.Text>Symptomatic</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
+            <Card.Text>2 weeks</Card.Text>
+          </Col>
+          <Col sm="3">
             <Card.Text>Persistence</Card.Text>
           </Col>
         </Row>
@@ -115,10 +130,13 @@ const AssessmentFormNew = () => {
           <Col sm="4">
             <Card.Text className="text-muted">Fatigue</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
             <input type="checkbox" />
           </Col>
-          <Col sm="4">
+          <Col sm="3">
+            <input type="checkbox"/>
+          </Col>
+          <Col sm="2">
             <input type="checkbox"/>
           </Col>
         </Row>
@@ -127,10 +145,13 @@ const AssessmentFormNew = () => {
           <Col sm="4">
             <Card.Text className="text-muted">Reduced Playfulness</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
             <input type="checkbox" />
           </Col>
-          <Col sm="4">
+          <Col sm="3">
+            <input type="checkbox"/>
+          </Col>
+          <Col sm="2">
             <input type="checkbox"/>
           </Col>
         </Row>
@@ -139,11 +160,14 @@ const AssessmentFormNew = () => {
           <Col sm="4">
             <Card.Text className="text-muted">Decreased Activities</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
             <input type="checkbox" />
           </Col>
-          <Col sm="4">
-            <input type="checkbox" />
+          <Col sm="3">
+            <input type="checkbox"/>
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
@@ -151,10 +175,13 @@ const AssessmentFormNew = () => {
           <Col sm="4">
             <Card.Text className="text-muted">Not Eating Well</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="3">
             <input type="checkbox"/>
           </Col>
-          <Col sm="4">
+          <Col sm="2">
             <input type="checkbox"/>
           </Col>
         </Row>
@@ -170,171 +197,128 @@ const AssessmentFormNew = () => {
       <Card.Body>
         <Row>
           <Col sm="8">
-            <Card.Text>Gibbus Deformity?</Card.Text>
+            <Card.Text>Symptom</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB1" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB1" value="no"/>
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <Card.Text>Yes</Card.Text>
+          </Col>
+          <Col sm="2">
+            <Card.Text>No</Card.Text>
+          </Col>
+        </Row>
+        <hr/>
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Gibbus Deformity?</Card.Text>
+          </Col>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
+          </Col>
+        </Row>
+        <hr />
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Are you experiencing non-painful enlargment of lymph nodes?</Card.Text>
+          </Col>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing non-painful enlargment of lymph nodes?</Card.Text>
+            <Card.Text className="text-muted">Are you experiencing stiff neck?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB2" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB2" value="no" />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing stiff neck?</Card.Text>
+            <Card.Text className="text-muted">Are you experiencing drowsiness?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB3" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB3" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing drowsiness?</Card.Text>
+            <Card.Text className="text-muted">Are you experiencing pleural effusion?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB4" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB4" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing pleural effusion?</Card.Text>
+            <Card.Text className="text-muted">Are you experiencing pericardial effusion?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB5" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB5" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing pericardial effusion?</Card.Text>
+            <Card.Text className="text-muted">Are you experiencing a distended abdomen?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB6" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB6" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing a distended abdomen?</Card.Text>
+            <Card.Text className="text-muted">Are you experiencing a non-painful enlarged joint?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB7" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB7" value="no" />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Are you experiencing a non-painful enlarged joint?</Card.Text>
+            <Card.Text className="text-muted">Are you showing signs of tuberculin hypersensitivity?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB8" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB8" value="no" />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
           </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text>Are you showing signs of tuberculin hypersensitivity?</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="EPTB9" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="EPTB9" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         
@@ -350,216 +334,162 @@ const AssessmentFormNew = () => {
       <Card.Body>
         <Row>
           <Col sm="8">
-            <Card.Text>Are you unable to stand?</Card.Text>
+            <Card.Text>Assessment</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA1" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA1" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <Card.Text>Yes</Card.Text>
+          </Col>
+          <Col sm="2">
+            <Card.Text>No</Card.Text>
+          </Col>
+        </Row>
+        <hr/>
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Are you unable to stand?</Card.Text>
+          </Col>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text> Do you have Diabetes?</Card.Text>
+            <Card.Text className="text-muted"> Do you have Diabetes?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA2" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA2" value="no" />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Are you living with a person with HIV?</Card.Text>
+            <Card.Text className="text-muted">Are you living with a person with HIV?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA3" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA3" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Do you have HIV?</Card.Text>
+            <Card.Text className="text-muted">Do you have HIV?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA4" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA4" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Does your mother have HIV?</Card.Text>
+            <Card.Text className="text-muted">Does your mother have HIV?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA5" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA5" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Do you have a history of smoking?</Card.Text>
+            <Card.Text className="text-muted">Do you have a history of smoking?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA6" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA6" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Do you have a history of drinking?</Card.Text>
+            <Card.Text className="text-muted">Do you have a history of drinking?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA7" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA7" value="no" />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Do you have a history of sexual activity?</Card.Text>
+            <Card.Text className="text-muted">Do you have a history of sexual activity?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA8" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA8" value="no" />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Do you have a history of renal disease?</Card.Text>
+            <Card.Text className="text-muted">Do you have a history of renal disease?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA9" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA9" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Do you have a history of malnutrition?</Card.Text>
+            <Card.Text className="text-muted">Do you have a history of malnutrition?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA10" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA10" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Is there a possibility of drug to drug interaction?</Card.Text>
+            <Card.Text className="text-muted">Is there a possibility of drug to drug interaction?</Card.Text>
           </Col>
-          <Col sm="4">
-            <Card.Text>
-                <label>
-                  <input type="radio" name="OA11" value="yes" />
-                  Yes
-                </label>
-                <label>
-                  <input type="radio" className="ms-4" name="OA11" value="no"  />
-                  No
-                </label>
-              </Card.Text>
+          <Col sm="2">
+            <input type="checkbox" />
+          </Col>
+          <Col sm="2">
+            <input type="checkbox"/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="8">
-            <Card.Text>Body Weight</Card.Text>
+            <Card.Text className="text-muted">Body Weight</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
@@ -571,7 +501,7 @@ const AssessmentFormNew = () => {
 
         <Row>
           <Col sm="8">
-            <Card.Text>Height</Card.Text>
+            <Card.Text className="text-muted">Height</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
@@ -583,7 +513,7 @@ const AssessmentFormNew = () => {
 
         <Row>
           <Col sm="8">
-            <Card.Text>Other Health Issues</Card.Text>
+            <Card.Text className="text-muted">Other Health Issues</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
@@ -595,7 +525,7 @@ const AssessmentFormNew = () => {
 
         <Row>
           <Col sm="8">
-            <Card.Text>Other Medications</Card.Text>
+            <Card.Text className="text-muted">Other Medications</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
@@ -608,7 +538,7 @@ const AssessmentFormNew = () => {
 
         <Row>
           <Col sm="8">
-            <Card.Text>Other Co-morbidities</Card.Text>
+            <Card.Text className="text-muted">Other Co-morbidities</Card.Text>
           </Col>
           <Col sm="4">
             <Card.Text>
@@ -625,4 +555,4 @@ const AssessmentFormNew = () => {
   );
 };
 
-export default AssessmentFormNew;
+export default AssessmentPersistence;
