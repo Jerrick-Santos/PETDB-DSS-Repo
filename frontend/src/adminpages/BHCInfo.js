@@ -11,8 +11,26 @@ import AssignBHCModal from '../admincomponents/AssignBHCModal';
 
 const BHCInfo = () => {
 
-  
+  const { id } = useParams();
+  var bhcNum = id
 
+  const [bhcData, setBhcData] = useState([]);
+
+  useEffect(() => {
+
+    axios.get(`http://localhost:4000/api/bhc/${bhcNum}`)
+      .then((response) => {
+        setBhcData(response.data[0])
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
+    
+
+}, []);
+
+    console.log(bhcData)
   return (
     <div>
     <AdminNavBar/>
@@ -32,7 +50,7 @@ const BHCInfo = () => {
                 <Card.Text><strong>BHC Name</strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted "> Name </Card.Text>
+                <Card.Text className="text-muted "> {bhcData.BGYName} </Card.Text>
               </Col>
             </Row>
             <hr />
@@ -41,7 +59,7 @@ const BHCInfo = () => {
                 <Card.Text><strong> Address </strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted"> Address </Card.Text>
+                <Card.Text className="text-muted"> {bhcData.BGYaddress} </Card.Text>
               </Col>
             </Row>
             <hr />

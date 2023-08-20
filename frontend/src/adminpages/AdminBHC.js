@@ -10,7 +10,18 @@ import { Link, useParams } from 'react-router-dom';
 
 const AdminBHC = () => {
 
-  
+  const [bhcData, setBhcData] = useState([]);
+  useEffect(() => {
+    axios.get("http://localhost:4000/api/allbhc")
+      .then(response => {
+        setBhcData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching BHCs:', error);
+      });
+  }, []);
+
+  console.log(bhcData)
 
   return (
     <div>
@@ -43,24 +54,29 @@ const AdminBHC = () => {
                 <Card.Text><strong>Email Address</strong> </Card.Text>
               </Col>
             </Row>
-            <hr />
-            <Row>
-              <Col sm="2">
-                <Card.Text ><Link to={'/bhc'}><p style={{ color: 'black' }}><u>Mark Andrew Health Center</u> </p> </Link> </Card.Text> 
-              </Col>
-              <Col sm="3">
-                <Card.Text>41 B K1st Street Kamuning Quezon City</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text>Everyday 7:00 AM to 8:00 PM</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text>63-916-518-9958 </Card.Text>
-              </Col>
-              <Col sm="3">
-                <Card.Text>markandrew@healthcenter.edu.ph </Card.Text>
-              </Col>
-            </Row>
+            {bhcData.map((bhc, index) => (
+              <>
+              <hr/>
+                     <Row>
+                     <Col sm="2">
+                       <Card.Text ><Link to={`/bhc/${bhc.BGYNo}`}><p style={{ color: 'black' }}><u>{bhc.BGYName}</u> </p> </Link> </Card.Text> 
+                     </Col>
+                     <Col sm="3">
+                       <Card.Text>{bhc.address}</Card.Text>
+                     </Col>
+                     <Col sm="2">
+                       <Card.Text>{bhc.BGYOperatingHours}</Card.Text>
+                     </Col>
+                     <Col sm="2">
+                       <Card.Text>{bhc.BGYContactNumber}</Card.Text>
+                     </Col>
+                     <Col sm="3">
+                       <Card.Text>{bhc.BGYEmailAddress} </Card.Text>
+                     </Col>
+                   </Row>
+                   </>
+                    ))}
+           
           </Card.Body>
         </Card>
         
