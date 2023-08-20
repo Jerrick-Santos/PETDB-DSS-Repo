@@ -4,7 +4,7 @@ import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 
 
-function AddBHCModal() {
+function CreateHIModal() {
    
     const[show,setShow] = useState(false)
 
@@ -19,19 +19,19 @@ function AddBHCModal() {
         <>
 
             <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a BHC
+                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/>     Create an HI
               </button>
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='lg'>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-        <Modal.Title>Add a BHC</Modal.Title>
+        <Modal.Title>Create a Health Institution</Modal.Title>
     </Modal.Header>
     <Modal.Body>
     <form className="mt-3 justify-content-center">
             <Row className="mb-3 justify-content-center">
                 <div className="form-group col-md-12">
-                    <label for="inputFirstName">BHC Name</label>
-                    <input type="text" class="form-control" id="inputFirstName" placeholder="BHC Name"/>
+                    <label for="inputFirstName">Health Insitution Name</label>
+                    <input type="text" class="form-control" id="inputFirstName" placeholder="HI Name"/>
                 </div>
             </Row>
 
@@ -109,5 +109,5 @@ function AddBHCModal() {
 
 
 
-export default AddBHCModal;
+export default CreateHIModal;
 

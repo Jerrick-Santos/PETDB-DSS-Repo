@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import AdminNavBar from '../admincomponents/AdminNavBar';
 import axios from 'axios';
-import AddBHCModal from '../admincomponents/AddBHCModal';
-
+import CreateBHCModal from '../admincomponents/CreateBHCModal';
+import { Link, useParams } from 'react-router-dom';
 
 
 const AdminBHC = () => {
@@ -46,7 +46,7 @@ const AdminBHC = () => {
             <hr />
             <Row>
               <Col sm="2">
-                <Card.Text>Mark Andrew Health Center</Card.Text>
+                <Card.Text ><Link to={'/bhc'}><p style={{ color: 'black' }}><u>Mark Andrew Health Center</u> </p> </Link> </Card.Text> 
               </Col>
               <Col sm="3">
                 <Card.Text>41 B K1st Street Kamuning Quezon City</Card.Text>
@@ -66,7 +66,7 @@ const AdminBHC = () => {
         
         <Row className="d-flex justify-content-end mb-4" >
           <Col className="d-flex justify-content-end">
-            <AddBHCModal/>
+            <CreateBHCModal/>
           </Col>
         </Row>
         

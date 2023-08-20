@@ -14,6 +14,8 @@ import Login from './adminpages/Login';
 import AdminLabTest from './adminpages/AdminLabTest';
 import AdminHI from './adminpages/AdminHI';
 import AdminBHC from './adminpages/AdminBHC';
+import HIInfo from './adminpages/HIInfo';
+import BHCInfo from './adminpages/BHCInfo';
 
 
 
@@ -27,6 +29,8 @@ function App() {
                     <Route path="/adminlabtest" element={<AdminLabTest/>}/>
                     <Route path="/adminhi" element={<AdminHI/>}/>
                     <Route path="/adminbhc" element={<AdminBHC/>}/>
+                    <Route path="/hi" element={<HIInfo/>}/>
+                    <Route path="/bhc" element={<BHCInfo/>}/>
                     
                     
                     <Route path="/home" element={<PatientSummary/>}/>

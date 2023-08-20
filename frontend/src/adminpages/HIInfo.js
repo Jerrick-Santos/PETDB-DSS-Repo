@@ -4,19 +4,18 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import AdminNavBar from '../admincomponents/AdminNavBar';
 import axios from 'axios';
-import AddBHCModal from '../admincomponents/CreateBHCModal';
-import CreateHIModal from '../admincomponents/CreateHIModal';
+import CreateBHCModal from '../admincomponents/CreateBHCModal';
 import { Link, useParams } from 'react-router-dom';
 
 
-
-const AdminHI = () => {
+const HIInfo = () => {
 
   
 
   return (
     <div>
     <AdminNavBar/>
+
     <Row className="mt-5 justify-content-center" >
         <Col lg="11" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       
@@ -24,12 +23,12 @@ const AdminHI = () => {
          {/* Shows the recommended next course of action */}
     <Row className="mt-5 justify-content-center">
       <Col lg="11">
-      <h1 style={{fontSize:"35px"}}> Health Institutions (HI) </h1>
+      <h1 style={{fontSize:"35px"}}> Health Institution Profile </h1>
         <Card className="mt-4 mb-4">
           <Card.Body>
             <Row>
               <Col sm="2">
-                <Card.Text><strong>HI Name</strong> </Card.Text>
+                <Card.Text><strong>BHC Name</strong> </Card.Text>
               </Col>
               <Col sm="3">
                 <Card.Text><strong>Address</strong> </Card.Text>
@@ -47,7 +46,7 @@ const AdminHI = () => {
             <hr />
             <Row>
               <Col sm="2">
-              <Card.Text ><Link to={'/hi'}><p style={{ color: 'black' }}><u>Mark Andrew Health Institution</u> </p> </Link> </Card.Text>
+                <Card.Text>Mark Andrew Health Center</Card.Text>
               </Col>
               <Col sm="3">
                 <Card.Text>41 B K1st Street Kamuning Quezon City</Card.Text>
@@ -65,10 +64,9 @@ const AdminHI = () => {
           </Card.Body>
         </Card>
         
-        
         <Row className="d-flex justify-content-end mb-4" >
           <Col className="d-flex justify-content-end">
-            <CreateHIModal/>
+            <CreateBHCModal/>
           </Col>
         </Row>
         
@@ -79,8 +77,11 @@ const AdminHI = () => {
       
       </Col>
     </Row>
+
+
+
     </div>
   );
 };
 
-export default AdminHI;
+export default HIInfo;
