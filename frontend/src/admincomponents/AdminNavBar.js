@@ -2,14 +2,16 @@ import React from 'react';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const NavBar = () => {
+const AdminNavBar = () => {
   return (
     <Navbar style={{backgroundColor: '#0077B6'}}>
       <Navbar.Brand className="text-light ms-4">PEDIA-TB DSS</Navbar.Brand>
         <Nav className="ms-4">
-          <Nav.Link className="text-light" href="/home">Home</Nav.Link>
-          <Nav.Link className="text-light" href="/addpatient">Add Patient</Nav.Link>
-          <Nav.Link className="text-light" href="/allpatient">View Patients</Nav.Link>
+        <Nav.Link className="text-light" href="/adminbhc">Barangay Health Centers</Nav.Link>
+        <Nav.Link className="text-light" href="/adminhi">Health Institutions</Nav.Link>
+          <Nav.Link className="text-light" href="/adminlabtest">Diagnostic Tests</Nav.Link>
+          
+          
         </Nav>
          <Nav className="ms-auto me-2">
           <Link to={"/"}><Button  className="ms-auto me-2" style={{color:'#0077B6', backgroundColor: "white"}} ><strong>Log Out</strong></Button></Link>
@@ -19,4 +21,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default AdminNavBar;

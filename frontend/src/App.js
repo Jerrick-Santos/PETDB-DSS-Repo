@@ -10,6 +10,10 @@ import ViewPatient from './pages/ViewPatient';
 import Case from './pages/Case';
 import LaboratoryTest from './pages/LaboratoryTest';
 import Diagnosis from './pages/Diagnosis';
+import Login from './adminpages/Login';
+import AdminLabTest from './adminpages/AdminLabTest';
+import AdminHI from './adminpages/AdminHI';
+import AdminBHC from './adminpages/AdminBHC';
 
 
 
@@ -18,8 +22,15 @@ function App() {
       <>
       <BrowserRouter>
                 <Routes>
+                    <Route path="/" element={<Login/>} />
+                    
+                    <Route path="/adminlabtest" element={<AdminLabTest/>}/>
+                    <Route path="/adminhi" element={<AdminHI/>}/>
+                    <Route path="/adminbhc" element={<AdminBHC/>}/>
+                    
+                    
+                    <Route path="/home" element={<PatientSummary/>}/>
                     <Route path="/patient/:id" element={<PatientInfo/>}/>
-                    <Route path="/" element={<PatientSummary/>} />
                     <Route path="/closecontacts/:id" element={<CloseContacts/>}/>
                     <Route path="/assessment/:id" element={<Assessment/>}/>
                     <Route path="/labtest/:id" element={<LaboratoryTest/>}/>
