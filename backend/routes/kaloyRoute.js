@@ -54,7 +54,10 @@ module.exports = (db) => {
             } 
             console.log("Successfully added Patient!")
 
-            const secq = "SELECT PatientNo FROM TD_PTINFORMATION WHERE last_name = ? AND first_name = ? AND middle_initial = ? AND age = ? AND sex = ? AND birthdate = ? AND initial_bodyweight = ? AND initial_height = ? AND nationality = ? AND per_houseno = ? AND per_street = ? AND per_barangay = ? AND per_city = ? AND per_region = ? AND per_zipcode = ? AND curr_houseno = ? AND curr_street = ? AND curr_barangay = ? AND curr_city = ? AND curr_region = ? AND curr_zipcode = ? AND admission_date = ? AND mother_name = ? AND m_birthdate = ? AND m_contactno = ? AND m_email = ? AND father_name = ? AND f_birthdate = ? AND f_contactno = ? AND f_email = ? AND emergency_name = ? AND e_birthdate = ? AND e_contactno = ? AND e_email = ?"
+            
+        }); 
+        
+        const secq = "SELECT PatientNo FROM TD_PTINFORMATION WHERE last_name = ? AND first_name = ? AND middle_initial = ? AND age = ? AND sex = ? AND birthdate = ? AND initial_bodyweight = ? AND initial_height = ? AND nationality = ? AND per_houseno = ? AND per_street = ? AND per_barangay = ? AND per_city = ? AND per_region = ? AND per_zipcode = ? AND curr_houseno = ? AND curr_street = ? AND curr_barangay = ? AND curr_city = ? AND curr_region = ? AND curr_zipcode = ? AND admission_date = ? AND mother_name = ? AND m_birthdate = ? AND m_contactno = ? AND m_email = ? AND father_name = ? AND f_birthdate = ? AND f_contactno = ? AND f_email = ? AND emergency_name = ? AND e_birthdate = ? AND e_contactno = ? AND e_email = ?"
 
 
             db.query(secq, values, (err, results) => {
@@ -62,11 +65,11 @@ module.exports = (db) => {
                     console.log(err)
                 } else {
                     console.log("Query executed successfully:", results)
-                    if (results.length > 0) {
+                    if (results.length[0]) {
                         const targetPatientID = results[0].PatientNo;
                         console.log("Successfully queried PatientNo:", targetPatientID)
     
-                        const thirdq = "INSERT INTO TD_PTCASE (`PatientNo`, `case_refno`, `SRNo`, `start_date`, `case_status`) VALUES (?, ?, ?, ?, ?)"
+                        const thirdq = "INSERT INTO TD_PTCASE (`PatientNo`, `case_refno`, `SRNo`, `start_date`, `case_status`) VALUES (?)"
                         db.query(thirdq, [targetPatientID, refno, 2, req.body.admission_date, "O"], (err, data) => {
                             if(err) {
                                 return res.json(err)
@@ -78,7 +81,8 @@ module.exports = (db) => {
                     }
                 }
             });
-        });    
+
+        
     });
     return router;
 };
