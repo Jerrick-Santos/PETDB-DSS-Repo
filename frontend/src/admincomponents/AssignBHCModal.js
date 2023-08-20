@@ -27,7 +27,7 @@ function AssignBHCModal() {
         <Modal.Title>Assign a Health Institution</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-    <p>Name: Name</p>
+    <p>BHC: Name</p>
     <p>Address: Address</p>
     <form className="mt-3 justify-content-center">
     <Card className="mt-4 mb-4">

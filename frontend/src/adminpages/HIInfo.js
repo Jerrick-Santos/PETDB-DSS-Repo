@@ -7,6 +7,7 @@ import axios from 'axios';
 import CreateBHCModal from '../admincomponents/CreateBHCModal';
 import { Link, useParams } from 'react-router-dom';
 import AssignBHCModal from '../admincomponents/AssignBHCModal';
+import AssignHIModal from '../admincomponents/AssignHIModal';
 
 
 const HIInfo = () => {
@@ -29,7 +30,7 @@ const HIInfo = () => {
           <Card.Body>
             <Row>
               <Col sm="6">
-                <Card.Text><strong>BHC Name</strong></Card.Text>
+                <Card.Text><strong>Health Institution:</strong></Card.Text>
               </Col>
               <Col sm="6">
                 <Card.Text className="text-muted "> Name </Card.Text>
@@ -76,25 +77,31 @@ const HIInfo = () => {
           </Card.Body>
         </Card>
 
-        <h1 style={{fontSize:"25px"}}> Diagnostic Test Offered </h1>
+        <h1 style={{fontSize:"25px"}}> Diagnostic Tests Offered </h1>
       <Card className="mt-4 mb-4">
           <Card.Body>
             <Row>
-              <Col sm="6">
-                <Card.Text><strong>Health Institutions</strong></Card.Text>
+              <Col sm="5">
+                <Card.Text><strong>Diagnostic Tests</strong></Card.Text>
               </Col>
-              <Col sm="6">
-                <Card.Text><strong>Address</strong></Card.Text>
+              <Col sm="4">
+                <Card.Text><strong>Price</strong></Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text><strong>Accepting Voucher</strong></Card.Text>
               </Col>
               
             </Row>
             <hr />
             <Row>
-              <Col sm="6">
-                <Card.Text>1. Mark Andrew Health Center </Card.Text>
+              <Col sm="5">
+                <Card.Text>X-Ray Test </Card.Text>
               </Col>
-              <Col sm="6">
-                <Card.Text>Address </Card.Text>
+              <Col sm="4">
+                <Card.Text>PHP 500.00 </Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text>YES </Card.Text>
               </Col>
 
             </Row>
@@ -106,7 +113,7 @@ const HIInfo = () => {
         
         <Row className="d-flex justify-content-end mb-4" >
           <Col className="d-flex justify-content-end">
-            <AssignBHCModal/>
+            <AssignHIModal/>
           </Col>
         </Row>
         
