@@ -1,17 +1,32 @@
 import Modal from 'react-bootstrap/Modal';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import axios from 'axios';
 
-
-function AssignHIModal() {
+function AssignHIModal(props) {
    
     const[show,setShow] = useState(false)
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [dtData, setDtData] = useState([]);
 
+
+    useEffect(() => {
+
+      axios.get(`http://localhost:4000/api/himissingtests/${props.id}`)
+        .then((response) => {
+          setDtData(response.data)
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetching data:', error);
+        });
+      
+  
+  }, []);
     const handleChange = (e) => {
    
     };
@@ -27,15 +42,22 @@ function AssignHIModal() {
         <Modal.Title>Add a Diagnostic Test</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-    <p><strong> Health Institution:</strong> Name</p>
-    <p><strong> Address:</strong> Address</p>
+    <p><strong> Health Institution:</strong> {props.name}</p>
+    <p><strong> Address:</strong> {props.address }</p>
     <form className="mt-4 justify-content-center">
     <Row className="justify-content-center"> 
       <Col lg="12"> 
       <label> <strong>Diagnostic Test </strong></label>
             <select className="form-select">
                 <option value="">Select</option>
-                <option value="positive">Xray</option>
+              
+              {dtData.map((dt, index) => (
+              <>
+               <option value={dt.DGTestNo}>{dt.DGTestName}</option>
+              
+                   </>
+                    ))}
+ 
 
             </select>
       </Col>

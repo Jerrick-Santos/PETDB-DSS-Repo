@@ -297,6 +297,7 @@ module.exports = (db) => {
     });
     });
 
+    //get a single BHC info given a bhc id
     router.get('/bhc/:id', (req, res) => {
         const id = req.params.id;
         db.query(`
@@ -311,6 +312,135 @@ module.exports = (db) => {
         FROM PEDTBDSS_new.MD_BARANGAYS bg
         WHERE bg.BGYNo=${id};
        
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+    //get a single HI info based on an HI ID
+    router.get('/hi/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT h.HINo,
+            h.HIName, 
+            CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIZipCode) AS address,
+            h.HIOperatingHours,
+            h.HIContactNumber,
+            h.HIEmailAddress,
+            h.XCoord,
+            h.YCoord
+        FROM PEDTBDSS_new.MD_HI h
+        WHERE h.HINo =${id};
+       
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+    //get all HIs under a given BHC id
+    router.get('/bhchi/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT 
+        bh.BGYNo,
+        h.HINo,
+        h.HIName, 
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIZipCode) AS address,
+        h.HIOperatingHours,
+        h.HIContactNumber,
+        h.HIEmailAddress,
+        h.XCoord,
+        h.YCoord
+            FROM  PEDTBDSS_new.MD_BRGYHI bh
+            JOIN   PEDTBDSS_new.MD_HI h ON bh.HINo = h.HINo
+            WHERE bh.BGYNO=${id};
+       
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+     //get all tests under a given HI id
+     router.get('/hitests/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT *
+            FROM  PEDTBDSS_new.MD_HIDGTESTS ht
+            JOIN   PEDTBDSS_new.MD_DGTESTS d ON ht.DGTestNo = d.DGTestNo
+            WHERE ht.HINo=${id};
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+    //get all tests that are NOT under a given HI id
+    router.get('/himissingtests/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT * 
+            FROM  PEDTBDSS_new.MD_DGTESTS
+            WHERE DGTestNo NOT IN(SELECT d.DGTestNo
+            FROM PEDTBDSS_new.MD_HIDGTESTS ht
+            JOIN PEDTBDSS_new.MD_DGTESTS d ON ht.DGTestNo = d.DGTestNo
+            WHERE ht.HINo=${id});
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+    //get all HIs that are NOT under a given BHC id
+    router.get('/bhcmissinghi/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT 
+        h.HINo,
+        h.HIName, 
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIZipCode) AS address,
+        h.HIOperatingHours,
+        h.HIContactNumber,
+        h.HIEmailAddress,
+        h.XCoord,
+        h.YCoord
+            FROM  PEDTBDSS_new.MD_HI h
+            WHERE HINo NOT IN(SELECT h.HINo
+            FROM PEDTBDSS_new.MD_HI h
+            JOIN PEDTBDSS_new.MD_BRGYHI bh ON h.HINo = bh.HINo
+            WHERE bh.BGYNo=${id});
     `, (err, results) => {
         if (err) {
             console.log(err)
