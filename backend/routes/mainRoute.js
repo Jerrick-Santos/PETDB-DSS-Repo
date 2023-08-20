@@ -136,6 +136,19 @@ module.exports = (db) => {
     });
     });
 
+    router.post('/newcase', (req, res) => {
+        const query = "INSERT INTO TD_PTCASE (`PatientNo`, `case_refno`, `SRNo`, `start_date`, `case_status`) VALUES (?, ?, ?, ?, ?)"
+        const queryValues = [req.body.patientNo, req.body.case_refno, 2, req.body.startDate, "O"]
+        db.query(query, queryValues, (err, data) => {
+            if(err) {
+                console.log("Error inserting into TD_PTCASE:", err);
+                return res.json(err)
+            }
+            console.log("Successfully inserted into TD_PTCASE:", data);
+            return res.json(data)
+        });
+    })
+
     return router;
 };
 

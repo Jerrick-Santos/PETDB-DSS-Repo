@@ -87,7 +87,10 @@ useEffect(() => {
       ))}
       <Row className="d-flex justify-content-end mb-4" >
           <Col className="d-flex justify-content-end">
-          <AddCaseModal allClosed={allClosed}/>
+          <AddCaseModal
+              allClosed={allClosed}
+              patientNo={patientNum}
+          />
           </Col>
         </Row>
         
