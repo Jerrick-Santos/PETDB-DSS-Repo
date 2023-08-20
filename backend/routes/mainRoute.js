@@ -99,7 +99,8 @@ module.exports = (db) => {
         db.query(`
         SELECT pc.CaseNo,
         pc.PatientNo,
-        pc.case_refno
+        pc.case_refno,
+        pc.case_status
         FROM PEDTBDSS_new.TD_PTCASE pc
         WHERE pc.PatientNo = ${id};
     `, (err, results) => {

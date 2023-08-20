@@ -9,6 +9,7 @@ import treatment from '../assets/treatment.png';
 import { Link, useParams} from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import AddCaseModal from '../components/AddCaseModal';
 
 
 const Case = () => {
@@ -17,6 +18,7 @@ const Case = () => {
   var patientNum = id
 
   const [caseData, setCaseData] = useState([]);
+  const [allClosed, setAllClosed] = useState(true);
 
   useEffect(() => {
 
@@ -32,6 +34,13 @@ const Case = () => {
 
 }, []);
 
+useEffect(() => {
+  // Check if any case_status is 'O'
+  const hasOpenCase = caseData.some(item => item.case_status === 'O');
+  
+  // Set allClosed to false if there's an 'O', otherwise true
+  setAllClosed(!hasOpenCase);
+}, [caseData]);
 
 
   return (
@@ -76,6 +85,12 @@ const Case = () => {
         <Link to={`/closecontacts/${caseData[index].CaseNo}`}>Case {index + 1}</Link>  
         </div>
       ))}
+      <Row className="d-flex justify-content-end mb-4" >
+          <Col className="d-flex justify-content-end">
+          <AddCaseModal allClosed={allClosed}/>
+          </Col>
+        </Row>
+        
        
       </Col>
     </Row>

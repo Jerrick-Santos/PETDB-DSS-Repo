@@ -24,7 +24,7 @@ function AssignHIModal() {
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='lg'>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-        <Modal.Title>Assign a Health Institution</Modal.Title>
+        <Modal.Title>Add a Diagnostic Test</Modal.Title>
     </Modal.Header>
     <Modal.Body>
     <p>Name: Name</p>
