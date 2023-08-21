@@ -5,6 +5,7 @@ const MainRoutes = require('./routes/mainRoute')
 const kaloyRoute = require('./routes/kaloyRoute')
 const raymondRoute = require('./routes/raymondRoute')
 const cors = require("cors");
+const diagnoseRoute = require('./routes/diagnoseRoute')
 //CONNECTIONS
 
 app.use(cors({
@@ -39,4 +40,5 @@ app.use((req, res, next) => {
 app.use('/api', MainRoutes(db))
 app.use('/api', kaloyRoute(db))
 app.use('/api', raymondRoute(db))
+app.use('/api', diagnoseRoute(db))
 

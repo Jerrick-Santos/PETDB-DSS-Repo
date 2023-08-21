@@ -3,6 +3,29 @@ const router = express.Router();
 
 
 module.exports = (db) => {
+
+
+    function DGTestModule(){
+                db.query(`
+        SELECT pt.PatientNo, CONCAT(pt.first_name, ' ', pt.last_name) AS fullname,
+            pt.birthdate,
+            pt.sex,
+            pt.age,
+            pc.case_status
+        FROM PEDTBDSS_new.TD_PTINFORMATION pt
+        JOIN PEDTBDSS_new.TD_PTCASE pc ON pt.PatientNo = pc.PatientNo;
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    }
+    
     // Define your route handlers using the db connection
     router.get('/allpatients', (req, res) => {
 
@@ -42,8 +65,9 @@ module.exports = (db) => {
         if (err) {
             console.log(err)
         } else {
+            const full_name1 = null
             results.forEach(result => {
-                 result.fullname;
+                full_name1 = result.fullname;
             });
             res.send(results)
         }
@@ -53,7 +77,7 @@ module.exports = (db) => {
 
     // ... Define more route handlers using the 'db' connection
     router.post('/newpatient', (req, res) => {
-        
+
         console.log(req.body);
         const {last_name, first_name, middle_initial, age, sex, birthdate, initial_bodyweight, initial_height, nationality, address_1, address_2, city, mother_name, m_birthdate, m_contactno, m_email, father_name, f_birthdate, f_contactno, f_email, emergency_name, e_birthdate, e_contactno, e_email} = req.body //kinuha mo lang ung inputs/fields sa react
 
@@ -66,6 +90,25 @@ module.exports = (db) => {
                 res.send("Values inserted!")
             }
         })
+    
+    });
+
+
+    router.post('/newassessment/:caseid', (req, res) => {
+
+        const caseid = req.params.caseid
+
+        console.log(req.body);
+
+    
+    });
+
+    router.post('/test', (req, res) => {
+
+        const {name, age, height, weight} = req.body
+
+        console.log(req.body);
+
     
     });
     return router;
