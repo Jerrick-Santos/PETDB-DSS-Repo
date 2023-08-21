@@ -91,6 +91,26 @@ module.exports = (db) => {
     });
     });
 
+    //Get all assessments of 1 case
+    router.get('/patientassessment/:id', (req, res) => {
+        const id = req.params.id;
+        console.log(id)
+        db.query(`
+        SELECT *
+        FROM PEDTBDSS_new.TD_HEALTHASSESSMENT ha
+        WHERE ha.CaseNo = ${id};
+        `, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                results.forEach(result => {
+                     result.fullname;
+                });
+                res.send(results)
+            }
+        })
+    })
+
     //Get all cases of 1 patient
     //id is PatientNo
     router.get('/patientcase/:id', (req, res) => {
