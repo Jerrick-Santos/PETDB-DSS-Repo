@@ -12,10 +12,11 @@ import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 import AddXrayModal from '../components/AddXrayModal';
-import AddHIVTestModal from '../components/AddHIVTestModal';
+import AddHIVTestModal from '../components/AddTSTModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
 import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
+import AddTSTModal from '../components/AddTSTModal';
 
 
 const LaboratoryTest = () => {
@@ -23,6 +24,18 @@ const LaboratoryTest = () => {
   {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
   const { id } = useParams();
   var caseNum = id
+  const [patientData, setPatientData] = useState([]);
+  
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+    .then(res => {
+      console.log(res);
+      setPatientData(res.data[0]);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }, [caseNum])
 
   return (
     <div>
@@ -68,7 +81,21 @@ const LaboratoryTest = () => {
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-
+      <AddTSTModal/>
+      <AddMTBRIFModal/>
+      <AddXrayModal/>      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+        <Col className="ms-5" lg="12">
+          <Row>
+            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
+          </Row>
+          <Row>
+            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
+          </Row>
+          <Row>
+            <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
+          </Row>
+        </Col>
+      </Row>
       <Row className="mb-5 mt-2 justify-content-center">
       <Col lg="8">
       <p> <strong> Laboratory Tests Needed </strong> </p>
@@ -97,7 +124,7 @@ const LaboratoryTest = () => {
             <hr />
             <Row>
               <Col sm="2">
-                <Card.Text className="text-muted">HIV Test<AddHIVTestModal/> </Card.Text>
+                <Card.Text className="text-muted">HIV Test </Card.Text>
               </Col>
               <Col sm="2">
               <Card.Text className="text-muted"> DLSHSI </Card.Text>
@@ -118,7 +145,7 @@ const LaboratoryTest = () => {
             <hr />
             <Row>
               <Col sm="2">
-                <Card.Text className="text-muted">Xray <AddXrayModal/> </Card.Text>
+                <Card.Text className="text-muted">Xray  </Card.Text>
               </Col>
               <Col sm="2">
               <Card.Text className="text-muted"> DLSHSI </Card.Text>
@@ -139,7 +166,7 @@ const LaboratoryTest = () => {
             <hr />
             <Row>
             <Col sm="2">
-                <Card.Text className="text-muted">MTB/RIF <AddMTBRIFModal/> </Card.Text>
+                <Card.Text className="text-muted">MTB/RIF </Card.Text>
               </Col>
               <Col sm="2">
                 <Card.Text className="text-muted"> DLSHSI </Card.Text>

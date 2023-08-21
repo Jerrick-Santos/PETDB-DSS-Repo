@@ -9,18 +9,16 @@ module.exports = (db) => {
     router.get('/allpatients', (req, res) => {
 
         db.query(`
-        SELECT pt.PatientNo, CONCAT(pt.first_name, ' ', pt.middle_initial, '. ' , pt.last_name) AS fullname,
+            SELECT pt.PatientNo, CONCAT(pt.first_name, ' ', pt.middle_initial, '. ' , pt.last_name) AS fullname,
             pt.birthdate,
             pt.sex,
             pt.age,
             pt.initial_bodyweight,
             pt.initial_height,
             pt.nationality,
+            CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
+            CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
             pt.admission_date,
-            pt.mother_name,
-            pt.m_birthdate,
-            pt.m_contactno,
-            pt.m_email,
             pt.mother_name,
             pt.m_birthdate,
             pt.m_contactno,
@@ -60,11 +58,9 @@ module.exports = (db) => {
             pt.initial_bodyweight,
             pt.initial_height,
             pt.nationality,
+            CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
+            CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
             pt.admission_date,
-            pt.mother_name,
-            pt.m_birthdate,
-            pt.m_contactno,
-            pt.m_email,
             pt.mother_name,
             pt.m_birthdate,
             pt.m_contactno,
@@ -168,6 +164,322 @@ module.exports = (db) => {
             return res.json(data)
         });
     })
+
+    router.post('/newassessment', (req, res) => {
+        const assessQuery = "INSERT INTO TD_HEALTHASSESSMENT (`CaseNo`, `cough`, `c_weeks`, `c_persist`, `fever`, `fe_weeks`, `fe_persist`, `weight_loss`, `wl_weeks`, `wl_persist`, `night_sweats`, `ns_weeks`, `ns_persist`, `fatigue`, `fat_weeks`, `fat_persist`, `red_playfulness`, `rp_weeks`, `rp_persist`, `dec_acts`, `da_weeks`, `da_persist`, `not_eating_well`, `new_weeks`, `new_persist`, `gibbus_deform`, `non_painful_ecl`, `stiff_neck`, `drowsy`, `pleural_effusion`, `pericard_effusion`, `dist_abdomen`, `non_painful_ejoint`, `tuberculin_hyper`, `can_stand`, `ass_body_weight`, `ass_height`, `diabetes`, `plhiv`, `hiv`, `mother_hiv`, `smoking`, `drinking`, `sex_active`, `renal_disease`, `malnutrition`, `other_health_issues`, `other_meds`, `other_dd_interacts`, `other_comorbid`, `assessment_date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const assessQueryValues = [
+            req.body.case_no,
+            req.body.cough,
+            req.body.c_weeks,
+            req.body.c_persist,
+            req.body.fever,
+            req.body.fe_weeks,
+            req.body.fe_persist,
+            req.body.weight_loss,
+            req.body.wl_weeks,
+            req.body.wl_persist,
+            req.body.night_sweats,
+            req.body.ns_weeks,
+            req.body.ns_persist,
+            req.body.fatigue,
+            req.body.fat_weeks,
+            req.body.fat_persist,
+            req.body.red_playfulness,
+            req.body.rp_weeks,
+            req.body.rp_persist,
+            req.body.dec_acts,
+            req.body.da_weeks,
+            req.body.da_persist,
+            req.body.not_eating_well,
+            req.body.new_weeks,
+            req.body.new_persist,
+            req.body.gibbus_deform,
+            req.body.non_painful_ecl,
+            req.body.stiff_neck,
+            req.body.drowsy,
+            req.body.pleural_effusion,
+            req.body.pericard_effusion,
+            req.body.dist_abdomen,
+            req.body.non_painful_ejoint,
+            req.body.tuberculin_hyper,
+            req.body.can_stand,
+            req.body.ass_body_weight,
+            req.body.ass_height,
+            req.body.diabetes,
+            req.body.plhiv,
+            req.body.hiv,
+            req.body.mother_hiv,
+            req.body.smoking,
+            req.body.drinking,
+            req.body.sex_active,
+            req.body.renal_disease,
+            req.body.malnutrition,
+            req.body.other_health_issues,
+            req.body.other_meds,
+            req.body.other_dd_interacts,
+            req.body.other_comorbid,
+            req.body.assessment_date,
+        ]
+        db.query(assessQuery, assessQueryValues, (err, data) => {
+            if(err) {
+                console.log("Error inserting into TD_HEALTHASSESMENT:", err);
+                return res.json(err)
+            }
+            console.log("Successfully inserted into TD_HEALTHASSESMENT:", data);
+            return res.json(data)
+        });
+    })
+
+
+    //SEARCH PATIENT ROUTES
+    router.get('/searchpatient/:id', (req, res) => {
+        const searchTerm = req.params.id;
+        db.query(`
+        SELECT
+    pt.PatientNo,
+    CONCAT(
+        COALESCE(pt.first_name, ''),
+        ' ',
+        COALESCE(pt.middle_initial, ''),
+        '. ',
+        COALESCE(pt.last_name, '')
+    ) AS fullname,
+    pt.birthdate,
+    pt.sex,
+    pt.age,
+    pt.initial_bodyweight,
+    pt.initial_height,
+    pt.nationality,
+    CONCAT(
+        COALESCE(pt.per_houseno, ''),
+        ' ',
+        COALESCE(pt.per_street, ''),
+        ' ',
+        COALESCE(pt.per_barangay, ''),
+        ' ',
+        COALESCE(pt.per_city, ''),
+        ' ',
+        COALESCE(pt.per_region, ''),
+        ' ',
+        COALESCE(pt.per_zipcode, '')
+    ) AS per_address,
+    CONCAT(
+        COALESCE(pt.curr_houseno, ''),
+        ' ',
+        COALESCE(pt.curr_street, ''),
+        ' ',
+        COALESCE(pt.curr_barangay, ''),
+        ' ',
+        COALESCE(pt.curr_city, ''),
+        ' ',
+        COALESCE(pt.curr_region, ''),
+        ' ',
+        COALESCE(pt.curr_zipcode, '')
+    ) AS curr_address,
+    pt.admission_date,
+    pt.mother_name,
+    pt.m_birthdate,
+    pt.m_contactno,
+    pt.m_email,
+    pt.father_name,
+    pt.f_birthdate,
+    pt.f_contactno,
+    pt.f_email,
+    pt.emergency_name,
+    pt.e_birthdate,
+    pt.e_contactno,
+    pt.e_email
+FROM PEDTBDSS_new.TD_PTINFORMATION pt
+WHERE 
+    CONCAT(
+        COALESCE(pt.PatientNo, ''),
+        COALESCE(pt.last_name, ''),
+        COALESCE(pt.first_name, ''),
+        COALESCE(pt.middle_initial, ''),
+        COALESCE(pt.age, ''),
+        COALESCE(pt.sex, ''),
+        COALESCE(pt.birthdate, ''),
+        COALESCE(pt.initial_bodyweight, ''),
+        COALESCE(pt.initial_height, ''),
+        COALESCE(pt.nationality, ''),
+        COALESCE(pt.per_houseno, ''),
+        COALESCE(pt.per_street, ''),
+        COALESCE(pt.per_barangay, ''),
+        COALESCE(pt.per_city, ''),
+        COALESCE(pt.per_region, ''),
+        COALESCE(pt.per_zipcode, ''),
+        COALESCE(pt.curr_houseno, ''),
+        COALESCE(pt.curr_street, ''),
+        COALESCE(pt.curr_barangay, ''),
+        COALESCE(pt.curr_city, ''),
+        COALESCE(pt.curr_region, ''),
+        COALESCE(pt.curr_zipcode, ''),
+        COALESCE(pt.admission_date, ''),
+        COALESCE(pt.mother_name, ''),
+        COALESCE(pt.m_birthdate, ''),
+        COALESCE(pt.m_contactno, ''),
+        COALESCE(pt.m_email, ''),
+        COALESCE(pt.father_name, ''),
+        COALESCE(pt.f_birthdate, ''),
+        COALESCE(pt.f_contactno, ''),
+        COALESCE(pt.f_email, ''),
+        COALESCE(pt.emergency_name, ''),
+        COALESCE(pt.e_birthdate, ''),
+        COALESCE(pt.e_contactno, ''),
+        COALESCE(pt.e_email, '')
+    ) LIKE '%${searchTerm}%';
+
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+    router.get('/advancedsearch/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt/:phn/:ps/:pb/:pc/:pr/:pz/:chn/:cs/:cb/:cc/:cr/:cz/:ad/:mn/:mb/:mc/:me/:fn/:fb/:fc/:fe/:en/:eb/:ec/:ee', (req, res) => {
+        const lnm = req.params.lnm.replace('_','');
+        const fnm = req.params.fnm.replace('_','');
+        const mnm = req.params.mnm.replace('_','');
+        const age = req.params.age.replace('_','');
+        const sex = req.params.sex.replace('_','');
+        const bd = req.params.bd.replace('_','');
+        const nt = req.params.nt.replace('_','');
+        const phn = req.params.phn.replace('_','');
+        const ps = req.params.ps.replace('_','');
+        const pb = req.params.pb.replace('_','');
+        const pc = req.params.pc.replace('_','');
+        const pr = req.params.pr.replace('_','');
+        const pz = req.params.pz.replace('_','');
+        const chn = req.params.chn.replace('_','');
+        const cs = req.params.cs.replace('_','');
+        const cb = req.params.cb.replace('_','');
+        const cc = req.params.cc.replace('_','');
+        const cr = req.params.cr.replace('_','');
+        const cz = req.params.cz.replace('_','');
+        const ad = req.params.ad.replace('_','');
+        const mn = req.params.mn.replace('_','');
+        const mb = req.params.mb.replace('_','');
+        const mc = req.params.mc.replace('_','');
+        const me = req.params.me.replace('_','');
+        const fn = req.params.fn.replace('_','');
+        const fb = req.params.fb.replace('_','');
+        const fc = req.params.fc.replace('_','');
+        const fe = req.params.fe.replace('_','');
+        const en = req.params.en.replace('_','');
+        const eb = req.params.eb.replace('_','');
+        const ec = req.params.ec.replace('_','');
+        const ee = req.params.ee.replace('_','');
+        
+        db.query(`
+        SELECT
+    pt.PatientNo,
+    CONCAT(
+        COALESCE(pt.first_name, ''),
+        ' ',
+        COALESCE(pt.middle_initial, ''),
+        '. ',
+        COALESCE(pt.last_name, '')
+    ) AS fullname,
+    pt.birthdate,
+    pt.sex,
+    pt.age,
+    pt.initial_bodyweight,
+    pt.initial_height,
+    pt.nationality,
+    CONCAT(
+        COALESCE(pt.per_houseno, ''),
+        ' ',
+        COALESCE(pt.per_street, ''),
+        ' ',
+        COALESCE(pt.per_barangay, ''),
+        ' ',
+        COALESCE(pt.per_city, ''),
+        ' ',
+        COALESCE(pt.per_region, ''),
+        ' ',
+        COALESCE(pt.per_zipcode, '')
+    ) AS per_address,
+    CONCAT(
+        COALESCE(pt.curr_houseno, ''),
+        ' ',
+        COALESCE(pt.curr_street, ''),
+        ' ',
+        COALESCE(pt.curr_barangay, ''),
+        ' ',
+        COALESCE(pt.curr_city, ''),
+        ' ',
+        COALESCE(pt.curr_region, ''),
+        ' ',
+        COALESCE(pt.curr_zipcode, '')
+    ) AS curr_address,
+    pt.admission_date,
+    pt.mother_name,
+    pt.m_birthdate,
+    pt.m_contactno,
+    pt.m_email,
+    pt.father_name,
+    pt.f_birthdate,
+    pt.f_contactno,
+    pt.f_email,
+    pt.emergency_name,
+    pt.e_birthdate,
+    pt.e_contactno,
+    pt.e_email
+FROM PEDTBDSS_new.TD_PTINFORMATION pt
+WHERE 
+    (
+            COALESCE(pt.last_name, '')LIKE "%${lnm}%" AND
+            COALESCE(pt.first_name, '')LIKE "%${fnm}%" AND
+            COALESCE(pt.middle_initial, '')LIKE "%${mnm}%" AND
+            COALESCE(pt.age, '')LIKE "%${age}%" AND
+            COALESCE(pt.sex, '')LIKE "%${sex}%" AND
+            COALESCE(pt.birthdate, '')LIKE "%${bd}%" AND
+            COALESCE(pt.nationality, '')LIKE "%${nt}%" AND
+            COALESCE(pt.per_houseno, '')LIKE "%${phn}%" AND
+            COALESCE(pt.per_street, '')LIKE "%${ps}%" AND
+            COALESCE(pt.per_barangay, '')LIKE "%${pb}%"AND
+            COALESCE(pt.per_city, '')LIKE "%${pc}%"AND
+            COALESCE(pt.per_region, '')LIKE "%${pr}%"AND
+            COALESCE(pt.per_zipcode, '')LIKE "%${pz}%"AND
+            COALESCE(pt.curr_houseno, '')LIKE "%${chn}%"AND
+            COALESCE(pt.curr_street, '')LIKE "%${cs}%"AND
+            COALESCE(pt.curr_barangay, '')LIKE "%${cb}%"AND
+            COALESCE(pt.curr_city, '')LIKE "%${cc}%"AND
+            COALESCE(pt.curr_region, '')LIKE "%${cr}%"AND
+            COALESCE(pt.curr_zipcode, '')LIKE "%${cz}%"AND
+            COALESCE(pt.admission_date, '')LIKE "%${ad}%"AND
+            COALESCE(pt.mother_name, '')LIKE "%${mn}%"AND
+            COALESCE(pt.m_birthdate, '')LIKE "%${mb}%"AND
+            COALESCE(pt.m_contactno, '')LIKE "%${mc}%"AND 
+            COALESCE(pt.m_email, '')LIKE "%${me}%"AND 
+            COALESCE(pt.father_name, '')LIKE "%${fn}%"AND  
+            COALESCE(pt.f_birthdate, '')LIKE "%${fb}%"AND 
+            COALESCE(pt.f_contactno, '')LIKE "%${fc}%"AND  
+            COALESCE(pt.f_email, '')LIKE "%${fe}%"AND  
+            COALESCE(pt.emergency_name, '')LIKE "%${en}%"AND 
+            COALESCE(pt.e_birthdate, '')LIKE "%${eb}%"AND 
+            COALESCE(pt.e_contactno, '')LIKE "%${ec}%"AND 
+            COALESCE(pt.e_email, '')LIKE "%${ee}%");
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+    
+    
+
+
 
 
 

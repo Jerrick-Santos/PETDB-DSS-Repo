@@ -3,18 +3,18 @@ import '../index.css';
 import React, { useState, useEffect } from 'react';
 
 import NavBar from '../components/NavBar';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import AdvancedSearch from '../components/AdvancedSearch';
 
 
 
-const ViewPatient = () => {
-
+const AdvanceViewPatient = () => {
+    const { lnm, fnm, mnm, age, sex, bd, nt, phn, ps, pb, pc, pr, pz, chn, cs, cb, cc, cr, cz, ad, mn, mb, mc, me, fn, fb, fc, fe, en, eb, ec, ee } = useParams();
     const [patientsData, setPatientsData] = useState([]);
 
     useEffect(() => {
-      axios.get("http://localhost:4000/api/allpatients")
+      axios.get(`http://localhost:4000/api/advancedsearch/${lnm}/${fnm}/${mnm}/${age}/${sex}/${bd}/${nt}/${phn}/${ps}/${pb}/${pc}/${pr}/${pz}/${chn}/${cs}/${cb}/${cc}/${cr}/${cz}/${ad}/${mn}/${mb}/${mc}/${me}/${fn}/${fb}/${fc}/${fe}/${en}/${eb}/${ec}/${ee}`)
         .then(response => {
           setPatientsData(response.data);
         })
@@ -117,4 +117,4 @@ const ViewPatient = () => {
   );
 };
 
-export default ViewPatient;
+export default AdvanceViewPatient;
