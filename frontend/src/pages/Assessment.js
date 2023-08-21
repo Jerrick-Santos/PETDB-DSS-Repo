@@ -18,6 +18,8 @@ import XrayRecomModal from '../components/XrayRecomModal';
 import AssessmentFormNew from '../components/AssessmentPersistence';
 import AssessmentNoPersistence from '../components/AssessmentNoPersistence';
 import AssessmentPersistence from '../components/AssessmentPersistence';
+import AddAssessPersist from '../components/AddAssessPersist';
+import AddAssessNoPersist from '../components/AddAssessNoPersist';
 
 const Assessment = () => {
 
@@ -109,10 +111,23 @@ const Assessment = () => {
       </Row>
      {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
      {assessData.length > 0 ? (
-      <AssessmentPersistence/>
+      <Row className="d-flex justify-content-center mt-4 mb-4" >
+      <Col className="d-flex justify-content-center">
+      <AddAssessPersist
+          caseNo={caseNum}
+      />
+      </Col>
+    </Row>
      ) : (
-      <AssessmentNoPersistence/>
+      <Row className="d-flex justify-content-center mt-4 mb-4" >
+          <Col className="d-flex justify-content-center">
+          <AddAssessNoPersist
+              caseNo={caseNum}
+          />
+          </Col>
+        </Row>
      )}
+     
 
       <hr/>
 
