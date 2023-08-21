@@ -27,9 +27,26 @@ function AssignHIModal(props) {
       
   
   }, []);
-    const handleChange = (e) => {
-   
-    };
+        const [formValues, setFormValues] = useState({
+          HINo:props.id,
+          DGTestNo:'',
+          AcceptingVoucher:'',
+          Price:''
+      });
+
+      const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormValues(prev=>({...prev, [name]: value}));
+      }
+
+      const handleSubmit = async (e) => {
+        e.preventDefault()
+        try{
+            await axios.post("http://localhost:4000/api/assigntest", formValues)
+        }catch(err){
+            console.log(err)
+        }
+      }
   return (
         <>
 
@@ -48,7 +65,7 @@ function AssignHIModal(props) {
     <Row className="justify-content-center"> 
       <Col lg="12"> 
       <label> <strong>Diagnostic Test </strong></label>
-            <select className="form-select">
+            <select className="form-select" name="DGTestNo" value={formValues.DGTestNo} onChange={handleChange}>
                 <option value="">Select</option>
               
               {dtData.map((dt, index) => (
@@ -66,15 +83,15 @@ function AssignHIModal(props) {
     <Row className="mt-2 justify-content-center"> 
       <Col lg="7"> 
             <label><strong>Price</strong></label>
-            <input type="number" className="form-control" />
+            <input type="number" className="form-control" name="Price" value={formValues.Price} onChange={handleChange}/>
       </Col>
 
       <Col lg="5"> 
       <label> <strong>Accepting Voucher </strong></label>
-            <select className="form-select">
+            <select className="form-select" name="AcceptingVoucher" value={formValues.AcceptingVoucher} onChange={handleChange}>
                 <option value="">Select</option>
-                <option value="positive">Yes</option>
-                \<option value="positive">No</option>
+                <option value="1">Yes</option>
+                <option value="2">No</option>
 
             </select>
       </Col>
@@ -87,7 +104,7 @@ function AssignHIModal(props) {
 </Modal.Body>
 
     <Modal.Footer >
-        <button className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>

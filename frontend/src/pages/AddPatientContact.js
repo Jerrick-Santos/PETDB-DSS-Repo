@@ -1,7 +1,8 @@
 import '../index.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
 import user from '../assets/user.png';
@@ -10,7 +11,12 @@ import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
 import { useNavigate } from 'react-router-dom';
 
-const AddPatient = () => {
+const AddPatientContact = () => {
+
+    const { id } = useParams();
+    var ContactNo = id;
+
+    const [contact, setContact] = useState({})
     const [patient, setPatient] = useState({
         last_name: "",
         first_name: "",
@@ -49,6 +55,17 @@ const AddPatient = () => {
         case_refno: "",
     });
 
+    useEffect(() => {
+        axios.get(`http://localhost:4000/api/getOneContact/${ContactNo}`)
+        .then(res => {
+          console.log(res);
+          setContact(res.data[0]);
+        })
+        .catch(err => {
+          console.error(err);
+        })
+      }, [ContactNo])
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         const newValue = name === 'last_name' ? value.toUpperCase() : value;
@@ -83,21 +100,20 @@ const AddPatient = () => {
                 </div>
             </Row>
             
-      
             <Row className="mb-3 justify-content-center">
                 <div className="form-group col-md-5">
                     <label for="inputFirstName">First Name</label>
-                    <input type="text" class="form-control" id="inputFirstName" name='first_name' onChange={handleChange} placeholder="First Name"/>
+                    <input type="text" className="form-control" id="inputFirstName" name='first_name' defaultValue={contact.first_name} onChange={handleChange} placeholder="First Name" />
                 </div>
 
                 <div className="form-group col-md-2">
                     <label for="inputMI">Middle Name</label>
-                    <input type="text" class="form-control" id="inputMI" name='middle_initial' onChange={handleChange} placeholder="Middle Name"/>
+                    <input type="text" className="form-control" id="inputMI" name='middle_initial' defaultValue={contact.middle_initial}  onChange={handleChange} placeholder="Middle Name"/>
                 </div>
 
                 <div className="form-group col-md-4">
                     <label for="inputLastName">Last Name</label>
-                    <input type="text" class="form-control" id="inputLastName" name='last_name' onChange={handleChange} placeholder="Last Name"/>
+                    <input type="text" className="form-control" id="inputLastName" name='last_name' defaultValue={contact.last_name} onChange={handleChange} placeholder="Last Name"/>
                 </div>
               </Row>
               <Row className="mb-5 justify-content-center">
@@ -108,7 +124,7 @@ const AddPatient = () => {
                 
                 <div className="form-group col-md-2">
                 <label for="inputSex">Sex</label>
-                <select id="inputSex" class="form-control" name='sex' onChange={handleChange} >
+                <select id="inputSex" class="form-control" name='sex' defaultValue={contact.sex === "Male" ? "M" : "F"} onChange={handleChange} >
                     <option selected>Select</option>
                     <option value="M" >Male</option>
                     <option value="F" >Female</option>
@@ -263,7 +279,7 @@ const AddPatient = () => {
             <Row className="mt-2 mb-3 justify-content-center">
                 <div class="form-group col-md-3">
                     <label for="inputEmergencyName">Emergency Contact Name</label>
-                    <input type="text" class="form-control" id="inputEmergencyName" name='emergency_name' onChange={handleChange} placeholder="Name"/>
+                    <input type="text" class="form-control" id="inputEmergencyName" name='emergency_name' defaultValue={contact.contact_person} onChange={handleChange} placeholder="Name"/>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputEmergencyBirth">Birthdate</label>
@@ -271,11 +287,11 @@ const AddPatient = () => {
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputEmergencyContact">Contact #</label>
-                    <input type="text" class="form-control" id="inputEmergencyContact" name='e_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
+                    <input type="text" class="form-control" id="inputEmergencyContact" name='e_contactno' defaultValue={contact.contact_num} onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputEmergencyEmail">Email</label>
-                    <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com"/>
+                    <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' defaultValue={contact.contact_email} onChange={handleChange} placeholder="sample@sample.com"/>
                 </div>
             </Row>
 
@@ -310,4 +326,4 @@ const AddPatient = () => {
   );
 };
 
-export default AddPatient;
+export default AddPatientContact;

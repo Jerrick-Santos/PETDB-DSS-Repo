@@ -29,10 +29,25 @@ function AssignBHCModal(props) {
   
   }, []);
 
-    console.log()
-    const handleChange = (e) => {
-   
-    };
+    const [formValues, setFormValues] = useState({
+      BGYNo:props.id,
+      HINo:''
+  });
+
+const handleChange = (e) => {
+    const {name, value} = e.target;
+    setFormValues(prev=>({...prev, [name]: value}));
+}
+
+const handleSubmit = async (e) => {
+    e.preventDefault()
+    try{
+        await axios.post("http://localhost:4000/api/assignhi", formValues)
+    }catch(err){
+        console.log(err)
+    }
+}
+
   return (
         <>
 
@@ -67,7 +82,7 @@ function AssignBHCModal(props) {
               <Col sm="6">
              
               <label className="checkbox"  >
-                                <input type="radio" name="nameCheckbox" value={hi.HINo} /> {hi.HIName}
+                                <input type="radio" name="HINo" value={hi.HINo} onChange={handleChange}/> {hi.HIName}
                     </label>
                     
               </Col>
@@ -89,7 +104,7 @@ function AssignBHCModal(props) {
 </Modal.Body>
 
     <Modal.Footer >
-        <button className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>

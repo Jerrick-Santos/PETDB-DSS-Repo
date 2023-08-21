@@ -15,9 +15,45 @@ import axios from 'axios';
 
 const CloseContacts = () => {
 
-  {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
+  /*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/
   const { id } = useParams();
   var caseNum = id
+
+  const [closeContactListData, setCloseContactListData] = useState([]);
+  const [patientData, setPatientData] = useState([]);
+
+  // Helper Functions
+  function calcDaysContact(a, b){
+    const date_init = new Date(a);
+    const date_lastcontact = new Date(b);
+    const datediff = date_lastcontact.getTime() - date_init.getTime();
+    const days = datediff / (1000 * 3600 * 24)
+    console.log(date_init, b, days)
+    return (days);
+  }
+  
+  // Load list of close contact
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getContacts/${caseNum}`)
+    .then(res => {
+      console.log(res);
+      setCloseContactListData(res.data);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }, [caseNum])
+
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+    .then(res => {
+      console.log(res);
+      setPatientData(res.data[0]);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }, [caseNum])
 
   return (
     <div>
@@ -66,13 +102,17 @@ const CloseContacts = () => {
 
       {/*Shows general patient information details */}
       
+      
       <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
         <Col className="ms-5" lg="12">
           <Row>
-            <Col> <strong> Patient Name: </strong> </Col>
+            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
           </Row>
           <Row>
-            <Col> <strong> Birthdate:  </strong> </Col>
+            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
+          </Row>
+          <Row>
+            <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
           </Row>
         </Col>
       </Row>
@@ -93,50 +133,44 @@ const CloseContacts = () => {
                         <th scope="col">Contact Number</th>
                         <th scope="col">Contact Email</th>
                         <th scope="col">Contact Relationship</th>
+                        <th scope="col">Days since last contact</th>
                         <th scope="col">Patient</th>
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                        <td>Emma Johnson</td>
-                        <td>12/31/2023</td>
-                        <td>Female</td>
-                        <td>Edith Johnson</td>
-                        <td>09165189888</td>
-                        <td>josefina_johsnons@dlsu.edu.ph</td>
-                        <td> Mother </td>
-                        <td><Link to="/addpatient"><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">
-                          Convert</button>
-                          </Link>
-                          </td>
-                    </tr>
+                {closeContactListData.map(contact => (
                     <tr>
-                        <td>Noah</td>
-                        <td>12/31/2023</td>
-                        <td>Female</td>
-                        <td>Edith Johnson</td>
-                        <td>09165189888</td>
-                        <td>josefina_johsnons@dlsu.edu.ph</td>
-                        <td> Mother </td>
-                        <td><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Convert</button></td>
+                      <td>{contact.last_name+", "+contact.first_name+" "+contact.middle_initial}</td>
+                      <td>{new Date(contact.birthdate).toISOString().split("T")[0]}</td>
+                      <td>{contact.sex === "M" ? "Male": "Female"}</td>
+                      <td>{contact.contact_person}</td>
+                      <td>{contact.contact_num}</td>
+                      <td>{contact.contact_email}</td>
+                      <td>{contact.contact_relationship}</td>
+                      <td>
+                        {contact.date_contacted === null ? (
+                          "Has not been contacted yet"
+                        ) : (
+                          `${calcDaysContact(contact.date_added, contact.date_contacted)} Days`
+                        )
+                        }
+                      </td>
+                      <td>
+                        {contact.PatientNo === null ? (
+                          <Link to={`/addPatient/${contact.ContactNo}`}><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Convert</button></Link>
+                        ) : (
+                          <Link to={`/patient/${contact.PatientNo}`}>View Patient</Link>
+                        )}
+                      </td>
                     </tr>
-                    <tr>
-                        <td>Ava</td>
-                        <td>12/31/2023</td>
-                        <td>Female</td>
-                        <td>Edith Johnson</td>
-                        <td>09165189888</td>
-                        <td>josefina_johsnons@dlsu.edu.ph</td>
-                        <td> Mother </td>
-                        <td><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Convert</button></td>
-                    </tr>
- 
+                  ))
+                }
                 </tbody>
                 
                
             </table>
             <div className="d-flex justify-content-end me-5 mb-5" >
-              <AddCloseContactModal/>
+              <AddCloseContactModal id={caseNum}/>
           </div>
 
 

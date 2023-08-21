@@ -16,7 +16,7 @@ import AdminHI from './adminpages/AdminHI';
 import AdminBHC from './adminpages/AdminBHC';
 import HIInfo from './adminpages/HIInfo';
 import BHCInfo from './adminpages/BHCInfo';
-
+import AddPatientContact from './pages/AddPatientContact';
 
 
 function App() {
@@ -43,6 +43,7 @@ function App() {
                     <Route path="/addpatient" element={<AddPatient/>}/>
                     <Route path="/allpatient" element={<ViewPatient/>}/>
                     <Route path="/case/:id" element={<Case/>}/>
+                    <Route path="/addpatient/:id" element={<AddPatientContact/>}/>
                     
                 </Routes>
             </BrowserRouter>
