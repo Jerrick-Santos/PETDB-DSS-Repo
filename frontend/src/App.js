@@ -16,12 +16,9 @@ import AdminHI from './adminpages/AdminHI';
 import AdminBHC from './adminpages/AdminBHC';
 import HIInfo from './adminpages/HIInfo';
 import BHCInfo from './adminpages/BHCInfo';
-<<<<<<< HEAD
 import AdvanceViewPatient from './pages/AdvanceViewPatient';
 
-=======
 import AddPatientContact from './pages/AddPatientContact';
->>>>>>> d43737a3e278d58eef08aea94987ef7a36dde2db
 
 
 function App() {
@@ -48,11 +45,8 @@ function App() {
                     <Route path="/addpatient" element={<AddPatient/>}/>
                     <Route path="/allpatient" element={<ViewPatient/>}/>
                     <Route path="/case/:id" element={<Case/>}/>
-<<<<<<< HEAD
                     <Route path="/allpatient/searchpatient/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt/:phn/:ps/:pb/:pc/:pr/:pz/:chn/:cs/:cb/:cc/:cr/:cz/:ad/:mn/:mb/:mc/:me/:fn/:fb/:fc/:fe/:en/:eb/:ec/:ee" element={<AdvanceViewPatient/>}/>
-=======
                     <Route path="/addpatient/:id" element={<AddPatientContact/>}/>
->>>>>>> d43737a3e278d58eef08aea94987ef7a36dde2db
                     
                 </Routes>
             </BrowserRouter>
