@@ -16,16 +16,27 @@ import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
 import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
 import XrayRecomModal from '../components/XrayRecomModal';
 import AssessmentFormNew from '../components/AssessmentPersistence';
-import AssessmentFormOld from '../components/AssessmentNoPersistence';
+import AssessmentNoPersistence from '../components/AssessmentNoPersistence';
+import AssessmentPersistence from '../components/AssessmentPersistence';
 
 const Assessment = () => {
 
   const { id } = useParams();
   var caseNum = id
   
-  
+  const [assessData, setAssessData] = useState([]);
+  useEffect(() => {
 
-
+    axios.get(`http://localhost:4000/api/patientassessment/${caseNum}`)
+      .then((response) => {
+        setAssessData(response.data)
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
+    }, []);
+    console.log(typeof assessData)
    
   return (
     <div>
@@ -73,86 +84,47 @@ const Assessment = () => {
         <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       {/*Shows general patient information details */}
 
-      
-      
-      
      {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
-      <AssessmentFormNew/>
-      <AssessmentFormOld/>
-
-
-    
-
-    
+     {assessData.length > 0 ? (
+      <AssessmentPersistence/>
+     ) : (
+      <AssessmentNoPersistence/>
+     )}
 
       <hr/>
+
+      <table className="table caption-top bg-white rounded mt-2 ms-1">
+    <caption className=' fs-4'>Assessment Records</caption>
+    <thead>
+                    <tr>
+                        <th scope="col">Assessment Date</th>
+                        <th scope="col">Cough</th>    
+                        <th scope="col">Fever</th>
+                        <th scope="col">Weight Loss</th>
+                        <th scope="col">Night Sweats</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {assessData.map((assessment, index) => (
+                    <tr key={index}>
+                        <td>
+                        <Link to={`/patient/${assessment.CaseNo}`}>
+                            <p style={{ color: 'black' }}>
+                            <u>{new Date(assessment.assessment_date).toLocaleDateString()}</u>
+                            </p>
+                        </Link>
+                        </td>
+                        <td>{assessment.cough}</td>
+                        <td>{assessment.fever}</td>
+                        <td>{assessment.weight_loss}</td>
+                        <td>{assessment.night_sweats}</td>
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
+
       {/* Shows the recommended next course of action */}
-      <Row className="mt-5 justify-content-center">
-      <Col lg="10">
-      <p style={{fontSize:"25px"}}> Diagnosis </p>
-        <Card className="mb-4">
-          <Card.Body>
-            <Row>
-              <Col sm="2">
-                <Card.Text>  Diagnosis Date</Card.Text>
-              </Col>
-              <Col sm="3">
-                <Card.Text> Health Assessment </Card.Text>
-              </Col>
-              <Col sm="3">
-                <Card.Text> Diagnostic Test </Card.Text>
-              </Col>
-              <Col sm="4">
-                <Card.Text> Diagnosis </Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-            <Col sm="2">
-                <Card.Text>  12/31/2023</Card.Text>
-              </Col>
-              <Col sm="3">
-                <Card.Text > Cardinal Symptoms - POSITIVE <br/> Xray - With Signs of Pedia TB </Card.Text>
-              </Col>
-              <Col sm="3">
-                <Card.Text> Xray - With Signs of Pedia TB <br/> </Card.Text>
-              </Col>
-              <Col sm="4">
-                <Card.Text>
-                <Row className="mt-2">
-                    <Col><strong> Diagnosis: </strong>  Presumptive TB</Col>
-                </Row>
-
-                <Row className="mt-4">
-                    <Col>The following tests are needed for further evaluation:</Col>
-                </Row>
-
-                <Row className="mt-4">
-                    <Col><XrayRecomModal/> </Col>
-                </Row>
-
-                <Row className="mt-4">
-                    <Col> Please advice patient and parent to avoid close contact to contain the spread of TB.</Col>
-                </Row>
-
-                </Card.Text>
-              </Col>
-            </Row>
-            <Row className="justify-content-center">
-              <Col sm="2" >
-               
-              
-              <AssessmentSummaryModal/>
-         
-              </Col>
-            </Row>
-           
-          </Card.Body>
-        </Card>
-        
-      </Col>
-
-    </Row>
+      
       </Col>
     </Row>
 
