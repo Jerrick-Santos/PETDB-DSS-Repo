@@ -81,9 +81,15 @@ const LaboratoryTest = () => {
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-      <AddTSTModal/>
-      <AddMTBRIFModal/>
-      <AddXrayModal/>      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+      <AddTSTModal
+        caseNum={caseNum}
+      />
+      <AddMTBRIFModal
+      caseNum={caseNum}
+      />
+      <AddXrayModal
+      caseNum={caseNum}
+      />      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
         <Col className="ms-5" lg="12">
           <Row>
             <Col><strong>Case No: {patientData.case_refno}</strong></Col>
