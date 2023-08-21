@@ -9,18 +9,16 @@ module.exports = (db) => {
     router.get('/allpatients', (req, res) => {
 
         db.query(`
-        SELECT pt.PatientNo, CONCAT(pt.first_name, ' ', pt.middle_initial, '. ' , pt.last_name) AS fullname,
+            SELECT pt.PatientNo, CONCAT(pt.first_name, ' ', pt.middle_initial, '. ' , pt.last_name) AS fullname,
             pt.birthdate,
             pt.sex,
             pt.age,
             pt.initial_bodyweight,
             pt.initial_height,
             pt.nationality,
+            CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
+            CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
             pt.admission_date,
-            pt.mother_name,
-            pt.m_birthdate,
-            pt.m_contactno,
-            pt.m_email,
             pt.mother_name,
             pt.m_birthdate,
             pt.m_contactno,
@@ -60,11 +58,9 @@ module.exports = (db) => {
             pt.initial_bodyweight,
             pt.initial_height,
             pt.nationality,
+            CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
+            CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
             pt.admission_date,
-            pt.mother_name,
-            pt.m_birthdate,
-            pt.m_contactno,
-            pt.m_email,
             pt.mother_name,
             pt.m_birthdate,
             pt.m_contactno,
@@ -168,6 +164,222 @@ module.exports = (db) => {
             return res.json(data)
         });
     })
+
+
+    //SEARCH PATIENT ROUTES
+    router.get('/searchpatient/:id', (req, res) => {
+        const searchTerm = req.params.id;
+        db.query(`
+        SELECT
+    pt.PatientNo,
+    CONCAT(
+        COALESCE(pt.first_name, ''),
+        ' ',
+        COALESCE(pt.middle_initial, ''),
+        '. ',
+        COALESCE(pt.last_name, '')
+    ) AS fullname,
+    pt.birthdate,
+    pt.sex,
+    pt.age,
+    pt.initial_bodyweight,
+    pt.initial_height,
+    pt.nationality,
+    CONCAT(
+        COALESCE(pt.per_houseno, ''),
+        ' ',
+        COALESCE(pt.per_street, ''),
+        ' ',
+        COALESCE(pt.per_barangay, ''),
+        ' ',
+        COALESCE(pt.per_city, ''),
+        ' ',
+        COALESCE(pt.per_region, ''),
+        ' ',
+        COALESCE(pt.per_zipcode, '')
+    ) AS per_address,
+    CONCAT(
+        COALESCE(pt.curr_houseno, ''),
+        ' ',
+        COALESCE(pt.curr_street, ''),
+        ' ',
+        COALESCE(pt.curr_barangay, ''),
+        ' ',
+        COALESCE(pt.curr_city, ''),
+        ' ',
+        COALESCE(pt.curr_region, ''),
+        ' ',
+        COALESCE(pt.curr_zipcode, '')
+    ) AS curr_address,
+    pt.admission_date,
+    pt.mother_name,
+    pt.m_birthdate,
+    pt.m_contactno,
+    pt.m_email,
+    pt.father_name,
+    pt.f_birthdate,
+    pt.f_contactno,
+    pt.f_email,
+    pt.emergency_name,
+    pt.e_birthdate,
+    pt.e_contactno,
+    pt.e_email
+FROM PEDTBDSS_new.TD_PTINFORMATION pt
+WHERE 
+    CONCAT(
+        COALESCE(pt.PatientNo, ''),
+        COALESCE(pt.last_name, ''),
+        COALESCE(pt.first_name, ''),
+        COALESCE(pt.middle_initial, ''),
+        COALESCE(pt.age, ''),
+        COALESCE(pt.sex, ''),
+        COALESCE(pt.birthdate, ''),
+        COALESCE(pt.initial_bodyweight, ''),
+        COALESCE(pt.initial_height, ''),
+        COALESCE(pt.nationality, ''),
+        COALESCE(pt.per_houseno, ''),
+        COALESCE(pt.per_street, ''),
+        COALESCE(pt.per_barangay, ''),
+        COALESCE(pt.per_city, ''),
+        COALESCE(pt.per_region, ''),
+        COALESCE(pt.per_zipcode, ''),
+        COALESCE(pt.curr_houseno, ''),
+        COALESCE(pt.curr_street, ''),
+        COALESCE(pt.curr_barangay, ''),
+        COALESCE(pt.curr_city, ''),
+        COALESCE(pt.curr_region, ''),
+        COALESCE(pt.curr_zipcode, ''),
+        COALESCE(pt.admission_date, ''),
+        COALESCE(pt.mother_name, ''),
+        COALESCE(pt.m_birthdate, ''),
+        COALESCE(pt.m_contactno, ''),
+        COALESCE(pt.m_email, ''),
+        COALESCE(pt.father_name, ''),
+        COALESCE(pt.f_birthdate, ''),
+        COALESCE(pt.f_contactno, ''),
+        COALESCE(pt.f_email, ''),
+        COALESCE(pt.emergency_name, ''),
+        COALESCE(pt.e_birthdate, ''),
+        COALESCE(pt.e_contactno, ''),
+        COALESCE(pt.e_email, '')
+    ) LIKE '%${searchTerm}%';
+
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+    router.get('/advancedsearch', (req, res) => {
+        db.query(`
+        SELECT
+    COALESCE(pt.PatientNo, '') AS PatientNo,
+    CONCAT(
+        COALESCE(pt.first_name, ''),
+        ' ',
+        COALESCE(pt.middle_initial, ''),
+        '. ',
+        COALESCE(pt.last_name, '')
+    ) AS fullname,
+    COALESCE(pt.birthdate, '') AS birthdate,
+    COALESCE(pt.sex, '') AS sex,
+    COALESCE(pt.age, '') AS age,
+    COALESCE(pt.nationality, '') AS nationality,
+    CONCAT(
+        COALESCE(pt.per_houseno, ''),
+        ' ',
+        COALESCE(pt.per_street, ''),
+        ' ',
+        COALESCE(pt.per_barangay, ''),
+        ' ',
+        COALESCE(pt.per_city, ''),
+        ' ',
+        COALESCE(pt.per_region, ''),
+        ' ',
+        COALESCE(pt.per_zipcode, '')
+    ) AS per_address,
+    CONCAT(
+        COALESCE(pt.curr_houseno, ''),
+        ' ',
+        COALESCE(pt.curr_street, ''),
+        ' ',
+        COALESCE(pt.curr_barangay, ''),
+        ' ',
+        COALESCE(pt.curr_city, ''),
+        ' ',
+        COALESCE(pt.curr_region, ''),
+        ' ',
+        COALESCE(pt.curr_zipcode, '')
+    ) AS curr_address,
+    COALESCE(pt.admission_date, '') AS admission_date,
+    COALESCE(pt.mother_name, '') AS mother_name,
+    COALESCE(pt.m_birthdate, '') AS m_birthdate,
+    COALESCE(pt.m_contactno, '') AS m_contactno,
+    COALESCE(pt.m_email, '') AS m_email,
+    COALESCE(pt.father_name, '') AS father_name,
+    COALESCE(pt.f_birthdate, '') AS f_birthdate,
+    COALESCE(pt.f_contactno, '') AS f_contactno,
+    COALESCE(pt.f_email, '') AS f_email,
+    COALESCE(pt.emergency_name, '') AS emergency_name,
+    COALESCE(pt.e_birthdate, '') AS e_birthdate,
+    COALESCE(pt.e_contactno, '') AS e_contactno,
+    COALESCE(pt.e_email, '') AS e_email
+FROM PEDTBDSS_new.TD_PTINFORMATION pt
+WHERE 
+    (
+        pt.last_name LIKE CONCAT('%', ?, '%') OR
+        pt.first_name LIKE CONCAT('%', ?, '%') OR
+        pt.middle_initial LIKE CONCAT('%', ?, '%') OR
+        pt.age LIKE CONCAT('%', ?, '%') OR
+        pt.sex LIKE CONCAT('%', ?, '%') OR
+        pt.birthdate LIKE CONCAT('%', ?, '%') OR
+        pt.nationality LIKE CONCAT('%', ?, '%') OR
+        pt.per_houseno LIKE CONCAT('%', ?, '%') OR
+        pt.per_street LIKE CONCAT('%', ?, '%') OR
+        pt.per_barangay LIKE CONCAT('%', ?, '%') OR
+        pt.per_city LIKE CONCAT('%', ?, '%') OR
+        pt.per_region LIKE CONCAT('%', ?, '%') OR
+        pt.per_zipcode LIKE CONCAT('%', ?, '%') OR
+        pt.curr_houseno LIKE CONCAT('%', ?, '%') OR
+        pt.curr_street LIKE CONCAT('%', ?, '%') OR
+        pt.curr_barangay LIKE CONCAT('%', ?, '%') OR
+        pt.curr_city LIKE CONCAT('%', ?, '%') OR
+        pt.curr_region LIKE CONCAT('%', ?, '%') OR
+        pt.curr_zipcode LIKE CONCAT('%', ?, '%') OR
+        pt.admission_date LIKE CONCAT('%', ?, '%') OR
+        pt.mother_name LIKE CONCAT('%', ?, '%') OR
+        pt.m_birthdate LIKE CONCAT('%', ?, '%') OR
+        pt.m_contactno LIKE CONCAT('%', ?, '%') OR
+        pt.m_email LIKE CONCAT('%', ?, '%') OR
+        pt.father_name LIKE CONCAT('%', ?, '%') OR
+        pt.f_birthdate LIKE CONCAT('%', ?, '%') OR
+        pt.f_contactno LIKE CONCAT('%', ?, '%') OR
+        pt.f_email LIKE CONCAT('%', ?, '%') OR
+        pt.emergency_name LIKE CONCAT('%', ?, '%') OR
+        pt.e_birthdate LIKE CONCAT('%', ?, '%') OR
+        pt.e_contactno LIKE CONCAT('%', ?, '%') OR
+        pt.e_email LIKE CONCAT('%', ?, '%')
+    );
+
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+
 
 
 

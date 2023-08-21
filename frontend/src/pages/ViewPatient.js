@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from '../components/NavBar';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import AdvancedSearch from '../components/AdvancedSearch';
 
 
 
@@ -22,8 +23,30 @@ const ViewPatient = () => {
         });
     }, []);
 
-    console.log(typeof patientsData)
-   
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleChange = (e) => {
+        setSearchTerm(e.target.value)
+    }
+
+    const handleSubmit = async (e) => {
+     
+        e.preventDefault()
+        
+        axios.get(`http://localhost:4000/api/searchpatient/${searchTerm}`).then(response => {
+                setPatientsData(response.data);
+                console.log("added")
+              })
+              .catch(error => {
+                console.error('Error searching patient:', error);
+              });
+        
+        console.log("submitted")
+        console.log(searchTerm)
+        console.log(patientsData)
+    }
+    console.log(patientsData)
+
 
   return (
     <div>
@@ -35,14 +58,16 @@ const ViewPatient = () => {
     
     {/* Simple search based on a keyword and a button for advanced Search*/}
     <div className="d-flex ms-2 mb-2 mt-5">
-    <div className="input-group" style={{ maxWidth: '290px' }}>
-        {/* Adjust the max-width to control the width of the input field */}
-        <input type="search"  className="form-control" id="searchInput" placeholder="Keyword" />
-        <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} type="button">  <img src={search} style={{height:"20px"}}alt="" /></button>
-    </div>
+    <form>
+        <div className="input-group" style={{ maxWidth: '290px' }}>
+            {/* Adjust the max-width to control the width of the input field */}
+            <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleChange} placeholder="Keyword" />
+            <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSubmit} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
+        </div>
+    </form>
     <div className="ms-4">
         {/* Adjust the width of the Advanced Search button */}
-        <button className="btn" style={{ color: "white", backgroundColor: '#0077B6' }} type="button">Advanced Search</button>
+        <AdvancedSearch/>
     </div>
     </div>
 
@@ -77,14 +102,12 @@ const ViewPatient = () => {
                         </td>
                         <td>{new Date(patient.birthdate).toLocaleDateString()}</td>
 
-                        <td>{patient.sex === 'M' ? 'Male' : 'Female'}</td>
+                        <td>{patient.sex}</td>
                         <td>{patient.age}</td>
                         <td>{patient.mother_name}</td>
                         <td>{patient.father_name}</td>
                         <td>{patient.emergency_name}</td>
                         <td>{new Date(patient.admission_date).toLocaleDateString()}</td>
-                      
-
                     </tr>
                     ))}
                 </tbody>
