@@ -218,10 +218,10 @@ module.exports = (db) => {
 
         db.query(q, values, (err, data) => {
             if(err) {
-                console.log("Error inserting into MD_BARANGAY:", err);
+                console.log("Error inserting into MD_DGTESTS:", err);
                 return res.json(err)
             }
-            console.log("Successfully inserted into MD_BARANGAY:", data);
+            console.log("Successfully inserted into MD_DGTESTS:", data);
             return res.json(data)
         });
     })
@@ -453,6 +453,43 @@ module.exports = (db) => {
     });
     });
 
+     //assign an hi to a bhc by adding to MD_BRGYHI
+     router.post('/assignhi', (req, res) => {
+        const q = "INSERT INTO MD_BRGYHI(`BGYNo`, `HINo`) VALUES (?, ?)"
+        const values = [
+            req.body.BGYNo,
+            req.body.HINo,
+        ]
+
+        db.query(q, values, (err, data) => {
+            if(err) {
+                console.log("Error inserting into  MD_BRGYHI:", err);
+                return res.json(err)
+            }
+            console.log("Successfully inserted into  MD_BRGYHI:", data);
+            return res.json(data)
+        });
+    })
+
+     //assign a test to an hi by adding to MD_HIDGTESTS
+     router.post('/assigntest', (req, res) => {
+        const q = "INSERT INTO MD_HIDGTESTS(`HINo`, `DGTestNo`, `AcceptingVoucher`, `Price` ) VALUES (?, ?, ?, ?)"
+        const values = [
+            req.body.HINo,
+            req.body.DGTestNo,
+            req.body.AcceptingVoucher,
+            req.body.Price
+        ]
+
+        db.query(q, values, (err, data) => {
+            if(err) {
+                console.log("Error inserting into  MD_HIDGTESTS:", err);
+                return res.json(err)
+            }
+            console.log("Successfully inserted into  MD_HIDGTESTS:", data);
+            return res.json(data)
+        });
+    })
   
 
     return router;
