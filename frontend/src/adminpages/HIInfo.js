@@ -12,7 +12,41 @@ import AssignHIModal from '../admincomponents/AssignHIModal';
 
 const HIInfo = () => {
 
+  const { id } = useParams();
+  var hiNum = id
+
+  const [hiData, setHiData] = useState([]);
+  const [dtData, setDtData] = useState([]);
+
+  useEffect(() => {
+
+    axios.get(`http://localhost:4000/api/hi/${hiNum}`)
+      .then((response) => {
+        setHiData(response.data[0])
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
+    
+
+}, []);
+
+useEffect(() => {
+
+  axios.get(`http://localhost:4000/api/hitests/${hiNum}`)
+    .then((response) => {
+      setDtData(response.data)
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the request
+      console.error('Error fetchingdata:', error);
+    });
   
+
+}, []);
+
+
 
   return (
     <div>
@@ -33,7 +67,7 @@ const HIInfo = () => {
                 <Card.Text><strong>Health Institution:</strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted "> Name </Card.Text>
+                <Card.Text className="text-muted "> {hiData.HIName}</Card.Text>
               </Col>
             </Row>
             <hr />
@@ -42,7 +76,7 @@ const HIInfo = () => {
                 <Card.Text><strong> Address </strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted"> Address </Card.Text>
+                <Card.Text className="text-muted"> {hiData.address} </Card.Text>
               </Col>
             </Row>
             <hr />
@@ -51,7 +85,7 @@ const HIInfo = () => {
                 <Card.Text><strong>Operating Hours </strong> </Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted"> Operating Hours </Card.Text>
+                <Card.Text className="text-muted"> {hiData.HIOperatingHours} </Card.Text>
               </Col>
             </Row>
             <hr />
@@ -60,7 +94,7 @@ const HIInfo = () => {
                 <Card.Text><strong>Contact Number </strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted">Number</Card.Text>
+                <Card.Text className="text-muted">{hiData.HIContactNumber}</Card.Text>
               </Col>
             </Row>
             <hr />
@@ -69,7 +103,7 @@ const HIInfo = () => {
                 <Card.Text><strong>Email Address </strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted">Email</Card.Text>
+                <Card.Text className="text-muted">{hiData.HIEmailAddress}</Card.Text>
               </Col>
             </Row>
         
@@ -92,19 +126,25 @@ const HIInfo = () => {
               </Col>
               
             </Row>
-            <hr />
+            
+            {dtData.map((dt, index) => (
+              <>
+               <hr />
             <Row>
               <Col sm="5">
-                <Card.Text>X-Ray Test </Card.Text>
+                <Card.Text>{dt.DGTestName}</Card.Text>
               </Col>
               <Col sm="4">
-                <Card.Text>PHP 500.00 </Card.Text>
+                <Card.Text>PHP {dt.Price}</Card.Text>
               </Col>
               <Col sm="3">
-                <Card.Text>YES </Card.Text>
+                <Card.Text>{dt.AcceptingVoucher} </Card.Text>
               </Col>
 
             </Row>
+                   </>
+                    ))}
+           
            
         
             
@@ -113,7 +153,7 @@ const HIInfo = () => {
         
         <Row className="d-flex justify-content-end mb-4" >
           <Col className="d-flex justify-content-end">
-            <AssignHIModal/>
+            <AssignHIModal id={hiNum} name={hiData.HIName} address={hiData.address}/>
           </Col>
         </Row>
         

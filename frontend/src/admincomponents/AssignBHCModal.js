@@ -1,17 +1,35 @@
 import Modal from 'react-bootstrap/Modal';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import axios from 'axios';
 
 
-function AssignBHCModal() {
+function AssignBHCModal(props) {
    
     const[show,setShow] = useState(false)
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [hiData, setHiData] = useState([]);
 
+
+    useEffect(() => {
+
+      axios.get(`http://localhost:4000/api/bhcmissinghi/${props.id}`)
+        .then((response) => {
+          setHiData(response.data)
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetching data:', error);
+        });
+      
+  
+  }, []);
+
+    console.log()
     const handleChange = (e) => {
    
     };
@@ -27,33 +45,40 @@ function AssignBHCModal() {
         <Modal.Title>Assign a Health Institution</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-    <p>BHC: Name</p>
-    <p>Address: Address</p>
+    <p><strong> BHC Name:</strong> {props.name}</p>
+    <p><strong> Address:</strong> {props.address}</p>
     <form className="mt-3 justify-content-center">
     <Card className="mt-4 mb-4">
           <Card.Body>
              <Row>
  
               <Col sm="6">
-                    <strong>Health Institution </strong>
+                    <strong>Health Institution   </strong>
               </Col>
               <Col sm="6">
                     <strong>Address</strong>
               </Col>
             </Row>
-            <hr/>
+            {hiData.map((hi, index) => (
+              <>
+              <hr/>
             <Row>
  
               <Col sm="6">
+             
               <label className="checkbox"  >
-                                <input type="checkbox" name="nameCheckbox" value="Name 1" /> Mark ANthony Anotnio asudhiwrh bajfj
+                                <input type="radio" name="nameCheckbox" value={hi.HINo} /> {hi.HIName}
                     </label>
                     
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted "> Mark ANthony Anotnio asudhiwrh bajfjsfasf ffdsfsd fsd dfsdfsdf f sdfsdfsdfsd sdfsdfsdf </Card.Text>
+                <Card.Text className="text-muted ">  {hi.address}</Card.Text> 
               </Col>
             </Row>
+                   </>
+                    ))}
+            
+            
             
             
           </Card.Body>

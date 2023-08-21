@@ -11,7 +11,18 @@ import { Link, useParams } from 'react-router-dom';
 
 
 const AdminHI = () => {
+  const [hiData, setHiData] = useState([]);
+  useEffect(() => {
+    axios.get("http://localhost:4000/api/allhi")
+      .then(response => {
+        setHiData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching HIs:', error);
+      });
+  }, []);
 
+  console.log(hiData)
   
 
   return (
@@ -44,24 +55,29 @@ const AdminHI = () => {
                 <Card.Text><strong>Email Address</strong> </Card.Text>
               </Col>
             </Row>
-            <hr />
-            <Row>
-              <Col sm="2">
-              <Card.Text ><Link to={'/hi'}><p style={{ color: 'black' }}><u>Mark Andrew Health Institution</u> </p> </Link> </Card.Text>
-              </Col>
-              <Col sm="3">
-                <Card.Text>41 B K1st Street Kamuning Quezon City</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text>Everyday 7:00 AM to 8:00 PM</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text>63-916-518-9958 </Card.Text>
-              </Col>
-              <Col sm="3">
-                <Card.Text>markandrew@healthcenter.edu.ph </Card.Text>
-              </Col>
-            </Row>
+            {hiData.map((hi, index) => (
+              <>
+              <hr/>
+                     <Row>
+                     <Col sm="2">
+                       <Card.Text ><Link to={`/hi/${hi.HINo}`}><p style={{ color: 'black' }}><u>{hi.HIName}</u> </p> </Link> </Card.Text> 
+                     </Col>
+                     <Col sm="3">
+                       <Card.Text>{hi.address}</Card.Text>
+                     </Col>
+                     <Col sm="2">
+                       <Card.Text>{hi.HIOperatingHours}</Card.Text>
+                     </Col>
+                     <Col sm="2">
+                       <Card.Text>{hi.HIContactNumber}</Card.Text>
+                     </Col>
+                     <Col sm="3">
+                       <Card.Text>{hi.HIEmailAddress} </Card.Text>
+                     </Col>
+                   </Row>
+                   </>
+                    ))}
+           
           </Card.Body>
         </Card>
         

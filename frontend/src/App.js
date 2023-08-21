@@ -29,8 +29,8 @@ function App() {
                     <Route path="/adminlabtest" element={<AdminLabTest/>}/>
                     <Route path="/adminhi" element={<AdminHI/>}/>
                     <Route path="/adminbhc" element={<AdminBHC/>}/>
-                    <Route path="/hi" element={<HIInfo/>}/>
-                    <Route path="/bhc" element={<BHCInfo/>}/>
+                    <Route path="/hi/:id" element={<HIInfo/>}/>
+                    <Route path="/bhc/:id" element={<BHCInfo/>}/>
                     
                     
                     <Route path="/home" element={<PatientSummary/>}/>

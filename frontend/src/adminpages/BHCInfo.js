@@ -11,7 +11,39 @@ import AssignBHCModal from '../admincomponents/AssignBHCModal';
 
 const BHCInfo = () => {
 
-  
+  const { id } = useParams();
+  var bhcNum = id
+
+  const [bhcData, setBhcData] = useState([]);
+  const [bhchiData, setBhchiData] = useState([]);
+
+  useEffect(() => {
+
+    axios.get(`http://localhost:4000/api/bhc/${bhcNum}`)
+      .then((response) => {
+        setBhcData(response.data[0])
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
+    
+
+}, []);
+
+  useEffect(() => {
+
+    axios.get(`http://localhost:4000/api/bhchi/${bhcNum}`)
+      .then((response) => {
+        setBhchiData(response.data)
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetchingdata:', error);
+      });
+    
+
+  }, []);
 
   return (
     <div>
@@ -32,7 +64,7 @@ const BHCInfo = () => {
                 <Card.Text><strong>BHC Name</strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted "> Name </Card.Text>
+                <Card.Text className="text-muted "> {bhcData.BGYName} </Card.Text>
               </Col>
             </Row>
             <hr />
@@ -41,7 +73,7 @@ const BHCInfo = () => {
                 <Card.Text><strong> Address </strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted"> Address </Card.Text>
+                <Card.Text className="text-muted"> {bhcData.address} </Card.Text>
               </Col>
             </Row>
             <hr />
@@ -50,7 +82,7 @@ const BHCInfo = () => {
                 <Card.Text><strong>Operating Hours </strong> </Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted"> Operating Hours </Card.Text>
+                <Card.Text className="text-muted"> {bhcData.BGYOperatingHours} </Card.Text>
               </Col>
             </Row>
             <hr />
@@ -59,7 +91,7 @@ const BHCInfo = () => {
                 <Card.Text><strong>Contact Number </strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted">Number</Card.Text>
+                <Card.Text className="text-muted">{bhcData.BGYContactNumber} </Card.Text>
               </Col>
             </Row>
             <hr />
@@ -68,7 +100,7 @@ const BHCInfo = () => {
                 <Card.Text><strong>Email Address </strong></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted">Email</Card.Text>
+                <Card.Text className="text-muted">{bhcData.BGYEmailAddress} </Card.Text>
               </Col>
             </Row>
         
@@ -88,16 +120,22 @@ const BHCInfo = () => {
               </Col>
               
             </Row>
-            <hr />
+            {bhchiData.map((bhchi, index) => (
+              <>
+               <hr />
             <Row>
               <Col sm="6">
-                <Card.Text>1. Mark Andrew Health Center </Card.Text>
+                <Card.Text>{index+1}. {bhchi.HIName} </Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text>Address </Card.Text>
+                <Card.Text>{bhchi.address} </Card.Text>
               </Col>
 
             </Row>
+                   </>
+                    ))}
+           
+           
            
         
             
@@ -106,7 +144,7 @@ const BHCInfo = () => {
         
         <Row className="d-flex justify-content-end mb-4" >
           <Col className="d-flex justify-content-end">
-            <AssignBHCModal/>
+            <AssignBHCModal id={bhcNum} name={bhcData.BGYName} address={bhcData.address}/>
           </Col>
         </Row>
         
