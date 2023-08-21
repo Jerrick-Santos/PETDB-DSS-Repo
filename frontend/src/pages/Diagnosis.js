@@ -20,21 +20,53 @@ const Diagnosis = () => {
   const { id } = useParams();
 
   const [diagnosisData, setdiagnosisData] = useState([]);
+  const [presumptiveData, setPresumptiveData] = useState();
+  const [latentData, setLatentData] = useState();
   const [isLoading, setIsLoading] = useState(false); // To manage loading state
   const [patientData, setPatientData] = useState([]);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     setIsLoading(true); // Set loading state to true
     // Make the HTTP request
+
+    //SET DIAGNOSIS 
     axios.post(`http://localhost:4000/api/diagnose/${id}`)
       .then(response => {
         console.log(response.data); // Handle the response as needed
+        // Reset loading state
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setIsLoading(false); // Reset loading state
+      });
+
+      //GET LATEST DIAGNOSIS (specifically get the values of latent and presumptive tb)
+      axios.get(`http://localhost:4000/api/getlatestdiagnostic/${id}`)
+      .then(diagnosis => {
+        console.log(diagnosis.data); // Handle the response as needed
+        const {latent_tb} = diagnosis.data
+        setLatentData(latent_tb)
+
+        const {presumptive_tb} = diagnosis.data
+        console.log(presumptive_tb)
+        setPresumptiveData(presumptive_tb)
+   
         setIsLoading(false); // Reset loading state
       })
       .catch(error => {
         console.error('Error:', error);
         setIsLoading(false); // Reset loading state
       });
+
+      //DIAGNOSE = PRESUMPTIVE
+      if(presumptiveData === 1 && latentData === -1){
+        
+      }
+      //DIAGNOSE = LATENT
+      else if (presumptiveData === -1 && latentData === 1){
+
+      }
+
   };
 
   useEffect(() => {
@@ -139,22 +171,22 @@ const Diagnosis = () => {
                 <tbody>
                     {diagnosisData.map((diagnosis, index) => (
                     <tr key={index}>
-
+                        {/* DATE DIAGNOSED */}
                         <td>{new Date(diagnosis.DGDate).toLocaleDateString()}</td>
+                        {/* TB STATUS */}
                         <td>
                         {diagnosis.presumptive_tb === 1 ? "WITH TB" :
                         diagnosis.no_tb === 1 ? "NO TB" :
                         diagnosis.latent_tb === 1 ? "WITH TB" :
                         "NO TB"}
                         </td>
+                        {/* DIAGNOSIS */}
                         <td>{diagnosis.diagnosis}</td>
+                        {/* Further Evaluation Required */}
                         <td>
-                        {diagnosis.need_xray === 1 ? "WITH TB" :
-                        diagnosis.no_tb === 1 ? "NO TB" :
-                        diagnosis.latent_tb === 1 ? "WITH TB" :
-                        "None"}
+                        {diagnosis.need_eval === 1 ? "YES" :"NO"}
                         </td>
-                        <td>{diagnosis.need_eval === 1 ? "YES" : "NO"}</td>
+                        {/* Request HIV Test */}
                         <td>{diagnosis.need_hiv === 1 ? "YES" : "NO"}</td>
                         <td>{diagnosis.need_xray === 1 ? "YES" : "NO"}</td>
                         <td>{diagnosis.need_mtb === 1 ? "YES" : "NO"}</td>

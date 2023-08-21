@@ -126,6 +126,80 @@ function detectContactTB(input_contact_status){
 // Export the router with the attached 'db' connection
 module.exports = (db) => {
     // Attach the 'db' connection to all route handlers before returning the router
+
+    // ADD TO LATENT ML
+    router.post('/addlatent/:caseid/:latentref', (req, res) => {
+        const caseid = req.params.caseid
+        const latentref = req.params.latentref
+
+        db.query(`INSERT INTO PEDTBDSS_new.ML_LATENT (LATENTref, CaseNo, RegistryDate) 
+        VALUES (?, ?, ?)`, 
+        [latentref, caseid, new Date().toISOString().split('T')[0]], 
+        (error8, InsertResult) => {
+            if (error8) {
+                res.status(500).json({ error: "Did Not Add Data: Latent" });
+                return;
+            }
+            else{
+                console.log("Succesfully added to latent ML")
+                res.status(200).json(InsertResult)
+            }
+        })
+    })
+
+    //ADD TO PRESUMPTIVE ML
+    router.post('/addlatent/:caseid/:presref', (req, res) => {
+        const caseid = req.params.caseid
+        const presref = req.params.presref
+
+        db.query(`INSERT INTO PEDTBDSS_new.ML_PRESUMPTIVE (PRESref, CaseNo, RegistryDate) 
+        VALUES (?, ?, ?)`, 
+        [presref, caseid, new Date().toISOString().split('T')[0]], 
+        (error8, InsertResult) => {
+            if (error8) {
+                res.status(500).json({ error: "Did Not Add Data: Presumptive" });
+                return;
+            }
+            else{
+                console.log("Succesfully added to Presumptive ML")
+                res.status(200).json(InsertResult)
+            }
+        })
+    })
+
+    //GET A SPECIFIC CASE
+    router.get('/getcase/:caseid', (req, res) => {
+        const caseid = req.params.caseid
+        const getCaseQuery = `SELECT * FROM PEDTBDSS_new.TD_PTCASE c
+        WHERE c.CaseNo = ${caseid} `
+
+        db.query(getCaseQuery, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(results[0])
+            }
+        });
+    })
+
+    //GET THE latest diagnostic test
+    router.get('/getlatestdiagnostic/:caseid', (req, res) => {
+        const caseid = req.params.caseid
+        const getLatestDiagnosticQuery = `SELECT * FROM PEDTBDSS_new.TD_PTDIAGNOSIS d
+        JOIN PEDTBDSS_new.MD_DIAGNOSISRULES r ON d.RuleNo = r.RuleNo
+        WHERE d.CaseNo = ${caseid} 
+        ORDER BY d.DGNO DESC 
+        LIMIT 1 `
+
+        db.query(getLatestDiagnosticQuery, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(results[0])
+            }
+        });
+    })
+
     router.get('/getalldiagnosis/:caseid', (req, res) => {
         const caseid = req.params.caseid
         const getAllDiagnosisQuery = `SELECT * FROM PEDTBDSS_new.TD_PTDIAGNOSIS d
