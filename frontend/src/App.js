@@ -19,6 +19,9 @@ import BHCInfo from './adminpages/BHCInfo';
 import AdvanceViewPatient from './pages/AdvanceViewPatient';
 
 import AddPatientContact from './pages/AddPatientContact';
+import PatientSummaryPTB from './pages/Home/PatientSummaryPTB';
+import PatientSummaryEPTB from './pages/Home/PatientSummaryEPTB';
+import PatientSummaryClosed from './pages/Home/PatientSummaryClosed';
 
 
 function App() {
@@ -36,6 +39,12 @@ function App() {
                     
                     
                     <Route path="/home" element={<PatientSummary/>}/>
+                    <Route path="/home1" element={<PatientSummaryPTB/>}/>
+                    <Route path="/home2" element={<PatientSummaryEPTB/>}/>
+                    <Route path="/home3" element={<PatientSummaryClosed/>}/>
+
+
+
                     <Route path="/patient/:id" element={<PatientInfo/>}/>
                     <Route path="/closecontacts/:id" element={<CloseContacts/>}/>
                     <Route path="/assessment/:id" element={<Assessment/>}/>
