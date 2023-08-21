@@ -1,5 +1,5 @@
 
-
+//RETURNS a plhiv_val
 function HIVmodule(plhiv, mother_hiv, sex_active){
     //TODO: Interprets the values of the HIV health assessment 
     var plhiv_val
@@ -48,8 +48,8 @@ function detectContactTB(){
 
 }
 
-function combiningModule(){
-
+function combiningModule(c_symp, plhiv, hiv, hiv_consent, has_TBcontact, EPTB_symp){
+    
 }
 
 

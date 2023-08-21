@@ -11,12 +11,41 @@ import add from '../assets/add.png';
 import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
+import Button from 'react-bootstrap/Button';
 
 
 const Diagnosis = () => {
 
   {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
   const { id } = useParams();
+
+  const [diagnosisData, setdiagnosisData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // To manage loading state
+
+  const handleButtonClick = () => {
+    setIsLoading(true); // Set loading state to true
+    // Make the HTTP request
+    axios.post(`http://localhost:4000/api/diagnose/${id}`)
+      .then(response => {
+        console.log(response.data); // Handle the response as needed
+        setIsLoading(false); // Reset loading state
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setIsLoading(false); // Reset loading state
+      });
+  };
+
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getalldiagnosis/${id}`)
+      .then(response => {
+        setdiagnosisData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching patients:', error);
+      });
+  }, []);
+
   var caseNum = id
 
   return (
@@ -63,8 +92,52 @@ const Diagnosis = () => {
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
+      <Button onClick={handleButtonClick}
+        disabled={isLoading} variant="primary" size="lg">
+        Diagnose
+      </Button>
+      <table className="table caption-top bg-white rounded mt-2 ms-4">
+    <caption className=' fs-4'>Patient Records</caption>
+    <thead>
+                    <tr>
+                        <th scope="col">Date Diagnosed</th>    
+                        <th scope="col">TB Status</th>
+                        <th scope="col">Diagnosis</th>
+                        <th scope="col">Further Evaluation Required</th>
+                        <th scope="col">Request HIV Test</th>
+                        <th scope="col">Request XRAY</th>
+                        <th scope="col">Request MTB/RIF</th>
+                        <th scope="col">Request TST</th>
 
-      <br/>   <br/>   <br/>   <br/>
+                    </tr>
+                </thead>
+                <tbody>
+                    {diagnosisData.map((diagnosis, index) => (
+                    <tr key={index}>
+
+                        <td>{new Date(diagnosis.DGDate).toLocaleDateString()}</td>
+                        <td>
+                        {diagnosis.presumptive_tb === 1 ? "WITH TB" :
+                        diagnosis.no_tb === 1 ? "NO TB" :
+                        diagnosis.latent_tb === 1 ? "WITH TB" :
+                        "NO TB"}
+                        </td>
+                        <td>{diagnosis.diagnosis}</td>
+                        <td>
+                        {diagnosis.need_xray === 1 ? "WITH TB" :
+                        diagnosis.no_tb === 1 ? "NO TB" :
+                        diagnosis.latent_tb === 1 ? "WITH TB" :
+                        "None"}
+                        </td>
+                        <td>{diagnosis.need_eval === 1 ? "YES" : "NO"}</td>
+                        <td>{diagnosis.need_hiv === 1 ? "YES" : "NO"}</td>
+                        <td>{diagnosis.need_xray === 1 ? "YES" : "NO"}</td>
+                        <td>{diagnosis.need_mtb === 1 ? "YES" : "NO"}</td>
+                        <td>{diagnosis.need_tst === 1 ? "YES" : "NO"}</td>
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
 
 
 
