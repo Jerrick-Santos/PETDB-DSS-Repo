@@ -15,6 +15,20 @@ const Treatments = () => {
   const { id } = useParams();
   var caseNum = id
 
+  const [patientData, setPatientData] = useState([]);
+
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+    .then(res => {
+      console.log(res);
+      setPatientData(res.data[0]);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }, [caseNum])
+
+
   return (
     <div>
     <NavBar/>
@@ -61,7 +75,19 @@ const Treatments = () => {
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
 
-   
+      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+        <Col className="ms-5" lg="12">
+          <Row>
+            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
+          </Row>
+          <Row>
+            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
+          </Row>
+          <Row>
+            <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
+          </Row>
+        </Col>
+      </Row>
       
       
       

@@ -18,12 +18,15 @@ import XrayRecomModal from '../components/XrayRecomModal';
 import AssessmentFormNew from '../components/AssessmentPersistence';
 import AssessmentNoPersistence from '../components/AssessmentNoPersistence';
 import AssessmentPersistence from '../components/AssessmentPersistence';
+import AddAssessPersist from '../components/AddAssessPersist';
+import AddAssessNoPersist from '../components/AddAssessNoPersist';
 
 const Assessment = () => {
 
   const { id } = useParams();
   var caseNum = id
   
+  const [patientData, setPatientData] = useState([]);
   const [assessData, setAssessData] = useState([]);
   useEffect(() => {
 
@@ -37,7 +40,17 @@ const Assessment = () => {
       });
     }, []);
     console.log(typeof assessData)
-   
+
+    useEffect(() => {
+      axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+      .then(res => {
+        console.log(res);
+        setPatientData(res.data[0]);
+      })
+      .catch(err => {
+        console.error(err);
+      })
+    }, [caseNum])
   return (
     <div>
       <NavBar/>
@@ -83,13 +96,38 @@ const Assessment = () => {
       <Row className="justify-content-center" >
         <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       {/*Shows general patient information details */}
-
+      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+        <Col className="ms-5" lg="12">
+          <Row>
+            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
+          </Row>
+          <Row>
+            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
+          </Row>
+          <Row>
+            <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
+          </Row>
+        </Col>
+      </Row>
      {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
      {assessData.length > 0 ? (
-      <AssessmentPersistence/>
+      <Row className="d-flex justify-content-center mt-4 mb-4" >
+      <Col className="d-flex justify-content-center">
+      <AddAssessPersist
+          caseNo={caseNum}
+      />
+      </Col>
+    </Row>
      ) : (
-      <AssessmentNoPersistence/>
+      <Row className="d-flex justify-content-center mt-4 mb-4" >
+          <Col className="d-flex justify-content-center">
+          <AddAssessNoPersist
+              caseNo={caseNum}
+          />
+          </Col>
+        </Row>
      )}
+     
 
       <hr/>
 

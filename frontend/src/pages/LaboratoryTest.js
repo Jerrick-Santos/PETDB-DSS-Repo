@@ -24,6 +24,18 @@ const LaboratoryTest = () => {
   {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
   const { id } = useParams();
   var caseNum = id
+  const [patientData, setPatientData] = useState([]);
+  
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+    .then(res => {
+      console.log(res);
+      setPatientData(res.data[0]);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }, [caseNum])
 
   return (
     <div>
@@ -71,7 +83,19 @@ const LaboratoryTest = () => {
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       <AddTSTModal/>
       <AddMTBRIFModal/>
-      <AddXrayModal/>
+      <AddXrayModal/>      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+        <Col className="ms-5" lg="12">
+          <Row>
+            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
+          </Row>
+          <Row>
+            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
+          </Row>
+          <Row>
+            <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
+          </Row>
+        </Col>
+      </Row>
       <Row className="mb-5 mt-2 justify-content-center">
       <Col lg="8">
       <p> <strong> Laboratory Tests Needed </strong> </p>

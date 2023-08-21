@@ -7,12 +7,11 @@ const router = express.Router();
 module.exports = (db) => {
     // Attach the 'db' connection to all route handlers before returning the router
 
-    router.get('/getContacts', (req, res) => {
+    router.get('/getContacts/:CaseNo', (req, res) => {
 
         /** Query Goals: Collect and return all of the close contacts of a specific patient's LATEST case */
 
-        const patient_id = req.query.PatientNo;
-        const case_id = req.query.CaseNo;
+        const case_id = req.params.CaseNo;
         const query = `
                     SELECT 
                         ct.last_name,
@@ -26,12 +25,12 @@ module.exports = (db) => {
                         ct.contact_relationship,
                         ct.date_added,
                         ct.CaseNo,
-                        ct.PatientNo
+                        ct.PatientNo,
+                        ct.date_contacted,
+                        ct.ContactNo
                     FROM PEDTBDSS_new.MD_CONTACTTRACING ct
                     JOIN PEDTBDSS_new.TD_PTCASE ptc ON ct.CaseNo = ptc.CaseNo
-                    JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
-                    WHERE pi.PatientNo = ${patient_id}
-                    AND ptc.CaseNo = ${case_id};
+                    WHERE ptc.CaseNo = ${case_id};
         `;
 
     
@@ -41,40 +40,50 @@ module.exports = (db) => {
             }
             else {
                 res.send(result);
+                console.log(result);
             }
         });
     
     }),
 
+    router.get('/getOneContact/:ContactNo', (req, res) => {
+
+        const query = `
+                    SELECT 
+                        ct.last_name,
+                        ct.first_name,
+                        ct.middle_initial,
+                        ct.birthdate,
+                        ct.sex,
+                        ct.contact_person,
+                        ct.contact_num,
+                        ct.contact_email,
+                        ct.contact_relationship
+                    FROM PEDTBDSS_new.MD_CONTACTTRACING ct
+                    WHERE ct.ContactNo = ${req.params.ContactNo};
+        `;        
+
+        db.query(query, (err, results) => {
+            if (err) {console.error(err);}
+            else {
+                console.log(results)
+                res.send(results)
+            }
+        })
+    }),
+
     router.post('/addContacts', async (req, res) => {
 
-        const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, patient_id} = req.body
+        const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, CaseNo} = req.body
 
         const formattedDate = new Date().toISOString().split('T')[0];
-
+        const formattedBirthdate = new Date(birthdate).toISOString().split('T')[0];
         /**TESTING */
         console.log(req.body);
-
-
-        /**Query Goal: Find the latest case of a specific patient */
-
-        let case_no;
-        await db.query(`SELECT MAX(c.CaseNO) as MAXCaseNo
-                FROM PEDTBDSS_new.TD_PTCASE c
-                JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON c.PatientNo = pi.PatientNo
-                WHERE pi.PatientNo = ${patient_id};`, async (err, result) => {
-                    if (err) {
-                        console.error(err);
-                    }
-                    else {
-                        case_no = result[0].MAXCaseNo;
-                        console.log();
-                         /** Query Goal: Add the necessary close contact data to the latest case of a specificed patient */
-
-                        await db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, CaseNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-                        [last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, case_no]);
-                    }
-                });
+        
+        /** Query Goal: Add the necessary close contact data to the latest case of a specificed patient */
+        await db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, CaseNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [last_name, first_name, middle_initial, formattedBirthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, CaseNo]);
         
         // TODO: return value
     }),
@@ -92,15 +101,52 @@ module.exports = (db) => {
         db.query(`SELECT * FROM PEDTB-DSS_new.MD_CONTACTTRACING WHERE ContactNo = ${contact_no}`, (err, result) => {
             if (err) {console.log(err);}
             else {
+
+                const formattedDate = new Date(result[0].birthdate).toISOString().split('T')[0];
                 
+                const birthdate = new Date(result[0].birthdate);
+                const currDate = new Date();
+                const date_diff = currDate.getTime() - birthdate.getTime();
+                const age = floor(date_diff/(1000*3600*24));
+                const admit_date = currDate.toISOString().split('T')[0];
+                const values = 
+                [
+                    result[0].last_name,
+                    result[0].first_name,
+                    result[0].middle_initial,
+                    age,
+                    result[0].sex,
+                    formattedDate,
+                    admit_date,
+                    result[0].contact_person,
+                    result[0].contact_num,
+                    result[0].contact_email,
+                ];
+
+                const query = db.query(`INSERT INTO PEDTB-DSS_new.TD_PTINFORMATION (last_name, first_name, middle_initial, age, sex, birthdate, admission_date, e_name, e_contactno, e_email) VALUES (?)`);
+
+                db.query(query, [values], (err, result) => {
+                    if (err) {console.log(err)}
+                    else {
+                        const message = "Close contact successfully converted to Patient";
+                        console.log(message);
+
+                        const PatientNo = db.query(`SELECT MAX(PatientNo) FROM PEDTBDSS_new.TD_PTINFORMATION;`);
+                        db.query(`UPDATE PEDTB-DSS_new.MD_CONTACTTRACING SET PatientNo = ${PatientNo} WHERE ContactNo = ${contact_no}`, (err, result) => {
+                            if (err){console.log(err)}
+                            else {
+                                const message = "Close contact successfully matched to new patient list";
+                                res.json({success: true, message: message});
+                                console.log(message);
+                            }
+                        });
+                    }
+                });
+
+                // NOTE: Info not yet present in the patient:
+                    // initial weight and height, nationality, mother and father contact detail, address, 
             }
         });
-        // return value
-        
-
-
-
-
     }),
 
     router.get('/getPatient', (req, res) => {
@@ -137,7 +183,7 @@ module.exports = (db) => {
                 if (result[0] != null) {
                     const message = "Contact exists in the contact tracing master list already!";
                     res.json({success: false, message: message});
-                    console.log(message); // TESTING
+                    console.log(message); 
                 }
             }
         })
@@ -179,6 +225,25 @@ module.exports = (db) => {
                 }
             }
         });
+    }),
+
+    router.get('/getCasePatient/:CaseNo', (req, res) => {
+        
+        const q = `SELECT
+                    CONCAT(pi.last_name, ", ",pi.first_name, " ", pi.middle_initial,".") AS patient_name,
+                    pi.birthdate AS patient_birthdate,
+                    ptc.case_refno
+                   FROM PEDTBDSS_new.TD_PTCASE ptc
+                   JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
+                   WHERE ptc.CaseNo=${req.params.CaseNo}`
+        
+        db.query(q, (err, result) => {
+            if (err) {console.error(err);}
+            else {
+                console.log(result);
+                res.send(result);
+            }
+        })
     })
 
 
