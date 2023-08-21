@@ -1,8 +1,8 @@
-import search from '../assets/search.png';
-import '../index.css';
+
+
 import React, { useState, useEffect } from 'react';
 
-import NavBar from '../components/NavBar';
+import NavBar from '../../components/NavBar';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -12,17 +12,6 @@ const PatientSummary = () => {
 
     const [patientsData, setPatientsData] = useState([]);
 
-    useEffect(() => {
-      axios.get("http://localhost:4000/api/allpatients")
-        .then(response => {
-          setPatientsData(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching patients:', error);
-        });
-    }, []);
-
-    console.log(patientsData)
    
 
   return (

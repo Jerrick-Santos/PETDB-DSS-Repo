@@ -3,84 +3,76 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-
-function AdvancedSearch(props){
+function AdvancedSearch(){
    
     const[show,setShow] = useState(false)
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const [patientsData, setPatientsData] = useState([]);
 
-    const [searchValues, setSearchValues] = useState({
-        last_name: "",
-        first_name: "",
-        middle_initial: "",
-        age: null,
-        sex: "",
-        birthdate: "",
-        initial_bodyweight: null,
-        initial_height: null,
-        nationality: "",
-        per_houseno:"",
-        per_street: "",
-        per_barangay: "",
-        per_city: "",
-        per_region: "",
-        per_zipcode: "",
-        curr_houseno:"",
-        curr_street: "",
-        curr_barangay: "",
-        curr_city: "",
-        curr_region: "",
-        curr_zipcode: "",
-        admission_date: null,
-        mother_name: "",
-        m_birthdate: "",
-        m_contactno: "",
-        m_email: "",
-        father_name: "",
-        f_birthdate: "",
-        f_contactno: "",
-        f_email: "",
-        emergency_name: "",
-        e_birthdate: "",
-        e_contactno: "",
-        e_email: "",
-        case_refno: "",
+    const[resultsData, setResultsData]= useState([]);
+    const [patientsData, setPatientsData] = useState({
+        last_name: "_",
+        first_name: "_",
+        middle_initial: "_",
+        age: "_",
+        sex: "_",
+        birthdate: "_",
+        nationality: "_",
+        per_houseno:"_",
+        per_street: "_",
+        per_barangay: "_",
+        per_city: "_",
+        per_region: "_",
+        per_zipcode: "_",
+        curr_houseno:"_",
+        curr_street: "_",
+        curr_barangay: "_",
+        curr_city: "_",
+        curr_region: "_",
+        curr_zipcode: "_",
+        admission_date: "_",
+        mother_name: "_",
+        m_birthdate: "_",
+        m_contactno: "_",
+        m_email: "_",
+        father_name: "_",
+        f_birthdate: "_",
+        f_contactno: "_",
+        f_email: "_",
+        emergency_name: "_",
+        e_birthdate: "_",
+        e_contactno: "_",
+        e_email: "_",
     });
 
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setSearchValues(prev=>({...prev, [name]: value}));
+        setPatientsData(prev=>({...prev, [name]: value}));
     }
 
     const handleSubmit = async (e) => {
      
-        e.preventDefault()
-        
-        axios.get(`http://localhost:4000/api/advancedsearch`, searchValues).then(response => {
-                setPatientsData(response.data);
-              })
-              .catch(error => {
-                console.error('Error searching patient:', error);
-              });
-        
-        console.log("submitted")
-        console.log(searchValues)
-        console.log(patientsData)
+        axios.get(`http://localhost:4000/api/advancedsearch/${patientsData.last_name}/${patientsData.first_name}/${patientsData.middle_initial}/${patientsData.age}/${patientsData.sex}/${patientsData.birthdate}/${patientsData.nationality}/${patientsData.per_houseno}/${patientsData.per_street}/${patientsData.per_barangay}/${patientsData.per_city}/${patientsData.per_region}/${patientsData.per_zipcode}/${patientsData.curr_houseno}/${patientsData.curr_street}/${patientsData.curr_barangay}/${patientsData.curr_city}/${patientsData.curr_region}/${patientsData.curr_zipcode}/${patientsData.admission_date}/${patientsData.mother_name}/${patientsData.m_birthdate}/${patientsData.m_contactno}/${patientsData.m_email}/${patientsData.father_name}/${patientsData.f_birthdate}/${patientsData.f_contactno}/${patientsData.f_email}/${patientsData.emergency_name}/${patientsData.e_birthdate}/${patientsData.e_contactno}/${patientsData.e_email}`)
+        .then(response => {
+          setResultsData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching patients:', error);
+        });
     }
 
-    console.log()
+    console.log(resultsData)
 
   return (
         <>
-
+        <Link to={"/allpatient"}>
         <button className="btn" onClick={handleShow} style={{ color: "white", backgroundColor: '#0077B6' }} type="submit">Advanced Search</button>
-
+        </Link>
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="xl">
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
@@ -292,7 +284,9 @@ function AdvancedSearch(props){
             </form>
     </Modal.Body>
     <Modal.Footer >
+        <Link to={`searchpatient/${patientsData.last_name}/${patientsData.first_name}/${patientsData.middle_initial}/${patientsData.age}/${patientsData.sex}/${patientsData.birthdate}/${patientsData.nationality}/${patientsData.per_houseno}/${patientsData.per_street}/${patientsData.per_barangay}/${patientsData.per_city}/${patientsData.per_region}/${patientsData.per_zipcode}/${patientsData.curr_houseno}/${patientsData.curr_street}/${patientsData.curr_barangay}/${patientsData.curr_city}/${patientsData.curr_region}/${patientsData.curr_zipcode}/${patientsData.admission_date}/${patientsData.mother_name}/${patientsData.m_birthdate}/${patientsData.m_contactno}/${patientsData.m_email}/${patientsData.father_name}/${patientsData.f_birthdate}/${patientsData.f_contactno}/${patientsData.f_email}/${patientsData.emergency_name}/${patientsData.e_birthdate}/${patientsData.e_contactno}/${patientsData.e_email}`}>
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Search</button>
+        </Link>
         <button type="submit" onClick={handleClose}  className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>

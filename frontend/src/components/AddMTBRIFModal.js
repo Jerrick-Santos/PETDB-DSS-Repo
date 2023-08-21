@@ -12,7 +12,7 @@ function AddMTBRIFModal() {
   return (
         <>
 
-        <a className=" clickable" onClick={handleShow}> <img src={edit} style={{height:"17px"}} alt="" /> </a>
+        <button className="btn" onClick={handleShow}> Add MTB/RIF</button>
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>

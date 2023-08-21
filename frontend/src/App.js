@@ -1,6 +1,6 @@
 import React from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import PatientSummary from './pages/PatientSummary';
+import PatientSummary from './pages/Home/PatientSummary';
 import PatientInfo from './pages/PatientInfo'
 import Assessment from './pages/Assessment';
 import CloseContacts from './pages/CloseContacts'
@@ -16,6 +16,7 @@ import AdminHI from './adminpages/AdminHI';
 import AdminBHC from './adminpages/AdminBHC';
 import HIInfo from './adminpages/HIInfo';
 import BHCInfo from './adminpages/BHCInfo';
+import AdvanceViewPatient from './pages/AdvanceViewPatient';
 
 
 
@@ -43,6 +44,7 @@ function App() {
                     <Route path="/addpatient" element={<AddPatient/>}/>
                     <Route path="/allpatient" element={<ViewPatient/>}/>
                     <Route path="/case/:id" element={<Case/>}/>
+                    <Route path="/allpatient/searchpatient/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt/:phn/:ps/:pb/:pc/:pr/:pz/:chn/:cs/:cb/:cc/:cr/:cz/:ad/:mn/:mb/:mc/:me/:fn/:fb/:fc/:fe/:en/:eb/:ec/:ee" element={<AdvanceViewPatient/>}/>
                     
                 </Routes>
             </BrowserRouter>

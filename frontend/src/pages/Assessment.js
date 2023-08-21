@@ -10,7 +10,7 @@ import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
 import AddXrayModal from '../components/AddXrayModal';
-import AddHIVTestModal from '../components/AddHIVTestModal';
+import AddHIVTestModal from '../components/AddTSTModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
 import ShowDiagnosisModal from '../components/ShowDiagnosisModal';

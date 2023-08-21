@@ -276,10 +276,43 @@ WHERE
     });
     });
 
-    router.get('/advancedsearch', (req, res) => {
+    router.get('/advancedsearch/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt/:phn/:ps/:pb/:pc/:pr/:pz/:chn/:cs/:cb/:cc/:cr/:cz/:ad/:mn/:mb/:mc/:me/:fn/:fb/:fc/:fe/:en/:eb/:ec/:ee', (req, res) => {
+        const lnm = req.params.lnm.replace('_','');
+        const fnm = req.params.fnm.replace('_','');
+        const mnm = req.params.mnm.replace('_','');
+        const age = req.params.age.replace('_','');
+        const sex = req.params.sex.replace('_','');
+        const bd = req.params.bd.replace('_','');
+        const nt = req.params.nt.replace('_','');
+        const phn = req.params.phn.replace('_','');
+        const ps = req.params.ps.replace('_','');
+        const pb = req.params.pb.replace('_','');
+        const pc = req.params.pc.replace('_','');
+        const pr = req.params.pr.replace('_','');
+        const pz = req.params.pz.replace('_','');
+        const chn = req.params.chn.replace('_','');
+        const cs = req.params.cs.replace('_','');
+        const cb = req.params.cb.replace('_','');
+        const cc = req.params.cc.replace('_','');
+        const cr = req.params.cr.replace('_','');
+        const cz = req.params.cz.replace('_','');
+        const ad = req.params.ad.replace('_','');
+        const mn = req.params.mn.replace('_','');
+        const mb = req.params.mb.replace('_','');
+        const mc = req.params.mc.replace('_','');
+        const me = req.params.me.replace('_','');
+        const fn = req.params.fn.replace('_','');
+        const fb = req.params.fb.replace('_','');
+        const fc = req.params.fc.replace('_','');
+        const fe = req.params.fe.replace('_','');
+        const en = req.params.en.replace('_','');
+        const eb = req.params.eb.replace('_','');
+        const ec = req.params.ec.replace('_','');
+        const ee = req.params.ee.replace('_','');
+        
         db.query(`
         SELECT
-    COALESCE(pt.PatientNo, '') AS PatientNo,
+    pt.PatientNo,
     CONCAT(
         COALESCE(pt.first_name, ''),
         ' ',
@@ -287,10 +320,12 @@ WHERE
         '. ',
         COALESCE(pt.last_name, '')
     ) AS fullname,
-    COALESCE(pt.birthdate, '') AS birthdate,
-    COALESCE(pt.sex, '') AS sex,
-    COALESCE(pt.age, '') AS age,
-    COALESCE(pt.nationality, '') AS nationality,
+    pt.birthdate,
+    pt.sex,
+    pt.age,
+    pt.initial_bodyweight,
+    pt.initial_height,
+    pt.nationality,
     CONCAT(
         COALESCE(pt.per_houseno, ''),
         ' ',
@@ -317,56 +352,54 @@ WHERE
         ' ',
         COALESCE(pt.curr_zipcode, '')
     ) AS curr_address,
-    COALESCE(pt.admission_date, '') AS admission_date,
-    COALESCE(pt.mother_name, '') AS mother_name,
-    COALESCE(pt.m_birthdate, '') AS m_birthdate,
-    COALESCE(pt.m_contactno, '') AS m_contactno,
-    COALESCE(pt.m_email, '') AS m_email,
-    COALESCE(pt.father_name, '') AS father_name,
-    COALESCE(pt.f_birthdate, '') AS f_birthdate,
-    COALESCE(pt.f_contactno, '') AS f_contactno,
-    COALESCE(pt.f_email, '') AS f_email,
-    COALESCE(pt.emergency_name, '') AS emergency_name,
-    COALESCE(pt.e_birthdate, '') AS e_birthdate,
-    COALESCE(pt.e_contactno, '') AS e_contactno,
-    COALESCE(pt.e_email, '') AS e_email
+    pt.admission_date,
+    pt.mother_name,
+    pt.m_birthdate,
+    pt.m_contactno,
+    pt.m_email,
+    pt.father_name,
+    pt.f_birthdate,
+    pt.f_contactno,
+    pt.f_email,
+    pt.emergency_name,
+    pt.e_birthdate,
+    pt.e_contactno,
+    pt.e_email
 FROM PEDTBDSS_new.TD_PTINFORMATION pt
 WHERE 
     (
-        pt.last_name LIKE CONCAT('%', ?, '%') OR
-        pt.first_name LIKE CONCAT('%', ?, '%') OR
-        pt.middle_initial LIKE CONCAT('%', ?, '%') OR
-        pt.age LIKE CONCAT('%', ?, '%') OR
-        pt.sex LIKE CONCAT('%', ?, '%') OR
-        pt.birthdate LIKE CONCAT('%', ?, '%') OR
-        pt.nationality LIKE CONCAT('%', ?, '%') OR
-        pt.per_houseno LIKE CONCAT('%', ?, '%') OR
-        pt.per_street LIKE CONCAT('%', ?, '%') OR
-        pt.per_barangay LIKE CONCAT('%', ?, '%') OR
-        pt.per_city LIKE CONCAT('%', ?, '%') OR
-        pt.per_region LIKE CONCAT('%', ?, '%') OR
-        pt.per_zipcode LIKE CONCAT('%', ?, '%') OR
-        pt.curr_houseno LIKE CONCAT('%', ?, '%') OR
-        pt.curr_street LIKE CONCAT('%', ?, '%') OR
-        pt.curr_barangay LIKE CONCAT('%', ?, '%') OR
-        pt.curr_city LIKE CONCAT('%', ?, '%') OR
-        pt.curr_region LIKE CONCAT('%', ?, '%') OR
-        pt.curr_zipcode LIKE CONCAT('%', ?, '%') OR
-        pt.admission_date LIKE CONCAT('%', ?, '%') OR
-        pt.mother_name LIKE CONCAT('%', ?, '%') OR
-        pt.m_birthdate LIKE CONCAT('%', ?, '%') OR
-        pt.m_contactno LIKE CONCAT('%', ?, '%') OR
-        pt.m_email LIKE CONCAT('%', ?, '%') OR
-        pt.father_name LIKE CONCAT('%', ?, '%') OR
-        pt.f_birthdate LIKE CONCAT('%', ?, '%') OR
-        pt.f_contactno LIKE CONCAT('%', ?, '%') OR
-        pt.f_email LIKE CONCAT('%', ?, '%') OR
-        pt.emergency_name LIKE CONCAT('%', ?, '%') OR
-        pt.e_birthdate LIKE CONCAT('%', ?, '%') OR
-        pt.e_contactno LIKE CONCAT('%', ?, '%') OR
-        pt.e_email LIKE CONCAT('%', ?, '%')
-    );
-
+            COALESCE(pt.last_name, '')LIKE "%${lnm}%" AND
+            COALESCE(pt.first_name, '')LIKE "%${fnm}%" AND
+            COALESCE(pt.middle_initial, '')LIKE "%${mnm}%" AND
+            COALESCE(pt.age, '')LIKE "%${age}%" AND
+            COALESCE(pt.sex, '')LIKE "%${sex}%" AND
+            COALESCE(pt.birthdate, '')LIKE "%${bd}%" AND
+            COALESCE(pt.nationality, '')LIKE "%${nt}%" AND
+            COALESCE(pt.per_houseno, '')LIKE "%${phn}%" AND
+            COALESCE(pt.per_street, '')LIKE "%${ps}%" AND
+            COALESCE(pt.per_barangay, '')LIKE "%${pb}%"AND
+            COALESCE(pt.per_city, '')LIKE "%${pc}%"AND
+            COALESCE(pt.per_region, '')LIKE "%${pr}%"AND
+            COALESCE(pt.per_zipcode, '')LIKE "%${pz}%"AND
+            COALESCE(pt.curr_houseno, '')LIKE "%${chn}%"AND
+            COALESCE(pt.curr_street, '')LIKE "%${cs}%"AND
+            COALESCE(pt.curr_barangay, '')LIKE "%${cb}%"AND
+            COALESCE(pt.curr_city, '')LIKE "%${cc}%"AND
+            COALESCE(pt.curr_region, '')LIKE "%${cr}%"AND
+            COALESCE(pt.curr_zipcode, '')LIKE "%${cz}%"AND
+            COALESCE(pt.admission_date, '')LIKE "%${ad}%"AND
+            COALESCE(pt.mother_name, '')LIKE "%${mn}%"AND
+            COALESCE(pt.m_birthdate, '')LIKE "%${mb}%"AND
+            COALESCE(pt.m_contactno, '')LIKE "%${mc}%"AND 
+            COALESCE(pt.m_email, '')LIKE "%${me}%"AND 
+            COALESCE(pt.father_name, '')LIKE "%${fn}%"AND  
+            COALESCE(pt.f_birthdate, '')LIKE "%${fb}%"AND 
+            COALESCE(pt.f_contactno, '')LIKE "%${fc}%"AND  
+            COALESCE(pt.f_email, '')LIKE "%${fe}%"AND  
+            COALESCE(pt.emergency_name, '')LIKE "%${en}%"AND 
+            COALESCE(pt.e_birthdate, '')LIKE "%${eb}%"AND 
+            COALESCE(pt.e_contactno, '')LIKE "%${ec}%"AND 
+            COALESCE(pt.e_email, '')LIKE "%${ee}%");
     `, (err, results) => {
         if (err) {
             console.log(err)
@@ -378,6 +411,8 @@ WHERE
         }
     });
     });
+    
+    
 
 
 

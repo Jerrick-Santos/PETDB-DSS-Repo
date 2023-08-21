@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import edit from '../assets/edit.png';
 
 
-function AddHIVTestModal() {
+function AddTSTModal() {
    
     const[show,setShow] = useState(false)
 
@@ -12,7 +12,7 @@ function AddHIVTestModal() {
   return (
         <>
 
-        <a className=" clickable" onClick={handleShow}> <img src={edit} style={{height:"17px"}} alt="" /> </a>
+        <button className="btn" onClick={handleShow}> Add TST </button>
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
@@ -62,8 +62,5 @@ function AddHIVTestModal() {
   );
 }
 
-
-
-
-export default AddHIVTestModal;
+export default AddTSTModal;
 

@@ -12,10 +12,11 @@ import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 import AddXrayModal from '../components/AddXrayModal';
-import AddHIVTestModal from '../components/AddHIVTestModal';
+import AddHIVTestModal from '../components/AddTSTModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
 import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
+import AddTSTModal from '../components/AddTSTModal';
 
 
 const LaboratoryTest = () => {
@@ -68,7 +69,9 @@ const LaboratoryTest = () => {
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-
+      <AddTSTModal/>
+      <AddMTBRIFModal/>
+      <AddXrayModal/>
       <Row className="mb-5 mt-2 justify-content-center">
       <Col lg="8">
       <p> <strong> Laboratory Tests Needed </strong> </p>
@@ -97,7 +100,7 @@ const LaboratoryTest = () => {
             <hr />
             <Row>
               <Col sm="2">
-                <Card.Text className="text-muted">HIV Test<AddHIVTestModal/> </Card.Text>
+                <Card.Text className="text-muted">HIV Test </Card.Text>
               </Col>
               <Col sm="2">
               <Card.Text className="text-muted"> DLSHSI </Card.Text>
@@ -118,7 +121,7 @@ const LaboratoryTest = () => {
             <hr />
             <Row>
               <Col sm="2">
-                <Card.Text className="text-muted">Xray <AddXrayModal/> </Card.Text>
+                <Card.Text className="text-muted">Xray  </Card.Text>
               </Col>
               <Col sm="2">
               <Card.Text className="text-muted"> DLSHSI </Card.Text>
@@ -139,7 +142,7 @@ const LaboratoryTest = () => {
             <hr />
             <Row>
             <Col sm="2">
-                <Card.Text className="text-muted">MTB/RIF <AddMTBRIFModal/> </Card.Text>
+                <Card.Text className="text-muted">MTB/RIF </Card.Text>
               </Col>
               <Col sm="2">
                 <Card.Text className="text-muted"> DLSHSI </Card.Text>
