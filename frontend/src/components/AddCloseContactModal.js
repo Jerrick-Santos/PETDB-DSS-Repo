@@ -62,7 +62,7 @@ function AddCloseContactModal(props) {
                     <input type="text" class="form-control" id="inputFirstName" placeholder="First Name" name="first_name"  value={formValues.first_name} onChange={handleChange}/>
                 </div>
                 <div className="form-group col-md-2">
-                    <label for="inputMI">M.I.</label>
+                    <label for="inputMI">Middle Name</label>
                     <input type="text" class="form-control" id="inputMI" placeholder="M.I." name="middle_initial" value={formValues.middle_initial} onChange={handleChange}/>
                 </div>
                 <div className="form-group col-md-6">
