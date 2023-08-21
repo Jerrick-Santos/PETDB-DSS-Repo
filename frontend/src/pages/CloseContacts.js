@@ -1,5 +1,5 @@
 import '../index.css';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
@@ -8,12 +8,17 @@ import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
 import add from '../assets/add.png';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
+import axios from 'axios';
 
-const PatientInfo = () => {
 
-   
+const CloseContacts = () => {
+
+  {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
+  const { id } = useParams();
+  var caseNum = id
+
   return (
     <div>
     <NavBar/>
@@ -24,20 +29,25 @@ const PatientInfo = () => {
      
         <Navbar expand="sm" className="mt-4 pb-0">
           <Nav>
-          <Link to={"/patientinfo"}>
-          <button className="btn ms-1" style={{color: "#03045E", backgroundColor: 'white' , borderBottomLeftRadius: "0", borderBottomRightRadius: "0"  }} type="button">
-            <img src={user} className="mb-2" style={{height:"23px"}} alt="" /> Patient Profile 
-          </button>
-          </Link>
           <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
           </button>
-          <Link to={"/assessment"}>
+          <Link to={`/assessment/${caseNum}`}>
           <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
             <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
           </button>
           </Link>
-          <Link to={"/treatments"}> 
+          <Link to={`/labtest/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+          </button>
+          </Link>
+          <Link to={`/diagnosis/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
+          </button>
+          </Link>
+          <Link to={`/treatments/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
           </button>
@@ -59,13 +69,10 @@ const PatientInfo = () => {
       <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
         <Col className="ms-5" lg="12">
           <Row>
-            <Col> <strong> Patient Name: </strong> Miguel Josh C. Perez</Col>
+            <Col> <strong> Patient Name: </strong> </Col>
           </Row>
           <Row>
-            <Col> <strong> Birthdate:  </strong>12/31/2023</Col>
-          </Row>
-          <Row>
-            <Col> <strong>Patient ID:</strong> 0305667</Col>
+            <Col> <strong> Birthdate:  </strong> </Col>
           </Row>
         </Col>
       </Row>
@@ -145,4 +152,4 @@ const PatientInfo = () => {
   );
 };
 
-export default PatientInfo;
+export default CloseContacts;

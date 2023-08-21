@@ -22,7 +22,7 @@ function AssessmentSummaryModal() {
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="xl">
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-        <Modal.Title>Assessment Summary</Modal.Title>
+        <Modal.Title>Diagnosis Summary</Modal.Title>
     </Modal.Header>
     <Modal.Body>
     <Row className="mt-2 ms-3 justify-content-center">

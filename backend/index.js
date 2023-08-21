@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const mysql = require('mysql')
 const MainRoutes = require('./routes/mainRoute')
@@ -30,6 +31,10 @@ app.listen(4000, () => {
     console.log("Server is RUNNINF ON PORT 4000")
 })
 app.use(express.json());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 //log tracker - middleware
 app.use((req, res, next) => {
