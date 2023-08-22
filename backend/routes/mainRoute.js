@@ -113,7 +113,8 @@ module.exports = (db) => {
         const id = req.params.id;
         console.log(id)
         db.query(`
-        SELECT 
+        SELECT
+            ptc.CaseNo, 
             ptc.case_refno,
             sr.SRDescription,
             ptc.start_date,
@@ -873,4 +874,3 @@ WHERE
 
     return router;
 };
-
