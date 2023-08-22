@@ -79,12 +79,33 @@ useEffect(() => {
 
 
         {/*TODO: Input Frontend Here and Delete all <br/>*/}
+        <table className="table caption-top bg-white rounded mt-4 ms-4 me-5" style={{width:"95%"}}>
+        <caption className=' fs-4' style={{ color:'#0077B6'}}>Patient Cases</caption>
+          <thead>
+            <tr>
+            <th scope="col">Case Reference Number</th>
+            <th scope="col">Status</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Case Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {caseData.map((singleCase, index) => (
+              <tr key={index}>
+                <td><Link to={`/closecontacts/${caseData[index].CaseNo}`}>{caseData[index].case_refno}</Link></td>
+                <td>{caseData[index].SRDescription}</td>
+                <td>{caseData[index].formatStartDate}</td>
+                <td>{caseData[index].end_date === null ? "---" : caseData[index].end_date}</td>
+                <td>{caseData[index].case_status === "C" ? "Closed" : "Open"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+
+
         
-        {caseData.map((singleCase, index) => (
-        <div key={index}>
-        <Link to={`/closecontacts/${caseData[index].CaseNo}`}>Case {index + 1}</Link>  
-        </div>
-      ))}
       <Row className="d-flex justify-content-end mb-4" >
           <Col className="d-flex justify-content-end">
           <AddCaseModal

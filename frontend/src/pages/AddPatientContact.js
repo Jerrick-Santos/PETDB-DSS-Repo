@@ -76,7 +76,8 @@ const AddPatientContact = () => {
     const handleClick = async e => {
         e.preventDefault()
         try{
-            await axios.post("http://localhost:4000/api/newpatient", patient)
+            console.log(patient)
+            await axios.post("http://localhost:4000/api/convertContact", patient)
         }catch(err){
             console.log(err)
         }
@@ -96,7 +97,7 @@ const AddPatientContact = () => {
       <form className="mt-4 justify-content-center">
             <Row className="mb-2 justify-content-center">
                  <div className="form-group col-md-11">
-                    <p style={{fontSize:"25px"}}> <strong> New Patient Information  </strong> </p>
+                    <p style={{fontSize:"25px"}}> <strong> Converting Contact to Patient  </strong> </p>
                 </div>
             </Row>
             

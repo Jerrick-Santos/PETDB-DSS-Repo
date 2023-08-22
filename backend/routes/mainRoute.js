@@ -113,18 +113,24 @@ module.exports = (db) => {
         const id = req.params.id;
         console.log(id)
         db.query(`
-        SELECT pc.CaseNo,
-        pc.PatientNo,
-        pc.case_refno,
-        pc.case_status
-        FROM PEDTBDSS_new.TD_PTCASE pc
-        WHERE pc.PatientNo = ${id};
+        SELECT
+            ptc.CaseNo,
+            ptc.case_refno,
+            sr.SRDescription,
+            ptc.start_date,
+            ptc.end_date,
+            ptc.case_status
+        FROM PEDTBDSS_new.TD_PTCASE ptc
+        JOIN PEDTBDSS_new.REF_STATUSREASONS sr ON ptc.SRNo = sr.SRNo
+        WHERE ptc.PatientNo = ${id}
+        ORDER BY ptc.start_date DESC;
     `, (err, results) => {
         if (err) {
             console.log(err)
         } else {
             results.forEach(result => {
                  result.fullname;
+                 result.formatStartDate = new Date(result.start_date).toISOString().split("T")[0]
             });
             res.send(results)
         }
