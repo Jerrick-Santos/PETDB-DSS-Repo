@@ -114,7 +114,7 @@ module.exports = (db) => {
         console.log(id)
         db.query(`
         SELECT
-            ptc.CaseNo,
+            ptc.CaseNo, 
             ptc.case_refno,
             sr.SRDescription,
             ptc.start_date,
@@ -130,7 +130,7 @@ module.exports = (db) => {
         } else {
             results.forEach(result => {
                  result.fullname;
-                 result.formatStartDate = new Date(result.start_date).toISOString().split("T")[0]
+                 result.formatStartDate = new Date(result.start_date).toLocaleDateString()
             });
             res.send(results)
         }
@@ -894,4 +894,3 @@ WHERE
 
     return router;
 };
-
