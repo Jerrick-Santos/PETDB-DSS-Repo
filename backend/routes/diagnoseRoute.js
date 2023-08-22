@@ -4,6 +4,15 @@ const router = express.Router();
 //interpretation modules
 
 
+function ageModule(age){
+    if (age >= 5){
+        return 1;
+    }
+    else {
+        return -1;
+    }
+}
+
 //RETURNS a plhiv_val
 function HIVModule(hiv){
     //TODO: Interprets the values of the HIV health assessment 
@@ -167,6 +176,36 @@ module.exports = (db) => {
         })
     })
 
+        //GET A SPECIFIC CASE FROM ML_LATENT
+        router.get('/getlatentincase/:caseid', (req, res) => {
+            const caseid = req.params.caseid
+            const getCaseQuery = `SELECT * FROM PEDTBDSS_new.ML_LATENT c
+            WHERE c.CaseNo = ${caseid} `
+    
+            db.query(getCaseQuery, (err, results) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    res.send(results)
+                }
+            });
+        })
+
+                //GET A SPECIFIC CASE FROM ML_presumptive
+                router.get('/getpresumptiveincase/:caseid', (req, res) => {
+                    const caseid = req.params.caseid
+                    const getCaseQuery = `SELECT * FROM PEDTBDSS_new.ML_PRESUMPTIVE c
+                    WHERE c.CaseNo = ${caseid} `
+            
+                    db.query(getCaseQuery, (err, results) => {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            res.send(results)
+                        }
+                    });
+                })
+
     //GET A SPECIFIC CASE
     router.get('/getcase/:caseid', (req, res) => {
         const caseid = req.params.caseid
@@ -203,7 +242,8 @@ module.exports = (db) => {
     router.get('/getalldiagnosis/:caseid', (req, res) => {
         const caseid = req.params.caseid
         const getAllDiagnosisQuery = `SELECT * FROM PEDTBDSS_new.TD_PTDIAGNOSIS d
-        JOIN PEDTBDSS_new.MD_DIAGNOSISRULES r ON d.RuleNo = r.RuleNo WHERE CaseNo = ${caseid}`
+        JOIN PEDTBDSS_new.MD_DIAGNOSISRULES r ON d.RuleNo = r.RuleNo WHERE CaseNo = ${caseid}
+        ORDER BY DGNo DESC `
 
         db.query(getAllDiagnosisQuery, (err, results) => {
             if (err) {
