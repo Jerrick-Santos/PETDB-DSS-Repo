@@ -1,12 +1,53 @@
 import Modal from 'react-bootstrap/Modal';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import edit from '../assets/edit.png';
 import xray from '../assets/xray.png';
+import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import axios from 'axios';
 
-
-function AddXrayModal() {
+function AddXrayModal(props) {
    
     const[show,setShow] = useState(false)
+
+    const[hiData, setHIData] = useState([])
+
+    useEffect(() => {
+
+        axios.get(`http://localhost:4000/api/allhi`)
+          .then((response) => {
+            setHIData(response.data)
+          })
+          .catch((error) => {
+            // Handle any errors that occurred during the request
+            console.error('Error fetching data:', error);
+          });
+        
+    
+    }, []);
+
+    const [xrayValues, setXrayValues] = useState({
+        CaseNo: props.caseNum,
+        HINo: '',
+        issue_date:'',
+        test_refno:'',
+        TestValue: '',
+    })
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setXrayValues(prev=>({...prev, [name]: value}));
+      }
+
+      const handleSubmit = async (e) => {
+        e.preventDefault()
+        try{
+            await axios.post("http://localhost:4000/api/newXrayresults", xrayValues)
+        }catch(err){
+            console.log(err)
+        }
+
+        window.location.reload()
+      }
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -26,33 +67,39 @@ function AddXrayModal() {
         </div>
         <div className="mt-3"> 
             <label> <strong>Issued by: </strong></label>
-            <select className="form-select">
+            <select className="form-select" name="HINo" value={xrayValues.HINo} onChange={handleChange}>
                 <option value="">Select</option>
-                <option value="positive">DLSHSI</option>
-                <option value="negative">Hospital 1</option>
-                <option value="inconclusive">Hospital 2</option>
+              
+              {hiData.map((hi, index) => (
+              <>
+               <option value={hi.HINo}>{hi.HIName}</option>
+              
+                   </>
+                    ))}
+ 
+
             </select>
         </div>
         <div className="mt-3">
             <label><strong>Issued on:</strong></label>
-            <input type="date" className="form-control" />
+            <input type="date" className="form-control" name='issue_date' value={xrayValues.issue_date} onChange={handleChange}/>
         </div>
         <div className="mt-3">
             <label><strong>Reference Number:</strong></label>
-            <input type="text" className="form-control" />
+            <input type="text" className="form-control" name='test_refno' value={xrayValues.test_refno} onChange={handleChange}/>
         </div>
         <div className="mt-3"> 
             <label> <strong>Xray Results: </strong></label>
-            <select className="form-select">
+            <select className="form-select" name='TestValue' value={xrayValues.TestValue} onChange={handleChange}>
                 <option value="">Select</option>
-                <option value="positive">Positive</option>
-                <option value="negative">Negative</option>
-                <option value="inconclusive">Inconclusive</option>
+                <option value="With Signs of TB">With Signs of TB</option>
+                <option value="No signs">No signs</option>
+                <option value="Undetermined">Undetermined</option>
             </select>
         </div>
     </Modal.Body>
     <Modal.Footer >
-        <button className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>
