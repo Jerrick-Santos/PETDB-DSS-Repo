@@ -164,26 +164,37 @@ const Diagnosis = () => {
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
-        <Col className="ms-5" lg="12">
-          <Row>
-            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
-          </Row>
-          <Row>
-            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
-          </Row>
-          <Row>
-            <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Button onClick={handleButtonClick}
-        disabled={isLoading} variant="primary" size="lg">
-        Diagnose
-      </Button>
-      <table className="table caption-top bg-white rounded mt-2 ms-4">
-    <caption className=' fs-4'>Patient Records</caption>
-    <thead>
+          <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+            <Col lg="11">
+              <Row>
+                <Col><strong>Case No: {patientData.case_refno}</strong></Col>
+              </Row>
+              <Row>
+                <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
+              </Row>
+              <Row>
+                <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
+              </Row>
+            </Col>
+
+            <Col lg="11" className="d-flex justify-content-center">
+              <button
+                className="btn mt-4"
+                style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
+                type="button"
+                onClick={handleButtonClick}
+                disabled={isLoading}
+              >
+                Diagnose TB Status
+              </button>
+              
+            </Col>
+            
+            <Col lg="11">
+            <hr/>
+            <table className="table caption-top bg-white rounded mt-3">
+        <caption className=' fs-4'>Diagnosis Records</caption>
+        <thead>
                     <tr>
                         <th scope="col">Date Diagnosed</th>    
                         <th scope="col">TB Status</th>
@@ -229,6 +240,8 @@ const Diagnosis = () => {
             </table>
 
 
+            </Col>
+          </Row>
 
     </Col>
   </Row>
