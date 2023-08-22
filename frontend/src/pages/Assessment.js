@@ -105,7 +105,7 @@ const Assessment = () => {
             <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
           </Row>
           <Row>
-            <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
+            <Col> <strong> Birthdate: {patientData.formattedBirthdate}</strong> </Col>
           </Row>
         </Col>
       </Row>
