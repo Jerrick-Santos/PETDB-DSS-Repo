@@ -94,7 +94,7 @@ const Diagnosis = () => {
         });
 
       }
-
+      
   };
 
   useEffect(() => {
@@ -209,6 +209,7 @@ const Diagnosis = () => {
                         diagnosis.diagnosis === "Presumptive TB - Check Symptoms for EPTB" ? "PRESUMPTIVE" :
                         diagnosis.diagnosis === "NO TB" ? "NO TB" :
                         diagnosis.diagnosis === "NO TB - Consult for other Deseases" ? "NO TB" :
+                        diagnosis.diagnosis === "Latent TB" ? "LATENT" :
                         "WITH TB"}
                         </td>
                         {/* DIAGNOSIS */}

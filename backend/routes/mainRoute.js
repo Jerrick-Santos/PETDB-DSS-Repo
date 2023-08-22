@@ -231,6 +231,28 @@ module.exports = (db) => {
     })
 
 
+    //get all diagnostic test results based on caseid: and testno :id
+    router.get('/testresults/:caseid/:id', (req, res) => {
+        const testno = req.params.id;
+        const caseid = req.params.caseid;
+        db.query(`
+        SELECT dr.DGResultsNo, dr.CaseNo, dr.DGTestNo, dr.TestValue, dr.validity, dr.HINo, h.HIName, dr.issue_date, dr.test_refno
+            FROM PEDTBDSS_new.MD_HI h 
+            JOIN PEDTBDSS_new.TD_DIAGNOSTICRESULTS dr ON dr.HINo = h.HINo 
+        WHERE dr.CaseNo=${caseid} AND dr.DGTestNo=${testno};
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+
     //SEARCH PATIENT ROUTES
     router.get('/searchpatient/:id', (req, res) => {
         const searchTerm = req.params.id;

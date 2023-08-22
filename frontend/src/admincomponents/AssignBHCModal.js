@@ -46,6 +46,7 @@ const handleSubmit = async (e) => {
     }catch(err){
         console.log(err)
     }
+    window.location.reload()
 }
 
   return (
@@ -74,6 +75,7 @@ const handleSubmit = async (e) => {
                     <strong>Address</strong>
               </Col>
             </Row>
+            
             {hiData.map((hi, index) => (
               <>
               <hr/>

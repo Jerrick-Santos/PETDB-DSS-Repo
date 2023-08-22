@@ -56,7 +56,7 @@ const AdminLabTest = () => {
                 <Card.Text>{dt.DGTestName}</Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text>{dt.DGValidityMonths}</Card.Text>
+                <Card.Text>{dt.DGValidityMonths} months </Card.Text>
               </Col>
             </Row>
                    </>

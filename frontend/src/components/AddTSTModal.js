@@ -44,6 +44,8 @@ function AddTSTModal(props) {
         }catch(err){
             console.log(err)
         }
+
+        window.location.reload()
       }
 
     const handleClose = () => setShow(false);
