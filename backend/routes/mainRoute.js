@@ -606,6 +606,26 @@ WHERE
         })
     })
 
+    router.post('/newMTBresults', (req, res) => {
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?)"
+        const testresultsValues = [
+            req.body.CaseNo,
+            2,
+            req.body.TestValue,
+            req.body.HINo,
+            req.body.issue_date,
+            req.body.test_refno
+        ]
+        db.query(testresultsQuery, testresultsValues, (err, data) => {
+            if(err) {
+                console.log("Error inserting into TD_DIAGNOSTICRESULTS:", err);
+                return res.json(err)
+            }
+            console.log("Successfully inserted into TD_DIAGNOSTICRESULTS:", data);
+            return res.json(data)
+        })
+    })
+
     //get all BHC records
     router.get('/allbhc', (req, res) => {
 
