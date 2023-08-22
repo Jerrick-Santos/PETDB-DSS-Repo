@@ -21,6 +21,7 @@ const Diagnosis = () => {
 
   const [diagnosisData, setdiagnosisData] = useState([]);
   const [presumptiveData, setPresumptiveData] = useState();
+  const [promptModal, setPromptModal] = useState(0) //1 - presumptive, 0 - no promot, -1 - latent 
   const [latentData, setLatentData] = useState();
   const [isLoading, setIsLoading] = useState(false); // To manage loading state
   const [patientData, setPatientData] = useState([]);
@@ -60,10 +61,37 @@ const Diagnosis = () => {
 
       //DIAGNOSE = PRESUMPTIVE
       if(presumptiveData === 1 && latentData === -1){
+
+        axios.get(`http://localhost:4000/api/getpresumptiveincase/${id}`)
+        .then(response => {
+          console.log(response.data); // Handle the response as needed
+          if(response !== null){
+            setPromptModal(1)
+          }
+          // Reset loading state
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          setIsLoading(false); // Reset loading state
+        });
+
         
       }
       //DIAGNOSE = LATENT
       else if (presumptiveData === -1 && latentData === 1){
+
+        axios.get(`http://localhost:4000/api/getlatentincase/${id}`)
+        .then(response => {
+          console.log(response.data); // Handle the response as needed
+          if(response !== null){
+            setPromptModal(-1)
+          }
+          // Reset loading state
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          setIsLoading(false); // Reset loading state
+        });
 
       }
 
@@ -175,10 +203,13 @@ const Diagnosis = () => {
                         <td>{new Date(diagnosis.DGDate).toLocaleDateString()}</td>
                         {/* TB STATUS */}
                         <td>
-                        {diagnosis.presumptive_tb === 1 ? "WITH TB" :
-                        diagnosis.no_tb === 1 ? "NO TB" :
-                        diagnosis.latent_tb === 1 ? "WITH TB" :
-                        "NO TB"}
+                        {diagnosis.diagnosis === "Presumptive TB" ? "PRESUMPTIVE" :
+                        diagnosis.diagnosis === "Presumptive EPTB" ? "PRESUMPTIVE" :
+                        diagnosis.diagnosis === "Presumptive PTB"? "PRESUMPTIVE" :
+                        diagnosis.diagnosis === "Presumptive TB - Check Symptoms for EPTB" ? "PRESUMPTIVE" :
+                        diagnosis.diagnosis === "NO TB" ? "NO TB" :
+                        diagnosis.diagnosis === "NO TB - Consult for other Deseases" ? "NO TB" :
+                        "WITH TB"}
                         </td>
                         {/* DIAGNOSIS */}
                         <td>{diagnosis.diagnosis}</td>
