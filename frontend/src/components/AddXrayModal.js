@@ -31,7 +31,7 @@ function AddXrayModal(props) {
         issue_date:'',
         test_refno:'',
         TestValue: '',
-        validity: 1, // Default to 1
+        validity: 1,
     })
 
     const handleChange = (e) => {
@@ -50,8 +50,6 @@ function AddXrayModal(props) {
             setXrayValues((prev) => ({ ...prev, validity: 1 }));
         }
     };
-
-    
 
       const handleSubmit = async (e) => {
         e.preventDefault()

@@ -627,11 +627,12 @@ WHERE
     })
 
     router.post('/newXrayresults', (req, res) => {
-        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?)"
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
         const testresultsValues = [
             req.body.CaseNo,
             1,
             req.body.TestValue,
+            req.body.validity,
             req.body.HINo,
             req.body.issue_date,
             req.body.test_refno

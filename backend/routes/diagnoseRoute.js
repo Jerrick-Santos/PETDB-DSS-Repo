@@ -325,6 +325,11 @@ module.exports = (db) => {
         RIF_resistant = ${inputObject.RIF_resistant} AND
         tst = ${inputObject.tst};`
 
+        const ageQuery = `SELECT pi.age, pi.birthdate
+        FROM PEDTBDSS_new.TD_PTCASE ptc
+        JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
+        WHERE ptc.CaseNo = ${caseid};`
+
 
         const test = ``
 
@@ -488,6 +493,9 @@ module.exports = (db) => {
                                     console.log(inputObject)
 
                                     console.log("Diagnosis Query Results:", diagnosisQueryResults);
+
+                                    
+                                    try{
                                     const {RuleNo} = diagnosisQueryResults[0]
                         
                                     // All queries have been executed successfully
@@ -506,6 +514,12 @@ module.exports = (db) => {
                                             res.status(200).json(InsertResult)
                                         }
                                     })
+
+                                    }
+                                    catch(e){
+                                        res.status(500).json({error: "query is empty"})
+                                    }
+
                                 });
 
 
