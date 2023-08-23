@@ -25,6 +25,9 @@ const LaboratoryTest = () => {
   const { id } = useParams();
   var caseNum = id
   const [patientData, setPatientData] = useState([]);
+  const [xrayData, setXrayData] = useState([]);
+  const [tstData, setTstData] = useState([]);
+  const [mtbData, setMtbData] = useState([]);
   
   useEffect(() => {
     axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
@@ -35,8 +38,37 @@ const LaboratoryTest = () => {
     .catch(err => {
       console.error(err);
     })
-  }, [caseNum])
 
+
+    axios.get(`http://localhost:4000/api/testresults/${caseNum}/1`)
+    .then((response) => {
+      setXrayData(response.data)
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the request
+      console.error('Error fetchingdata:', error);
+    });
+
+    axios.get(`http://localhost:4000/api/testresults/${caseNum}/2`)
+    .then((response) => {
+      setMtbData(response.data)
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the request
+      console.error('Error fetchingdata:', error);
+    });
+
+    axios.get(`http://localhost:4000/api/testresults/${caseNum}/3`)
+    .then((response) => {
+      setTstData(response.data)
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the request
+      console.error('Error fetchingdata:', error);
+    });
+  }, [])
+
+  
   return (
     <div>
     <NavBar/>
@@ -98,20 +130,19 @@ const LaboratoryTest = () => {
             <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
           </Row>
           <Row>
-            <Col> <strong> Birthdate: {patientData.patient_birthdate}</strong> </Col>
+            <Col> <strong> Birthdate: {new Date(patientData.patient_birthdate).toLocaleDateString()} {}</strong> </Col>
           </Row>
         </Col>
       </Row>
+
+      <hr/>
       <Row className="mb-5 mt-2 justify-content-center">
       <Col lg="8">
-      <p> <strong> Laboratory Tests Needed </strong> </p>
+      <p> <strong> XRay Tests </strong> </p>
         <Card className="mb-4">
           <Card.Body>
             <Row>
-              <Col sm="2">
-                <Card.Text>Lab Test</Card.Text>
-              </Col>
-              <Col sm="2">
+              <Col sm="3">
                 <Card.Text>Test Location</Card.Text>
               </Col>
               <Col sm="2">
@@ -120,86 +151,153 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text>Ref. #</Card.Text>
               </Col>
+              <Col sm="3">
+                <Card.Text>Result</Card.Text>
+              </Col>
               <Col sm="2">
                 <Card.Text>Validity</Card.Text>
               </Col>
+            </Row>
+        
+            
+            {xrayData.map((xray, index) => (
+              <>
+               <hr />
+               <Row>
+              <Col sm="3">
+              <Card.Text className="text-muted"> {xray.HIName} </Card.Text>
+              </Col>
               <Col sm="2">
-                <Card.Text>Result</Card.Text>
+                <Card.Text className="text-muted">{xray.issue_date} </Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{new Date(xray.issue_date).toLocaleDateString()} </Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text className="text-muted">{xray.TestValue}</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{xray.validity === 1 ? "VALID" : "OUTDATED"}   </Card.Text>
               </Col>
             </Row>
-            <hr />
-            <Row>
-              <Col sm="2">
-                <Card.Text className="text-muted">HIV Test </Card.Text>
-              </Col>
-              <Col sm="2">
-              <Card.Text className="text-muted"> DLSHSI </Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">12/31/2023</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">XR9880-567</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">VALID </Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">+1</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="2">
-                <Card.Text className="text-muted">Xray  </Card.Text>
-              </Col>
-              <Col sm="2">
-              <Card.Text className="text-muted"> DLSHSI </Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">12/31/2023</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">XR9880-567</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">VALID </Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">+1</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-            <Col sm="2">
-                <Card.Text className="text-muted">MTB/RIF </Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted"> DLSHSI </Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">12/31/2023</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">MT9880-567</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">VALID </Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">+1</Card.Text>
-              </Col>
-            </Row>
-            <hr />
+                   </>
+                    ))}
+          
+
+
+          
           </Card.Body>
         </Card>
-        <div className="d-flex justify-content-end">
-              <ShowDiagnosisModal/>
-          </div>
+      </Col>
+    </Row>
+
+    <hr/>
+      <Row className="mb-5 mt-2 justify-content-center">
+      <Col lg="8">
+      <p> <strong> MTB/RIF Tests </strong> </p>
+        <Card className="mb-4">
+          <Card.Body>
+            <Row>
+            <Col sm="3">
+                <Card.Text>Test Location</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Date Tested</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Ref. #</Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text>Result</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Validity</Card.Text>
+              </Col>
+            </Row>
+            {mtbData.map((mtb, index) => (
+              <>
+               <hr />
+               <Row>
+              <Col sm="3">
+              <Card.Text className="text-muted"> {mtb.HIName} </Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{mtb.issue_date} </Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{new Date(mtb.issue_date).toLocaleDateString()} </Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text className="text-muted">{mtb.TestValue}</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{mtb.validity === 1 ? "VALID" : "OUTDATED"}   </Card.Text>
+              </Col>
+            </Row>
+                   </>
+                    ))}
+          </Card.Body>
+        </Card>
+       
       </Col>
     
 
     </Row>
+
+    <hr/>
+      <Row className="mb-5 mt-2 justify-content-center">
+      <Col lg="8">
+      <p> <strong> TST Tests </strong> </p>
+        <Card className="mb-4">
+          <Card.Body>
+            <Row>
+            <Col sm="3">
+                <Card.Text>Test Location</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Date Tested</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Ref. #</Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text>Result</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Validity</Card.Text>
+              </Col>
+            </Row>
+            {tstData.map((tst, index) => (
+              <>
+               <hr />
+               <Row>
+              <Col sm="3">
+              <Card.Text className="text-muted"> {tst.HIName} </Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{tst.issue_date} </Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{new Date(tst.issue_date).toLocaleDateString()} </Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text className="text-muted">{tst.TestValue}</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{tst.validity === 1 ? "VALID" : "OUTDATED"}   </Card.Text>
+              </Col>
+            </Row>
+                   </>
+                    ))}
+          </Card.Body>
+        </Card>
+       
+      </Col>
+    
+
+    </Row>
+
+
 
 
 
