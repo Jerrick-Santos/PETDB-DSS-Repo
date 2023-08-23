@@ -23,15 +23,17 @@ const AddPatient = () => {
         nationality: "",
         per_houseno:"",
         per_street: "",
-        per_barangay: "",
-        per_city: "",
         per_region: "",
+        per_province: "",
+        per_city: "",
+        per_barangay: "",
         per_zipcode: "",
         curr_houseno:"",
         curr_street: "",
-        curr_barangay: "",
-        curr_city: "",
         curr_region: "",
+        curr_province: "",
+        curr_city: "",
+        curr_barangay: "",
         curr_zipcode: "",
         admission_date: new Date().toISOString().split('T')[0],
         mother_name: "",
@@ -144,19 +146,24 @@ const AddPatient = () => {
             </Row>
             
             <Row className="mb-5 justify-content-center">
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-1">
                     <label for="inputPermHouseNo">House No.</label>
                     <input type="text" class="form-control" id="inputPermHouseNo" name='per_houseno' onChange={handleChange}  placeholder="House No."/>
                 </div>
                 
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-1">
                     <label for="inputPermStreet">Street</label>
                     <input type="text" class="form-control" id="inputPermStreet" name='per_street' onChange={handleChange}  placeholder="Street"/>
                 </div>
 
                 <div class="form-group col-md-2">
-                    <label for="inputPermBarangay">Barangay</label>
-                    <input type="text" class="form-control" id="inputPermBarangay" name='per_barangay' onChange={handleChange}  placeholder="Street"/>
+                    <label for="inputPermRegion">Region</label>
+                    <input type="text" class="form-control" id="inputPermRegion" name='per_region' onChange={handleChange}  placeholder="Region"/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputPermProvince">Province</label>
+                    <input type="text" class="form-control" id="inputPermProvince" name='per_province' onChange={handleChange}  placeholder="Province"/>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -165,8 +172,8 @@ const AddPatient = () => {
                 </div>
 
                 <div class="form-group col-md-2">
-                    <label for="inputPermRegion">Region</label>
-                    <input type="text" class="form-control" id="inputPermRegion" name='per_region' onChange={handleChange}  placeholder="Region"/>
+                    <label for="inputPermBarangay">Barangay</label>
+                    <input type="text" class="form-control" id="inputPermBarangay" name='per_barangay' onChange={handleChange}  placeholder="Street"/>
                 </div>
 
                 <div class="form-group col-md-1">
@@ -183,19 +190,24 @@ const AddPatient = () => {
             </Row>
 
             <Row className="mb-5 justify-content-center">
-            <div class="form-group col-md-2">
+            <div class="form-group col-md-1">
                     <label for="inputCurrHouseNo">House No.</label>
                     <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' onChange={handleChange}  placeholder="House No."/>
                 </div>
                 
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-1">
                     <label for="inputCurrStreet">Street</label>
                     <input type="text" class="form-control" id="inputCurrStreet" name='curr_street' onChange={handleChange}  placeholder="Street"/>
                 </div>
 
                 <div class="form-group col-md-2">
-                    <label for="inputCurrBarangay">Barangay</label>
-                    <input type="text" class="form-control" id="inputCurrBarangay" name='curr_barangay' onChange={handleChange}  placeholder="Street"/>
+                    <label for="inputCurrRegion">Region</label>
+                    <input type="text" class="form-control" id="inputCurrRegion" name='curr_region' onChange={handleChange}  placeholder="Region"/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputCurrProvince">Province</label>
+                    <input type="text" class="form-control" id="inputCurrProvince" name='curr_province' onChange={handleChange}  placeholder="Province"/>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -204,9 +216,9 @@ const AddPatient = () => {
                 </div>
 
                 <div class="form-group col-md-2">
-                    <label for="inputCurrRegion">Region</label>
-                    <input type="text" class="form-control" id="inputCurrRegion" name='curr_region' onChange={handleChange}  placeholder="Region"/>
-                </div>
+                    <label for="inputCurrBarangay">Barangay</label>
+                    <input type="text" class="form-control" id="inputCurrBarangay" name='curr_barangay' onChange={handleChange}  placeholder="Street"/>
+                </div> 
 
                 <div class="form-group col-md-1">
                     <label for="inputCurrZip">Zip Code</label>
