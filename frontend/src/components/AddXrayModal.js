@@ -31,6 +31,7 @@ function AddXrayModal(props) {
         issue_date:'',
         test_refno:'',
         TestValue: '',
+        validity: 1, // Default to 1
     })
 
     const handleChange = (e) => {
@@ -38,9 +39,24 @@ function AddXrayModal(props) {
         setXrayValues(prev=>({...prev, [name]: value}));
       }
 
+      const computeValidity = () => {
+        const today = new Date();
+        const issueDate = new Date(xrayValues.issue_date);
+        const oneYearInMillis = 365 * 24 * 60 * 60 * 1000; // 1 year in milliseconds
+
+        if (today - issueDate > oneYearInMillis) {
+            setXrayValues((prev) => ({ ...prev, validity: 0 }));
+        } else {
+            setXrayValues((prev) => ({ ...prev, validity: 1 }));
+        }
+    };
+
+    
+
       const handleSubmit = async (e) => {
         e.preventDefault()
         try{
+            computeValidity(); // Calculate validity before submitting
             await axios.post("http://localhost:4000/api/newXrayresults", xrayValues)
         }catch(err){
             console.log(err)
