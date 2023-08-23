@@ -93,6 +93,12 @@ const AddPatient = () => {
             const selectedBirthdate = new Date(value);
             const currentDate = new Date();
             age = currentDate.getFullYear() - selectedBirthdate.getFullYear();
+
+            if (age >= 15) {
+                alert("Age must be below 15 years old.");
+                return; // Do not proceed with updating the state
+            }
+
             if (
                 currentDate.getMonth() < selectedBirthdate.getMonth() ||
                 (currentDate.getMonth() === selectedBirthdate.getMonth() &&
