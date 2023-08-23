@@ -13,6 +13,9 @@ import { useNavigate } from 'react-router-dom';
 const AddPatient = () => {
     const [isAutoFillActive, setIsAutoFillActive] = useState(false);
     const [isCurrentAddressDisabled, setIsCurrentAddressDisabled] = useState(false);
+    const [calculatedAge, setCalculatedAge] = useState(null);
+    let age = null;
+
     const [patient, setPatient] = useState({
         last_name: "",
         first_name: "",
@@ -84,15 +87,42 @@ const AddPatient = () => {
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        const newValue = name === 'last_name' ? value.toUpperCase() : value;
+        let newValue = value;
 
-        setPatient(prev=>({...prev, [name]: newValue}));
+        if (name === 'birthdate') {
+            const selectedBirthdate = new Date(value);
+            const currentDate = new Date();
+            age = currentDate.getFullYear() - selectedBirthdate.getFullYear();
+            if (
+                currentDate.getMonth() < selectedBirthdate.getMonth() ||
+                (currentDate.getMonth() === selectedBirthdate.getMonth() &&
+                    currentDate.getDate() < selectedBirthdate.getDate())
+            ) {
+                age--;
+            }
+            newValue = value;
+        }
+
+        let updatedPatient = {...patient};  
+
+        updatedPatient[name] = name === 'last_name' ? value.toUpperCase() : newValue;
+
+        if (name === 'birthdate') {
+            // also update calculatedAge
+            setCalculatedAge(age); 
+        }
+
+        setPatient(updatedPatient);
     };
 
     const handleClick = async e => {
         e.preventDefault()
         try{
-            await axios.post("http://localhost:4000/api/newpatient", patient)
+            const patientData = {
+                ...patient,
+                age: calculatedAge
+            };
+            await axios.post("http://localhost:4000/api/newpatient", patientData)
         }catch(err){
             console.log(err)
         }
@@ -150,7 +180,7 @@ const AddPatient = () => {
 
                 <div className="form-group col-md-1">
                     <label for="inputAge">Age</label>
-                    <input type="number" class="form-control" id="inputAge"  name='age' onChange={handleChange} placeholder="Age"/>
+                    <input type="number" class="form-control" id="inputAge"  name='age' value={calculatedAge !== null ? calculatedAge : ''} readOnly placeholder="Age"/>
                 </div>
 
                 <div className="form-group col-md-2">
