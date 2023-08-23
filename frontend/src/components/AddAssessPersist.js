@@ -588,10 +588,26 @@ function AddAssessPersist(props) {
               </Card.Text>
           </Col>
         </Row>
+        <hr/>
+        <Row>
+          <Col sm="9">
+            <Card.Text className="text-muted">Assessment Date</Card.Text>
+          </Col>
+          <Col sm="3">
+            <input
+              type="text"
+              className="form-control"
+              name="assessment_date"
+              value={assessFormValues.assessment_date}
+              disabled
+            />
+          </Col>
+        </Row>
       </Card.Body>
     </Card>
 </Col>
 </Row>
+
 </div>
 </form>
     </Modal.Body>
