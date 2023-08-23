@@ -493,6 +493,9 @@ module.exports = (db) => {
                                     console.log(inputObject)
 
                                     console.log("Diagnosis Query Results:", diagnosisQueryResults);
+
+                                    
+                                    try{
                                     const {RuleNo} = diagnosisQueryResults[0]
                         
                                     // All queries have been executed successfully
@@ -511,6 +514,12 @@ module.exports = (db) => {
                                             res.status(200).json(InsertResult)
                                         }
                                     })
+
+                                    }
+                                    catch(e){
+                                        res.status(500).json({error: "query is empty"})
+                                    }
+
                                 });
 
 
