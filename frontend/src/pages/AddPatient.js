@@ -11,6 +11,11 @@ import treatment from '../assets/treatment.png';
 import { useNavigate } from 'react-router-dom';
 
 const AddPatient = () => {
+    const [isAutoFillActive, setIsAutoFillActive] = useState(false);
+    const [isCurrentAddressDisabled, setIsCurrentAddressDisabled] = useState(false);
+    const [calculatedAge, setCalculatedAge] = useState(null);
+    let age = null;
+
     const [patient, setPatient] = useState({
         last_name: "",
         first_name: "",
@@ -23,15 +28,17 @@ const AddPatient = () => {
         nationality: "",
         per_houseno:"",
         per_street: "",
-        per_barangay: "",
-        per_city: "",
         per_region: "",
+        per_province: "",
+        per_city: "",
+        per_barangay: "",
         per_zipcode: "",
         curr_houseno:"",
         curr_street: "",
-        curr_barangay: "",
-        curr_city: "",
         curr_region: "",
+        curr_province: "",
+        curr_city: "",
+        curr_barangay: "",
         curr_zipcode: "",
         admission_date: new Date().toISOString().split('T')[0],
         mother_name: "",
@@ -49,17 +56,79 @@ const AddPatient = () => {
         case_refno: "",
     });
 
+    const handleAutoFill = () => {
+        
+        const {
+            per_houseno,
+            per_street,
+            per_region,
+            per_province,
+            per_city,
+            per_barangay,
+            per_zipcode,
+        } = patient;
+
+        setIsAutoFillActive(!isAutoFillActive);
+        setIsCurrentAddressDisabled(!isCurrentAddressDisabled);
+
+        if (!isAutoFillActive) {
+            setPatient(prev => ({
+                ...prev,
+                curr_houseno: per_houseno,
+                curr_street: per_street,
+                curr_region: per_region,
+                curr_province: per_province,
+                curr_city: per_city,
+                curr_barangay: per_barangay,
+                curr_zipcode: per_zipcode,
+            }));
+        }
+    };
+
     const handleChange = (e) => {
         const {name, value} = e.target;
-        const newValue = name === 'last_name' ? value.toUpperCase() : value;
+        let newValue = value;
 
-        setPatient(prev=>({...prev, [name]: newValue}));
+        if (name === 'birthdate') {
+            const selectedBirthdate = new Date(value);
+            const currentDate = new Date();
+            age = currentDate.getFullYear() - selectedBirthdate.getFullYear();
+
+            if (age >= 15) {
+                alert("Age must be below 15 years old.");
+                return; // Do not proceed with updating the state
+            }
+
+            if (
+                currentDate.getMonth() < selectedBirthdate.getMonth() ||
+                (currentDate.getMonth() === selectedBirthdate.getMonth() &&
+                    currentDate.getDate() < selectedBirthdate.getDate())
+            ) {
+                age--;
+            }
+            newValue = value;
+        }
+
+        let updatedPatient = {...patient};  
+
+        updatedPatient[name] = name === 'last_name' ? value.toUpperCase() : newValue;
+
+        if (name === 'birthdate') {
+            // also update calculatedAge
+            setCalculatedAge(age); 
+        }
+
+        setPatient(updatedPatient);
     };
 
     const handleClick = async e => {
         e.preventDefault()
         try{
-            await axios.post("http://localhost:4000/api/newpatient", patient)
+            const patientData = {
+                ...patient,
+                age: calculatedAge
+            };
+            await axios.post("http://localhost:4000/api/newpatient", patientData)
         }catch(err){
             console.log(err)
         }
@@ -117,7 +186,7 @@ const AddPatient = () => {
 
                 <div className="form-group col-md-1">
                     <label for="inputAge">Age</label>
-                    <input type="number" class="form-control" id="inputAge"  name='age' onChange={handleChange} placeholder="Age"/>
+                    <input type="number" class="form-control" id="inputAge"  name='age' value={calculatedAge !== null ? calculatedAge : ''} readOnly placeholder="Age"/>
                 </div>
 
                 <div className="form-group col-md-2">
@@ -144,19 +213,24 @@ const AddPatient = () => {
             </Row>
             
             <Row className="mb-5 justify-content-center">
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-1">
                     <label for="inputPermHouseNo">House No.</label>
                     <input type="text" class="form-control" id="inputPermHouseNo" name='per_houseno' onChange={handleChange}  placeholder="House No."/>
                 </div>
                 
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-1">
                     <label for="inputPermStreet">Street</label>
                     <input type="text" class="form-control" id="inputPermStreet" name='per_street' onChange={handleChange}  placeholder="Street"/>
                 </div>
 
                 <div class="form-group col-md-2">
-                    <label for="inputPermBarangay">Barangay</label>
-                    <input type="text" class="form-control" id="inputPermBarangay" name='per_barangay' onChange={handleChange}  placeholder="Street"/>
+                    <label for="inputPermRegion">Region</label>
+                    <input type="text" class="form-control" id="inputPermRegion" name='per_region' onChange={handleChange}  placeholder="Region"/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputPermProvince">Province</label>
+                    <input type="text" class="form-control" id="inputPermProvince" name='per_province' onChange={handleChange}  placeholder="Province"/>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -165,8 +239,8 @@ const AddPatient = () => {
                 </div>
 
                 <div class="form-group col-md-2">
-                    <label for="inputPermRegion">Region</label>
-                    <input type="text" class="form-control" id="inputPermRegion" name='per_region' onChange={handleChange}  placeholder="Region"/>
+                    <label for="inputPermBarangay">Barangay</label>
+                    <input type="text" class="form-control" id="inputPermBarangay" name='per_barangay' onChange={handleChange}  placeholder="Barangay"/>
                 </div>
 
                 <div class="form-group col-md-1">
@@ -183,37 +257,56 @@ const AddPatient = () => {
             </Row>
 
             <Row className="mb-5 justify-content-center">
-            <div class="form-group col-md-2">
+            <div class="form-group col-md-1">
                     <label for="inputCurrHouseNo">House No.</label>
-                    <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' onChange={handleChange}  placeholder="House No."/>
+                    <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' onChange={handleChange}  placeholder="House No." disabled={isCurrentAddressDisabled}/>
                 </div>
                 
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-1">
                     <label for="inputCurrStreet">Street</label>
-                    <input type="text" class="form-control" id="inputCurrStreet" name='curr_street' onChange={handleChange}  placeholder="Street"/>
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputCurrBarangay">Barangay</label>
-                    <input type="text" class="form-control" id="inputCurrBarangay" name='curr_barangay' onChange={handleChange}  placeholder="Street"/>
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputCurrCity">City</label>
-                    <input type="text" class="form-control" id="inputCurrCity" name='curr_city' onChange={handleChange}  placeholder="City"/>
+                    <input type="text" class="form-control" id="inputCurrStreet" name='curr_street' onChange={handleChange}  placeholder="Street" disabled={isCurrentAddressDisabled}/>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label for="inputCurrRegion">Region</label>
-                    <input type="text" class="form-control" id="inputCurrRegion" name='curr_region' onChange={handleChange}  placeholder="Region"/>
+                    <input type="text" class="form-control" id="inputCurrRegion" name='curr_region' onChange={handleChange}  placeholder="Region" disabled={isCurrentAddressDisabled}/>
                 </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputCurrProvince">Province</label>
+                    <input type="text" class="form-control" id="inputCurrProvince" name='curr_province' onChange={handleChange}  placeholder="Province" disabled={isCurrentAddressDisabled}/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputCurrCity">City</label>
+                    <input type="text" class="form-control" id="inputCurrCity" name='curr_city' onChange={handleChange}  placeholder="City" disabled={isCurrentAddressDisabled}/>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="inputCurrBarangay">Barangay</label>
+                    <input type="text" class="form-control" id="inputCurrBarangay" name='curr_barangay' onChange={handleChange}  placeholder="Barangay" disabled={isCurrentAddressDisabled}/>
+                </div> 
 
                 <div class="form-group col-md-1">
                     <label for="inputCurrZip">Zip Code</label>
-                    <input type="text" class="form-control" id="inputCurrZip" name='curr_zipcode' onChange={handleChange}  placeholder="Zip"/>
+                    <input type="text" class="form-control" id="inputCurrZip" name='curr_zipcode' onChange={handleChange}  placeholder="Zip" disabled={isCurrentAddressDisabled}/>
                 </div>
                 
             </Row>
+
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-11">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={isAutoFillActive}
+                            onChange={handleAutoFill}
+                        />
+                        Auto-Fill Current Address
+                    </label>
+                </div>
+            </Row>
+
             <hr/>
 
             <Row className="mb-2 justify-content-center">
