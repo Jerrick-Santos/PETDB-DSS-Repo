@@ -8,7 +8,7 @@ import CreateBHCModal from '../admincomponents/CreateBHCModal';
 import { Link, useParams } from 'react-router-dom';
 import AssignBHCModal from '../admincomponents/AssignBHCModal';
 import AssignHIModal from '../admincomponents/AssignHIModal';
-
+import Pagination from 'react-bootstrap/Pagination';
 
 const HIInfo = () => {
 
