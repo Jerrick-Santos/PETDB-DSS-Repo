@@ -9,29 +9,46 @@ module.exports = (db) => {
     router.get('/allpatients', (req, res) => {
 
         db.query(`
-            SELECT pt.PatientNo, CONCAT(pt.first_name, ' ', pt.middle_initial, '. ' , pt.last_name) AS fullname,
-            pt.birthdate,
-            pt.sex,
-            pt.age,
-            pt.initial_bodyweight,
-            pt.initial_height,
-            pt.nationality,
-            CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
-            CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
-            pt.admission_date,
-            pt.mother_name,
-            pt.m_birthdate,
-            pt.m_contactno,
-            pt.m_email,
-            pt.father_name,
-            pt.f_birthdate,
-            pt.f_contactno,
-            pt.f_email,
-            pt.emergency_name,
-            pt.e_birthdate,
-            pt.e_contactno,
-            pt.e_email
-        FROM PEDTBDSS_new.TD_PTINFORMATION pt
+        SELECT pt.PatientNo,
+        pc.CaseNo,
+        pc.case_refno, pc.case_status,
+        CONCAT(pt.last_name, ', ', pt.first_name, ' ', pt.middle_initial) AS fullname,
+        pt.birthdate,
+        pt.sex,
+        pt.age,
+        pt.initial_bodyweight,
+        pt.initial_height,
+        pt.nationality,
+        CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
+        CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
+        pt.admission_date,
+        pt.mother_name,
+        pt.m_birthdate,
+        pt.m_contactno,
+        pt.m_email,
+        pt.father_name,
+        pt.f_birthdate,
+        pt.f_contactno,
+        pt.f_email,
+        pt.emergency_name,
+        pt.e_birthdate,
+        pt.e_contactno,
+        pt.e_email
+ FROM PEDTBDSS_new.TD_PTINFORMATION pt
+ JOIN PEDTBDSS_new.TD_PTCASE pc ON pc.PatientNo = pt.PatientNo
+ JOIN (
+     SELECT PatientNo, MAX(start_date) AS latest_start_date
+     FROM PEDTBDSS_new.TD_PTCASE
+     GROUP BY PatientNo
+ ) latest_cases ON pc.PatientNo = latest_cases.PatientNo AND pc.start_date = latest_cases.latest_start_date
+ WHERE pc.case_status = 'O' OR (
+     pc.case_status <> 'O' AND NOT EXISTS (
+         SELECT 1
+         FROM PEDTBDSS_new.TD_PTCASE sub_pc
+         WHERE sub_pc.PatientNo = pc.PatientNo AND sub_pc.start_date = latest_cases.latest_start_date AND sub_pc.case_status = 'O'
+     )
+ );
+ 
        
     `, (err, results) => {
         if (err) {
@@ -264,99 +281,45 @@ module.exports = (db) => {
     router.get('/searchpatient/:id', (req, res) => {
         const searchTerm = req.params.id;
         db.query(`
-        SELECT
-    pt.PatientNo,
-    CONCAT(
-        COALESCE(pt.first_name, ''),
-        ' ',
-        COALESCE(pt.middle_initial, ''),
-        '. ',
-        COALESCE(pt.last_name, '')
-    ) AS fullname,
-    pt.birthdate,
-    pt.sex,
-    pt.age,
-    pt.initial_bodyweight,
-    pt.initial_height,
-    pt.nationality,
-    CONCAT(
-        COALESCE(pt.per_houseno, ''),
-        ' ',
-        COALESCE(pt.per_street, ''),
-        ' ',
-        COALESCE(pt.per_barangay, ''),
-        ' ',
-        COALESCE(pt.per_city, ''),
-        ' ',
-        COALESCE(pt.per_region, ''),
-        ' ',
-        COALESCE(pt.per_zipcode, '')
-    ) AS per_address,
-    CONCAT(
-        COALESCE(pt.curr_houseno, ''),
-        ' ',
-        COALESCE(pt.curr_street, ''),
-        ' ',
-        COALESCE(pt.curr_barangay, ''),
-        ' ',
-        COALESCE(pt.curr_city, ''),
-        ' ',
-        COALESCE(pt.curr_region, ''),
-        ' ',
-        COALESCE(pt.curr_zipcode, '')
-    ) AS curr_address,
-    pt.admission_date,
-    pt.mother_name,
-    pt.m_birthdate,
-    pt.m_contactno,
-    pt.m_email,
-    pt.father_name,
-    pt.f_birthdate,
-    pt.f_contactno,
-    pt.f_email,
-    pt.emergency_name,
-    pt.e_birthdate,
-    pt.e_contactno,
-    pt.e_email
-FROM PEDTBDSS_new.TD_PTINFORMATION pt
-WHERE 
-    CONCAT(
-        COALESCE(pt.PatientNo, ''),
-        COALESCE(pt.last_name, ''),
-        COALESCE(pt.first_name, ''),
-        COALESCE(pt.middle_initial, ''),
-        COALESCE(pt.age, ''),
-        COALESCE(pt.sex, ''),
-        COALESCE(pt.birthdate, ''),
-        COALESCE(pt.initial_bodyweight, ''),
-        COALESCE(pt.initial_height, ''),
-        COALESCE(pt.nationality, ''),
-        COALESCE(pt.per_houseno, ''),
-        COALESCE(pt.per_street, ''),
-        COALESCE(pt.per_barangay, ''),
-        COALESCE(pt.per_city, ''),
-        COALESCE(pt.per_region, ''),
-        COALESCE(pt.per_zipcode, ''),
-        COALESCE(pt.curr_houseno, ''),
-        COALESCE(pt.curr_street, ''),
-        COALESCE(pt.curr_barangay, ''),
-        COALESCE(pt.curr_city, ''),
-        COALESCE(pt.curr_region, ''),
-        COALESCE(pt.curr_zipcode, ''),
-        COALESCE(pt.admission_date, ''),
-        COALESCE(pt.mother_name, ''),
-        COALESCE(pt.m_birthdate, ''),
-        COALESCE(pt.m_contactno, ''),
-        COALESCE(pt.m_email, ''),
-        COALESCE(pt.father_name, ''),
-        COALESCE(pt.f_birthdate, ''),
-        COALESCE(pt.f_contactno, ''),
-        COALESCE(pt.f_email, ''),
-        COALESCE(pt.emergency_name, ''),
-        COALESCE(pt.e_birthdate, ''),
-        COALESCE(pt.e_contactno, ''),
-        COALESCE(pt.e_email, '')
-    ) LIKE '%${searchTerm}%';
+        SELECT pt.PatientNo,
+        pc.CaseNo,
+        pc.case_refno, pc.case_status,
+        CONCAT(pt.last_name, ', ', pt.first_name, ' ', pt.middle_initial) AS fullname,
+        pt.birthdate,
+        pt.sex,
+        pt.age,
+        pt.initial_bodyweight,
+        pt.initial_height,
+        pt.nationality,
+        CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
+        CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
+        pt.admission_date,
+        pt.mother_name,
+        pt.m_birthdate,
+        pt.m_contactno,
+        pt.m_email,
+        pt.father_name,
+        pt.f_birthdate,
+        pt.f_contactno,
+        pt.f_email,
+        pt.emergency_name,
+        pt.e_birthdate,
+        pt.e_contactno,
+        pt.e_email
+ FROM PEDTBDSS_new.TD_PTINFORMATION pt
+ JOIN PEDTBDSS_new.TD_PTCASE pc ON pc.PatientNo = pt.PatientNo
+ JOIN (
+     SELECT PatientNo, MAX(start_date) AS latest_start_date
+     FROM PEDTBDSS_new.TD_PTCASE
+     GROUP BY PatientNo
+ ) latest_cases ON pc.PatientNo = latest_cases.PatientNo AND pc.start_date = latest_cases.latest_start_date
+ WHERE (pc.case_status = 'O' OR (
+     pc.case_status <> 'O' AND NOT EXISTS (
+         SELECT 1
+         FROM PEDTBDSS_new.TD_PTCASE sub_pc
+         WHERE sub_pc.PatientNo = pc.PatientNo AND sub_pc.start_date = latest_cases.latest_start_date AND sub_pc.case_status = 'O'
+     )
+ )) AND CONCAT(COALESCE(pt.last_name," "),COALESCE(pt.first_name," "),COALESCE(pt.middle_initial," "),pc.case_refno,pt.admission_date) LIKE '%${searchTerm}%';
 
     `, (err, results) => {
         if (err) {

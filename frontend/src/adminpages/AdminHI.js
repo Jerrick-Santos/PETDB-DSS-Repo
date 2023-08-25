@@ -10,6 +10,7 @@ import { Link, useParams } from 'react-router-dom';
 import Pagination from 'react-bootstrap/Pagination';
 
 
+
 const AdminHI = () => {
   const [hiData, setHiData] = useState([]);
 
