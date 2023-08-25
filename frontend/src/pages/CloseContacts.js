@@ -138,15 +138,17 @@ const CloseContacts = () => {
                     </tr>
                 </thead>
                 <tbody>
-                {closeContactListData.map(contact => (
-                    <tr>
+                {closeContactListData.map((contact, index) => (
+                    <tr key={index}>
                       <td>{contact.last_name+", "+contact.first_name+" "+contact.middle_initial}</td>
-                      <td>{new Date(contact.birthdate).toISOString().split("T")[0]}</td>
+                      <td>{new Date(contact.birthdate).toLocaleDateString()}</td>
                       <td>{contact.sex === "M" ? "Male": "Female"}</td>
                       <td>{contact.contact_person}</td>
                       <td>{contact.contact_num}</td>
                       <td>{contact.contact_email}</td>
                       <td>{contact.contact_relationship}</td>
+
+                      {/*TODO: Add Confirm Page for Successful Patient Contact*/}
                       <td>
                         {contact.date_contacted === null ? (
                           "Has not been contacted yet"
@@ -155,9 +157,15 @@ const CloseContacts = () => {
                         )
                         }
                       </td>
+
+                      {/* Patient Convert Button: Only Applicable to Contacts Under the Age of 15*/}
                       <td>
                         {contact.PatientNo === null ? (
-                          <Link to={`/addPatient/${contact.ContactNo}`}><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Convert</button></Link>
+                          contact.age < 15 ? (
+                            <Link to={`/addPatient/${contact.ContactNo}`}><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Convert</button></Link>
+                          ) : (
+                            "Contact cannot be patient, must be younger than 15"
+                          )
                         ) : (
                           <Link to={`/patient/${contact.PatientNo}`}>View Patient</Link>
                         )}

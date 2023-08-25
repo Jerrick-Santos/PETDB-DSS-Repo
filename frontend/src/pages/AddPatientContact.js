@@ -77,7 +77,7 @@ const AddPatientContact = () => {
         e.preventDefault()
         try{
             console.log(patient)
-            await axios.post("http://localhost:4000/api/convertContact", patient)
+            await axios.post("http://localhost:4000/api/newpatient", patient)
         }catch(err){
             console.log(err)
         }

@@ -34,13 +34,33 @@ module.exports = (db) => {
         `;
 
     
-        db.query(query, (err, result) => {
+        db.query(query, (err, results) => {
             if (err) {
                 console.error(err);
             }
             else {
-                res.send(result);
-                console.log(result);
+            
+                // Computing for Close Contact Age
+                results.forEach(result => {
+                    const currDate = new Date()
+                    const birthdate = new Date(result.birthdate)
+                    let age = currDate.getFullYear() - birthdate.getFullYear()
+
+                    console.log(currDate.getFullYear(), " ", birthdate.getFullYear(), " ", age)
+
+                    if (
+                        currDate.getMonth() < birthdate.getMonth() ||
+                        (currDate.getMonth() === birthdate.getMonth() &&
+                            currDate.getDate() < birthdate.getDate())
+                    ) {
+                        age--;
+                    }
+
+                    result.age = age
+                })
+
+                console.log(results);
+                res.send(results);
             }
         });
     
@@ -88,67 +108,77 @@ module.exports = (db) => {
         // TODO: return value
     }),
 
+    // TO BE DELETED: (Original Purpose: Submit close contact details to patient table, but can use addPatient instead)
     router.post('/convertContact', (req, res) => {
 
-        /** ROUTER GOAL: Collect the contact information and insert it as new patient */
-        
-        // Get necesary data
-            // either passing the contact_no of the contact or;
-            // their currently available information that was passed into the frontend already
-        const contact_no = req.query.ContactNo;
+        const q = "INSERT INTO TD_PTINFORMATION (`last_name`, `first_name`, `middle_initial`, `age`, `sex`, `birthdate`, `initial_bodyweight`, `initial_height`, `nationality`, `per_houseno`, `per_street`, `per_barangay`, `per_city`, `per_region`, `per_zipcode`, `curr_houseno`, `curr_street`, `curr_barangay`, `curr_city`, `curr_region`, `curr_zipcode`, `admission_date`, `mother_name`, `m_birthdate`, `m_contactno`, `m_email`, `father_name`, `f_birthdate`, `f_contactno`, `f_email`, `emergency_name`, `e_birthdate`, `e_contactno`, `e_email`) VALUES (?)"
+        const values = [
+            req.body.last_name,
+            req.body.first_name,
+            req.body.middle_initial,
+            req.body.age,
+            req.body.sex,
+            req.body.birthdate,
+            req.body.initial_bodyweight,
+            req.body.initial_height,
+            req.body.nationality,
+            req.body.per_houseno,
+            req.body.per_street,
+            req.body.per_barangay,
+            req.body.per_city,
+            req.body.per_region,
+            req.body.per_zipcode,
+            req.body.curr_houseno,
+            req.body.curr_street,
+            req.body.curr_barangay,
+            req.body.curr_city,
+            req.body.curr_region,
+            req.body.curr_zipcode,
+            req.body.admission_date,
+            req.body.mother_name,
+            req.body.m_birthdate,
+            req.body.m_contactno,
+            req.body.m_email,
+            req.body.father_name,
+            req.body.f_birthdate,
+            req.body.f_contactno,
+            req.body.f_email,
+            req.body.emergency_name,
+            req.body.e_birthdate,
+            req.body.e_contactno,
+            req.body.e_email,
+        ]
 
-        // query insert a new patient using the acquired information
-        db.query(`SELECT * FROM PEDTB-DSS_new.MD_CONTACTTRACING WHERE ContactNo = ${contact_no}`, (err, result) => {
-            if (err) {console.log(err);}
+        const refno = req.body.case_refno
+
+        db.query(q, [values], (err, data) => {
+            if(err) {
+                return res.json(err)
+            } 
+            console.log("Successfully added Patient! (1/3)");
+        });
+
+        let patient_no = null;
+        db.query(`SELECT MAX(PatientNo) AS max_pno FROM PEDTBDSS_new.TD_PTINFORMATION;`, (err, data) => {
+            if (err) {console.error(err)}
             else {
-
-                const formattedDate = new Date(result[0].birthdate).toISOString().split('T')[0];
-                
-                const birthdate = new Date(result[0].birthdate);
-                const currDate = new Date();
-                const date_diff = currDate.getTime() - birthdate.getTime();
-                const age = floor(date_diff/(1000*3600*24));
-                const admit_date = currDate.toISOString().split('T')[0];
-                const values = 
-                [
-                    result[0].last_name,
-                    result[0].first_name,
-                    result[0].middle_initial,
-                    age,
-                    result[0].sex,
-                    formattedDate,
-                    admit_date,
-                    result[0].contact_person,
-                    result[0].contact_num,
-                    result[0].contact_email,
-                ];
-
-                const query = db.query(`INSERT INTO PEDTB-DSS_new.TD_PTINFORMATION (last_name, first_name, middle_initial, age, sex, birthdate, admission_date, e_name, e_contactno, e_email) VALUES (?)`);
-
-                db.query(query, [values], (err, result) => {
-                    if (err) {console.log(err)}
-                    else {
-                        const message = "Close contact successfully converted to Patient";
-                        console.log(message);
-
-                        const PatientNo = db.query(`SELECT MAX(PatientNo) FROM PEDTBDSS_new.TD_PTINFORMATION;`);
-                        db.query(`UPDATE PEDTB-DSS_new.MD_CONTACTTRACING SET PatientNo = ${PatientNo} WHERE ContactNo = ${contact_no}`, (err, result) => {
-                            if (err){console.log(err)}
-                            else {
-                                const message = "Close contact successfully matched to new patient list";
-                                res.json({success: true, message: message});
-                                console.log(message);
-                            }
-                        });
-                    }
-                });
-
-                // NOTE: Info not yet present in the patient:
-                    // initial weight and height, nationality, mother and father contact detail, address, 
+                patient_no = data.max_pno;
+                console.log("Successfully retrieved latest patient number (2/3", res)
             }
         });
+
+        const q2 = "INSERT INTO TD_PTCASE (`PatientNo`, `case_refno`, `SRNo`, `start_date`, `case_status`) VALUES (?, ?, ?, ?, ?)"
+        const values2 = [patient_no, refno, 2, req.body.admission_date, "O"]
+
+        db.query(q2, [values2], (err, res) => {
+            if (err) {console.error(err)}
+            else { 
+                console.log("Successfully added new case to patient (3/3)", res)
+            }
+        })
     }),
 
+    // TO BE DELETED (Original Purpose: find similar and add but process needs to be broken up)
     router.get('/getPatient', (req, res) => {
 
         /** ROUTER GOAL: Match the first name, last name and middle initial
@@ -241,11 +271,33 @@ module.exports = (db) => {
             if (err) {console.error(err);}
             else {
                 console.log(result);
+                result[0].formattedBirthdate = new Date(result[0].patient_birthdate).toLocaleDateString()
                 res.send(result);
             }
         })
     })
 
+    router.get('/getSimilarPatients', (req, res) => {
+
+        /** ROUTER GOAL: Get an index of patients with similar first name, middle initial and last name
+         *  -- Expected to return the set of information that will be used in creating a new close contact
+        */
+
+        // Query to get a list of patients with matching first name, middle initial and last name
+        const q = `SELECT * 
+        FROM PEDTBDSS_new.TD_PTINFORMATION
+        WHERE last_name = "${req.query.last_name}" 
+        AND middle_initial = "${req.query.middle_initial}"
+        AND first_name = "${req.query.first_name}"`
+
+        db.query(q, (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                console.log(results)
+                res.send(results)
+            }
+        })
+    })
 
     return router;
 
