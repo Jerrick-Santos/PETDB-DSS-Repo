@@ -297,6 +297,36 @@ module.exports = (db) => {
                 res.send(results)
             }
         })
+    }),
+
+    router.get('/getPatientNo/:caseNum', (req, res) => {
+
+        const q = `SELECT PatientNo
+        FROM PEDTBDSS_new.TD_PTCASE
+        WHERE CaseNo = ${req.params.caseNum};`
+
+        db.query(q, (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                res.send(results)
+            }
+        })
+    }),
+
+    router.get('/getLatestCase/:PatientNo', (req, res) => {
+        const q = `SELECT CaseNo
+        FROM PEDTBDSS_new.TD_PTCASE
+        WHERE PatientNo = ${req.params.PatientNo}
+        ORDER BY start_date DESC
+        LIMIT 1;
+        `
+
+        db.query(q, (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                res.send(results)
+            }
+        })
     })
 
     return router;

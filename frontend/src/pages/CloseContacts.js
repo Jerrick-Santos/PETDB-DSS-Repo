@@ -21,6 +21,7 @@ const CloseContacts = () => {
 
   const [closeContactListData, setCloseContactListData] = useState([]);
   const [patientData, setPatientData] = useState([]);
+  const [latestCase, setLatestCase] = useState([]);
 
   // Helper Functions
   function calcDaysContact(a, b){
@@ -44,6 +45,7 @@ const CloseContacts = () => {
     })
   }, [caseNum])
 
+  // Load patient data for header
   useEffect(() => {
     axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
     .then(res => {
@@ -54,6 +56,30 @@ const CloseContacts = () => {
       console.error(err);
     })
   }, [caseNum])
+
+  // Check backend if case is latest
+  useEffect(() => {
+    console.log(caseNum)
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/getPatientNo/${caseNum}`);
+        const PatientNo = response.data[0].PatientNo;
+        console.log("PATIENTNUM FROM BACKEND: ", PatientNo);
+  
+        const result = await axios.get(`http://localhost:4000/api/getLatestCase/${PatientNo}`);
+        const CaseNo = result.data[0].CaseNo;
+        console.log("LATESTCASE FROM NESTED QUERY: ", CaseNo);
+  
+        caseNum === CaseNo ? setLatestCase(true) : setLatestCase(false);
+        console.log("IS LATEST CASE?: ", latestCase);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchData();
+  }, [caseNum, latestCase]);
+  
 
   return (
     <div>
@@ -129,10 +155,10 @@ const CloseContacts = () => {
                         <th scope="col">Full Name</th>
                         <th scope="col">Birthdate</th>
                         <th scope="col">Sex</th>
+                        <th scope="col">Relationship to Patient</th>
                         <th scope="col">Contact Name</th>
                         <th scope="col">Contact Number</th>
                         <th scope="col">Contact Email</th>
-                        <th scope="col">Contact Relationship</th>
                         <th scope="col">Days since last contact</th>
                         <th scope="col">Patient</th>
                     </tr>
@@ -143,11 +169,11 @@ const CloseContacts = () => {
                       <td>{contact.last_name+", "+contact.first_name+" "+contact.middle_initial}</td>
                       <td>{new Date(contact.birthdate).toLocaleDateString()}</td>
                       <td>{contact.sex === "M" ? "Male": "Female"}</td>
+                      <td>{contact.contact_relationship}</td>
                       <td>{contact.contact_person}</td>
                       <td>{contact.contact_num}</td>
                       <td>{contact.contact_email}</td>
-                      <td>{contact.contact_relationship}</td>
-
+                      
                       {/*TODO: Add Confirm Page for Successful Patient Contact*/}
                       <td>
                         {contact.date_contacted === null ? (
@@ -178,7 +204,7 @@ const CloseContacts = () => {
                
             </table>
             <div className="d-flex justify-content-end me-5 mb-5" >
-              <AddCloseContactModal id={caseNum}/>
+              <AddCloseContactModal id={caseNum} isLatest={latestCase}/>
           </div>
 
 
