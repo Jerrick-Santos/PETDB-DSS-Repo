@@ -515,7 +515,7 @@ WHERE
     //ADMIN ROUTES
     //create a BHC
     router.post('/newbhc', (req, res) => {
-        const q = "INSERT INTO MD_BARANGAYS (`BGYName`, `BGYOperatingHours`, `BGYContactNumber`, `BGYEmailAddress`, `BGYUnitNo`, `BGYStreet`, `BGYBarangay`, `BGYCity`, `BGYRegion`, `BGYZipCode`, `XCoord`, `YCoord`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const q = "INSERT INTO MD_BARANGAYS (`BGYName`, `BGYOperatingHours`, `BGYContactNumber`, `BGYEmailAddress`, `BGYUnitNo`, `BGYStreet`, `BGYBarangay`, `BGYCity`, `BGYRegion`, `BGYProvince`, `BGYZipCode`, `XCoord`, `YCoord`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         const values = [
             req.body.BGYName,
             req.body.BGYOperatingHours,
@@ -526,6 +526,7 @@ WHERE
             req.body.BGYBarangay,
             req.body.BGYCity,
             req.body.BGYRegion,
+            req.body.BGYRProvince,
             req.body.BGYZipCode,
             req.body.XCoord,
             req.body.YCoord
@@ -543,7 +544,7 @@ WHERE
 
     //create a new health institution
     router.post('/newhi', (req, res) => {
-        const q = "INSERT INTO MD_HI (`HIName`, `HIOperatingHours`, `HIContactNumber`, `HIEmailAddress`, `HIUnitNo`, `HIStreet`, `HIBarangay`, `HICity`, `HIRegion`, `HIZipCode`, `XCoord`, `YCoord`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const q = "INSERT INTO MD_HI (`HIName`, `HIOperatingHours`, `HIContactNumber`, `HIEmailAddress`, `HIUnitNo`, `HIStreet`, `HIBarangay`, `HICity`, `HIRegion`, `HIProvince`, `HIZipCode`, `XCoord`, `YCoord`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         const values = [
             req.body.HIName,
             req.body.HIOperatingHours,
@@ -554,6 +555,7 @@ WHERE
             req.body.HIBarangay,
             req.body.HICity,
             req.body.HIRegion,
+            req.body.HIProvince,
             req.body.HIZipCode,
             req.body.XCoord,
             req.body.YCoord
@@ -654,7 +656,7 @@ WHERE
         db.query(`
         SELECT bg.BGYNo,
             bg.BGYName, 
-            CONCAT(bg.BGYUnitNo, ' ', bg.BGYStreet, ' ', bg.BGYBarangay, ' ', bg.BGYCity, ' ', bg.BGYRegion, ' ', bg.BGYZipCode) AS address,
+            CONCAT(bg.BGYUnitNo, ' ', bg.BGYStreet, ' ', bg.BGYBarangay, ' ', bg.BGYCity, ' ', bg.BGYRegion, ' ', bg.BGYProvince, ' ', bg.BGYZipCode) AS address,
             bg.BGYOperatingHours,
             bg.BGYContactNumber,
             bg.BGYEmailAddress,
@@ -680,13 +682,14 @@ WHERE
         db.query(`
         SELECT h.HINo,
             h.HIName, 
-            CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIZipCode) AS address,
+            CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince, ' ', h.HIZipCode) AS address,
             h.HIOperatingHours,
             h.HIContactNumber,
             h.HIEmailAddress,
             h.XCoord,
             h.YCoord
         FROM PEDTBDSS_new.MD_HI h
+        ORDER BY HIName;
        
     `, (err, results) => {
         if (err) {
@@ -725,7 +728,7 @@ WHERE
         db.query(`
         SELECT bg.BGYNo,
             bg.BGYName, 
-            CONCAT(bg.BGYUnitNo, ' ', bg.BGYStreet, ' ', bg.BGYBarangay, ' ', bg.BGYCity, ' ', bg.BGYRegion, ' ', bg.BGYZipCode) AS address,
+            CONCAT(bg.BGYUnitNo, ' ', bg.BGYStreet, ' ', bg.BGYBarangay, ' ', bg.BGYCity, ' ', bg.BGYRegion, ' ', bg.BGYProvince, ' ', bg.BGYZipCode) AS address,
             bg.BGYOperatingHours,
             bg.BGYContactNumber,
             bg.BGYEmailAddress,
@@ -752,7 +755,7 @@ WHERE
         db.query(`
         SELECT h.HINo,
             h.HIName, 
-            CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIZipCode) AS address,
+            CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince,' ', h.HIZipCode) AS address,
             h.HIOperatingHours,
             h.HIContactNumber,
             h.HIEmailAddress,
@@ -912,6 +915,39 @@ WHERE
             return res.json(data)
         });
     })
+
+    //SEARCH ROUTES FOR ADMIN VIEW
+    router.get('/searchhi/:id', (req, res) => {
+        const searchTerm = req.params.id;
+        db.query(`
+        SELECT h.HINo,
+        h.HIName, 
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince, ' ', h.HIZipCode) AS address,
+        h.HIOperatingHours,
+        h.HIContactNumber,
+        h.HIEmailAddress,
+        h.XCoord,
+        h.YCoord
+    FROM PEDTBDSS_new.MD_HI h
+WHERE 
+    CONCAT(
+        COALESCE(h.HIName, ''),
+        COALESCE(CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince, ' ', h.HIZipCode), ''),
+        COALESCE(h.HIContactNumber, ''),
+        COALESCE(h.HIEmailAddress, '')
+    ) LIKE '%${searchTerm}%';
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    })
+})
+
   
 
     return router;
