@@ -157,7 +157,7 @@ module.exports = (db) => {
     })
 
     //ADD TO PRESUMPTIVE ML
-    router.post('/addlatent/:caseid/:presref', (req, res) => {
+    router.post('/addpresumptive/:caseid/:presref', (req, res) => {
         const caseid = req.params.caseid
         const presref = req.params.presref
 
@@ -517,7 +517,8 @@ module.exports = (db) => {
 
                                     }
                                     catch(e){
-                                        res.status(500).json({error: "query is empty"})
+                                        res.status(500).json({e: "query is empty"})
+                                        console.log("Query is empty")
                                     }
 
                                 });

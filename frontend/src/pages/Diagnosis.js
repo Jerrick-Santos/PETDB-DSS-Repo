@@ -12,6 +12,8 @@ import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
+import PresumptiveTBModal from '../components/PresumptiveTBModal';
+import LatentTBModal from '../components/LatentTBModal';
 
 
 const Diagnosis = () => {
@@ -21,82 +23,61 @@ const Diagnosis = () => {
 
   const [diagnosisData, setdiagnosisData] = useState([]);
   const [presumptiveData, setPresumptiveData] = useState();
-  const [promptModal, setPromptModal] = useState(0) //1 - presumptive, 0 - no promot, -1 - latent 
+  const [showPresumptiveModal, setShowPresumptiveModal] = useState(false);
+  const [showLatentModal, setShowLatentModal] = useState(false);
   const [latentData, setLatentData] = useState();
   const [isLoading, setIsLoading] = useState(false); // To manage loading state
   const [patientData, setPatientData] = useState([]);
 
   const handleButtonClick = async () => {
-    setIsLoading(true); // Set loading state to true
-    // Make the HTTP request
-
-    //SET DIAGNOSIS 
-    axios.post(`http://localhost:4000/api/diagnose/${id}`)
-      .then(response => {
-        console.log(response.data); // Handle the response as needed
-        // Reset loading state
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setIsLoading(false); // Reset loading state
-      });
-
-      //GET LATEST DIAGNOSIS (specifically get the values of latent and presumptive tb)
-      axios.get(`http://localhost:4000/api/getlatestdiagnostic/${id}`)
-      .then(diagnosis => {
-        console.log(diagnosis.data); // Handle the response as needed
-        const {latent_tb} = diagnosis.data
-        setLatentData(latent_tb)
-
-        const {presumptive_tb} = diagnosis.data
-        console.log(presumptive_tb)
-        setPresumptiveData(presumptive_tb)
-   
-        setIsLoading(false); // Reset loading state
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setIsLoading(false); // Reset loading state
-      });
-
-      //DIAGNOSE = PRESUMPTIVE
-      if(presumptiveData === 1 && latentData === -1){
-
-        axios.get(`http://localhost:4000/api/getpresumptiveincase/${id}`)
-        .then(response => {
-          console.log(response.data); // Handle the response as needed
-          if(response !== null){
-            setPromptModal(1)
-          }
-          // Reset loading state
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          setIsLoading(false); // Reset loading state
-        });
-
-        
+    setIsLoading(true);
+  
+    try {
+      // SET DIAGNOSIS
+      const diagnoseResponse = await axios.post(`http://localhost:4000/api/diagnose/${id}`);
+      console.log(diagnoseResponse.data);
+  
+      // GET LATEST DIAGNOSIS
+      const diagnosisResponse = await axios.get(`http://localhost:4000/api/getlatestdiagnostic/${id}`);
+      console.log(diagnosisResponse.data);
+  
+      const { latent_tb, presumptive_tb } = diagnosisResponse.data;
+      setLatentData(latent_tb);
+      setPresumptiveData(presumptive_tb);
+  
+      // DIAGNOSE = PRESUMPTIVE
+      if (presumptive_tb === 1 && latent_tb === -1) {
+        const presumptiveIncaseResponse = await axios.get(`http://localhost:4000/api/getpresumptiveincase/${id}`);
+        console.log(presumptiveIncaseResponse.data);
+  
+        if (presumptiveIncaseResponse.data.length === 0) {
+          console.log("Please Insert Presumptive ID");
+          setShowPresumptiveModal(true);
+        } else {
+          console.log("Presumptive ID detected");
+          setShowPresumptiveModal(false);
+        }
       }
-      //DIAGNOSE = LATENT
-      else if (presumptiveData === -1 && latentData === 1){
-
-        axios.get(`http://localhost:4000/api/getlatentincase/${id}`)
-        .then(response => {
-          console.log(response.data); // Handle the response as needed
-          if(response !== null){
-            setPromptModal(-1)
-          }
-          // Reset loading state
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          setIsLoading(false); // Reset loading state
-        });
-
+      // DIAGNOSE = LATENT
+      else if (presumptive_tb === -1 && latent_tb === 1) {
+        const latentIncaseResponse = await axios.get(`http://localhost:4000/api/getlatentincase/${id}`);
+        console.log(latentIncaseResponse.data);
+  
+        if (latentIncaseResponse.data.length === 0) {
+          console.log("Please Insert Latent ID");
+          setShowLatentModal(true);
+        } else {
+          console.log("Latent ID detected");
+          setShowLatentModal(false);
+        }
       }
-      
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
-
+  
   useEffect(() => {
     axios.get(`http://localhost:4000/api/getalldiagnosis/${id}`)
       .then(response => {
@@ -245,6 +226,23 @@ const Diagnosis = () => {
 
     </Col>
   </Row>
+
+    {showPresumptiveModal && (
+        <PresumptiveTBModal
+          show={showPresumptiveModal}
+          onClose={() => setShowPresumptiveModal(false)}
+          caseid={id}
+        />
+      )}
+
+
+    {showLatentModal && (
+          <LatentTBModal
+            show={showLatentModal}
+            onClose={() => setShowLatentModal(false)}
+            caseid={id}
+          />
+        )}
 
   </div>
   
