@@ -57,6 +57,7 @@ function AddAssessNoPersist(props) {
         other_dd_interacts:'',
         other_comorbid:'',
         assessment_date: new Date().toISOString().split('T')[0],
+        person_conducted: '',
     });
 
     const handleChange = (e) => {
@@ -534,6 +535,40 @@ function AddAssessNoPersist(props) {
       </Card.Body>
     </Card>
   </Col>
+</Row>
+<Row className="mt-2 justify-content-center">
+<Col lg="8">
+    <p> <strong> Issuance</strong> </p>
+    <Card className="mb-4">
+      <Card.Body>
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Person who conducted this assessment</Card.Text>
+          </Col>
+          <Col sm="4">
+            <Card.Text>
+                <input type="text" className="form-control" name='person_conducted' value={assessFormValues.person_conducted} onChange={handleChange} placeholder='Full Name' />
+              </Card.Text>
+          </Col>
+        </Row>
+        <hr/>
+        <Row>
+          <Col sm="9">
+            <Card.Text className="text-muted">Assessment Date</Card.Text>
+          </Col>
+          <Col sm="3">
+            <input
+              type="text"
+              className="form-control"
+              name="assessment_date"
+              value={assessFormValues.assessment_date}
+              disabled
+            />
+          </Col>
+        </Row>
+      </Card.Body>
+    </Card>
+</Col>
 </Row>
 </div>
 </form>

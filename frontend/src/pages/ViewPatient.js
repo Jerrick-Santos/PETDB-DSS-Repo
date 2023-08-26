@@ -6,6 +6,7 @@ import NavBar from '../components/NavBar';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import AdvancedSearch from '../components/AdvancedSearch';
+import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 
 
 
@@ -51,15 +52,18 @@ const ViewPatient = () => {
   return (
     <div>
     <NavBar/>
-    <div className='px-3'>
+    <Row className="mt-5 justify-content-center" >
+        <Col lg="11" className="justify-content-center" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
     
      {/* Showing 4 summary cards which will have a clickable function that affects the overall patient table
         once backend has been implemented*/}
     
     {/* Simple search based on a keyword and a button for advanced Search*/}
-    <div className="d-flex ms-2 mb-2 mt-5">
+    <Row className="justify-content-center"  >
+        <Col className="justify-content-center"  lg="10"> 
+    <div className="d-flex  mb-2 mt-5">
     <form>
-        <div className="input-group" style={{ maxWidth: '290px' }}>
+        <div className="input-group">
             {/* Adjust the max-width to control the width of the input field */}
             <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleChange} placeholder="Keyword" />
             <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSubmit} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
@@ -70,22 +74,27 @@ const ViewPatient = () => {
         <AdvancedSearch/>
     </div>
     </div>
-
-
-
+    </Col>
+    </Row>
+    <Row className="justify-content-center"  >
+        <Col className="justify-content-center"  lg="10"> 
+        <h1 className="mt-4" style={{fontSize:"35px"}}> Patient Record </h1>
+        </Col>
+    </Row>
+    <Row className="justify-content-center">
+        <Col  className="justify-content-center" sm="10">
+    <Card className="mt-3 mb-4">
+        <Card.Body>
+    
     {/* Showing overall patient records in a table formatting. Hard-coded for frontend. Revise once backend
         is implemented */}
-    <table className="table caption-top bg-white rounded mt-2 ms-4">
-    <caption className=' fs-4'>Patient Records</caption>
+    
+    <table className="table caption-top bg-white rounded mt-2">
     <thead>
                     <tr>
                         <th scope="col">Full Name</th>    
-                        <th scope="col">Birthdate</th>
-                        <th scope="col">Sex</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">Mother's Name</th>
-                        <th scope="col">Father's Name</th>
-                        <th scope="col">Emergency Contact's Name</th>
+                        <th scope="col">Most Recent Case No.</th>
+                        <th scope="col">Case Status</th>
                         <th scope="col">Date Added</th>
 
                     </tr>
@@ -100,19 +109,28 @@ const ViewPatient = () => {
                             </p>
                         </Link>
                         </td>
-                        <td>{new Date(patient.birthdate).toLocaleDateString()}</td>
-
-                        <td>{patient.sex}</td>
-                        <td>{patient.age}</td>
-                        <td>{patient.mother_name}</td>
-                        <td>{patient.father_name}</td>
-                        <td>{patient.emergency_name}</td>
+                        <td>
+                        <Link to={`/closecontacts/${patient.CaseNo}`}>
+                            <p style={{ color: 'black' }}>
+                            <u>{patient.case_refno}</u>
+                            </p>
+                        </Link>
+                        </td>
+                        <td>{patient.case_status === "O" ? "Ongoing": "Closed"}</td>
                         <td>{new Date(patient.admission_date).toLocaleDateString()}</td>
                     </tr>
                     ))}
                 </tbody>
             </table>
-        </div>
+           
+            
+            </Card.Body>
+            </Card>
+            </Col>
+            </Row>
+        
+        </Col>
+    </Row>
     </div>
   );
 };
