@@ -12,6 +12,7 @@ function AddCloseContactModal(props) {
 
     const [validated, setValidated] = useState(false);
     const[show,setShow] = useState(false)
+    //const [nameCheck, setNameCheck] = useState(false)
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -88,14 +89,21 @@ function AddCloseContactModal(props) {
                 console.log(err)
             }
         }
-        
-        
+    }
+
+    const handleCheck = (e) => {
+        const contact_name = `${formValues.last_name}, ${formValues.first_name} ${formValues.middle_initial}`
+        //setNameCheck(prevValue => !prevValue)
+        setFormValues(prevValues => ({
+            ...prevValues,
+            contact_person: contact_name
+          }));
     }
 
   return (
         <>
 
-            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
+            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow} disabled={props.isLatest}>
                 <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a Close Contact
               </button>
 
@@ -197,12 +205,19 @@ function AddCloseContactModal(props) {
 
             <Row className="mt-5 mb-3 justify-content-center">
                 <Form.Group as={Col} md="15" controlId="contact_person">
-                    <Form.Label>Contact Name</Form.Label>
+                    <Form.Label>Contact Person</Form.Label>
                     <Form.Control
                         type='text'
                         placeholder='Contact Name'
                         name='contact_person'
+                        value={formValues.contact_person}
                         onChange={handleChange} 
+                    />
+                    <Form.Check 
+                        type='checkbox'
+                        id='checkSameName'
+                        label='Same as contact name?'
+                        onChange={handleCheck}
                     />
                 </Form.Group>
 
