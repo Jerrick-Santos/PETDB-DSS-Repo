@@ -507,7 +507,7 @@ WHERE
 
     //create a new health institution
     router.post('/newhi', (req, res) => {
-        const q = "INSERT INTO MD_HI (`HIName`, `HIOperatingHours`, `HIContactNumber`, `HIEmailAddress`, `HIUnitNo`, `HIStreet`, `HIBarangay`, `HICity`, `HIRegion`, `HIProvince`, `HIZipCode`, `XCoord`, `YCoord`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const q = "INSERT INTO MD_HI (`HIName`, `HIOperatingHours`, `HIContactNumber`, `HIEmailAddress`, `HIUnitNo`, `HIStreet`, `HIBarangay`, `HICity`, `HIRegion`, `HIProvince`, `HIZipCode`, `XCoord`, `YCoord` , `HIContactPerson`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         const values = [
             req.body.HIName,
             req.body.HIOperatingHours,
@@ -521,7 +521,8 @@ WHERE
             req.body.HIProvince,
             req.body.HIZipCode,
             req.body.XCoord,
-            req.body.YCoord
+            req.body.YCoord,
+            req.body.HIContactPerson
         ]
 
         db.query(q, values, (err, data) => {
@@ -648,9 +649,11 @@ WHERE
             CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince, ' ', h.HIZipCode) AS address,
             h.HIOperatingHours,
             h.HIContactNumber,
+            h.HIContactPerson,
             h.HIEmailAddress,
             h.XCoord,
-            h.YCoord
+            h.YCoord,
+            h.isActive
         FROM PEDTBDSS_new.MD_HI h
         ORDER BY HIName;
        
@@ -721,9 +724,11 @@ WHERE
             CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince,' ', h.HIZipCode) AS address,
             h.HIOperatingHours,
             h.HIContactNumber,
+            h.HIContactPerson,
             h.HIEmailAddress,
             h.XCoord,
-            h.YCoord
+            h.YCoord,
+            h.isActive
         FROM PEDTBDSS_new.MD_HI h
         WHERE h.HINo =${id};
        
@@ -910,6 +915,67 @@ WHERE
         }
     })
 })
+
+
+//CHECKING OF REFERENCES FOR HI
+router.get('/checkhiref/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT
+    (SELECT COUNT(*) FROM MD_HIDGTESTS WHERE HINo = ${id}) +
+    (SELECT COUNT(*) FROM MD_BRGYHI WHERE HINo = ${id}) +
+    (SELECT COUNT(*) FROM TD_DIAGNOSTICRESULTS WHERE HINo = ${id}) AS total_references;
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+//Delete a row in MD_HI based on a given id
+router.delete('/deletehi/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    DELETE FROM MD_HI
+    WHERE HINo = ${id};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+
+router.patch('/updatehistatus/:id', (req, res) => {
+    const isActive = req.body.isActive;
+    const id = req.params.id;
+    
+    db.query(
+        `UPDATE MD_HI SET isActive = ? WHERE HINo = ?`,
+        [isActive, id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ error: 'An error occurred while updating status.' });
+            } else {
+                console.log(`Health institution ${id} status updated to ${isActive}.`);
+                res.json({ message: 'Status updated successfully.' });
+            }
+        }
+    );
+});
+
 
   
 

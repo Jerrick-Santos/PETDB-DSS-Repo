@@ -9,6 +9,8 @@ import { Link, useParams } from 'react-router-dom';
 import AssignBHCModal from '../admincomponents/AssignBHCModal';
 import AssignHIModal from '../admincomponents/AssignHIModal';
 import Pagination from 'react-bootstrap/Pagination';
+import DeleteHIModal from '../admincomponents/DeleteHIModal';
+import edit from '../assets/edit.png'
 
 const HIInfo = () => {
 
@@ -59,7 +61,25 @@ useEffect(() => {
          {/* Shows the recommended next course of action */}
     <Row className="mt-5 justify-content-center">
       <Col lg="9">
-      <h1 style={{fontSize:"35px"}}> Health Institution Profile </h1>
+        <Row>
+          <Col lg="10">
+           <h1 style={{fontSize:"35px"}}> Health Institution Profile </h1>
+          </Col>
+
+          <Col>
+          <img
+                src={edit}
+                className="mt-1 me-2 clickable"
+                style={{ height: "30px" }}
+            />
+               <DeleteHIModal HINo={hiData.HINo} HIName={hiData.HIName}/>
+          </Col>
+         
+          
+         
+
+        </Row>
+      
       <Card className="mt-4 mb-4">
           <Card.Body>
             <Row>
@@ -91,6 +111,15 @@ useEffect(() => {
             <hr />
             <Row>
               <Col sm="6">
+                <Card.Text><strong>Contact Person </strong></Card.Text>
+              </Col>
+              <Col sm="6">
+                <Card.Text className="text-muted">{hiData.HIContactPerson}</Card.Text>
+              </Col>
+            </Row>
+            <hr />
+            <Row>
+              <Col sm="6">
                 <Card.Text><strong>Contact Number </strong></Card.Text>
               </Col>
               <Col sm="6">
@@ -104,6 +133,15 @@ useEffect(() => {
               </Col>
               <Col sm="6">
                 <Card.Text className="text-muted">{hiData.HIEmailAddress}</Card.Text>
+              </Col>
+            </Row>
+            <hr />
+            <Row>
+              <Col sm="6">
+                <Card.Text><strong> Status </strong></Card.Text>
+              </Col>
+              <Col sm="6">
+                <Card.Text className="text-muted">{hiData.isActive === 1 ? "Active": "Deactivated"}</Card.Text>
               </Col>
             </Row>
         

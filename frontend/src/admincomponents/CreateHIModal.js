@@ -25,7 +25,9 @@ function CreateHIModal() {
         HIRegion:'',
         HIZipCode:'',
         XCoord:'',
-        YCoord:''
+        YCoord:'',
+        HIContactPerson: '',
+        isActive: 1
     });
 
     const handleChange = (e) => {
@@ -58,7 +60,7 @@ function CreateHIModal() {
             <Row className="mb-3 justify-content-center">
                 <div className="form-group col-md-12">
                     <label for="inputFirstName">Health Institution Name</label>
-                    <input type="text" class="form-control"  name="HIName"  value={formValues.HIName} onChange={handleChange} placeholder="BHC Name"/>
+                    <input type="text" class="form-control"  name="HIName"  value={formValues.HIName} onChange={handleChange} placeholder="HI Name"/>
                 </div>
             </Row>
 
@@ -70,35 +72,44 @@ function CreateHIModal() {
             </Row>
            
             <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-4">
+                <div className="form-group col-md-3">
                     <label for="inputCurrHouseNo">Unit No.</label>
                     <input type="text" class="form-control"  name='HIUnitNo' value={formValues.HIUnitNo} onChange={handleChange} placeholder="House No."/>
                 </div>
                 
-                <div className="form-group col-md-4">
+                <div className="form-group col-md-3">
                     <label for="inputCurrStreet">Street</label>
                     <input type="text" class="form-control" name='HIStreet' value={formValues.HIStreet} onChange={handleChange}  placeholder="Street"/>
                 </div>
 
-                <div class="form-group col-md-4">
-                    <label for="inputCurrBarangay">Barangay</label>
-                    <input type="text" class="form-control" name='HIBarangay' value={formValues.HIBarangay} onChange={handleChange} placeholder="Barangay"/>
+                <div className="form-group col-md-3">
+                    <label for="inputCurrRegion">Region</label>
+                    <input type="text" class="form-control"  name='HIRegion' value={formValues.HIRegion} onChange={handleChange} placeholder="Region"/>
                 </div>
-                
+
+                <div className="form-group col-md-3">
+                    <label for="inputCurrRegion">Province</label>
+                    <input type="text" class="form-control"  name='HIProvince' value={formValues.HIProvince} onChange={handleChange} placeholder="Province"/>
+                </div>
+
+             
             </Row>
 
             <Row className="mb-3 justify-content-center">
            
-
-                <div className="form-group col-md-4">
+            <div className="form-group col-md-4">
                     <label for="inputCurrCity">City</label>
                     <input type="text" class="form-control"  name='HICity' value={formValues.HICity} onChange={handleChange}  placeholder="City"/>
                 </div>
-
-                <div className="form-group col-md-4">
-                    <label for="inputCurrRegion">Region</label>
-                    <input type="text" class="form-control"  name='HIRegion' value={formValues.HIRegion} onChange={handleChange} placeholder="Region"/>
+                
+               
+            <div class="form-group col-md-4">
+                    <label for="inputCurrBarangay">Barangay</label>
+                    <input type="text" class="form-control" name='HIBarangay' value={formValues.HIBarangay} onChange={handleChange} placeholder="Barangay"/>
                 </div>
+                
+
+               
 
                 <div className="form-group col-md-4">
                     <label for="inputCurrZip">Zip Code</label>
@@ -124,6 +135,13 @@ function CreateHIModal() {
            
        </Row>
 
+       <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-12">
+                    <label for="inputOperatingHours">Contact Person</label>
+                    <input type="text" class="form-control" name="HIContactPerson" value={formValues.HIContactPerson} onChange={handleChange} placeholder="Name"/>
+                </div>
+            </Row>
+
             <Row className="mb-3 justify-content-center">
             <div class="form-group col-md-6">
                     <label for="inputContactNumber">Contact #</label>
@@ -134,6 +152,8 @@ function CreateHIModal() {
                     <input type="text" class="form-control" name="HIEmailAddress" value={formValues.HIEmailAddress} onChange={handleChange} placeholder="e.g. sample@sample.com"/>
                 </div>
             </Row>
+
+          
 
             
             </form>

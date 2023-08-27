@@ -8,13 +8,15 @@ import AddBHCModal from '../admincomponents/CreateBHCModal';
 import CreateHIModal from '../admincomponents/CreateHIModal';
 import { Link, useParams } from 'react-router-dom';
 import Pagination from 'react-bootstrap/Pagination';
+import bin from '../assets/bin.png'
+import edit from '../assets/edit.png'
+import DeleteHIModal from '../admincomponents/DeleteHIModal';
 
 
 
 const AdminHI = () => {
   const [hiData, setHiData] = useState([]);
 
-const pageSize = 16; // Number of items per page
 
 useEffect(() => {
   axios.get("http://localhost:4000/api/allhi")
@@ -30,7 +32,7 @@ useEffect(() => {
 
 // Add these state variables
 const [activePage, setActivePage] = useState(1); // Active page number
-const itemsPerPage = 16; // Number of items per page
+const itemsPerPage = 12; // Number of items per page
 
 // Function to handle page change
 const handlePageChange = (pageNumber) => {
@@ -58,11 +60,7 @@ const [searchTerm, setSearchTerm] = useState('');
               });
     }
 
-    const handleProvinceFilter = async (e) =>{
-      e.preventDefault()
 
-    }
-  
 
   return (
     <div>
@@ -86,42 +84,41 @@ const [searchTerm, setSearchTerm] = useState('');
         <Card className="mt-4 mb-4">
           <Card.Body>
             <Row>
-              <Col sm="2">
+              <Col sm="3">
                 <Card.Text><strong>HI Name</strong> </Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="4">
                 <Card.Text><strong>Address</strong> </Card.Text>
               </Col>
-              <Col sm="2">
+              <Col sm="3">
                 <Card.Text><strong>Operating Hours</strong> </Card.Text>
               </Col>
               <Col sm="2">
-                <Card.Text><strong>Contact Number</strong> </Card.Text>
+                <Card.Text> <strong>Status</strong>  </Card.Text>
               </Col>
-              <Col sm="3">
-                <Card.Text><strong>Email Address</strong> </Card.Text>
-              </Col>
+              
+              
             </Row>
             
             {hiData.slice(startIndex, endIndex).map((hi, index) => (
               <>
               <hr/>
                      <Row>
-                     <Col sm="2">
+                     <Col sm="3">
                        <Card.Text ><Link to={`/hi/${hi.HINo}`}><p style={{ color: 'black' }}><u>{hi.HIName}</u> </p> </Link> </Card.Text> 
                      </Col>
-                     <Col sm="3">
+                     <Col sm="4">
                        <Card.Text>{hi.address}</Card.Text>
                      </Col>
-                     <Col sm="2">
+                     <Col sm="3">
                        <Card.Text>{hi.HIOperatingHours}</Card.Text>
                      </Col>
                      <Col sm="2">
-                       <Card.Text>{hi.HIContactNumber}</Card.Text>
+                       <Card.Text>{hi.isActive === 1 ? "Active": "Deactivated"}</Card.Text>
                      </Col>
-                     <Col sm="3">
-                       <Card.Text>{hi.HIEmailAddress} </Card.Text>
-                     </Col>
+                    
+            
+                  
                    </Row>
                    </>
                     ))}
