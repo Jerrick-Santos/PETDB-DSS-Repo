@@ -61,7 +61,12 @@ const ViewPatient = () => {
     {/* Simple search based on a keyword and a button for advanced Search*/}
     <Row className="justify-content-center"  >
         <Col className="justify-content-center"  lg="10"> 
-    <div className="d-flex  mb-2 mt-5">
+                <Row className="justify-content-center"  >
+                <Col className="justify-content-center"  lg="12"> 
+                <h1 className="mt-4" style={{fontSize:"35px"}}> Patient Record </h1>
+                </Col>
+            </Row>
+    <div className="d-flex  mb-2 mt-3">
     <form>
         <div className="input-group">
             {/* Adjust the max-width to control the width of the input field */}
@@ -76,11 +81,7 @@ const ViewPatient = () => {
     </div>
     </Col>
     </Row>
-    <Row className="justify-content-center"  >
-        <Col className="justify-content-center"  lg="10"> 
-        <h1 className="mt-4" style={{fontSize:"35px"}}> Patient Record </h1>
-        </Col>
-    </Row>
+    
     <Row className="justify-content-center">
         <Col  className="justify-content-center" sm="10">
     <Card className="mt-3 mb-4">
