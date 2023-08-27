@@ -1,5 +1,5 @@
 import '../index.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
@@ -15,6 +15,119 @@ const AddPatient = () => {
     const [isCurrentAddressDisabled, setIsCurrentAddressDisabled] = useState(false);
     const [calculatedAge, setCalculatedAge] = useState(null);
     let age = null;
+
+    const[regionData, setRegionData] = useState([])
+
+    useEffect(() => {
+
+        axios.get(`http://localhost:4000/api/allregions`)
+          .then((response) => {
+            setRegionData(response.data)
+          })
+          .catch((error) => {
+            // Handle any errors that occurred during the request
+            console.error('Error fetching data:', error);
+          });
+        
+    
+    }, []);
+
+    const [provinceData, setProvinceData] = useState([]);
+
+    const handleRegionChange = (e) => {
+        const selectedRegion = e.target.value;
+        axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
+            .then((response) => {
+                setProvinceData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching provinces:', error);
+            });
+    }
+
+    const [cityData, setCityData] = useState([]);
+
+    const handleProvinceChange = (e) => {
+        const selectedProvince = e.target.value;
+        axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
+            .then((response) => {
+                setCityData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching cities:', error);
+            });
+    }
+
+    const [barangayData, setBarangayData] = useState([]);
+
+    const handleCityChange = (e) => {
+        const selectedCity = e.target.value;
+        axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
+        .then((response) => {
+            setBarangayData(response.data);
+        })
+        .catch((error) => {
+            console.error('Error fetching barangays:', error);
+        });
+    }
+
+    const[currRegionData, setCurrRegionData] = useState([]);
+
+    useEffect(() => {
+
+        axios.get(`http://localhost:4000/api/allregions`)
+          .then((response) => {
+            setCurrRegionData(response.data)
+          })
+          .catch((error) => {
+            // Handle any errors that occurred during the request
+            console.error('Error fetching data:', error);
+          });
+        
+    
+    }, []);
+
+    const[currProvinceData, setCurrProvinceData] = useState([]);
+
+    const handleCurrRegionChange = (e) => {
+        // Fetch and update province data based on the selected region if needed
+        const selectedRegion = e.target.value;
+        axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
+            .then((response) => {
+                setCurrProvinceData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching provinces:', error);
+            });
+    };
+
+    const[currCityData, setCurrCityData] = useState([]);
+
+    const handleCurrProvinceChange = (e) => {
+        // Fetch and update city data based on the selected province if needed
+        const selectedProvince = e.target.value;
+        axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
+            .then((response) => {
+                setCurrCityData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching cities:', error);
+            });
+    };
+
+    const[currBarangayData, setCurrBarangayData] = useState([]);
+
+    const handleCurrCityChange = (e) => {
+        // Fetch and update barangay data based on the selected city if needed
+        const selectedCity = e.target.value;
+        axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
+        .then((response) => {
+            setCurrBarangayData(response.data);
+        })
+        .catch((error) => {
+            console.error('Error fetching barangays:', error);
+        });
+    };
 
     const [patient, setPatient] = useState({
         last_name: "",
@@ -225,22 +338,75 @@ const AddPatient = () => {
 
                 <div class="form-group col-md-2">
                     <label for="inputPermRegion">Region</label>
-                    <input type="text" class="form-control" id="inputPermRegion" name='per_region' onChange={handleChange}  placeholder="Region"/>
+                    <select className="form-select" name="per_region" value={patient.per_region} onChange={(e)=>{
+                        handleChange(e);
+                        handleRegionChange(e);
+                    }}>
+                        <option value="">Select</option>
+                    
+                    {regionData.map((hi, index) => (
+                    <>
+                    <option value={hi.region_id}>{hi.region_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label for="inputPermProvince">Province</label>
-                    <input type="text" class="form-control" id="inputPermProvince" name='per_province' onChange={handleChange}  placeholder="Province"/>
+                    <select className="form-select" name="per_province" value={patient.per_province} onChange={(e)=>{
+                        handleChange(e);
+                        handleProvinceChange(e);
+                    }}>
+                        <option value="">Select</option>
+                    
+                    {provinceData.map((hi, index) => (
+                    <>
+                    <option value={hi.province_id}>{hi.province_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label for="inputPermCity">City</label>
-                    <input type="text" class="form-control" id="inputPermCity" name='per_city' onChange={handleChange}  placeholder="City"/>
+                    <select className="form-select" name="per_city" value={patient.per_city} onChange={(e)=>{
+                        handleChange(e);
+                        handleCityChange(e);
+                    }}>
+                        <option value="">Select</option>
+                    
+                    {cityData.map((hi, index) => (
+                    <>
+                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label for="inputPermBarangay">Barangay</label>
-                    <input type="text" class="form-control" id="inputPermBarangay" name='per_barangay' onChange={handleChange}  placeholder="Barangay"/>
+                    <select className="form-select" name="per_barangay" value={patient.per_barangay} onChange={handleChange}>
+                        <option value="">Select</option>
+                    
+                    {barangayData.map((hi, index) => (
+                    <>
+                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
                 <div class="form-group col-md-1">
@@ -269,22 +435,75 @@ const AddPatient = () => {
 
                 <div class="form-group col-md-2">
                     <label for="inputCurrRegion">Region</label>
-                    <input type="text" class="form-control" id="inputCurrRegion" name='curr_region' onChange={handleChange}  placeholder="Region" disabled={isCurrentAddressDisabled}/>
+                    <select className="form-select" name="curr_region" value={patient.curr_region} onChange={(e)=>{
+                        handleChange(e);
+                        handleCurrRegionChange(e);
+                    }} disabled={isCurrentAddressDisabled}>
+                        <option value="">Select</option>
+                    
+                    {currRegionData.map((hi, index) => (
+                    <>
+                    <option value={hi.region_id}>{hi.region_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label for="inputCurrProvince">Province</label>
-                    <input type="text" class="form-control" id="inputCurrProvince" name='curr_province' onChange={handleChange}  placeholder="Province" disabled={isCurrentAddressDisabled}/>
+                    <select className="form-select" name="curr_province" value={patient.curr_province} onChange={(e)=>{
+                        handleChange(e);
+                        handleCurrProvinceChange(e);
+                    }} disabled={isCurrentAddressDisabled}>
+                        <option value="">Select</option>
+                    
+                    {currProvinceData.map((hi, index) => (
+                    <>
+                    <option value={hi.province_id}>{hi.province_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label for="inputCurrCity">City</label>
-                    <input type="text" class="form-control" id="inputCurrCity" name='curr_city' onChange={handleChange}  placeholder="City" disabled={isCurrentAddressDisabled}/>
+                    <select className="form-select" name="curr_city" value={patient.curr_city} onChange={(e)=>{
+                        handleChange(e);
+                        handleCurrCityChange(e);
+                    }} disabled={isCurrentAddressDisabled}>
+                        <option value="">Select</option>
+                    
+                    {currCityData.map((hi, index) => (
+                    <>
+                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
                 <div class="form-group col-md-2">
                     <label for="inputCurrBarangay">Barangay</label>
-                    <input type="text" class="form-control" id="inputCurrBarangay" name='curr_barangay' onChange={handleChange}  placeholder="Barangay" disabled={isCurrentAddressDisabled}/>
+                    <select className="form-select" name="curr_barangay" value={patient.curr_barangay} onChange={handleChange} disabled={isCurrentAddressDisabled}>
+                        <option value="">Select</option>
+                    
+                    {currBarangayData.map((hi, index) => (
+                    <>
+                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div> 
 
                 <div class="form-group col-md-1">

@@ -669,6 +669,82 @@ WHERE
     });
     });
 
+    router.get('/allregions', (req, res) => {
+        db.query(`
+        SELECT r.region_id,
+            r.region_name,
+            r.region_description
+        FROM PEDTBDSS_new.table_region r
+        ORDER BY region_id;
+        `, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                results.forEach(result => {
+                    console.log(result.age);
+                });
+                res.send(results)
+            }
+        })
+    })
+
+    router.get('/provinces/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT *
+        FROM PEDTBDSS_new.table_province r
+        WHERE region_id = ${id}
+        ORDER BY province_id;
+        `, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                results.forEach(result => {
+                     result.fullname;
+                });
+                res.send(results)
+            }
+    });
+    });
+
+    router.get('/cities/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT *
+        FROM PEDTBDSS_new.table_municipality c
+        WHERE province_id = ${id}
+        ORDER BY municipality_id;
+        `, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                results.forEach(result => {
+                     result.fullname;
+                });
+                res.send(results)
+            }
+    });
+    });
+
+    router.get('/barangays/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT *
+        FROM PEDTBDSS_new.table_barangay b
+        WHERE municipality_id = ${id}
+        ORDER BY barangay_id;
+        `, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                results.forEach(result => {
+                     result.fullname;
+                });
+                res.send(results)
+            }
+    });
+    });
+
     //get all Diagnostic Test Records
     router.get('/alldt', (req, res) => {
 

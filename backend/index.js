@@ -14,27 +14,35 @@ app.use(cors({
     credentials: true,
 }));
 
-let db;
+let dbPool;
 
-function handleDisconnect() {
-    db = mysql.createConnection({
+function createDBPool() {
+    dbPool = mysql.createPool({
         user: 'PEDTBDSSADMIN',
         port: 19459,
         host: 'mysql-117137-0.cloudclusters.net',
         password: 'pedtbdss6676!',
-        database: 'PEDTBDSS_new'
+        database: 'PEDTBDSS_new',
+        connectionLimit: 10, // Adjust as needed
+        waitForConnections: true,
+        queueLimit: 0,
     });
+}
 
-    db.connect(function(err) {
+function handleDisconnect() {
+    createDBPool();
+
+    dbPool.getConnection((err, connection) => {
         if (err) {
             console.error('Error connecting to database:', err);
-            setTimeout(handleDisconnect, 2000); // Attempt to reconnect after 2 seconds
+            setTimeout(handleDisconnect, 2000); // Retry after 2 seconds
         } else {
-            console.log("SQL DB is now Connected!");
+            console.log('SQL DB is now Connected!');
+            connection.release();
         }
     });
 
-    db.on('error', function(err) {
+    dbPool.on('error', (err) => {
         console.error('Database error:', err);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
             handleDisconnect();
@@ -59,7 +67,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api', MainRoutes(db));
-app.use('/api', kaloyRoute(db));
-app.use('/api', raymondRoute(db));
-app.use('/api', diagnoseRoute(db));
+app.use('/api', MainRoutes(dbPool));
+app.use('/api', kaloyRoute(dbPool));
+app.use('/api', raymondRoute(dbPool));
+app.use('/api', diagnoseRoute(dbPool));
