@@ -471,19 +471,22 @@ WHERE
     
     
     router.get('/validity/:id', (req, res) => {
-        const testno = req.params.id;
+        const id = req.params.id;
         db.query(`
         SELECT d.DGValidityMonths
         FROM PEDTBDSS_new.MD_DGTESTS d
-        WHERE DGTESTNo = ${testno};
+        WHERE DGTestNo = ${id};
     `, (err, results) => {
         if (err) {
-            console.log(err)
+            console.log(err);
+            res.status(500).json({ error: 'Internal server error' });
         } else {
-            results.forEach(result => {
-                console.log(result.age);
-            });
-            res.send(results)
+            if (results.length > 0) {
+                const validityMonths = results[0].DGValidityMonths;
+                res.json({ DGValidityMonths: validityMonths });
+            } else {
+                res.status(404).json({ error: 'Test not found' });
+            }
         }
     });
     })
@@ -570,11 +573,12 @@ WHERE
     })
 
     router.post('/newTSTresults', (req, res) => {
-        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?)"
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
         const testresultsValues = [
             req.body.CaseNo,
             3,
             req.body.TestValue,
+            req.body.validity,
             req.body.HINo,
             req.body.issue_date,
             req.body.test_refno
@@ -590,11 +594,12 @@ WHERE
     })
 
     router.post('/newMTBresults', (req, res) => {
-        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?)"
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
         const testresultsValues = [
             req.body.CaseNo,
             2,
             req.body.TestValue,
+            req.body.validity,
             req.body.HINo,
             req.body.issue_date,
             req.body.test_refno

@@ -7,7 +7,7 @@ import axios from 'axios';
 function AddMTBRIFModal(props) {
    
     const[show,setShow] = useState(false)
-
+    const [mtbValidity, setMTBValidity] = useState([]);
     const[hiData, setHIData] = useState([])
 
     useEffect(() => {
@@ -21,6 +21,17 @@ function AddMTBRIFModal(props) {
             console.error('Error fetching data:', error);
           });
         
+        axios.get(`http://localhost:4000/api/validity/2`)
+          .then((response) => {
+          setMTBValidity(response.data)
+          console.log('Validity Months: ', mtbValidity);
+          // Call computeValidity after fetching xrayValidity and when issue_date changes
+          computeValidity();
+          })
+          .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetchingdata:', error);
+        });
     
     }, []);
 
@@ -30,14 +41,39 @@ function AddMTBRIFModal(props) {
         issue_date:'',
         test_refno:'',
         TestValue: '',
+        validity: 1,
     })
 
     const handleChange = (e) => {
         const {name, value} = e.target;
         setMTBValues(prev=>({...prev, [name]: value}));
-      }
+        if (name === 'issue_date') {
+            computeValidity();
+        }
+    }
 
-      const handleSubmit = async (e) => {
+    const computeValidity = () => {
+        const today = new Date();
+        const issueDate = new Date(mtbValues.issue_date);
+
+        if (mtbValidity.length > 0) {
+        const validityMonths = mtbValidity[0].DGValidityMonths;
+        const validityExpirationDate = new Date(issueDate);
+        validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+
+        console.log('Today: ', today);
+        console.log('issueDate: ', issueDate);
+        console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+
+        if (today > validityExpirationDate) {
+            setMTBValues((prev) => ({ ...prev, validity: 0 }));
+        } else {
+            setMTBValues((prev) => ({ ...prev, validity: 1 }));
+        }
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
         try{
             await axios.post("http://localhost:4000/api/newMTBresults", mtbValues)
@@ -46,7 +82,7 @@ function AddMTBRIFModal(props) {
         }
 
         window.location.reload()
-      }
+    }
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
