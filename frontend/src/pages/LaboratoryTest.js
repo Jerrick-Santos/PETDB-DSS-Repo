@@ -1,6 +1,6 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, ButtonGroup, Button } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
 import user from '../assets/user.png';
@@ -18,6 +18,7 @@ import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
 import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
 import AddTSTModal from '../components/AddTSTModal';
 import CaseHeader from '../components/CaseHeader'
+import Pagination from 'react-bootstrap/Pagination';
 
 
 const LaboratoryTest = () => {
@@ -29,6 +30,9 @@ const LaboratoryTest = () => {
   const [xrayData, setXrayData] = useState([]);
   const [tstData, setTstData] = useState([]);
   const [mtbData, setMtbData] = useState([]);
+  const [igraData, setIgraData] = useState([]);
+
+  const [activeTab, setActiveTab] = useState('xray'); 
   
   useEffect(() => {
     axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
@@ -67,7 +71,51 @@ const LaboratoryTest = () => {
       // Handle any errors that occurred during the request
       console.error('Error fetchingdata:', error);
     });
+
+    axios.get(`http://localhost:4000/api/testresults/${caseNum}/4`)
+    .then((response) => {
+      setIgraData(response.data)
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the request
+      console.error('Error fetchingdata:', error);
+    });
   }, [])
+
+  // Add these state variables
+  const [activePage1, setActivePage1] = useState(1);
+  const [activePage2, setActivePage2] = useState(1);
+  const [activePage3, setActivePage3] = useState(1);
+  const [activePage4, setActivePage4] = useState(1); // Active page number
+  const itemsPerPage = 5; // Number of items per page
+
+  // Function to handle page change
+  const handlePageChange1 = (pageNumber) => {
+    setActivePage1(pageNumber);
+  };
+
+  const handlePageChange2 = (pageNumber) => {
+    setActivePage2(pageNumber);
+  };
+
+  const handlePageChange3 = (pageNumber) => {
+    setActivePage3(pageNumber);
+  };
+
+  const handlePageChange4 = (pageNumber) => {
+    setActivePage4(pageNumber);
+  };
+
+  // Calculate the index range for the current page
+  const startIndex1 = (activePage1 - 1) * itemsPerPage;
+  const startIndex2 = (activePage2 - 1) * itemsPerPage;
+  const startIndex3 = (activePage3 - 1) * itemsPerPage;
+  const startIndex4 = (activePage4 - 1) * itemsPerPage;
+
+  const endIndex1 = startIndex1 + itemsPerPage;
+  const endIndex2 = startIndex2 + itemsPerPage;
+  const endIndex3 = startIndex3 + itemsPerPage;
+  const endIndex4 = startIndex4 + itemsPerPage;
 
   
   return (
@@ -115,24 +163,29 @@ const LaboratoryTest = () => {
        
       </Col>
     </Row>
-    
-    {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
-    <Row className="justify-content-center" >
-      <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-      <AddTSTModal
-        caseNum={caseNum}
-      />
-      <AddMTBRIFModal
-      caseNum={caseNum}
-      />
-      <AddXrayModal
-      caseNum={caseNum}
-      />      
-      
-      <CaseHeader caseNum={caseNum} />
+    <Row className="justify-content-center">
+  <Col lg="10" style={{ color: '#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
+    <AddTSTModal caseNum={caseNum} />
+    <AddMTBRIFModal caseNum={caseNum} />
+    <AddXrayModal caseNum={caseNum} />
+    <CaseHeader caseNum={caseNum} />
 
-      <hr/>
-      <Row className="mb-5 mt-2 justify-content-center">
+    <hr />
+
+    {/* Pagination */}
+    <Row className="mb-3">
+      <Col className="text-center">
+        <ButtonGroup>
+          <Button variant="light" onClick={() => setActiveTab('xray')}>XRay Tests</Button>
+          <Button variant="light" onClick={() => setActiveTab('mtb')}>MTB/RIF Tests</Button>
+          <Button variant="light" onClick={() => setActiveTab('tst')}>TST Tests</Button>
+          <Button variant="light" onClick={() => setActiveTab('igra')}>IGRA Tests</Button>
+        </ButtonGroup>
+      </Col>
+    </Row>
+
+    {activeTab === 'xray' && (
+      <Row className="justify-content-center">
       <Col lg="8">
       <p> <strong> XRay Tests </strong> </p>
         <Card className="mb-4">
@@ -156,7 +209,7 @@ const LaboratoryTest = () => {
             </Row>
         
             
-            {xrayData.map((xray, index) => (
+            {xrayData.slice(startIndex1, endIndex1).map((xray, index) => (
               <>
                <hr />
                <Row>
@@ -164,10 +217,10 @@ const LaboratoryTest = () => {
               <Card.Text className="text-muted"> {xray.HIName} </Card.Text>
               </Col>
               <Col sm="2">
-                <Card.Text className="text-muted">{xray.issue_date} </Card.Text>
+                <Card.Text className="text-muted">{new Date(xray.issue_date).toLocaleDateString()} </Card.Text>
               </Col>
               <Col sm="2">
-                <Card.Text className="text-muted">{new Date(xray.issue_date).toLocaleDateString()} </Card.Text>
+                <Card.Text className="text-muted">{xray.test_refno} </Card.Text>
               </Col>
               <Col sm="3">
                 <Card.Text className="text-muted">{xray.TestValue}</Card.Text>
@@ -185,10 +238,22 @@ const LaboratoryTest = () => {
           </Card.Body>
         </Card>
       </Col>
-    </Row>
+      <Pagination className="mt-3 justify-content-center">
+            <Pagination.Prev onClick={() => handlePageChange1(activePage1 - 1)} disabled={activePage1 === 1} />
+            {Array.from({ length: Math.ceil(xrayData.length / itemsPerPage) }).map((_, index) => (
+              <Pagination.Item key={index} active={index + 1 === activePage1} onClick={() => handlePageChange1(index + 1)}>
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => handlePageChange1(activePage1 + 1)} disabled={activePage1 === Math.ceil(xrayData.length / itemsPerPage)} />
+          </Pagination>
+      </Row>
+    )}
 
-    <hr/>
-      <Row className="mb-5 mt-2 justify-content-center">
+    {activeTab === 'mtb' && (
+      /* MTB/RIF Tests */
+      // ... (your MTB/RIF tests code)
+      <Row className="justify-content-center">
       <Col lg="8">
       <p> <strong> MTB/RIF Tests </strong> </p>
         <Card className="mb-4">
@@ -210,7 +275,7 @@ const LaboratoryTest = () => {
                 <Card.Text>Validity</Card.Text>
               </Col>
             </Row>
-            {mtbData.map((mtb, index) => (
+            {mtbData.slice(startIndex2, endIndex2).map((mtb, index) => (
               <>
                <hr />
                <Row>
@@ -218,10 +283,10 @@ const LaboratoryTest = () => {
               <Card.Text className="text-muted"> {mtb.HIName} </Card.Text>
               </Col>
               <Col sm="2">
-                <Card.Text className="text-muted">{mtb.issue_date} </Card.Text>
+                <Card.Text className="text-muted">{new Date(mtb.issue_date).toLocaleDateString()}  </Card.Text>
               </Col>
               <Col sm="2">
-                <Card.Text className="text-muted">{new Date(mtb.issue_date).toLocaleDateString()} </Card.Text>
+                <Card.Text className="text-muted">{mtb.test_refno} </Card.Text>
               </Col>
               <Col sm="3">
                 <Card.Text className="text-muted">{mtb.TestValue}</Card.Text>
@@ -236,12 +301,22 @@ const LaboratoryTest = () => {
         </Card>
        
       </Col>
-    
+      <Pagination className="mt-3 justify-content-center">
+            <Pagination.Prev onClick={() => handlePageChange2(activePage2 - 1)} disabled={activePage2 === 1} />
+            {Array.from({ length: Math.ceil(mtbData.length / itemsPerPage) }).map((_, index) => (
+              <Pagination.Item key={index} active={index + 1 === activePage2} onClick={() => handlePageChange2(index + 1)}>
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => handlePageChange2(activePage2 + 1)} disabled={activePage2 === Math.ceil(mtbData.length / itemsPerPage)} />
+          </Pagination>
+     </Row>
+    )}
 
-    </Row>
-
-    <hr/>
-      <Row className="mb-5 mt-2 justify-content-center">
+    {activeTab === 'tst' && (
+      /* TST Tests */
+      // ... (your TST tests code)
+      <Row className="justify-content-center">
       <Col lg="8">
       <p> <strong> TST Tests </strong> </p>
         <Card className="mb-4">
@@ -263,7 +338,7 @@ const LaboratoryTest = () => {
                 <Card.Text>Validity</Card.Text>
               </Col>
             </Row>
-            {tstData.map((tst, index) => (
+            {tstData.slice(startIndex3, endIndex3).map((tst, index) => (
               <>
                <hr />
                <Row>
@@ -271,10 +346,10 @@ const LaboratoryTest = () => {
               <Card.Text className="text-muted"> {tst.HIName} </Card.Text>
               </Col>
               <Col sm="2">
-                <Card.Text className="text-muted">{tst.issue_date} </Card.Text>
+                <Card.Text className="text-muted">{new Date(tst.issue_date).toLocaleDateString()} </Card.Text>
               </Col>
               <Col sm="2">
-                <Card.Text className="text-muted">{new Date(tst.issue_date).toLocaleDateString()} </Card.Text>
+                <Card.Text className="text-muted"> {tst.test_refno}</Card.Text>
               </Col>
               <Col sm="3">
                 <Card.Text className="text-muted">{tst.TestValue}</Card.Text>
@@ -289,16 +364,84 @@ const LaboratoryTest = () => {
         </Card>
        
       </Col>
-    
+      <Pagination className="mt-3 justify-content-center">
+            <Pagination.Prev onClick={() => handlePageChange3(activePage3 - 1)} disabled={activePage3 === 1} />
+            {Array.from({ length: Math.ceil(tstData.length / itemsPerPage) }).map((_, index) => (
+              <Pagination.Item key={index} active={index + 1 === activePage3} onClick={() => handlePageChange3(index + 1)}>
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => handlePageChange3(activePage3 + 1)} disabled={activePage3 === Math.ceil(tstData.length / itemsPerPage)} />
+          </Pagination>
+      </Row>
+    )}
 
-    </Row>
 
-
-
-
-
-    </Col>
-  </Row>
+{activeTab === 'igra' && (
+      /* TST Tests */
+      // ... (your TST tests code)
+      <Row className="justify-content-center">
+      <Col lg="8">
+      <p> <strong> IGRA Tests </strong> </p>
+        <Card className="mb-4">
+          <Card.Body>
+            <Row>
+            <Col sm="3">
+                <Card.Text>Test Location</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Date Tested</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Ref. #</Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text>Result</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text>Validity</Card.Text>
+              </Col>
+            </Row>
+            {igraData.slice(startIndex4, endIndex4).map((igra, index) => (
+              <>
+               <hr />
+               <Row>
+              <Col sm="3">
+              <Card.Text className="text-muted"> {igra.HIName} </Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{new Date(igra.issue_date).toLocaleDateString()} </Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{igra.test_refno}</Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text className="text-muted">{igra.TestValue}</Card.Text>
+              </Col>
+              <Col sm="2">
+                <Card.Text className="text-muted">{igra.validity === 1 ? "VALID" : "OUTDATED"}   </Card.Text>
+              </Col>
+            </Row>
+                   </>
+                    ))}
+          </Card.Body>
+        </Card>
+       
+      </Col>
+      <Pagination className="mt-3 justify-content-center">
+            <Pagination.Prev onClick={() => handlePageChange4(activePage4 - 1)} disabled={activePage4 === 1} />
+            {Array.from({ length: Math.ceil(igraData.length / itemsPerPage) }).map((_, index) => (
+              <Pagination.Item key={index} active={index + 1 === activePage4} onClick={() => handlePageChange4(index + 1)}>
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => handlePageChange4(activePage4 + 1)} disabled={activePage4 === Math.ceil(igraData.length / itemsPerPage)} />
+          </Pagination>
+      </Row>
+    )}
+  </Col>
+</Row>
+   
 
   </div>
   
