@@ -66,6 +66,7 @@ function AddAssessNoPersist(props) {
         other_dd_interacts:'',
         other_comorbid:'',
         assessment_date: new Date().toISOString().split('T')[0],
+        prevPTB_diagnosed: 0,
     });
 
     const handleChange = (e) => {
@@ -422,6 +423,17 @@ function AddAssessNoPersist(props) {
           </Col>
         </Row>
         <hr/>
+
+        <Row>
+          <Col sm="9">
+            <Card.Text className="text-muted">Was the patient previously diagnosed with TB?</Card.Text>
+          </Col>
+          <Col sm="2">
+            <input type="checkbox" name='prevPTB_diagnosed' onChange={handleChange}/>
+          </Col>
+        </Row>
+        <hr />
+
         <Row>
           <Col sm="9">
             <Card.Text className="text-muted">Are you unable to stand?</Card.Text>
