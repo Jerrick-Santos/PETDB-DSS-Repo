@@ -286,9 +286,9 @@ module.exports = (db) => {
         // Query to get a list of patients with matching first name, middle initial and last name
         const q = `SELECT * 
         FROM PEDTBDSS_new.TD_PTINFORMATION
-        WHERE last_name = "${req.query.last_name}" 
-        AND middle_initial = "${req.query.middle_initial}"
-        AND first_name = "${req.query.first_name}"`
+        WHERE last_name = "${req.params.last_name}" 
+        AND middle_initial = "${req.params.middle_initial}"
+        AND first_name = "${req.params.first_name}";`
 
         db.query(q, (err, results) => {
             if (err) {console.error(err)}

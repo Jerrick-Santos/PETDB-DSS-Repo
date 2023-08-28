@@ -8,7 +8,7 @@ import axios from 'axios';
 function AddXrayModal(props) {
    
     const[show,setShow] = useState(false)
-
+    const [xrayValidity, setXrayValidity] = useState([]);
     const[hiData, setHIData] = useState([])
 
     useEffect(() => {
@@ -22,45 +22,74 @@ function AddXrayModal(props) {
             console.error('Error fetching data:', error);
           });
         
-    
+        axios.get(`http://localhost:4000/api/validity/1`)
+        .then((response) => {
+        setXrayValidity(response.data)
+        console.log('Validity months: ', xrayValidity);
+        // Call computeValidity after fetching xrayValidity and when issue_date changes
+
+        })
+        .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetchingdata:', error);
+        });
+        
+  
+
     }, []);
+
+
 
     const [xrayValues, setXrayValues] = useState({
         CaseNo: props.caseNum,
         HINo: '',
-        issue_date:'',
+        issue_date: new Date().toISOString().split('T')[0],
         test_refno:'',
         TestValue: '',
         validity: 1,
     })
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setXrayValues(prev=>({...prev, [name]: value}));
+        const { name, value } = e.target;
+  
+
+
+        setXrayValues((prev) => ({ ...prev, [name]: value }));
+        if (name === 'issue_date') {
+            computeValidity();
+          }
       }
 
       const computeValidity = () => {
         const today = new Date();
         const issueDate = new Date(xrayValues.issue_date);
-        const oneYearInMillis = 365 * 24 * 60 * 60 * 1000; // 1 year in milliseconds
 
-        if (today - issueDate > oneYearInMillis) {
+        if (xrayValidity.length > 0) {
+        const validityMonths = xrayValidity[0].DGValidityMonths;
+        const validityExpirationDate = new Date(issueDate);
+        validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+
+        console.log('Today: ', today);
+        console.log('issueDate: ', issueDate);
+        console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+
+        if (today > validityExpirationDate) {
             setXrayValues((prev) => ({ ...prev, validity: 0 }));
         } else {
             setXrayValues((prev) => ({ ...prev, validity: 1 }));
         }
+        }
     };
 
       const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        
         try{
-            computeValidity(); // Calculate validity before submitting
             await axios.post("http://localhost:4000/api/newXrayresults", xrayValues)
         }catch(err){
             console.log(err)
         }
-
-        window.location.reload()
+        window.location.reload();
       }
 
     const handleClose = () => setShow(false);

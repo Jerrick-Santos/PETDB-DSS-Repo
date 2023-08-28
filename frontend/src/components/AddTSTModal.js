@@ -7,7 +7,7 @@ import axios from 'axios';
 function AddTSTModal(props) {
    
     const[show,setShow] = useState(false)
-
+    const [tstValidity, setTSTValidity] = useState([]);
     const[hiData, setHIData] = useState([])
 
     useEffect(() => {
@@ -20,22 +20,58 @@ function AddTSTModal(props) {
             // Handle any errors that occurred during the request
             console.error('Error fetching data:', error);
           });
-        
+
+        axios.get(`http://localhost:4000/api/validity/3`)
+          .then((response) => {
+          setTSTValidity(response.data)
+          console.log('Validity Months: ', tstValidity);
+          // Call computeValidity after fetching xrayValidity and when issue_date changes
+          computeValidity();
+          })
+          .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetchingdata:', error);
+        });
     
     }, []);
 
     const [tstValues, setTSTValues] = useState({
         CaseNo: props.caseNum,
         HINo: '',
-        issue_date:'',
+        issue_date: new Date().toISOString().split('T')[0],
         test_refno:'',
         TestValue: '',
+        validity: 1,
     })
 
     const handleChange = (e) => {
         const {name, value} = e.target;
         setTSTValues(prev=>({...prev, [name]: value}));
-      }
+        if (name === 'issue_date') {
+            computeValidity();
+        }
+    }
+
+    const computeValidity = () => {
+        const today = new Date();
+        const issueDate = new Date(tstValues.issue_date);
+
+        if (tstValidity.length > 0) {
+        const validityMonths = tstValidity[0].DGValidityMonths;
+        const validityExpirationDate = new Date(issueDate);
+        validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+
+        console.log('Today: ', today);
+        console.log('issueDate: ', issueDate);
+        console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+
+        if (today > validityExpirationDate) {
+            setTSTValues((prev) => ({ ...prev, validity: 0 }));
+        } else {
+            setTSTValues((prev) => ({ ...prev, validity: 1 }));
+        }
+        }
+    };
 
       const handleSubmit = async (e) => {
         e.preventDefault()
@@ -46,7 +82,7 @@ function AddTSTModal(props) {
         }
 
         window.location.reload()
-      }
+    }
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
