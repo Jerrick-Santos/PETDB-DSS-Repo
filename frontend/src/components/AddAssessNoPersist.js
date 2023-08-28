@@ -12,6 +12,20 @@ function AddAssessNoPersist(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [bodyWeight, setBodyWeight] = useState(0);
+    const [height, setHeight] = useState(0);
+    const [bmi, setBMI] = useState(null);
+
+    const calculateBMI = () => {
+      if (bodyWeight && height) {
+        const heightInMeters = height / 100; // Convert height to meters
+        const bmiValue = bodyWeight / (heightInMeters * heightInMeters);
+        setBMI(bmiValue.toFixed(2)); // Round BMI to 2 decimal places
+      } else {
+        setBMI(null); // Reset BMI if any of the inputs are empty
+      }
+    };
+
     const [assessFormValues, setAssessFormValues] = useState({
         case_no:props.caseNo,
         cough: 0,
@@ -31,19 +45,14 @@ function AddAssessNoPersist(props) {
         da_weeks:0,
         not_eating_well:0,
         new_weeks:0,
-        gibbus_deform:0,
         non_painful_ecl:0,
-        stiff_neck:0,
         drowsy:0,
-        pleural_effusion:0,
-        pericard_effusion:0,
-        dist_abdomen:0,
-        non_painful_ejoint:0,
-        tuberculin_hyper:0,
         can_stand:0,
         ass_body_weight:null,
         ass_height:null,
-        diabetes:0,
+        ass_bmi: null,
+        ass_temp: null,
+        ass_bp: null,
         plhiv:0,
         hiv:0,
         mother_hiv:0,
@@ -57,20 +66,40 @@ function AddAssessNoPersist(props) {
         other_dd_interacts:'',
         other_comorbid:'',
         assessment_date: new Date().toISOString().split('T')[0],
-        person_conducted: '',
+        prevPTB_diagnosed: 0,
     });
 
     const handleChange = (e) => {
         const {name, value, type, checked} = e.target;
         const newValue = type === 'checkbox' ? (checked ? 1 : 0) : value;
 
-        setAssessFormValues(prev=>({...prev, [name]: newValue}));
+        // Update the corresponding state based on the input field
+        if (name === 'ass_body_weight') {
+          setBodyWeight(newValue);
+        } else if (name === 'ass_height') {
+          setHeight(newValue);
+        } else {
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        }
+
+        if (name === 'ass_body_weight' || name === 'ass_height') {
+          calculateBMI();
+        }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        // Update assessFormValues with the latest weight, height, and BMI
+        const updatedAssessFormValues = {
+          ...assessFormValues,
+          ass_body_weight: bodyWeight,
+          ass_height: height,
+          ass_bmi: bmi,
+        };
+
         try{
-            await axios.post("http://localhost:4000/api/newassessment", assessFormValues)
+            await axios.post("http://localhost:4000/api/newassessment", updatedAssessFormValues)
         }catch(err){
             console.log(err)
         }
@@ -101,16 +130,118 @@ function AddAssessNoPersist(props) {
     {/* Shows all medical information in relation to the patient's ongoing case*/}
       
       {/* Symptoms of the Patient */}
+
+      <Row className="mt-2 justify-content-center">
+
+    
+          <Col sm="5">
+          <label className="text-muted">Assessed By</label>
+            <input
+              type="text"
+              className="form-control"
+              name="assessment_date"
+              disabled
+            />
+          </Col>
+          <Col sm="3">
+          <label className="text-muted">Assessment Date</label>
+            <input
+              type="text"
+              className="form-control"
+              name="assessment_date"
+              value={assessFormValues.assessment_date}
+              disabled
+            />
+            </Col>
+      </Row>
+
       <Row className="mt-5 justify-content-center">
-  <Col lg="5">
+<Col lg="8">
+    <p> <strong> Vital Signs</strong> </p>
+    <Card className="mb-4">
+      <Card.Body>
+        <Row>
+          <Col sm="9">
+            <Card.Text>Assessment</Card.Text>
+          </Col>
+          <Col sm="2">
+            <Card.Text></Card.Text>
+          </Col>
+        </Row>
+        <hr/>
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Body Weight</Card.Text>
+          </Col>
+          <Col sm="4">
+            <Card.Text>
+                <input type="text" className="form-control" name='ass_body_weight' value={assessFormValues.ass_body_weight} onChange={handleChange} placeholder='in kilograms' />
+              </Card.Text>
+          </Col>
+        </Row>
+        <hr />
+
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Height</Card.Text>
+          </Col>
+          <Col sm="4">
+            <Card.Text>
+                <input type="text" className="form-control" name='ass_height' value={assessFormValues.ass_height} onChange={handleChange} placeholder='in centimeters' />
+              </Card.Text>
+          </Col>
+        </Row>
+        <hr />
+
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Body Mass Index</Card.Text>
+          </Col>
+          <Col sm="4">
+            <Card.Text>
+                <input type="text" className="form-control" name='ass_bmi' value={bmi} onChange={handleChange} placeholder='' />
+              </Card.Text>
+          </Col>
+        </Row>
+        <hr />
+
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Body Temperature</Card.Text>
+          </Col>
+          <Col sm="4">
+            <Card.Text>
+                <input type="text" className="form-control" name='ass_temp' value={assessFormValues.ass_temp} onChange={handleChange} placeholder='in Celsius' />
+              </Card.Text>
+          </Col>
+        </Row>
+        <hr />
+
+        <Row>
+          <Col sm="8">
+            <Card.Text className="text-muted">Blood Pressure</Card.Text>
+          </Col>
+          <Col sm="4">
+            <Card.Text>
+                <input type="text" className="form-control" name='ass_bp' value={assessFormValues.ass_bp} onChange={handleChange} placeholder='systolic/diastolic' />
+              </Card.Text>
+          </Col>
+        </Row>
+       
+      </Card.Body>
+    </Card>
+  </Col>
+</Row>
+      <Row className="mt-1 justify-content-center">
+  <Col lg="8">
     <p> <strong> Cardinal Symptoms</strong> </p>
     <Card className="mb-4">
       <Card.Body>
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text>Symptom</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <Card.Text>Symptomatic</Card.Text>
           </Col>
           <Col sm="3">
@@ -120,10 +251,10 @@ function AddAssessNoPersist(props) {
         </Row>
         <hr />
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text className="text-muted">Cough</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <input type="checkbox" name='cough' onChange={handleChange}/>
           </Col>
           <Col sm="3">
@@ -132,10 +263,10 @@ function AddAssessNoPersist(props) {
         </Row>
         <hr />
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text className="text-muted">Fever</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <input type="checkbox" name='fever' onChange={handleChange}/>
           </Col>
           <Col sm="3">
@@ -144,10 +275,10 @@ function AddAssessNoPersist(props) {
         </Row>
         <hr />
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text className="text-muted">Night Sweats</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <input type="checkbox" name='night_sweats' onChange={handleChange}/>
           </Col>
           <Col sm="3">
@@ -156,10 +287,10 @@ function AddAssessNoPersist(props) {
         </Row>
         <hr />
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text className="text-muted">Weight Loss</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <input type="checkbox" name='weight_loss' onChange={handleChange}/>
           </Col>
           <Col sm="3">
@@ -169,17 +300,18 @@ function AddAssessNoPersist(props) {
       </Card.Body>
     </Card>
   </Col>
+</Row>
 
-
-  <Col lg="6">
+<Row className="mt-1 justify-content-center">
+  <Col lg="8">
     <p> <strong> Additional Symptoms if with TB Contact</strong> </p>
     <Card className="mb-4">
       <Card.Body>
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text>Symptom</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <Card.Text>Symptomatic</Card.Text>
           </Col>
           <Col sm="3">
@@ -188,10 +320,10 @@ function AddAssessNoPersist(props) {
         </Row>
         <hr />
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text className="text-muted">Fatigue</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <input type="checkbox" name='fatigue' onChange={handleChange}/>
           </Col>
           <Col sm="3">
@@ -200,10 +332,10 @@ function AddAssessNoPersist(props) {
         </Row>
         <hr />
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text className="text-muted">Reduced Playfulness</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <input type="checkbox" name='red_playfulness' onChange={handleChange}/>
           </Col>
           <Col sm="3">
@@ -212,10 +344,10 @@ function AddAssessNoPersist(props) {
         </Row>
         <hr />
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text className="text-muted">Decreased Activities</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <input type="checkbox" name='dec_acts' onChange={handleChange}/>
           </Col>
           <Col sm="3">
@@ -224,10 +356,10 @@ function AddAssessNoPersist(props) {
         </Row>
         <hr />
         <Row>
-          <Col sm="4">
+          <Col sm="6">
             <Card.Text className="text-muted">Not Eating Well</Card.Text>
           </Col>
-          <Col sm="4">
+          <Col sm="3">
             <input type="checkbox" name='not_eating_well' onChange={handleChange}/>
           </Col>
           <Col sm="3">
@@ -239,9 +371,9 @@ function AddAssessNoPersist(props) {
   </Col>
 </Row>
 
-<Row className="mt-2 justify-content-center">
+<Row className="mt-1 justify-content-center">
 <Col lg="8">
-    <p> <strong> Additional Symptoms to Verify EPTB (Is the Patient Experiencing the Following:)</strong> </p>
+    <p> <strong> Additional Symptoms to Verify EPTB </strong> </p>
     <Card className="mb-4">
       <Card.Body>
         <Row>
@@ -249,23 +381,13 @@ function AddAssessNoPersist(props) {
             <Card.Text>Symptom</Card.Text>
           </Col>
           <Col sm="2">
-            <Card.Text>Yes</Card.Text>
+            <Card.Text>Symptomatic</Card.Text>
           </Col>
-        </Row>
-        <hr/>
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Gibbus Deformity?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='gibbus_deform' onChange={handleChange}/>
-          </Col>
-          
         </Row>
         <hr />
         <Row>
           <Col sm="9">
-            <Card.Text className="text-muted">Are you experiencing non-painful enlargment of lymph nodes?</Card.Text>
+            <Card.Text className="text-muted">Lumps anywhere on the body</Card.Text>
           </Col>
           <Col sm="2">
             <input type="checkbox" name='non_painful_ecl' onChange={handleChange}/>
@@ -275,70 +397,10 @@ function AddAssessNoPersist(props) {
 
         <Row>
           <Col sm="9">
-            <Card.Text className="text-muted">Are you experiencing stiff neck?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='stiff_neck' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Are you experiencing drowsiness?</Card.Text>
+            <Card.Text className="text-muted">Drowsiness</Card.Text>
           </Col>
           <Col sm="2">
             <input type="checkbox" name='drowsy' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Are you experiencing pleural effusion?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='pleural_effusion' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Are you experiencing pericardial effusion?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='pericard_effusion' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Are you experiencing a distended abdomen?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='dist_abdomen' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Are you experiencing a non-painful enlarged joint?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='non_painful_ejoint' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Are you showing signs of tuberculin hypersensitivity?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='tuberculin_hyper' onChange={handleChange}/>
           </Col>
         </Row>
         
@@ -361,22 +423,23 @@ function AddAssessNoPersist(props) {
           </Col>
         </Row>
         <hr/>
+
         <Row>
           <Col sm="9">
-            <Card.Text className="text-muted">Are you unable to stand?</Card.Text>
+            <Card.Text className="text-muted">Was the patient previously diagnosed with TB?</Card.Text>
           </Col>
           <Col sm="2">
-            <input type="checkbox" name='can_stand' onChange={handleChange}/>
+            <input type="checkbox" name='prevPTB_diagnosed' onChange={handleChange}/>
           </Col>
         </Row>
         <hr />
 
         <Row>
           <Col sm="9">
-            <Card.Text className="text-muted"> Do you have Diabetes?</Card.Text>
+            <Card.Text className="text-muted">Are you unable to stand?</Card.Text>
           </Col>
           <Col sm="2">
-            <input type="checkbox" name='diabetes' onChange={handleChange}/>
+            <input type="checkbox" name='can_stand' onChange={handleChange}/>
           </Col>
         </Row>
         <hr />
@@ -463,30 +526,6 @@ function AddAssessNoPersist(props) {
 
         <Row>
           <Col sm="8">
-            <Card.Text className="text-muted">Body Weight</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_body_weight' value={assessFormValues.ass_body_weight} onChange={handleChange} placeholder='in kilograms' />
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Height</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_height' value={assessFormValues.ass_height} onChange={handleChange} placeholder='in feet' />
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
             <Card.Text className="text-muted">Other Health Issues</Card.Text>
           </Col>
           <Col sm="4">
@@ -536,40 +575,9 @@ function AddAssessNoPersist(props) {
     </Card>
   </Col>
 </Row>
-<Row className="mt-2 justify-content-center">
-<Col lg="8">
-    <p> <strong> Issuance</strong> </p>
-    <Card className="mb-4">
-      <Card.Body>
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Person who conducted this assessment</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='person_conducted' value={assessFormValues.person_conducted} onChange={handleChange} placeholder='Full Name' />
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr/>
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Assessment Date</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input
-              type="text"
-              className="form-control"
-              name="assessment_date"
-              value={assessFormValues.assessment_date}
-              disabled
-            />
-          </Col>
-        </Row>
-      </Card.Body>
-    </Card>
-</Col>
-</Row>
+
+
+
 </div>
 </form>
     </Modal.Body>

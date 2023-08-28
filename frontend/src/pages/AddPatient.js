@@ -154,6 +154,10 @@ const AddPatient = () => {
         curr_barangay: "",
         curr_zipcode: "",
         admission_date: new Date().toISOString().split('T')[0],
+        guardian_name: "",
+        g_birthdate: "",
+        g_contactno: "",
+        g_email: "",
         mother_name: "",
         m_birthdate: "",
         m_contactno: "",
@@ -425,12 +429,12 @@ const AddPatient = () => {
             <Row className="mb-5 justify-content-center">
             <div class="form-group col-md-1">
                     <label for="inputCurrHouseNo">House #</label>
-                    <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' onChange={handleChange}  placeholder="House No." disabled={isCurrentAddressDisabled}/>
+                    <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' value={isAutoFillActive ? patient.per_houseno : patient.curr_houseno} onChange={handleChange}  placeholder="House No." disabled={isCurrentAddressDisabled}/>
                 </div>
                 
                 <div class="form-group col-md-1">
                     <label for="inputCurrStreet">Street</label>
-                    <input type="text" class="form-control" id="inputCurrStreet" name='curr_street' onChange={handleChange}  placeholder="Street" disabled={isCurrentAddressDisabled}/>
+                    <input type="text" class="form-control" id="inputCurrStreet" name='curr_street' value={isAutoFillActive ? patient.per_street : patient.curr_street} onChange={handleChange}  placeholder="Street" disabled={isCurrentAddressDisabled}/>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -508,7 +512,7 @@ const AddPatient = () => {
 
                 <div class="form-group col-md-1">
                     <label for="inputCurrZip">Zip Code</label>
-                    <input type="text" class="form-control" id="inputCurrZip" name='curr_zipcode' onChange={handleChange}  placeholder="Zip" disabled={isCurrentAddressDisabled}/>
+                    <input type="text" class="form-control" id="inputCurrZip" name='curr_zipcode' value={isAutoFillActive ? patient.per_zipcode : patient.curr_zipcode} onChange={handleChange}  placeholder="Zip" disabled={isCurrentAddressDisabled}/>
                 </div>
                 
             </Row>
@@ -531,6 +535,25 @@ const AddPatient = () => {
             <Row className="mb-2 justify-content-center">
                  <div className="form-group col-md-11">
                     <p style={{fontSize:"25px"}}> <strong> Contacts  </strong> </p>
+                </div>
+            </Row>
+
+            <Row className="mt-2 mb-3 justify-content-center">
+                <div class="form-group col-md-3">
+                    <label for="inputGuardianName">Name of Guardian</label>
+                    <input type="text" class="form-control" id="inputGuardianName" name='guardian_name' onChange={handleChange} placeholder="Name"/>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputGuardianBirth">Birthdate</label>
+                    <input type="date" class="form-control" id="inputGuardianBirth" name='g_birthdate' onChange={handleChange} placeholder="Guardian's Name"/>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputGuardianContact">Contact #</label>
+                    <input type="text" class="form-control" id="inputGuardianContact" name='g_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputGuardianEmail">Email</label>
+                    <input type="text" class="form-control" id="inputGuardianEmail" name='g_email' onChange={handleChange} placeholder="sample@sample.com"/>
                 </div>
             </Row>
 

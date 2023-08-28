@@ -109,8 +109,17 @@ module.exports = (db) => {
         const id = req.params.id;
         console.log(id)
         db.query(`
-        SELECT *
+        SELECT ha.AssessNo, ha.CaseNo, ha.cough, ha.c_weeks, ha.c_persist, ha.fever,
+		ha.fe_weeks, ha.fe_persist, ha.weight_loss, ha.wl_weeks, ha.wl_persist, ha.night_sweats, ha.ns_weeks,
+        ha.ns_persist, ha.fatigue, ha.fat_weeks, ha.fat_persist, ha.red_playfulness, ha.rp_weeks, ha.rp_persist, 
+        ha.dec_acts, ha.da_weeks, ha.da_persist, ha.not_eating_well, ha.new_weeks, ha.new_persist, ha.non_painful_ecl, 
+        ha.drowsy, ha.can_stand, ha.ass_body_weight, ha.ass_height, ha.ass_bmi, ha.ass_temp, ha.ass_bp, ha.plhiv,
+        ha.hiv, ha.mother_hiv, ha.smoking, ha.drinking, ha.sex_active, ha.renal_disease, ha.malnutrition, ha.other_health_issues,
+        ha.other_meds, ha.other_dd_interacts, ha.other_comorbid, ha.assessment_date, ha.userNo, ha.prevPTB_diagnosed,
+        CONCAT(u.last_name, ', ', u.first_name, ' ', u.middle_name) AS user_fullname
+		
         FROM PEDTBDSS_new.TD_HEALTHASSESSMENT ha
+        JOIN PEDTBDSS_new.MD_USERS u ON u.UserNo = ha.UserNo
         WHERE ha.CaseNo = ${id}
         ORDER BY ha.assessment_date desc;
         `, (err, results) => {
@@ -190,7 +199,7 @@ module.exports = (db) => {
     })
 
     router.post('/newassessment', (req, res) => {
-        const assessQuery = "INSERT INTO TD_HEALTHASSESSMENT (`CaseNo`, `cough`, `c_weeks`, `c_persist`, `fever`, `fe_weeks`, `fe_persist`, `weight_loss`, `wl_weeks`, `wl_persist`, `night_sweats`, `ns_weeks`, `ns_persist`, `fatigue`, `fat_weeks`, `fat_persist`, `red_playfulness`, `rp_weeks`, `rp_persist`, `dec_acts`, `da_weeks`, `da_persist`, `not_eating_well`, `new_weeks`, `new_persist`, `gibbus_deform`, `non_painful_ecl`, `stiff_neck`, `drowsy`, `pleural_effusion`, `pericard_effusion`, `dist_abdomen`, `non_painful_ejoint`, `tuberculin_hyper`, `can_stand`, `ass_body_weight`, `ass_height`, `diabetes`, `plhiv`, `hiv`, `mother_hiv`, `smoking`, `drinking`, `sex_active`, `renal_disease`, `malnutrition`, `other_health_issues`, `other_meds`, `other_dd_interacts`, `other_comorbid`, `assessment_date`, `person_conducted`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const assessQuery = "INSERT INTO TD_HEALTHASSESSMENT (`CaseNo`, `cough`, `c_weeks`, `c_persist`, `fever`, `fe_weeks`, `fe_persist`, `weight_loss`, `wl_weeks`, `wl_persist`, `night_sweats`, `ns_weeks`, `ns_persist`, `fatigue`, `fat_weeks`, `fat_persist`, `red_playfulness`, `rp_weeks`, `rp_persist`, `dec_acts`, `da_weeks`, `da_persist`, `not_eating_well`, `new_weeks`, `new_persist`, `non_painful_ecl`, `drowsy`, `prevPTB_diagnosed`, `can_stand`, `ass_body_weight`, `ass_height`, `ass_bmi`, `ass_temp`, `ass_bp`, `plhiv`, `hiv`, `mother_hiv`, `smoking`, `drinking`, `sex_active`, `renal_disease`, `malnutrition`, `other_health_issues`, `other_meds`, `other_dd_interacts`, `other_comorbid`, `assessment_date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         const assessQueryValues = [
             req.body.case_no,
             req.body.cough,
@@ -217,19 +226,15 @@ module.exports = (db) => {
             req.body.not_eating_well,
             req.body.new_weeks,
             req.body.new_persist,
-            req.body.gibbus_deform,
             req.body.non_painful_ecl,
-            req.body.stiff_neck,
             req.body.drowsy,
-            req.body.pleural_effusion,
-            req.body.pericard_effusion,
-            req.body.dist_abdomen,
-            req.body.non_painful_ejoint,
-            req.body.tuberculin_hyper,
+            req.body.prevPTB_diagnosed,
             req.body.can_stand,
             req.body.ass_body_weight,
             req.body.ass_height,
-            req.body.diabetes,
+            req.body.ass_bmi,
+            req.body.ass_temp,
+            req.body.ass_bp,
             req.body.plhiv,
             req.body.hiv,
             req.body.mother_hiv,
@@ -243,7 +248,6 @@ module.exports = (db) => {
             req.body.other_dd_interacts,
             req.body.other_comorbid,
             req.body.assessment_date,
-            req.body.person_conducted,
         ]
         db.query(assessQuery, assessQueryValues, (err, data) => {
             if(err) {
