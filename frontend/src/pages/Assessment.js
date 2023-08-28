@@ -158,10 +158,10 @@ const Assessment = () => {
                <hr />
                <Row>
                <Col sm="6">
-                <Card.Text>{assessment.assessment_date}</Card.Text>
+                <Card.Text><AssessmentSummaryModal caseNo={caseNum} date={assessment.assessment_date} /></Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text>{assessment.assessment_date}</Card.Text>
+                <Card.Text></Card.Text>
               </Col>
             </Row>
                    </>
