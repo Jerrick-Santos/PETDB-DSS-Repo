@@ -261,8 +261,10 @@ module.exports = (db) => {
         
         const q = `SELECT
                     CONCAT(pi.last_name, ", ",pi.first_name, " ", pi.middle_initial,".") AS patient_name,
-                    pi.birthdate AS patient_birthdate,
-                    ptc.case_refno
+                    ptc.case_refno,
+                    ptc.start_date,
+                    ptc.end_date,
+                    ptc.presumptive_id
                    FROM PEDTBDSS_new.TD_PTCASE ptc
                    JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
                    WHERE ptc.CaseNo=${req.params.CaseNo}`
