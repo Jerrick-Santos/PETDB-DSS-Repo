@@ -20,6 +20,7 @@ import AssessmentNoPersistence from '../components/AssessmentNoPersistence';
 import AssessmentPersistence from '../components/AssessmentPersistence';
 import AddAssessPersist from '../components/AddAssessPersist';
 import AddAssessNoPersist from '../components/AddAssessNoPersist';
+import CaseHeader from '../components/CaseHeader';
 
 const Assessment = () => {
 
@@ -101,19 +102,7 @@ const Assessment = () => {
       <Row className="justify-content-center" >
         <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       {/*Shows general patient information details */}
-      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
-        <Col className="ms-5" lg="12">
-          <Row>
-            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
-          </Row>
-          <Row>
-            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
-          </Row>
-          <Row>
-            <Col> <strong> Birthdate: {patientData.formattedBirthdate}</strong> </Col>
-          </Row>
-        </Col>
-      </Row>
+      <CaseHeader caseNum={caseNum} />
      {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
      {assessData.length > 0 ? (
       <Row className="d-flex justify-content-center mt-4 mb-4" >

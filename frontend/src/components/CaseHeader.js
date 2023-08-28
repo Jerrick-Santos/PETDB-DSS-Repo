@@ -1,5 +1,11 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import '../index.css';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import NavBar from '../components/NavBar';
+import axios from 'axios';
+import user from '../assets/user.png';
+
 
 const CaseHeader = (props) => {
 
@@ -21,23 +27,27 @@ const CaseHeader = (props) => {
         <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
             <Col className="ms-5" lg="12">
                 <Row>
-                    <Col><strong>Case No: {patientData.case_refno}</strong></Col>
+                    <Col><strong>Case No:</strong> {patientData.case_refno}</Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Patient Name: {patientData.patient_name}</strong></Col>
+                    <Col><strong>Patient Name:</strong> {patientData.patient_name}</Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Case Start Date: {patientData.start_date}</strong></Col>
+                    <Col><strong>Case Start Date:</strong> {new Date(patientData.start_date).toLocaleDateString()}</Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Case End Date: {patientData.end_date ? patientData.end_date : "Ongoing"}</strong></Col>
+                    <Col><strong>Case End Date:</strong> {patientData.end_date === null ? " --" : new Date(patientData.end_date).toLocaleDateString()}</Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Presumptive ID: {patientData.presumptive_id}</strong></Col>
+                    <Col><strong>Case Status:</strong> {patientData.case_status === "C" ? "Closed" : "Ongoing"} </Col>
+                </Row>
+
+                <Row>
+                    <Col><strong>Presumptive ID:</strong> {patientData.presumptive_id === null ? "--" : patientData.presumptive_id}</Col>
                 </Row>
             </Col>
         </Row>

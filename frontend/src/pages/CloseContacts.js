@@ -80,6 +80,13 @@ const CloseContacts = () => {
   
     fetchData();
   }, [caseNum, latestCase]);
+
+  // useEffect(async () => {
+  //   const response = await axios.get(`http://localhost:4000/api/getCaseStatus/${caseNum}`)
+  //   const cs = response.data[0].case_status
+  //   cs === "O" ? setLatestCase(true) : setLatestCase(false)
+  //   console.log("is this the latest case?", cs)
+  // }, [caseNum])
   
 
   return (

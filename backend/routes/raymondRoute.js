@@ -264,7 +264,8 @@ module.exports = (db) => {
                     ptc.case_refno,
                     ptc.start_date,
                     ptc.end_date,
-                    ptc.presumptive_id
+                    ptc.presumptive_id,
+                    ptc.case_status
                    FROM PEDTBDSS_new.TD_PTCASE ptc
                    JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
                    WHERE ptc.CaseNo=${req.params.CaseNo}`
@@ -324,6 +325,18 @@ module.exports = (db) => {
         `
 
         db.query(q, (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                res.send(results)
+            }
+        })
+    }),
+
+    router.get('/getCaseStatus/:caseNum', (req, res) => {
+        
+        const q = `SELECT case_status FROM PEDTBDSS_new.TD_PTCASE WHERE CaseNo = ?;`
+
+        db.query(q, [req.params.caseNum], (err, results) => {
             if (err) {console.error(err)}
             else {
                 res.send(results)

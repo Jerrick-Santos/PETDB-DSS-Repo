@@ -22,7 +22,7 @@ function AddCloseContactModal(props) {
         first_name: '',
         middle_initial: '',
         birthdate: new Date(),
-        sex: 'M',
+        sex: '',
         contact_person: '',
         contact_num: '',
         contact_email: '',
@@ -76,8 +76,8 @@ function AddCloseContactModal(props) {
         if (!first_name) newErrors.first_name = "Input cannot be empty"
         if (!last_name) newErrors.last_name = "Input cannot be empty"
         if (!middle_initial) newErrors.middle_initial = "Input cannot be empty"
-        if (!birthdate) newErrors.birthdate = "Input cannot be empty"
-        if (sex === "Select") newErrors.sex = "Input cannot be empty"
+        if (birthdate === new Date()) newErrors.birthdate = "Please select a date"
+        if (sex === "") newErrors.sex = "Please select an option"
         if (!contact_relationship) newErrors.contact_relationship = "Input cannot be empty"
         if (!contact_num) newErrors.contact_num = "Contact No. must be 11 digits"
 

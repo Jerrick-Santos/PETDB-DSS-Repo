@@ -17,6 +17,7 @@ import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
 import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
 import AddTSTModal from '../components/AddTSTModal';
+import CaseHeader from '../components/CaseHeader'
 
 
 const LaboratoryTest = () => {
@@ -126,19 +127,9 @@ const LaboratoryTest = () => {
       />
       <AddXrayModal
       caseNum={caseNum}
-      />      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
-        <Col className="ms-5" lg="12">
-          <Row>
-            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
-          </Row>
-          <Row>
-            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
-          </Row>
-          <Row>
-            <Col> <strong> Birthdate: {new Date(patientData.patient_birthdate).toLocaleDateString()} {}</strong> </Col>
-          </Row>
-        </Col>
-      </Row>
+      />      
+      
+      <CaseHeader caseNum={caseNum} />
 
       <hr/>
       <Row className="mb-5 mt-2 justify-content-center">
