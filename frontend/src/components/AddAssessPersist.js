@@ -12,6 +12,20 @@ function AddAssessPersist(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [bodyWeight, setBodyWeight] = useState(0);
+    const [height, setHeight] = useState(0);
+    const [bmi, setBMI] = useState(null);
+
+    const calculateBMI = () => {
+      if (bodyWeight && height) {
+        const heightInMeters = height / 100; // Convert height to meters
+        const bmiValue = bodyWeight / (heightInMeters * heightInMeters);
+        setBMI(bmiValue.toFixed(2)); // Round BMI to 2 decimal places
+      } else {
+        setBMI(null); // Reset BMI if any of the inputs are empty
+      }
+    };
+
     const [assessFormValues, setAssessFormValues] = useState({
         case_no:props.caseNo,
         ass_bmi: null,
@@ -73,13 +87,33 @@ function AddAssessPersist(props) {
         const {name, value, type, checked} = e.target;
         const newValue = type === 'checkbox' ? (checked ? 1 : 0) : value;
 
-        setAssessFormValues(prev=>({...prev, [name]: newValue}));
+        // Update the corresponding state based on the input field
+        if (name === 'ass_body_weight') {
+          setBodyWeight(newValue);
+        } else if (name === 'ass_height') {
+          setHeight(newValue);
+        } else {
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        }
+
+        if (name === 'ass_body_weight' || name === 'ass_height') {
+          calculateBMI();
+        }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        // Update assessFormValues with the latest weight, height, and BMI
+        const updatedAssessFormValues = {
+          ...assessFormValues,
+          ass_body_weight: bodyWeight,
+          ass_height: height,
+          ass_bmi: bmi,
+        };
+        
         try{
-            await axios.post("http://localhost:4000/api/newassessment", assessFormValues)
+            await axios.post("http://localhost:4000/api/newassessment", updatedAssessFormValues)
         }catch(err){
             console.log(err)
         }
@@ -179,7 +213,7 @@ function AddAssessPersist(props) {
           </Col>
           <Col sm="4">
             <Card.Text>
-                <input type="text" className="form-control" name='ass_bmi' value={assessFormValues.ass_bmi} onChange={handleChange} placeholder='' />
+                <input type="text" className="form-control" name='ass_bmi' value={bmi} onChange={handleChange} readOnly />
               </Card.Text>
           </Col>
         </Row>
