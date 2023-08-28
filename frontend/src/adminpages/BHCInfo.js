@@ -108,7 +108,7 @@ const BHCInfo = () => {
           </Card.Body>
         </Card>
 
-        <h1 style={{fontSize:"25px"}}> Assigned Health Institutions </h1>
+        <h1 style={{fontSize:"25px"}}> Nearby Health Institutions </h1>
       <Card className="mt-4 mb-4">
           <Card.Body>
             <Row>
