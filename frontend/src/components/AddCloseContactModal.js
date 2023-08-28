@@ -32,6 +32,17 @@ function AddCloseContactModal(props) {
 
     const [errors, setErrors] = useState({});
 
+    // Checks database for patient records with matching name
+    async function checkSimilar(first_name, last_name, middle_initial) {
+        const result = await axios.get('/getSimilarPatients', {
+            params: {
+              first_name,
+              last_name,
+              middle_initial,
+            },
+          });
+    }
+
     const setField = (field, value) => {
         setFormValues({
             ...formValues,
@@ -51,6 +62,10 @@ function AddCloseContactModal(props) {
         console.log(name, value);
         setFormValues(prev=>({...prev, [name]: value}));
         console.log(formValues.first_name)
+
+        // if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
+        //     checkSimilar(formValues.first_name, formValues.last_name, formValues.middle_initial)
+        // }
     }
 
     const validateForm = () => {
@@ -68,6 +83,15 @@ function AddCloseContactModal(props) {
 
 
         return newErrors
+    }
+
+    const handleCheck = (e) => {
+        const contact_name = `${formValues.last_name}, ${formValues.first_name} ${formValues.middle_initial}`
+        //setNameCheck(prevValue => !prevValue)
+        setFormValues(prevValues => ({
+            ...prevValues,
+            contact_person: contact_name
+          }));
     }
 
     const handleSubmit = async (e) => {
@@ -91,14 +115,7 @@ function AddCloseContactModal(props) {
         }
     }
 
-    const handleCheck = (e) => {
-        const contact_name = `${formValues.last_name}, ${formValues.first_name} ${formValues.middle_initial}`
-        //setNameCheck(prevValue => !prevValue)
-        setFormValues(prevValues => ({
-            ...prevValues,
-            contact_person: contact_name
-          }));
-    }
+    
 
   return (
         <>
