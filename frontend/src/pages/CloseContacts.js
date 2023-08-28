@@ -25,61 +25,174 @@ const CloseContacts = () => {
   const [latestCase, setLatestCase] = useState([]);
 
   // Helper Functions
-  function calcDaysContact(a, b){
-    const date_init = new Date(a);
-    const date_lastcontact = new Date(b);
-    const datediff = date_lastcontact.getTime() - date_init.getTime();
-    const days = datediff / (1000 * 3600 * 24)
-    console.log(date_init, b, days)
-    return (days);
-  }
-  
-  // Load list of close contact
-  useEffect(() => {
-    axios.get(`http://localhost:4000/api/getContacts/${caseNum}`)
-    .then(res => {
-      console.log(res);
-      setCloseContactListData(res.data);
-    })
-    .catch(err => {
-      console.error(err);
-    })
-  }, [caseNum])
+  const updateContactData = (contact, updatedProps) => ({
+    ...contact,
+    ...updatedProps
+  });
 
   // Load patient data for header
+  // useEffect(() => {
+  //   axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+  //   .then(res => {
+  //     console.log(res);
+  //     setPatientData(res.data[0]);
+  //   })
+  //   .catch(err => {
+  //     console.error(err);
+  //   })
+  // }, [caseNum])
+
+  // Load list of close contact
   useEffect(() => {
-    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
-    .then(res => {
+    async function fetchData() {
+
+      var update = {}
+      console.log("UPDATING INFORMATION (0/3): ", update)
+
+      var res = await axios.get(`http://localhost:4000/api/getContacts/${caseNum}`)
       console.log(res);
-      setPatientData(res.data[0]);
-    })
-    .catch(err => {
-      console.error(err);
-    })
+
+      setCloseContactListData(res.data.map(contact => ({
+        ...contact,
+        num_ha: null,
+        latest_ha: null,
+        days_ha: null,
+        num_xray: null,
+        latest_xray: null,
+        days_xray: null
+      })));
+      
+      
+
+      await Promise.all(res.data.map(async x => {
+        if (x.PatientNo != null) {
+          // find the latest case of the patient
+          const latest_case = await axios.get(`http://localhost:4000/api/getLatestCase/${x.PatientNo}`)
+
+          // find the latest and number of ha
+          if (latest_case.data.length > 0) {
+            const ha_start_dates = await axios.get(`http://localhost:4000/api/getHealthAssessmentDate/${latest_case.data[0].CaseNo}`)
+            const xray_start_dates = await axios.get(`http://localhost:4000/api/getXrayDate/${latest_case.data[0].CaseNo}`)
+
+            // TESTING
+            console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${x.PatientNo}]`, ha_start_dates.data)
+            console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${x.PatientNo}]`, xray_start_dates.data)
+
+            
+
+            // setting HA data
+            if (ha_start_dates.data.length > 0) {
+              const time_diff_ha = new Date() - new Date(ha_start_dates.data[0].ha_start)
+              const days_diff_ha = Math.floor(time_diff_ha / (1000 * 60 * 60  * 24))
+
+              const updatedPropsHA = {
+                num_ha: ha_start_dates.data.length,
+                latest_ha: new Date(ha_start_dates.data[0].ha_start).toLocaleDateString(),
+                days_ha: days_diff_ha
+              };
+            
+              //update.push(updateContactData(x, updatedPropsHA));
+              update = {...x, ...updatedPropsHA}
+
+              console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${latest_case.data[0].CaseNo}] REPORTING HA UPDATE: number of HA: ${updatedPropsHA.num_ha}, latest_ha: ${updatedPropsHA.latest_ha}, number of days since last ha: ${updatedPropsHA.days_ha}`)
+              console.log("UPDATING INFORMATION (1/2): ", update)
+            }
+
+            
+
+            // setting XRAY data
+            if (xray_start_dates.data.length > 0){
+              const time_diff_xray = new Date() - new Date(xray_start_dates.data[0].issue_date)
+              const days_diff_xray = Math.floor(time_diff_xray / (1000 * 60 * 60  * 24))
+
+              const updatedPropsXray = {
+                num_xray: xray_start_dates.data.length,
+                latest_xray: new Date(xray_start_dates.data[0].issue_date).toLocaleDateString(),
+                days_xray: days_diff_xray
+              };
+            
+              //update.push(updateContactData(x, updatedPropsXray));
+              update = {...update, ...updatedPropsXray}
+
+              console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${latest_case.data[0].CaseNo}] REPORTING XRAY UPDATE: number of XRAY: ${updatedPropsXray.num_xray}, latest_xray: ${updatedPropsXray.latest_xray}, number of days since last xray: ${updatedPropsXray.days_xray}`)
+              console.log("UPDATING INFORMATION (2/3): ", update)
+            }
+
+            setCloseContactListData(prevData =>
+              prevData.map(contact => {
+                if (update.PatientNo === contact.PatientNo) {
+                  return { ...update };
+                } else {
+                  return contact;
+                }
+              })
+            );
+            
+
+            // old update state
+            // setCloseContactListData(prevData =>
+            //   prevData.map(contact => {
+            //     const updatedContact = update.find(updated => updated.ContactNo === contact.ContactNo);
+            
+            //     if (updatedContact) {
+
+            //       console.log(`UPDATED CONTACT INFORMATION (3/3): `, updatedContact)
+
+            //       return {
+            //         ...contact,
+            //         num_ha: updatedContact.num_ha,
+            //         latest_ha: updatedContact.latest_ha,
+            //         days_ha: updatedContact.days_ha,
+            //         num_xray: updatedContact.num_xray,
+            //         latest_xray: updatedContact.latest_xray,
+            //         days_xray: updatedContact.days_xray
+            //       };
+            //     } else {
+            //       return contact;
+            //     }
+                
+                
+                
+            //   })
+            // );
+          }
+        }
+        
+        // find the latest and number of xray
+      }));
+      console.log(res);
+    }
+
+    fetchData()
+    
   }, [caseNum])
 
-  // Check backend if case is latest
   useEffect(() => {
-    console.log(caseNum)
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://localhost:4000/api/getPatientNo/${caseNum}`);
-        const PatientNo = response.data[0].PatientNo;
-        console.log("PATIENTNUM FROM BACKEND: ", PatientNo);
+    console.log("Updated closeContactListData:", closeContactListData);
+  }, [closeContactListData]);
+
+  // // Check backend if case is latest
+  // useEffect(() => {
+  //   console.log(caseNum)
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(`http://localhost:4000/api/getPatientNo/${caseNum}`);
+  //       const PatientNo = response.data[0].PatientNo;
+  //       console.log("PATIENTNUM FROM BACKEND: ", PatientNo);
   
-        const result = await axios.get(`http://localhost:4000/api/getLatestCase/${PatientNo}`);
-        const CaseNo = result.data[0].CaseNo;
-        console.log("LATESTCASE FROM NESTED QUERY: ", CaseNo);
+  //       const result = await axios.get(`http://localhost:4000/api/getLatestCase/${PatientNo}`);
+  //       const CaseNo = result.data[0].CaseNo;
+  //       console.log("LATESTCASE FROM NESTED QUERY: ", CaseNo);
   
-        caseNum === CaseNo ? setLatestCase(true) : setLatestCase(false);
-        console.log("IS LATEST CASE?: ", latestCase);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  //       caseNum === CaseNo ? setLatestCase(true) : setLatestCase(false);
+  //       console.log("IS LATEST CASE?: ", latestCase);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
   
-    fetchData();
-  }, [caseNum, latestCase]);
+  //   fetchData();
+  // }, [caseNum, latestCase]);
 
   // useEffect(async () => {
   //   const response = await axios.get(`http://localhost:4000/api/getCaseStatus/${caseNum}`)
@@ -141,21 +254,6 @@ const CloseContacts = () => {
 
       {/*Shows general patient information details */}
       
-      {/** OLD CASE HEADER CODE */}
-      {/* <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
-        <Col className="ms-5" lg="12">
-          <Row>
-            <Col><strong>Case No: {patientData.case_refno}</strong></Col>
-          </Row>
-          <Row>
-            <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
-          </Row>
-          <Row>
-            <Col> <strong> Birthdate: {patientData.formattedBirthdate}</strong> </Col>
-          </Row>
-        </Col>
-      </Row> */}
-      
       {/** NEW CASE HEADER CODE */}
       <CaseHeader caseNum={caseNum} />
       
@@ -166,50 +264,57 @@ const CloseContacts = () => {
     <caption className=' fs-4' style={{ color:'#0077B6'}}>Close Contacts</caption>
     <thead>
                     <tr>
+                        <th scope="col">Patient</th>
                         <th scope="col">Full Name</th>
                         <th scope="col">Birthdate</th>
                         <th scope="col">Sex</th>
-                        <th scope="col">Relationship to Patient</th>
+                        <th scope="col">Relationship</th>
                         <th scope="col">Contact Name</th>
                         <th scope="col">Contact Number</th>
                         <th scope="col">Contact Email</th>
-                        <th scope="col">Days since last contact</th>
-                        <th scope="col">Patient</th>
+                        <th scope="col">Next HA</th>
+                        <th scope="col">Next X-Ray</th>  
                     </tr>
                 </thead>
                 <tbody>
                 {closeContactListData.map((contact, index) => (
                     <tr key={index}>
-                      <td>{contact.last_name+", "+contact.first_name+" "+contact.middle_initial}</td>
-                      <td>{new Date(contact.birthdate).toLocaleDateString()}</td>
-                      <td>{contact.sex === "M" ? "Male": "Female"}</td>
-                      <td>{contact.contact_relationship}</td>
-                      <td>{contact.contact_person}</td>
-                      <td>{contact.contact_num}</td>
-                      <td>{contact.contact_email}</td>
-                      
-                      {/*TODO: Add Confirm Page for Successful Patient Contact*/}
-                      <td>
-                        {contact.date_contacted === null ? (
-                          "Has not been contacted yet"
-                        ) : (
-                          `${calcDaysContact(contact.date_added, contact.date_contacted)} Days`
-                        )
-                        }
-                      </td>
-
                       {/* Patient Convert Button: Only Applicable to Contacts Under the Age of 15*/}
                       <td>
                         {contact.PatientNo === null ? (
                           contact.age < 15 ? (
                             <Link to={`/addPatient/${contact.ContactNo}`}><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">Convert</button></Link>
                           ) : (
-                            "Contact cannot be patient, must be younger than 15"
+                            ""
                           )
                         ) : (
-                          <Link to={`/patient/${contact.PatientNo}`}>View Patient</Link>
+                          <Link to={`/patient/${contact.PatientNo}`}><button className="btn ms-1" style={{ fontSize:"12px", color: "white", backgroundColor: '#0077B6'}} type="button">View</button></Link>
                         )}
                       </td>
+                      <td>{contact.last_name+", "+contact.first_name+" "+contact.middle_initial}</td>
+                      <td>{new Date(contact.birthdate).toLocaleDateString()}</td>
+                      <td>{contact.sex === "M" ? "Male": "Female"}</td>
+                      <td>{contact.contact_relationship}</td>
+                      <td>{contact.contact_person === null ? <em>self</em> : contact.contact_person}</td>
+                      <td>{contact.contact_num}</td>
+                      <td>{contact.contact_email}</td>
+                      
+                      
+                      {/*Display HA information*/}
+                      <td>
+                        {contact.num_ha === null ? "NO RECORD" :
+                          `${contact.latest_ha} (${contact.days_ha})`
+                        }
+                      </td>
+
+                      <td>
+                        {contact.num_xray === null ? "NO RECORD" :
+                          `${contact.latest_xray} (${contact.days_xray})`
+                        }
+                      </td>
+                      
+
+                      
                     </tr>
                   ))
                 }
@@ -218,7 +323,7 @@ const CloseContacts = () => {
                
             </table>
             <div className="d-flex justify-content-end me-5 mb-5" >
-              <AddCloseContactModal id={caseNum} isLatest={latestCase}/>
+              <AddCloseContactModal id={caseNum} />
           </div>
 
 

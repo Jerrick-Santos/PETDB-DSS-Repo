@@ -275,7 +275,6 @@ module.exports = (db) => {
             if (err) {console.error(err);}
             else {
                 console.log(result);
-                result[0].formattedBirthdate = new Date(result[0].patient_birthdate).toLocaleDateString()
                 res.send(result);
             }
         })
@@ -343,8 +342,38 @@ module.exports = (db) => {
                 res.send(results)
             }
         })
-    })
+    }),
 
+    router.get('/getHealthAssessmentDate/:caseNum', (req, res) => {
+
+        const q = `SELECT 
+        pc.start_date AS ha_start
+        FROM PEDTBDSS_new.TD_PTCASE pc
+        JOIN PEDTBDSS_new.TD_HEALTHASSESSMENT ha ON pc.CaseNo = ha.CaseNo
+        WHERE pc.CaseNo = ?;`
+
+        db.query(q, [req.params.caseNum], (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                res.send(results)
+            }
+        })
+    }),
+
+    router.get('/getXrayDate/:caseNum', (req, res) => {
+
+        const q = `SELECT issue_date
+        FROM PEDTBDSS_new.TD_DIAGNOSTICRESULTS
+        WHERE DGTestNo = 1
+        AND CaseNo = ?;`
+
+        db.query(q, [req.params.caseNum], (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                res.send(results)
+            }
+        })
+    })
     
 
     return router;

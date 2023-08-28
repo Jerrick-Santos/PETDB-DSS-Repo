@@ -120,7 +120,7 @@ function AddCloseContactModal(props) {
   return (
         <>
 
-            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow} disabled={props.isLatest}>
+            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
                 <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a Close Contact
               </button>
 
