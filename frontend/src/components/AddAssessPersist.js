@@ -14,6 +14,9 @@ function AddAssessPersist(props) {
 
     const [assessFormValues, setAssessFormValues] = useState({
         case_no:props.caseNo,
+        ass_bmi: null,
+        ass_temp: null,
+        ass_bp: null,
         cough: 0,
         c_weeks: 0,
         c_persist: 0,
@@ -38,19 +41,19 @@ function AddAssessPersist(props) {
         not_eating_well:0,
         new_weeks:0,
         new_persist:0,
-        gibbus_deform:0,
+        //gibbus_deform:0,
         non_painful_ecl:0,
-        stiff_neck:0,
+        //stiff_neck:0,
         drowsy:0,
-        pleural_effusion:0,
-        pericard_effusion:0,
-        dist_abdomen:0,
-        non_painful_ejoint:0,
-        tuberculin_hyper:0,
+        //pleural_effusion:0,
+        //pericard_effusion:0,
+        //dist_abdomen:0,
+        //non_painful_ejoint:0,
+        //tuberculin_hyper:0,
         can_stand:0,
         ass_body_weight:null,
         ass_height:null,
-        diabetes:0,
+        //diabetes:0,
         plhiv:0,
         hiv:0,
         mother_hiv:0,
@@ -64,7 +67,6 @@ function AddAssessPersist(props) {
         other_dd_interacts:'',
         other_comorbid:'',
         assessment_date: new Date().toISOString().split('T')[0],
-        person_conducted: '',
     });
 
     const handleChange = (e) => {
@@ -177,7 +179,7 @@ function AddAssessPersist(props) {
           </Col>
           <Col sm="4">
             <Card.Text>
-                <input type="text" className="form-control" name='ass_height' value={assessFormValues.ass_height} onChange={handleChange} placeholder='' />
+                <input type="text" className="form-control" name='ass_bmi' value={assessFormValues.ass_bmi} onChange={handleChange} placeholder='' />
               </Card.Text>
           </Col>
         </Row>
@@ -189,7 +191,7 @@ function AddAssessPersist(props) {
           </Col>
           <Col sm="4">
             <Card.Text>
-                <input type="text" className="form-control" name='other_health_issues' value={assessFormValues.other_health_issues} onChange={handleChange} placeholder='in Celsius' />
+                <input type="text" className="form-control" name='ass_temp' value={assessFormValues.ass_temp} onChange={handleChange} placeholder='in Celsius' />
               </Card.Text>
           </Col>
         </Row>
@@ -201,7 +203,7 @@ function AddAssessPersist(props) {
           </Col>
           <Col sm="4">
             <Card.Text>
-                <input type="text" className="form-control" name='other_meds' value={assessFormValues.other_meds} onChange={handleChange} placeholder='systolic/diastolic' />
+                <input type="text" className="form-control" name='ass_bp' value={assessFormValues.ass_bp} onChange={handleChange} placeholder='systolic/diastolic' />
               </Card.Text>
           </Col>
         </Row>
@@ -408,7 +410,7 @@ function AddAssessPersist(props) {
             <Card.Text className="text-muted">Drowsiness</Card.Text>
           </Col>
           <Col sm="2">
-            <input type="checkbox" name='stiff_neck' onChange={handleChange}/>
+            <input type="checkbox" name='drowsy' onChange={handleChange}/>
           </Col>
         </Row>
         
@@ -517,30 +519,6 @@ function AddAssessPersist(props) {
           </Col>
           <Col sm="2">
             <input type="checkbox" name='malnutrition' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Body Weight</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_body_weight' value={assessFormValues.ass_body_weight} onChange={handleChange} placeholder='in kilograms' />
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Height</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_height' value={assessFormValues.ass_height} onChange={handleChange} placeholder='in feet' />
-              </Card.Text>
           </Col>
         </Row>
         <hr />
