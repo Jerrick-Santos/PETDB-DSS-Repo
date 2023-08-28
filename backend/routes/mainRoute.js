@@ -471,22 +471,19 @@ WHERE
     
     
     router.get('/validity/:id', (req, res) => {
-        const id = req.params.id;
+        const testno = req.params.id;
         db.query(`
         SELECT d.DGValidityMonths
         FROM PEDTBDSS_new.MD_DGTESTS d
-        WHERE DGTestNo = ${id};
+        WHERE DGTestNo = ${testno};
     `, (err, results) => {
         if (err) {
-            console.log(err);
-            res.status(500).json({ error: 'Internal server error' });
+            console.log(err)
         } else {
-            if (results.length > 0) {
-                const validityMonths = results[0].DGValidityMonths;
-                res.json({ DGValidityMonths: validityMonths });
-            } else {
-                res.status(404).json({ error: 'Test not found' });
-            }
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
         }
     });
     })

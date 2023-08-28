@@ -25,9 +25,8 @@ function AddXrayModal(props) {
         axios.get(`http://localhost:4000/api/validity/1`)
         .then((response) => {
         setXrayValidity(response.data)
-        console.log('Validity months: ', xrayValidity);
         // Call computeValidity after fetching xrayValidity and when issue_date changes
-
+        computeValidity();
         })
         .catch((error) => {
         // Handle any errors that occurred during the request
@@ -157,4 +156,3 @@ function AddXrayModal(props) {
 
 
 export default AddXrayModal;
-
