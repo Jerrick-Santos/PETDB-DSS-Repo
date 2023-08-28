@@ -84,6 +84,11 @@ const Assessment = () => {
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
           </button>
           </Link>
+          <Link to={`/similarcases/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
+          </button>
+          </Link>
             
             </Nav>
           
@@ -129,37 +134,46 @@ const Assessment = () => {
      )}
      
 
-      <hr/>
+      
 
-      <table className="table caption-top bg-white rounded mt-2 ms-1">
-    <caption className=' fs-4'>Assessment Records</caption>
-    <thead>
-                    <tr>
-                        <th scope="col">Assessment Date</th>
-                        <th scope="col">Cough</th>    
-                        <th scope="col">Fever</th>
-                        <th scope="col">Weight Loss</th>
-                        <th scope="col">Night Sweats</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {assessData.map((assessment, index) => (
-                    <tr key={index}>
-                        <td>
-                        <Link to={`/patient/${assessment.CaseNo}`}>
-                            <p style={{ color: 'black' }}>
-                            <u>{new Date(assessment.assessment_date).toLocaleDateString()}</u>
-                            </p>
-                        </Link>
-                        </td>
-                        <td>{assessment.cough}</td>
-                        <td>{assessment.fever}</td>
-                        <td>{assessment.weight_loss}</td>
-                        <td>{assessment.night_sweats}</td>
-                    </tr>
+      <hr/>
+      <Row className="mb-5 mt-2 justify-content-center">
+      <Col lg="8">
+      <p> <strong> Assessment Record </strong> </p>
+        <Card className="mb-4">
+          <Card.Body>
+            <Row>
+              <Col sm="6">
+                <Card.Text>Date of Assessment</Card.Text>
+              </Col>
+              <Col sm="6">
+                <Card.Text>Assessed by</Card.Text>
+              </Col>
+
+            </Row>
+        
+            
+            {assessData.map((assessment, index) => (
+              <>
+               <hr />
+               <Row>
+               <Col sm="6">
+                <Card.Text>{assessment.assessment_date}</Card.Text>
+              </Col>
+              <Col sm="6">
+                <Card.Text>{assessment.assessment_date}</Card.Text>
+              </Col>
+            </Row>
+                   </>
                     ))}
-                </tbody>
-            </table>
+          
+
+
+          
+          </Card.Body>
+        </Card>
+      </Col>
+    </Row>
 
       {/* Shows the recommended next course of action */}
       

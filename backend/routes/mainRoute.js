@@ -111,7 +111,8 @@ module.exports = (db) => {
         db.query(`
         SELECT *
         FROM PEDTBDSS_new.TD_HEALTHASSESSMENT ha
-        WHERE ha.CaseNo = ${id};
+        WHERE ha.CaseNo = ${id}
+        ORDER BY ha.assessment_date desc;
         `, (err, results) => {
             if (err) {
                 console.log(err)
@@ -475,7 +476,7 @@ WHERE
         db.query(`
         SELECT d.DGValidityMonths
         FROM PEDTBDSS_new.MD_DGTESTS d
-        WHERE DGTESTNo = ${testno};
+        WHERE DGTestNo = ${testno};
     `, (err, results) => {
         if (err) {
             console.log(err)
@@ -570,11 +571,12 @@ WHERE
     })
 
     router.post('/newTSTresults', (req, res) => {
-        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?)"
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
         const testresultsValues = [
             req.body.CaseNo,
             3,
             req.body.TestValue,
+            req.body.validity,
             req.body.HINo,
             req.body.issue_date,
             req.body.test_refno
@@ -590,11 +592,12 @@ WHERE
     })
 
     router.post('/newMTBresults', (req, res) => {
-        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?)"
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
         const testresultsValues = [
             req.body.CaseNo,
             2,
             req.body.TestValue,
+            req.body.validity,
             req.body.HINo,
             req.body.issue_date,
             req.body.test_refno
@@ -977,7 +980,7 @@ WHERE
     })
 
     //SEARCH ROUTES FOR ADMIN VIEW
-    router.get('/searchhi/:id', (req, res) => {
+    router.get('/searchhi/:id/', (req, res) => {
         const searchTerm = req.params.id;
         db.query(`
         SELECT h.HINo,
@@ -987,7 +990,8 @@ WHERE
         h.HIContactNumber,
         h.HIEmailAddress,
         h.XCoord,
-        h.YCoord
+        h.YCoord,
+        h.isActive
     FROM PEDTBDSS_new.MD_HI h
 WHERE 
     CONCAT(

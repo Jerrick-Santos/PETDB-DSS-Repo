@@ -10,6 +10,7 @@ import { Link, useParams } from 'react-router-dom';
 import Pagination from 'react-bootstrap/Pagination';
 import bin from '../assets/bin.png'
 import edit from '../assets/edit.png'
+import filter from '../assets/filter.png'
 import DeleteHIModal from '../admincomponents/DeleteHIModal';
 
 
@@ -73,14 +74,184 @@ const [searchTerm, setSearchTerm] = useState('');
          {/* Shows the recommended next course of action */}
     <Row className="mt-5 justify-content-center">
       <Col lg="11">
-      <form>
-        <div className="mb-4 input-group" style={{ maxWidth: '290px' }}>
-            {/* Adjust the max-width to control the width of the input field */}
-            <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleChange} placeholder="Keyword" />
-            <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSubmit} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
-        </div>
-    </form>
       <h1 style={{fontSize:"35px"}}> Health Institutions (HI) </h1>
+      <Row>
+        <Col lg="2">
+        <form>
+            <div className="mb- mt-3 input-group" style={{ maxWidth: '290px' }}>
+                {/* Adjust the max-width to control the width of the input field */}
+                <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleChange} placeholder="Search" />
+                <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSubmit} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
+            </div>
+        </form>
+        </Col>
+        <Col lg="2">
+        
+              <div
+        className="mb-2 mt-3 input-group"
+        style={{
+          maxWidth: '290px',
+          display: 'flex',
+          backgroundColor: '#0077B6',
+          borderRadius: '6px', // Adding borderRadius for rounding the outer div
+          overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: '#0077B6',
+            width: '30px',
+            height: '100%',
+          }}
+        >
+           <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+        </div>
+        <select
+          className="form-select"
+        >
+          <option value="">Filter Status</option>
+          <option value="city1">City 1</option>
+          <option value="city2">City 2</option>
+          {/* Add more cities as needed */}
+        </select>
+      </div>
+
+        </Col>
+
+        <Col lg="2">
+        
+        <div
+  className="mb-2 mt-3 input-group"
+  style={{
+    maxWidth: '290px',
+    display: 'flex',
+    backgroundColor: '#0077B6',
+    borderRadius: '6px', // Adding borderRadius for rounding the outer div
+    overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+  }}
+>
+  <div
+    style={{
+      backgroundColor: '#0077B6',
+      width: '30px',
+      height: '100%',
+    }}
+  >
+     <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+  </div>
+  <select
+    className="form-select"
+  >
+    <option value="">Filter Region</option>
+    <option value="city1">City 1</option>
+    <option value="city2">City 2</option>
+    {/* Add more cities as needed */}
+  </select>
+</div>
+
+  </Col>
+
+  <Col lg="2">
+        
+        <div
+  className="mb-2 mt-3 input-group"
+  style={{
+    maxWidth: '290px',
+    display: 'flex',
+    backgroundColor: '#0077B6',
+    borderRadius: '6px', // Adding borderRadius for rounding the outer div
+    overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+  }}
+>
+  <div
+    style={{
+      backgroundColor: '#0077B6',
+      width: '30px',
+      height: '100%',
+    }}
+  >
+     <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+  </div>
+  <select
+    className="form-select"
+  >
+    <option value="">Filter Province</option>
+    <option value="city1">City 1</option>
+    <option value="city2">City 2</option>
+    {/* Add more cities as needed */}
+  </select>
+</div>
+
+  </Col>
+
+  <Col lg="2">
+        
+        <div
+  className="mb-2 mt-3 input-group"
+  style={{
+    maxWidth: '290px',
+    display: 'flex',
+    backgroundColor: '#0077B6',
+    borderRadius: '6px', // Adding borderRadius for rounding the outer div
+    overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+  }}
+>
+  <div
+    style={{
+      backgroundColor: '#0077B6',
+      width: '30px',
+      height: '100%',
+    }}
+  >
+     <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+  </div>
+  <select
+    className="form-select"
+  >
+    <option value="">Filter City</option>
+    <option value="city1">City 1</option>
+    <option value="city2">City 2</option>
+    {/* Add more cities as needed */}
+  </select>
+</div>
+
+  </Col>
+
+  <Col lg="2">
+        
+        <div
+  className="mb-2 mt-3 input-group"
+  style={{
+    maxWidth: '290px',
+    display: 'flex',
+    backgroundColor: '#0077B6',
+    borderRadius: '6px', // Adding borderRadius for rounding the outer div
+    overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+  }}
+>
+  <div
+    style={{
+      backgroundColor: '#0077B6',
+      width: '30px',
+      height: '100%',
+    }}
+  >
+     <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+  </div>
+  <select
+    className="form-select"
+  >
+    <option value="">Filter Barangay</option>
+    <option value="city1">City 1</option>
+    <option value="city2">City 2</option>
+    {/* Add more cities as needed */}
+  </select>
+</div>
+
+  </Col>
+      </Row>
+    
+      
         <Card className="mt-4 mb-4">
           <Card.Body>
             <Row>

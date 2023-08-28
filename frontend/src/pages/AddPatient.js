@@ -327,7 +327,7 @@ const AddPatient = () => {
             
             <Row className="mb-5 justify-content-center">
                 <div class="form-group col-md-1">
-                    <label for="inputPermHouseNo">House No.</label>
+                    <label for="inputPermHouseNo">House #</label>
                     <input type="text" class="form-control" id="inputPermHouseNo" name='per_houseno' onChange={handleChange}  placeholder="House No."/>
                 </div>
                 
@@ -424,7 +424,7 @@ const AddPatient = () => {
 
             <Row className="mb-5 justify-content-center">
             <div class="form-group col-md-1">
-                    <label for="inputCurrHouseNo">House No.</label>
+                    <label for="inputCurrHouseNo">House #</label>
                     <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' onChange={handleChange}  placeholder="House No." disabled={isCurrentAddressDisabled}/>
                 </div>
                 

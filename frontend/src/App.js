@@ -22,6 +22,7 @@ import AddPatientContact from './pages/AddPatientContact';
 import PatientSummaryPTB from './pages/Home/PatientSummaryPTB';
 import PatientSummaryEPTB from './pages/Home/PatientSummaryEPTB';
 import PatientSummaryClosed from './pages/Home/PatientSummaryClosed';
+import SimilarCases from './pages/SimilarCases';
 
 
 function App() {
@@ -51,8 +52,10 @@ function App() {
                     <Route path="/labtest/:id" element={<LaboratoryTest/>}/>
                     <Route path="/diagnosis/:id" element={<Diagnosis/>}/>
                     <Route path="/treatments/:id" element={<Treatments/>}/>
+                    <Route path="/similarcases/:id" element={<SimilarCases/>}/>
                     <Route path="/addpatient" element={<AddPatient/>}/>
                     <Route path="/allpatient" element={<ViewPatient/>}/>
+                    
                     <Route path="/case/:id" element={<Case/>}/>
                     <Route path="/allpatient/searchpatient/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt/:phn/:ps/:pb/:pc/:pr/:pz/:chn/:cs/:cb/:cc/:cr/:cz/:ad/:mn/:mb/:mc/:me/:fn/:fb/:fc/:fe/:en/:eb/:ec/:ee" element={<AdvanceViewPatient/>}/>
                     <Route path="/addpatient/:id" element={<AddPatientContact/>}/>

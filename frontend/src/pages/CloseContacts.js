@@ -115,6 +115,11 @@ const CloseContacts = () => {
           <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
           </button>
           </Link>
+          <Link to={`/similarcases/${caseNum}`}> 
+          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
+          </button>
+          </Link>
           
           </Nav>
         
