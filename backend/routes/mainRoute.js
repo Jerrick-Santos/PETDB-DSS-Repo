@@ -470,7 +470,23 @@ WHERE
     });
     
     
-
+    router.get('/validity/:id', (req, res) => {
+        const testno = req.params.id;
+        db.query(`
+        SELECT d.DGValidityMonths
+        FROM PEDTBDSS_new.MD_DGTESTS d
+        WHERE DGTESTNo = ${testno};
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    })
 
 
 
