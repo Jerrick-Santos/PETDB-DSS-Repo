@@ -31,7 +31,7 @@ const CaseHeader = (props) => {
                 </Row>
 
                 <Row>
-                    <Col><strong>Patient Name:</strong> {patientData.patient_name}</Col>
+                    <Col><strong>Patient Name:</strong> <Link to={`/patient/${patientData.PatientNo}`}>{patientData.patient_name}</Link></Col>
                 </Row>
 
                 <Row>

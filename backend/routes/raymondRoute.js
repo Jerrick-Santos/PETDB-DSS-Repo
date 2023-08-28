@@ -265,7 +265,8 @@ module.exports = (db) => {
                     ptc.start_date,
                     ptc.end_date,
                     ptc.presumptive_id,
-                    ptc.case_status
+                    ptc.case_status,
+                    ptc.PatientNo
                    FROM PEDTBDSS_new.TD_PTCASE ptc
                    JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
                    WHERE ptc.CaseNo=${req.params.CaseNo}`
@@ -343,6 +344,8 @@ module.exports = (db) => {
             }
         })
     })
+
+    
 
     return router;
 
