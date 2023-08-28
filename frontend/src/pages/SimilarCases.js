@@ -14,6 +14,7 @@ import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import PresumptiveTBModal from '../components/PresumptiveTBModal';
 import LatentTBModal from '../components/LatentTBModal';
+import CaseHeader from '../components/CaseHeader'
 
 
 const SimilarCases = () => {
@@ -153,15 +154,7 @@ const SimilarCases = () => {
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
           <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
             <Col lg="11">
-              <Row>
-                <Col><strong>Case No: {patientData.case_refno}</strong></Col>
-              </Row>
-              <Row>
-                <Col> <strong> Patient Name: {patientData.patient_name}</strong> </Col>
-              </Row>
-              <Row>
-                <Col> <strong> Birthdate: {patientData.formattedBirthdate}</strong> </Col>
-              </Row>
+              <CaseHeader caseNum={caseNum} />
             </Col>
 
             <Col lg="11" className="d-flex justify-content-center">

@@ -261,8 +261,12 @@ module.exports = (db) => {
         
         const q = `SELECT
                     CONCAT(pi.last_name, ", ",pi.first_name, " ", pi.middle_initial,".") AS patient_name,
-                    pi.birthdate AS patient_birthdate,
-                    ptc.case_refno
+                    ptc.case_refno,
+                    ptc.start_date,
+                    ptc.end_date,
+                    ptc.presumptive_id,
+                    ptc.case_status,
+                    ptc.PatientNo
                    FROM PEDTBDSS_new.TD_PTCASE ptc
                    JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
                    WHERE ptc.CaseNo=${req.params.CaseNo}`
@@ -327,7 +331,21 @@ module.exports = (db) => {
                 res.send(results)
             }
         })
+    }),
+
+    router.get('/getCaseStatus/:caseNum', (req, res) => {
+        
+        const q = `SELECT case_status FROM PEDTBDSS_new.TD_PTCASE WHERE CaseNo = ?;`
+
+        db.query(q, [req.params.caseNum], (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                res.send(results)
+            }
+        })
     })
+
+    
 
     return router;
 

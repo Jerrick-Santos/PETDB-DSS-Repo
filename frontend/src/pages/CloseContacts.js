@@ -11,6 +11,7 @@ import add from '../assets/add.png';
 import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
+import CaseHeader from '../components/CaseHeader';
 
 
 const CloseContacts = () => {
@@ -79,6 +80,13 @@ const CloseContacts = () => {
   
     fetchData();
   }, [caseNum, latestCase]);
+
+  // useEffect(async () => {
+  //   const response = await axios.get(`http://localhost:4000/api/getCaseStatus/${caseNum}`)
+  //   const cs = response.data[0].case_status
+  //   cs === "O" ? setLatestCase(true) : setLatestCase(false)
+  //   console.log("is this the latest case?", cs)
+  // }, [caseNum])
   
 
   return (
@@ -133,8 +141,8 @@ const CloseContacts = () => {
 
       {/*Shows general patient information details */}
       
-      
-      <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+      {/** OLD CASE HEADER CODE */}
+      {/* <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
         <Col className="ms-5" lg="12">
           <Row>
             <Col><strong>Case No: {patientData.case_refno}</strong></Col>
@@ -146,9 +154,10 @@ const CloseContacts = () => {
             <Col> <strong> Birthdate: {patientData.formattedBirthdate}</strong> </Col>
           </Row>
         </Col>
-      </Row>
+      </Row> */}
       
-      
+      {/** NEW CASE HEADER CODE */}
+      <CaseHeader caseNum={caseNum} />
       
       {/* Shows all relevant information of the patient */}
       
