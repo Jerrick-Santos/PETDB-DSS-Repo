@@ -111,7 +111,8 @@ module.exports = (db) => {
         db.query(`
         SELECT *
         FROM PEDTBDSS_new.TD_HEALTHASSESSMENT ha
-        WHERE ha.CaseNo = ${id};
+        WHERE ha.CaseNo = ${id}
+        ORDER BY ha.assessment_date desc;
         `, (err, results) => {
             if (err) {
                 console.log(err)
@@ -961,7 +962,7 @@ WHERE
     })
 
     //SEARCH ROUTES FOR ADMIN VIEW
-    router.get('/searchhi/:id', (req, res) => {
+    router.get('/searchhi/:id/', (req, res) => {
         const searchTerm = req.params.id;
         db.query(`
         SELECT h.HINo,
@@ -971,7 +972,8 @@ WHERE
         h.HIContactNumber,
         h.HIEmailAddress,
         h.XCoord,
-        h.YCoord
+        h.YCoord,
+        h.isActive
     FROM PEDTBDSS_new.MD_HI h
 WHERE 
     CONCAT(
