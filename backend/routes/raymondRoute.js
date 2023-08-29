@@ -260,7 +260,7 @@ module.exports = (db) => {
     router.get('/getCasePatient/:CaseNo', (req, res) => {
         
         const q = `SELECT
-                    CONCAT(pi.last_name, ", ",pi.first_name, " ", pi.middle_initial,".") AS patient_name,
+                    CONCAT(pi.last_name, ", ",pi.first_name, " ", pi.middle_initial) AS patient_name,
                     ptc.case_refno,
                     ptc.start_date,
                     ptc.end_date,
@@ -280,20 +280,29 @@ module.exports = (db) => {
         })
     })
 
-    router.get('/getSimilarPatients', (req, res) => {
+    router.get('/getSimilarPatients/:first_name/:middle_initial/:last_name', (req, res) => {
 
         /** ROUTER GOAL: Get an index of patients with similar first name, middle initial and last name
          *  -- Expected to return the set of information that will be used in creating a new close contact
         */
 
         // Query to get a list of patients with matching first name, middle initial and last name
-        const q = `SELECT * 
+        const q = `SELECT 
+                    last_name,
+                    middle_initial,
+                    first_name,
+                    birthdate,
+                    sex,
+                    emergency_name,
+                    e_contactno,
+                    e_email, 
+                    PatientNo
         FROM PEDTBDSS_new.TD_PTINFORMATION
-        WHERE last_name = "${req.params.last_name}" 
-        AND middle_initial = "${req.params.middle_initial}"
-        AND first_name = "${req.params.first_name}";`
+        WHERE last_name like ?
+        AND middle_initial like ?
+        AND first_name like ?;`
 
-        db.query(q, (err, results) => {
+        db.query(q, [req.params.last_name, req.params.middle_initial, req.params.first_name], (err, results) => {
             if (err) {console.error(err)}
             else {
                 console.log(results)
