@@ -282,7 +282,7 @@ module.exports = (db) => {
             }
         });
     })
-    router.post('/diagnose/:caseid', (req, res) => {
+    router.get('/diagnose/:caseid', (req, res) => {
         let ruleNo;
 
         const symptomsObject = {
@@ -541,15 +541,15 @@ module.exports = (db) => {
                             console.log("QUERY: IGRA - CHECK")
     
                             if (IGRAResults.length === 0) {
-                                inputObject.tst = 0;
+                                inputObject.igra = 0;
                             } else {
                                 const {TestValue} = IGRAResults[0]
     
                                 
                                 inputObject.igra = IGRAmodule(TestValue)
-                                console.log(inputObject.igra)
                             }
                         
+                            console.log("igra value: " + inputObject.igra)
 
                          db.query(ageQuery, (errorB, AgeResults) => {
 
@@ -598,19 +598,23 @@ module.exports = (db) => {
                                 if (TBcontactResults.length === 0) {
                                     highSuspicionObject.has_TBcontact = -1
                                     inputObject.has_TBcontact = -1
+                                    symptomsObject.has_TBcontact = -1
                                 } else {
                                     highSuspicionObject.has_TBcontact = detectContactTB(TBcontactResults)
                                     inputObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
                                 }
 
+                                console.log(symptomsObject)
                                 db.query(`SELECT *
                                 FROM PEDTBDSS_new.MD_SYMPTOMSRULES
                                 WHERE c_symp = ${symptomsObject.c_symp} AND 
-                                ETPB_symp = ${symptomsObject.EPTB_symp} AND 
-                                xray = ${symptomsObject.other_symp};`, (error7, symptomsRules) => {
+                                EPTB_symp = ${symptomsObject.EPTB_symp} AND 
+                                has_TBcontact = ${symptomsObject.has_TBcontact} AND
+                                other_symp = ${symptomsObject.other_symp};`, (error7, symptomsRules) => {
 
                                     if (error7) {
-                                        res.status(500).json({ error: "Error fetching SYMPTOM RULES data" });
+                                        res.status(500).json({ error: error7 });
                                         return;
                                     }
 
