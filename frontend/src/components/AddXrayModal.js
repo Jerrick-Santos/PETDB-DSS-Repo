@@ -13,7 +13,7 @@ function AddXrayModal(props) {
 
     useEffect(() => {
 
-        axios.get(`http://localhost:4000/api/allhi`)
+        axios.get(`http://localhost:4000/api/hiwithtests/1`)
           .then((response) => {
             setHIData(response.data)
           })

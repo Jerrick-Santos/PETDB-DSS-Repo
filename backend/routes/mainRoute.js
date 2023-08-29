@@ -733,6 +733,29 @@ WHERE
     });
     });
 
+    //get all HI records
+    router.get('/hiwithtests/:id', (req, res) => {
+        const id = req.params.id;
+        db.query(`
+        SELECT h.HINo,
+        h.HIName 
+        FROM PEDTBDSS_new.MD_HI h
+        JOIN PEDTBDSS_new.MD_HIDGTESTS dt ON h.HINo = dt.HINo
+        WHERE dt.DGTestNo = ${id}
+        ORDER BY h.HIName;
+       
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
     router.get('/allregions', (req, res) => {
         db.query(`
         SELECT r.region_id,

@@ -46,7 +46,7 @@ const SimilarCases = () => {
         for (let i = 0; i < response.data.length; i++) {
           const caseIndex = response.data[i][0];
           const similarity = response.data[i][1];
-          
+  
           // Assign values to percent1, percent2, percent3, caseNum1, caseNum2, caseNum3
           if (i === 0) {
             setPercent1(similarity);
@@ -59,41 +59,49 @@ const SimilarCases = () => {
             setCaseNum3(caseIndex);
           }
         }
-
-        axios.get(`http://localhost:4000/api/getlatestdiagnosis/${response.data[0][0]}`)
-          .then(response => {
-            setCase1Data(response.data);
-            console.log(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching Sim Cases:', error);
-          });
-  
-        axios.get(`http://localhost:4000/api/getlatestdiagnosis/${caseNum2}`)
-          .then(response => {
-            setCase2Data(response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching Sim Cases:', error);
-          });
-  
-        axios.get(`http://localhost:4000/api/getlatestdiagnosis/${caseNum3}`)
-          .then(response => {
-            setCase3Data(response.data);
-           
- 
-  
-          })
-          .catch(error => {
-            console.error('Error fetching Sim Cases:', error);
-          });
       })
       .catch(error => {
         console.error('Error fetching Sim Cases:', error);
       });
   }, []);
   
+  useEffect(() => {
+    if (caseNum1) {
+      axios.get(`http://localhost:4000/api/case/${caseNum1}`)
+        .then(response => {
+          setCase1Data(response.data[0]);
+        })
+        .catch(error => {
+          console.error('Error fetching Case 1 Data:', error);
+        });
+    }
+  }, [caseNum1]);
   
+  useEffect(() => {
+    if (caseNum2) {
+      axios.get(`http://localhost:4000/api/case/${caseNum2}`)
+        .then(response => {
+          setCase2Data(response.data[0]);
+        })
+        .catch(error => {
+          console.error('Error fetching Case 2 Data:', error);
+        });
+    }
+  }, [caseNum2]);
+  
+  useEffect(() => {
+    if (caseNum3) {
+      axios.get(`http://localhost:4000/api/case/${caseNum3}`)
+        .then(response => {
+          setCase3Data(response.data[0]);
+        })
+        .catch(error => {
+          console.error('Error fetching Case 3 Data:', error);
+        });
+    }
+  }, [caseNum3]);
+  
+  console.log(case1Data)
   
   // Make sure to check if casesData is available before using it
  
@@ -217,7 +225,7 @@ const SimilarCases = () => {
              <Card.Text>Case Reference No.</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted "></Card.Text>
+             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum1}`}>{case1Data.case_refno}</Link></Card.Text>
            </Col>
          </Row>
          <hr />
@@ -226,7 +234,7 @@ const SimilarCases = () => {
              <Card.Text>Case Start Date</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted "> {new Date(case1Data.start_date).toLocaleDateString()}</Card.Text>
            </Col>
          </Row>
          <hr />
@@ -235,7 +243,7 @@ const SimilarCases = () => {
              <Card.Text>Case End Date</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted ">{case1Data.end_date ? new Date(case1Data.end_date).toLocaleDateString() : '---'}</Card.Text>
            </Col>
          </Row>
          <hr />
@@ -244,7 +252,7 @@ const SimilarCases = () => {
              <Card.Text>Case Status</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted ">{case1Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
            </Col>
          </Row>
          <hr />
@@ -300,7 +308,7 @@ const SimilarCases = () => {
              <Card.Text>Case Reference No.</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">Name</Card.Text>
+             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum2}`}>{case2Data.case_refno}</Link></Card.Text>
            </Col>
          </Row>
          <hr />
@@ -309,7 +317,7 @@ const SimilarCases = () => {
              <Card.Text>Case Start Date</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted "> {new Date(case2Data.start_date).toLocaleDateString()}</Card.Text>
            </Col>
          </Row>
          <hr />
@@ -318,7 +326,7 @@ const SimilarCases = () => {
              <Card.Text>Case End Date</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted ">{case2Data.end_date ? new Date(case2Data.end_date).toLocaleDateString() : '---'}</Card.Text>
            </Col>
          </Row>
          <hr />
@@ -327,7 +335,7 @@ const SimilarCases = () => {
              <Card.Text>Case Status</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted ">{case2Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
            </Col>
          </Row>
          <hr />
@@ -383,7 +391,7 @@ const SimilarCases = () => {
              <Card.Text>Case Reference No.</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">Name</Card.Text>
+             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum3}`}>{case3Data.case_refno}</Link></Card.Text>
            </Col>
          </Row>
          <hr />
@@ -392,7 +400,7 @@ const SimilarCases = () => {
              <Card.Text>Case Start Date</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted "> {new Date(case3Data.start_date).toLocaleDateString()}</Card.Text>
            </Col>
          </Row>
          <hr />
@@ -401,7 +409,7 @@ const SimilarCases = () => {
              <Card.Text>Case End Date</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted ">{case3Data.end_date ? new Date(case3Data.end_date).toLocaleDateString() : '---'}</Card.Text>
            </Col>
          </Row>
          <hr />
@@ -410,7 +418,7 @@ const SimilarCases = () => {
              <Card.Text>Case Status</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
+             <Card.Text className="text-muted ">{case3Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
            </Col>
          </Row>
          <hr />

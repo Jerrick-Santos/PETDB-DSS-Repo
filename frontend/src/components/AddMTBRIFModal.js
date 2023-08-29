@@ -12,7 +12,7 @@ function AddMTBRIFModal(props) {
 
     useEffect(() => {
 
-        axios.get(`http://localhost:4000/api/allhi`)
+        axios.get(`http://localhost:4000/api/hiwithtests/2`)
           .then((response) => {
             setHIData(response.data)
           })
