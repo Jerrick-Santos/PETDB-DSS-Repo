@@ -21,6 +21,7 @@ import AssessmentPersistence from '../components/AssessmentPersistence';
 import AddAssessPersist from '../components/AddAssessPersist';
 import AddAssessNoPersist from '../components/AddAssessNoPersist';
 import CaseHeader from '../components/CaseHeader';
+import Pagination from 'react-bootstrap/Pagination';
 
 const Assessment = () => {
 
@@ -52,6 +53,19 @@ const Assessment = () => {
         console.error(err);
       })
     }, [caseNum])
+
+    // Add these state variables
+const [activePage, setActivePage] = useState(1); // Active page number
+const itemsPerPage = 5; // Number of items per page
+
+// Function to handle page change
+const handlePageChange = (pageNumber) => {
+  setActivePage(pageNumber);
+};
+
+// Calculate the index range for the current page
+const startIndex = (activePage - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
   return (
     <div>
       <NavBar/>
@@ -142,15 +156,69 @@ const Assessment = () => {
             </Row>
         
             
-            {assessData.map((assessment, index) => (
+            {assessData.slice(startIndex, endIndex).map((ass, index) => (
               <>
                <hr />
                <Row>
                <Col sm="6">
-                <Card.Text><AssessmentSummaryModal caseNo={caseNum} date={assessment.assessment_date} /></Card.Text>
+                <Card.Text><AssessmentSummaryModal 
+                      caseNo={caseNum} 
+                      date={new Date(ass.assessment_date).toLocaleDateString()} 
+                      AssessNo={ass.AssessNo}
+                      CaseNo={ass.CaseNo}
+                      cough={ass.cough}
+                      c_weeks={ass.c_weeks}
+                      c_persist={ass.c_persist}
+                      fever={ass.fever}
+                      fe_weeks={ass.fe_weeks}
+                      fe_persist={ass.fe_persist}
+                      weight_loss={ass.weight_loss}
+                      wl_weeks={ass.wl_weeks}
+                      wl_persist={ass.wl_persist}
+                      night_sweats={ass.night_sweats}
+                      ns_weeks={ass.ns_weeks}
+                      ns_persist={ass.ns_persist}
+                      fatigue={ass.fatigue}
+                      fat_weeks={ass.fat_weeks}
+                      fat_persist={ass.fat_persist}
+                      red_playfulness={ass.red_playfulness}
+                      rp_weeks={ass.rp_weeks}
+                      rp_persist={ass.rp_persist}
+                      dec_acts={ass.dec_acts}
+                      da_weeks={ass.da_weeks}
+                      da_persist={ass.da_persist}
+                      not_eating_well={ass.not_eating_well}
+                      new_weeks={ass.new_weeks}
+                      new_persist={ass.new_persist}
+                      non_painful_ecl={ass.non_painful_ecl}
+                      drowsy={ass.drowsy}
+                      can_stand={ass.can_stand}
+                      ass_body_weight={ass.ass_body_weight}
+                      ass_height={ass.ass_height}
+                      ass_bmi={ass.ass_bmi}
+                      ass_temp={ass.ass_temp}
+                      ass_bp={ass.ass_bp}
+                      plhiv={ass.plhiv}
+                      hiv={ass.hiv}
+                      mother_hiv={ass.mother_hiv}
+                      smoking={ass.smoking}
+                      drinking={ass.drinking}
+                      sex_active={ass.sex_active}
+                      renal_disease={ass.renal_disease}
+                      malnutrition={ass.malnutrition}
+                      other_health_issues={ass.other_health_issues}
+                      other_meds={ass.other_meds}
+                      other_dd_interacts={ass.other_dd_interacts}
+                      other_comorbid={ass.other_comorbid}
+                      assessment_date={ass.assessment_date}
+                      userNo={ass.userNo}
+                      prevPTB_diagnosed={ass.prevPTB_diagnosed} 
+                      user_fullname={ass.user_fullname}/>
+                      
+                      </Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text></Card.Text>
+                <Card.Text>{ass.user_fullname}</Card.Text>
               </Col>
             </Row>
                    </>
@@ -162,6 +230,16 @@ const Assessment = () => {
           </Card.Body>
         </Card>
       </Col>
+      <Pagination className="mt-3 justify-content-center">
+            <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
+            {Array.from({ length: Math.ceil(assessData.length / itemsPerPage) }).map((_, index) => (
+              <Pagination.Item key={index} active={index + 1 === activePage} onClick={() => handlePageChange(index + 1)}>
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(assessData.length / itemsPerPage)} />
+          </Pagination>
+
     </Row>
 
       {/* Shows the recommended next course of action */}

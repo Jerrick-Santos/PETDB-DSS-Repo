@@ -109,8 +109,17 @@ module.exports = (db) => {
         const id = req.params.id;
         console.log(id)
         db.query(`
-        SELECT *
+        SELECT ha.AssessNo, ha.CaseNo, ha.cough, ha.c_weeks, ha.c_persist, ha.fever,
+		ha.fe_weeks, ha.fe_persist, ha.weight_loss, ha.wl_weeks, ha.wl_persist, ha.night_sweats, ha.ns_weeks,
+        ha.ns_persist, ha.fatigue, ha.fat_weeks, ha.fat_persist, ha.red_playfulness, ha.rp_weeks, ha.rp_persist, 
+        ha.dec_acts, ha.da_weeks, ha.da_persist, ha.not_eating_well, ha.new_weeks, ha.new_persist, ha.non_painful_ecl, 
+        ha.drowsy, ha.can_stand, ha.ass_body_weight, ha.ass_height, ha.ass_bmi, ha.ass_temp, ha.ass_bp, ha.plhiv,
+        ha.hiv, ha.mother_hiv, ha.smoking, ha.drinking, ha.sex_active, ha.renal_disease, ha.malnutrition, ha.other_health_issues,
+        ha.other_meds, ha.other_dd_interacts, ha.other_comorbid, ha.assessment_date, ha.userNo, ha.prevPTB_diagnosed,
+        CONCAT(u.last_name, ', ', u.first_name, ' ', u.middle_name) AS user_fullname
+		
         FROM PEDTBDSS_new.TD_HEALTHASSESSMENT ha
+        JOIN PEDTBDSS_new.MD_USERS u ON u.UserNo = ha.UserNo
         WHERE ha.CaseNo = ${id}
         ORDER BY ha.assessment_date desc;
         `, (err, results) => {
