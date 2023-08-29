@@ -200,14 +200,15 @@ const Diagnosis = () => {
                         diagnosis.no_tb === 1 ? "NO TB":
                         "NONE"}
                         </td>
+                        {/* DIAGNOSIS */}
+                        <td>{diagnosis.diagnosis}</td>
                         {/* EPTB */}
                         <td>
                           {
                             diagnosis.EPTBpositive === 1 ? "YES": "NO"
                           }
                         </td>
-                        {/* DIAGNOSIS */}
-                        <td>{diagnosis.diagnosis}</td>
+
                         {/* Further Evaluation Required */}
                         <td>
                         {diagnosis.need_eval === 1 ? "YES" :"NO"}
