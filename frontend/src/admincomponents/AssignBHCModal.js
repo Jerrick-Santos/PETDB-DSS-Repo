@@ -3,6 +3,8 @@ import React, {useState,useEffect} from 'react';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
+import search from '../assets/search.png';
+import Pagination from 'react-bootstrap/Pagination';
 
 
 function AssignBHCModal(props) {
@@ -49,6 +51,39 @@ const handleSubmit = async (e) => {
     window.location.reload()
 }
 
+
+// Add these state variables
+const [activePage, setActivePage] = useState(1); // Active page number
+const itemsPerPage = 5; // Number of items per page
+
+// Function to handle page change
+const handlePageChange = (pageNumber) => {
+  setActivePage(pageNumber);
+};
+
+// Calculate the index range for the current page
+const startIndex = (activePage - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
+
+const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value)
+    }
+
+    const handleSearch = async (e) => {
+        e.preventDefault()
+        axios.get(`http://localhost:4000/api/searchbhcmissinghi/${props.id}/${searchTerm}`).then(response => {
+                setHiData(response.data);
+                console.log("added")
+              })
+              .catch(error => {
+                console.error('Error searching patient:', error);
+              });
+    }
+
+
+
   return (
         <>
 
@@ -63,6 +98,14 @@ const handleSubmit = async (e) => {
     <Modal.Body>
     <p><strong> BHC Name:</strong> {props.name}</p>
     <p><strong> Address:</strong> {props.address}</p>
+
+    <form>
+            <div className="mt-5 input-group" style={{ maxWidth: '290px' }}>
+                {/* Adjust the max-width to control the width of the input field */}
+                <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleSearchChange} placeholder="Search" />
+                <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSearch} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
+            </div>
+        </form>
     <form className="mt-3 justify-content-center">
     <Card className="mt-4 mb-4">
           <Card.Body>
@@ -76,7 +119,7 @@ const handleSubmit = async (e) => {
               </Col>
             </Row>
             
-            {hiData.map((hi, index) => (
+            {hiData.slice(startIndex, endIndex).map((hi, index) => (
               <>
               <hr/>
             <Row>
@@ -100,7 +143,15 @@ const handleSubmit = async (e) => {
             
           </Card.Body>
         </Card>
-
+        <Pagination className="mt-3 justify-content-center">
+            <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
+            {Array.from({ length: Math.ceil(hiData.length / itemsPerPage) }).map((_, index) => (
+              <Pagination.Item key={index} active={index + 1 === activePage} onClick={() => handlePageChange(index + 1)}>
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(hiData.length / itemsPerPage)} />
+          </Pagination>
         
     </form>
 </Modal.Body>
