@@ -60,6 +60,11 @@ module.exports = (db) => {
                 return;
             }
 
+            if (Q1results.length === 0) {
+                res.status(404).json({ error: 'Case not found' });
+                return;
+            }
+
             console.log("QUERY 1: SUCCESS")
             console.log("QUERY 1 RESULTS: " + Q1results[0])
 
