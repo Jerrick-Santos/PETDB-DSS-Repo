@@ -543,7 +543,7 @@ WHERE
 
     //create a new health institution
     router.post('/newhi', (req, res) => {
-        const q = "INSERT INTO MD_HI (`HIName`, `HIOperatingHours`, `HIContactNumber`, `HIEmailAddress`, `HIUnitNo`, `HIStreet`, `HIBarangay`, `HICity`, `HIRegion`, `HIProvince`, `HIZipCode`, `XCoord`, `YCoord` , `HIContactPerson`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const q = "INSERT INTO MD_HI (`HIName`, `HIOperatingHours`, `HIContactNumber`, `HIEmailAddress`, `HIUnitNo`, `HIStreet`, `HIBarangay`, `HICity`, `HIRegion`, `HIProvince`, `HIZipCode`, `XCoord`, `YCoord` , `HIContactPerson`, `isActive`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         const values = [
             req.body.HIName,
             req.body.HIOperatingHours,
@@ -558,7 +558,8 @@ WHERE
             req.body.HIZipCode,
             req.body.XCoord,
             req.body.YCoord,
-            req.body.HIContactPerson
+            req.body.HIContactPerson,
+            req.body.isActive
         ]
 
         db.query(q, values, (err, data) => {
@@ -704,16 +705,20 @@ WHERE
 
         db.query(`
         SELECT h.HINo,
-            h.HIName, 
-            CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince, ' ', h.HIZipCode) AS address,
-            h.HIOperatingHours,
-            h.HIContactNumber,
-            h.HIContactPerson,
-            h.HIEmailAddress,
-            h.XCoord,
-            h.YCoord,
-            h.isActive
-        FROM PEDTBDSS_new.MD_HI h
+        h.HIName, 
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
+        h.HIOperatingHours,
+        h.HIContactNumber,
+        h.HIContactPerson,
+        h.HIEmailAddress,
+        h.XCoord,
+        h.YCoord,
+        h.isActive
+    FROM PEDTBDSS_new.MD_HI h
+    JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
+    JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
+    JOIN PEDTBDSS_new.table_municipality m ON  h.HICity= m.municipality_id 
+    JOIN PEDTBDSS_new.table_barangay b ON h.HIBarangay = b.barangay_id
         ORDER BY HIName;
        
     `, (err, results) => {
@@ -855,16 +860,20 @@ WHERE
         const id = req.params.id;
         db.query(`
         SELECT h.HINo,
-            h.HIName, 
-            CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince,' ', h.HIZipCode) AS address,
-            h.HIOperatingHours,
-            h.HIContactNumber,
-            h.HIContactPerson,
-            h.HIEmailAddress,
-            h.XCoord,
-            h.YCoord,
-            h.isActive
-        FROM PEDTBDSS_new.MD_HI h
+        h.HIName, 
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
+        h.HIOperatingHours,
+        h.HIContactNumber,
+        h.HIContactPerson,
+        h.HIEmailAddress,
+        h.XCoord,
+        h.YCoord,
+        h.isActive
+    FROM PEDTBDSS_new.MD_HI h
+    JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
+    JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
+    JOIN PEDTBDSS_new.table_municipality m ON  h.HICity= m.municipality_id 
+    JOIN PEDTBDSS_new.table_barangay b ON h.HIBarangay = b.barangay_id
         WHERE h.HINo =${id};
        
     `, (err, results) => {
@@ -883,18 +892,22 @@ WHERE
     router.get('/bhchi/:id', (req, res) => {
         const id = req.params.id;
         db.query(`
-        SELECT 
-        bh.BGYNo,
-        h.HINo,
+        SELECT h.HINo,
         h.HIName, 
-        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIZipCode) AS address,
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
+        h.HIContactPerson,
         h.HIEmailAddress,
         h.XCoord,
-        h.YCoord
-            FROM  PEDTBDSS_new.MD_BRGYHI bh
-            JOIN   PEDTBDSS_new.MD_HI h ON bh.HINo = h.HINo
+        h.YCoord,
+        h.isActive
+    FROM PEDTBDSS_new.MD_HI h
+    JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
+    JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
+    JOIN PEDTBDSS_new.table_municipality m ON  h.HICity= m.municipality_id 
+    JOIN PEDTBDSS_new.table_barangay b ON h.HIBarangay = b.barangay_id
+            JOIN   PEDTBDSS_new.MD_BRGYHI bh ON bh.HINo = h.HINo
             WHERE bh.BGYNO=${id};
        
     `, (err, results) => {
@@ -908,6 +921,43 @@ WHERE
         }
     });
     });
+
+
+    router.get('/searchbhchi/:id/:search', (req, res) => {
+        const searchTerm = req.params.search;
+        const id = req.params.id;
+        db.query(`
+        SELECT h.HINo,
+        h.HIName, 
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
+        h.HIOperatingHours,
+        h.HIContactNumber,
+        h.HIContactPerson,
+        h.HIEmailAddress,
+        h.XCoord,
+        h.YCoord,
+        h.isActive
+    FROM PEDTBDSS_new.MD_HI h
+    JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
+    JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
+    JOIN PEDTBDSS_new.table_municipality m ON  h.HICity= m.municipality_id 
+    JOIN PEDTBDSS_new.table_barangay b ON h.HIBarangay = b.barangay_id
+            JOIN   PEDTBDSS_new.MD_BRGYHI bh ON bh.HINo = h.HINo
+            WHERE bh.BGYNO=${id} AND
+    COALESCE(h.HIName, '')
+    LIKE '%${searchTerm}%'
+    ORDER BY h.HIName;
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    })
+})
 
      //get all tests under a given HI id
      router.get('/hitests/:id', (req, res) => {
@@ -955,20 +1005,65 @@ WHERE
     router.get('/bhcmissinghi/:id', (req, res) => {
         const id = req.params.id;
         db.query(`
-        SELECT 
-        h.HINo,
+        SELECT h.HINo,
         h.HIName, 
-        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIZipCode) AS address,
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
+        h.HIContactPerson,
         h.HIEmailAddress,
         h.XCoord,
-        h.YCoord
-            FROM  PEDTBDSS_new.MD_HI h
+        h.YCoord,
+        h.isActive
+    FROM PEDTBDSS_new.MD_HI h
+    JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
+    JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
+    JOIN PEDTBDSS_new.table_municipality m ON  h.HICity= m.municipality_id 
+    JOIN PEDTBDSS_new.table_barangay b ON h.HIBarangay = b.barangay_id
             WHERE HINo NOT IN(SELECT h.HINo
             FROM PEDTBDSS_new.MD_HI h
             JOIN PEDTBDSS_new.MD_BRGYHI bh ON h.HINo = bh.HINo
-            WHERE bh.BGYNo=${id});
+            WHERE bh.BGYNo=${id})
+            ORDER BY h.HIName ;
+    `, (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+            results.forEach(result => {
+                console.log(result.age);
+            });
+            res.send(results)
+        }
+    });
+    });
+
+     //get all HIs that are NOT under a given BHC id
+     router.get('/searchbhcmissinghi/:id/:search', (req, res) => {
+        const id = req.params.id;
+        const searchTerm = req.params.search;
+        db.query(`
+        SELECT h.HINo,
+        h.HIName, 
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
+        h.HIOperatingHours,
+        h.HIContactNumber,
+        h.HIContactPerson,
+        h.HIEmailAddress,
+        h.XCoord,
+        h.YCoord,
+        h.isActive
+    FROM PEDTBDSS_new.MD_HI h
+    JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
+    JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
+    JOIN PEDTBDSS_new.table_municipality m ON  h.HICity= m.municipality_id 
+    JOIN PEDTBDSS_new.table_barangay b ON h.HIBarangay = b.barangay_id
+            WHERE HINo NOT IN(SELECT h.HINo
+            FROM PEDTBDSS_new.MD_HI h
+            JOIN PEDTBDSS_new.MD_BRGYHI bh ON h.HINo = bh.HINo
+            WHERE bh.BGYNo=${id})
+            AND COALESCE(h.HIName, '')
+    LIKE '%${searchTerm}%'
+    ORDER BY h.HIName ;
     `, (err, results) => {
         if (err) {
             console.log(err)
@@ -1025,21 +1120,23 @@ WHERE
         db.query(`
         SELECT h.HINo,
         h.HIName, 
-        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince, ' ', h.HIZipCode) AS address,
+        CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
+        h.HIContactPerson,
         h.HIEmailAddress,
         h.XCoord,
         h.YCoord,
         h.isActive
     FROM PEDTBDSS_new.MD_HI h
+    JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
+    JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
+    JOIN PEDTBDSS_new.table_municipality m ON  h.HICity= m.municipality_id 
+    JOIN PEDTBDSS_new.table_barangay b ON h.HIBarangay = b.barangay_id
 WHERE 
-    CONCAT(
-        COALESCE(h.HIName, ''),
-        COALESCE(CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', h.HIBarangay, ' ', h.HICity, ' ', h.HIRegion, ' ', h.HIProvince, ' ', h.HIZipCode), ''),
-        COALESCE(h.HIContactNumber, ''),
-        COALESCE(h.HIEmailAddress, '')
-    ) LIKE '%${searchTerm}%';
+    COALESCE(h.HIName, '')
+    LIKE '%${searchTerm}%'
+    ORDER BY h.HIName;
     `, (err, results) => {
         if (err) {
             console.log(err)
