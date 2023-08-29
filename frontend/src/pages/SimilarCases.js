@@ -25,22 +25,93 @@ const SimilarCases = () => {
 
   var caseNum = id
 
-  const graphdata1 = [
-    { id: "1", name: "L1", value: 25 },
-    { id: "2", name: "L2", value: 75 }
+  const [casesData, setCasesData] = useState([]);
+  const [percent1, setPercent1] = useState(0);
+  const [percent2, setPercent2] = useState(0);
+  const [percent3, setPercent3] = useState(0);
+  const [caseNum1, setCaseNum1] = useState(0);
+  const [caseNum2, setCaseNum2] = useState(0);
+  const [caseNum3, setCaseNum3] = useState(0);
+
+  const [case1Data, setCase1Data] = useState([]);
+  const [case2Data, setCase2Data] = useState([]);
+  const [case3Data, setCase3Data] = useState([]);
+
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getsimcases/${caseNum}`)
+      .then(response => {
+        setCasesData(response.data);
+  
+        // Loop through casesData to populate variables
+        for (let i = 0; i < response.data.length; i++) {
+          const caseIndex = response.data[i][0];
+          const similarity = response.data[i][1];
+          
+          // Assign values to percent1, percent2, percent3, caseNum1, caseNum2, caseNum3
+          if (i === 0) {
+            setPercent1(similarity);
+            setCaseNum1(caseIndex);
+          } else if (i === 1) {
+            setPercent2(similarity);
+            setCaseNum2(caseIndex);
+          } else if (i === 2) {
+            setPercent3(similarity);
+            setCaseNum3(caseIndex);
+          }
+        }
+
+        axios.get(`http://localhost:4000/api/getlatestdiagnosis/${response.data[0][0]}`)
+          .then(response => {
+            setCase1Data(response.data);
+            console.log(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching Sim Cases:', error);
+          });
+  
+        axios.get(`http://localhost:4000/api/getlatestdiagnosis/${caseNum2}`)
+          .then(response => {
+            setCase2Data(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching Sim Cases:', error);
+          });
+  
+        axios.get(`http://localhost:4000/api/getlatestdiagnosis/${caseNum3}`)
+          .then(response => {
+            setCase3Data(response.data);
+           
+ 
+  
+          })
+          .catch(error => {
+            console.error('Error fetching Sim Cases:', error);
+          });
+      })
+      .catch(error => {
+        console.error('Error fetching Sim Cases:', error);
+      });
+  }, []);
+  
+  
+  
+  // Make sure to check if casesData is available before using it
+ 
+    const graphdata1 = [
+    { id: "1", name: "L1", value: (100-(percent1*100)) },
+    { id: "2", name: "L2", value: (percent1*100) }
     ];
 
   const graphdata2 = [
-      { id: "1", name: "L1", value: 45 },
-      { id: "2", name: "L2", value: 55 }
+      { id: "1", name: "L1", value: (100-(percent2*100)) },
+      { id: "2", name: "L2", value: (percent2*100) }
       ];
 
   const graphdata3 = [
-        { id: "1", name: "L1", value: 55 },
-        { id: "2", name: "L2", value: 45 }
+        { id: "1", name: "L1", value: (100-(percent3*100)) },
+        { id: "2", name: "L2", value: (percent3*100) }
         ];
   
-        
   
     const [activeTab, setActiveTab] = useState('1'); 
   return (
@@ -146,7 +217,7 @@ const SimilarCases = () => {
              <Card.Text>Case Reference No.</Card.Text>
            </Col>
            <Col sm="6">
-             <Card.Text className="text-muted ">Name</Card.Text>
+             <Card.Text className="text-muted "></Card.Text>
            </Col>
          </Row>
          <hr />
