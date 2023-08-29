@@ -21,26 +21,10 @@ const CloseContacts = () => {
   var caseNum = id
 
   const [closeContactListData, setCloseContactListData] = useState([]);
-  const [patientData, setPatientData] = useState([]);
-  const [latestCase, setLatestCase] = useState([]);
+  //const [latestCase, setLatestCase] = useState([]); TODO: Re-implement feature
 
   // Helper Functions
-  const updateContactData = (contact, updatedProps) => ({
-    ...contact,
-    ...updatedProps
-  });
 
-  // Load patient data for header
-  // useEffect(() => {
-  //   axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
-  //   .then(res => {
-  //     console.log(res);
-  //     setPatientData(res.data[0]);
-  //   })
-  //   .catch(err => {
-  //     console.error(err);
-  //   })
-  // }, [caseNum])
 
   // Load list of close contact
   useEffect(() => {
@@ -127,34 +111,6 @@ const CloseContacts = () => {
                 }
               })
             );
-            
-
-            // old update state
-            // setCloseContactListData(prevData =>
-            //   prevData.map(contact => {
-            //     const updatedContact = update.find(updated => updated.ContactNo === contact.ContactNo);
-            
-            //     if (updatedContact) {
-
-            //       console.log(`UPDATED CONTACT INFORMATION (3/3): `, updatedContact)
-
-            //       return {
-            //         ...contact,
-            //         num_ha: updatedContact.num_ha,
-            //         latest_ha: updatedContact.latest_ha,
-            //         days_ha: updatedContact.days_ha,
-            //         num_xray: updatedContact.num_xray,
-            //         latest_xray: updatedContact.latest_xray,
-            //         days_xray: updatedContact.days_xray
-            //       };
-            //     } else {
-            //       return contact;
-            //     }
-                
-                
-                
-            //   })
-            // );
           }
         }
         
