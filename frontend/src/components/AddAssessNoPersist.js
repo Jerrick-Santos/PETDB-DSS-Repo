@@ -199,7 +199,7 @@ function AddAssessNoPersist(props) {
           </Col>
           <Col sm="4">
             <Card.Text>
-                <input type="text" className="form-control" name='ass_bmi' value={bmi} onChange={handleChange} placeholder='' />
+                <input type="text" className="form-control" name='ass_bmi' value={bmi} onChange={handleChange} placeholder='' readOnly/>
               </Card.Text>
           </Col>
         </Row>
