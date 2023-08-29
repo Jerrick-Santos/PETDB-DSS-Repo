@@ -7,7 +7,7 @@ const AdminNavBar = () => {
     <Navbar style={{backgroundColor: '#0077B6'}}>
       <Navbar.Brand className="text-light ms-4">PEDIA-TB DSS</Navbar.Brand>
         <Nav className="ms-4">
-        <Nav.Link className="text-light" href="/adminbhc">Barangay Health Centers</Nav.Link>
+        <Nav.Link className="text-light" href="/bhc/1">Barangay Health Center</Nav.Link>
         <Nav.Link className="text-light" href="/adminhi">Health Institutions</Nav.Link>
           <Nav.Link className="text-light" href="/adminlabtest">Diagnostic Tests</Nav.Link>
           

@@ -178,12 +178,13 @@ const Diagnosis = () => {
                         <th scope="col">Date Diagnosed</th>    
                         <th scope="col">TB Status</th>
                         <th scope="col">Diagnosis</th>
+                        <th scope="col">EPTB?</th>
                         <th scope="col">Further Evaluation Required</th>
                         <th scope="col">Request HIV Test</th>
                         <th scope="col">Request XRAY</th>
                         <th scope="col">Request MTB/RIF</th>
                         <th scope="col">Request TST</th>
-
+                        <th scope="col">Request IGRA</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -193,17 +194,21 @@ const Diagnosis = () => {
                         <td>{new Date(diagnosis.DGDate).toLocaleDateString()}</td>
                         {/* TB STATUS */}
                         <td>
-                        {diagnosis.diagnosis === "Presumptive TB" ? "PRESUMPTIVE" :
-                        diagnosis.diagnosis === "Presumptive EPTB" ? "PRESUMPTIVE" :
-                        diagnosis.diagnosis === "Presumptive PTB"? "PRESUMPTIVE" :
-                        diagnosis.diagnosis === "Presumptive TB - Check Symptoms for EPTB" ? "PRESUMPTIVE" :
-                        diagnosis.diagnosis === "NO TB" ? "NO TB" :
-                        diagnosis.diagnosis === "NO TB - Consult for other Deseases" ? "NO TB" :
-                        diagnosis.diagnosis === "Latent TB" ? "LATENT" :
-                        "WITH TB"}
+                        {diagnosis.confirmed_tb === 1 ? "CONFIRMED" :
+                        diagnosis.presumptive_tb === 1 ? "PRESUMPTIVE" :
+                        diagnosis.latent_tb === 1 ? "LATENT" :
+                        diagnosis.no_tb === 1 ? "NO TB":
+                        "NONE"}
                         </td>
                         {/* DIAGNOSIS */}
                         <td>{diagnosis.diagnosis}</td>
+                        {/* EPTB */}
+                        <td>
+                          {
+                            diagnosis.EPTBpositive === 1 ? "YES": "NO"
+                          }
+                        </td>
+
                         {/* Further Evaluation Required */}
                         <td>
                         {diagnosis.need_eval === 1 ? "YES" :"NO"}
@@ -213,6 +218,7 @@ const Diagnosis = () => {
                         <td>{diagnosis.need_xray === 1 ? "YES" : "NO"}</td>
                         <td>{diagnosis.need_mtb === 1 ? "YES" : "NO"}</td>
                         <td>{diagnosis.need_tst === 1 ? "YES" : "NO"}</td>
+                        <td>{diagnosis.need_igra === 1 ? "YES" : "NO"}</td>
                     </tr>
                     ))}
                 </tbody>

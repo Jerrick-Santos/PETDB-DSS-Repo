@@ -318,7 +318,7 @@ const AddPatient = () => {
                 
                 <div className="form-group col-md-2">
                     <label for="inputHeight">Height</label>
-                    <input type="number" class="form-control" id="inputHeight"  name='initial_height' onChange={handleChange} placeholder="Height (ft)"/>
+                    <input type="number" class="form-control" id="inputHeight"  name='initial_height' onChange={handleChange} placeholder="Height (cm)"/>
                 </div>
             </Row>
             <hr/>

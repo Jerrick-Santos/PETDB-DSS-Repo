@@ -117,6 +117,9 @@ function RIFmodule(RIF_result){
     else if(RIF === "S"){
         return -1
     }
+    else if(RIF === "NA"){
+        return -1
+    }
     else {
         return 0
     }
@@ -135,10 +138,10 @@ function TSTmodule(TST_result){
 }
 
 function IGRAmodule(IGRA_result){
-    if (TST_result === "Positive"){
+    if (IGRA_result === "Positive"){
         return 1
     }
-    else if (TST_result === "Negative"){
+    else if (IGRA_result === "Negative"){
         return -1
     }
     else {
@@ -541,15 +544,15 @@ module.exports = (db) => {
                             console.log("QUERY: IGRA - CHECK")
     
                             if (IGRAResults.length === 0) {
-                                inputObject.tst = 0;
+                                inputObject.igra = 0;
                             } else {
                                 const {TestValue} = IGRAResults[0]
     
                                 
                                 inputObject.igra = IGRAmodule(TestValue)
-                                console.log(inputObject.igra)
                             }
                         
+                            console.log("igra value: " + inputObject.igra)
 
                          db.query(ageQuery, (errorB, AgeResults) => {
 
@@ -598,19 +601,23 @@ module.exports = (db) => {
                                 if (TBcontactResults.length === 0) {
                                     highSuspicionObject.has_TBcontact = -1
                                     inputObject.has_TBcontact = -1
+                                    symptomsObject.has_TBcontact = -1
                                 } else {
                                     highSuspicionObject.has_TBcontact = detectContactTB(TBcontactResults)
                                     inputObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
                                 }
 
+                                console.log(symptomsObject)
                                 db.query(`SELECT *
                                 FROM PEDTBDSS_new.MD_SYMPTOMSRULES
                                 WHERE c_symp = ${symptomsObject.c_symp} AND 
-                                ETPB_symp = ${symptomsObject.EPTB_symp} AND 
-                                xray = ${symptomsObject.other_symp};`, (error7, symptomsRules) => {
+                                EPTB_symp = ${symptomsObject.EPTB_symp} AND 
+                                has_TBcontact = ${symptomsObject.has_TBcontact} AND
+                                other_symp = ${symptomsObject.other_symp};`, (error7, symptomsRules) => {
 
                                     if (error7) {
-                                        res.status(500).json({ error: "Error fetching SYMPTOM RULES data" });
+                                        res.status(500).json({ error: error7 });
                                         return;
                                     }
 
@@ -672,18 +679,44 @@ module.exports = (db) => {
                                             console.log("Diagnosis Query Results:", diagnosisQueryResults);
 
                                             
-                                            try{
-                                            const {RuleNo} = diagnosisQueryResults[0]
+                                            // try{
+                                            // const {RuleNo} = diagnosisQueryResults[0]
                                 
-                                            // All queries have been executed successfully
-                                            // res.status(200).json(diagnosisQueryResults);
-                                            console.log(RuleNo)
+                                            // // All queries have been executed successfully
+                                            // // res.status(200).json(diagnosisQueryResults);
+                                            // console.log(RuleNo)
+                                            // res.status(200).json("Sunccessful Diagnosis")
+                                            // }
+                                            // catch(e){
+                                            //     res.status(500).json({e: "query is empty"})
+                                            //     console.log("Query is empty")
+                                            // }
 
-                                            }
-                                            catch(e){
-                                                res.status(500).json({e: "query is empty"})
-                                                console.log("Query is empty")
-                                            }
+                                            try{
+                                                    const {RuleNo} = diagnosisQueryResults[0]
+                                        
+                                                    // All queries have been executed successfully
+                                                    // res.status(200).json(diagnosisQueryResults);
+                                                    console.log("Rule Number: " + RuleNo)
+                
+                                                    db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, need_hiv) 
+                                                    VALUES (?, ?, ?, ?)`, 
+                                                    [new Date().toISOString().split('T')[0], caseid, RuleNo, need_hiv], 
+                                                    (error8, InsertResult) => {
+                                                        if (error8) {
+                                                            res.status(500).json({ error: "Did Not Add Data" });
+                                                            return;
+                                                        }
+                                                        else{
+                                                            res.status(200).json(InsertResult)
+                                                        }
+                                                    })
+                
+                                                    }
+                                                    catch(e){
+                                                        res.status(500).json({e: "query is empty"})
+                                                        console.log("Query is empty")
+                                                    }
 
                                         });
                                         

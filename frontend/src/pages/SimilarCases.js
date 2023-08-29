@@ -1,6 +1,6 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, ButtonGroup } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
 import user from '../assets/user.png';
@@ -15,6 +15,7 @@ import Button from 'react-bootstrap/Button';
 import PresumptiveTBModal from '../components/PresumptiveTBModal';
 import LatentTBModal from '../components/LatentTBModal';
 import CaseHeader from '../components/CaseHeader'
+import { PieChart, Pie, Cell, Label, Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, } from 'recharts';
 
 
 const SimilarCases = () => {
@@ -22,86 +23,105 @@ const SimilarCases = () => {
   {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
   const { id } = useParams();
 
-  const [diagnosisData, setdiagnosisData] = useState([]);
-  const [presumptiveData, setPresumptiveData] = useState();
-  const [showPresumptiveModal, setShowPresumptiveModal] = useState(false);
-  const [showLatentModal, setShowLatentModal] = useState(false);
-  const [latentData, setLatentData] = useState();
-  const [isLoading, setIsLoading] = useState(false); // To manage loading state
-  const [patientData, setPatientData] = useState([]);
-
-  const handleButtonClick = async () => {
-    setIsLoading(true);
-  
-    try {
-      // SET DIAGNOSIS
-      const diagnoseResponse = await axios.post(`http://localhost:4000/api/diagnose/${id}`);
-      console.log(diagnoseResponse.data);
-  
-      // GET LATEST DIAGNOSIS
-      const diagnosisResponse = await axios.get(`http://localhost:4000/api/getlatestdiagnostic/${id}`);
-      console.log(diagnosisResponse.data);
-  
-      const { latent_tb, presumptive_tb } = diagnosisResponse.data;
-      setLatentData(latent_tb);
-      setPresumptiveData(presumptive_tb);
-  
-      // DIAGNOSE = PRESUMPTIVE
-      if (presumptive_tb === 1 && latent_tb === -1) {
-        const presumptiveIncaseResponse = await axios.get(`http://localhost:4000/api/getpresumptiveincase/${id}`);
-        console.log(presumptiveIncaseResponse.data);
-  
-        if (presumptiveIncaseResponse.data.length === 0) {
-          console.log("Please Insert Presumptive ID");
-          setShowPresumptiveModal(true);
-        } else {
-          console.log("Presumptive ID detected");
-          setShowPresumptiveModal(false);
-        }
-      }
-      // DIAGNOSE = LATENT
-      else if (presumptive_tb === -1 && latent_tb === 1) {
-        const latentIncaseResponse = await axios.get(`http://localhost:4000/api/getlatentincase/${id}`);
-        console.log(latentIncaseResponse.data);
-  
-        if (latentIncaseResponse.data.length === 0) {
-          console.log("Please Insert Latent ID");
-          setShowLatentModal(true);
-        } else {
-          console.log("Latent ID detected");
-          setShowLatentModal(false);
-        }
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  useEffect(() => {
-    axios.get(`http://localhost:4000/api/getalldiagnosis/${id}`)
-      .then(response => {
-        setdiagnosisData(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching patients:', error);
-      });
-  }, []);
-
-  useEffect(() => {
-    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
-    .then(res => {
-      console.log(res);
-      setPatientData(res.data[0]);
-    })
-    .catch(err => {
-      console.error(err);
-    })
-  }, [caseNum])
-
   var caseNum = id
 
+  const [casesData, setCasesData] = useState([]);
+  const [percent1, setPercent1] = useState(0);
+  const [percent2, setPercent2] = useState(0);
+  const [percent3, setPercent3] = useState(0);
+  const [caseNum1, setCaseNum1] = useState(0);
+  const [caseNum2, setCaseNum2] = useState(0);
+  const [caseNum3, setCaseNum3] = useState(0);
+
+  const [case1Data, setCase1Data] = useState([]);
+  const [case2Data, setCase2Data] = useState([]);
+  const [case3Data, setCase3Data] = useState([]);
+
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getsimcases/${caseNum}`)
+      .then(response => {
+        setCasesData(response.data);
+  
+        // Loop through casesData to populate variables
+        for (let i = 0; i < response.data.length; i++) {
+          const caseIndex = response.data[i][0];
+          const similarity = response.data[i][1];
+  
+          // Assign values to percent1, percent2, percent3, caseNum1, caseNum2, caseNum3
+          if (i === 0) {
+            setPercent1(similarity);
+            setCaseNum1(caseIndex);
+          } else if (i === 1) {
+            setPercent2(similarity);
+            setCaseNum2(caseIndex);
+          } else if (i === 2) {
+            setPercent3(similarity);
+            setCaseNum3(caseIndex);
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching Sim Cases:', error);
+      });
+  }, []);
+  
+  useEffect(() => {
+    if (caseNum1) {
+      axios.get(`http://localhost:4000/api/case/${caseNum1}`)
+        .then(response => {
+          setCase1Data(response.data[0]);
+        })
+        .catch(error => {
+          console.error('Error fetching Case 1 Data:', error);
+        });
+    }
+  }, [caseNum1]);
+  
+  useEffect(() => {
+    if (caseNum2) {
+      axios.get(`http://localhost:4000/api/case/${caseNum2}`)
+        .then(response => {
+          setCase2Data(response.data[0]);
+        })
+        .catch(error => {
+          console.error('Error fetching Case 2 Data:', error);
+        });
+    }
+  }, [caseNum2]);
+  
+  useEffect(() => {
+    if (caseNum3) {
+      axios.get(`http://localhost:4000/api/case/${caseNum3}`)
+        .then(response => {
+          setCase3Data(response.data[0]);
+        })
+        .catch(error => {
+          console.error('Error fetching Case 3 Data:', error);
+        });
+    }
+  }, [caseNum3]);
+  
+  console.log(case1Data)
+  
+  // Make sure to check if casesData is available before using it
+ 
+    const graphdata1 = [
+    { id: "1", name: "L1", value: (100-(percent1*100)) },
+    { id: "2", name: "L2", value: (percent1*100) }
+    ];
+
+  const graphdata2 = [
+      { id: "1", name: "L1", value: (100-(percent2*100)) },
+      { id: "2", name: "L2", value: (percent2*100) }
+      ];
+
+  const graphdata3 = [
+        { id: "1", name: "L1", value: (100-(percent3*100)) },
+        { id: "2", name: "L2", value: (percent3*100) }
+        ];
+  
+  
+    const [activeTab, setActiveTab] = useState('1'); 
   return (
     <div>
     <NavBar/>
@@ -152,97 +172,279 @@ const SimilarCases = () => {
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-          <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
-            <Col lg="11">
-              <CaseHeader caseNum={caseNum} />
-            </Col>
+      <CaseHeader caseNum={caseNum} />
+    <hr/>
+      <Row className="mt-5 justify-content-center">
+        <Col lg="9">
+        <h2> Similar Cases </h2>
+      </Col>
+    </Row>
 
-            <Col lg="11" className="d-flex justify-content-center">
-              <button
-                className="btn mt-4"
-                style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
-                type="button"
-                onClick={handleButtonClick}
-                disabled={isLoading}
-              >
-                Diagnose TB Status
-              </button>
-              
-            </Col>
-            
-            <Col lg="11">
-            <hr/>
-            <table className="table caption-top bg-white rounded mt-3">
-        <caption className=' fs-4'>Diagnosis Records</caption>
-        <thead>
-                    <tr>
-                        <th scope="col">Date Diagnosed</th>    
-                        <th scope="col">TB Status</th>
-                        <th scope="col">Diagnosis</th>
-                        <th scope="col">Further Evaluation Required</th>
-                        <th scope="col">Request HIV Test</th>
-                        <th scope="col">Request XRAY</th>
-                        <th scope="col">Request MTB/RIF</th>
-                        <th scope="col">Request TST</th>
+    <Row className="mb-3">
+      <Col className="text-center">
+        <ButtonGroup>
+          <Button variant="light" onClick={() => setActiveTab('1')}>Similar Case 1</Button>
+          <Button variant="light" onClick={() => setActiveTab('2')}>Similar Case 2</Button>
+          <Button variant="light" onClick={() => setActiveTab('3')}>Similar Case 3</Button>
+        </ButtonGroup>
+      </Col>
+    </Row>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {diagnosisData.map((diagnosis, index) => (
-                    <tr key={index}>
-                        {/* DATE DIAGNOSED */}
-                        <td>{new Date(diagnosis.DGDate).toLocaleDateString()}</td>
-                        {/* TB STATUS */}
-                        <td>
-                        {diagnosis.diagnosis === "Presumptive TB" ? "PRESUMPTIVE" :
-                        diagnosis.diagnosis === "Presumptive EPTB" ? "PRESUMPTIVE" :
-                        diagnosis.diagnosis === "Presumptive PTB"? "PRESUMPTIVE" :
-                        diagnosis.diagnosis === "Presumptive TB - Check Symptoms for EPTB" ? "PRESUMPTIVE" :
-                        diagnosis.diagnosis === "NO TB" ? "NO TB" :
-                        diagnosis.diagnosis === "NO TB - Consult for other Deseases" ? "NO TB" :
-                        diagnosis.diagnosis === "Latent TB" ? "LATENT" :
-                        "WITH TB"}
-                        </td>
-                        {/* DIAGNOSIS */}
-                        <td>{diagnosis.diagnosis}</td>
-                        {/* Further Evaluation Required */}
-                        <td>
-                        {diagnosis.need_eval === 1 ? "YES" :"NO"}
-                        </td>
-                        {/* Request HIV Test */}
-                        <td>{diagnosis.need_hiv === 1 ? "YES" : "NO"}</td>
-                        <td>{diagnosis.need_xray === 1 ? "YES" : "NO"}</td>
-                        <td>{diagnosis.need_mtb === 1 ? "YES" : "NO"}</td>
-                        <td>{diagnosis.need_tst === 1 ? "YES" : "NO"}</td>
-                    </tr>
-                    ))}
-                </tbody>
-            </table>
+    {activeTab === '1' && (
+     <Row className="mt-5 justify-content-center">
+     <Col lg="4">
+           <PieChart width={320} height={320}>
+         <Pie
+           data={graphdata1}
+           isAnimationActive={true}
+           dataKey="value"
+           innerRadius="80%"
+           outerRadius="100%"
+           fill="#82ca9d"
+           startAngle={90}
+           endAngle={-270}
+           paddingAngle={0}
+           cornerRadius={5}
+         >
+           <Cell key="test" fill="#CCC" />
+           <Label
+             value={`${graphdata1[1].value}% Similarity`}
+             position="center"
+             fontSize={30}
+             fill="#000"
+           />
+         </Pie>
+       </PieChart>
+     </Col>
 
+     <Col lg="5">
+     <Card className="mb-4">
+       <Card.Body>
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Reference No.</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum1}`}>{case1Data.case_refno}</Link></Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Start Date</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted "> {new Date(case1Data.start_date).toLocaleDateString()}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case End Date</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">{case1Data.end_date ? new Date(case1Data.end_date).toLocaleDateString() : '---'}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Status</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">{case1Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Latest Diagnosis</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">---</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         
+       </Card.Body>
+     </Card>
 
-            </Col>
-          </Row>
+     </Col>
+   </Row>
+    )}
+
+{activeTab === '2' && (
+     <Row className="mt-5 justify-content-center">
+     <Col lg="4">
+           <PieChart width={320} height={320}>
+         <Pie
+           data={graphdata2}
+           isAnimationActive={true}
+           dataKey="value"
+           innerRadius="80%"
+           outerRadius="100%"
+           fill="#82ca9d"
+           startAngle={90}
+           endAngle={-270}
+           paddingAngle={0}
+           cornerRadius={5}
+         >
+           <Cell key="test" fill="#CCC" />
+           <Label
+             value={`${graphdata2[1].value}% Similarity`}
+             position="center"
+             fontSize={30}
+             fill="#000"
+           />
+         </Pie>
+       </PieChart>
+     </Col>
+
+     <Col lg="5">
+     <Card className="mb-4">
+       <Card.Body>
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Reference No.</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum2}`}>{case2Data.case_refno}</Link></Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Start Date</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted "> {new Date(case2Data.start_date).toLocaleDateString()}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case End Date</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">{case2Data.end_date ? new Date(case2Data.end_date).toLocaleDateString() : '---'}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Status</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">{case2Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Latest Diagnosis</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">---</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         
+       </Card.Body>
+     </Card>
+
+     </Col>
+   </Row>
+    )}
+
+{activeTab === '3' && (
+     <Row className="mt-5 justify-content-center">
+     <Col lg="4">
+           <PieChart width={320} height={320}>
+         <Pie
+           data={graphdata3}
+           isAnimationActive={true}
+           dataKey="value"
+           innerRadius="80%"
+           outerRadius="100%"
+           fill="#82ca9d"
+           startAngle={90}
+           endAngle={-270}
+           paddingAngle={0}
+           cornerRadius={5}
+         >
+           <Cell key="test" fill="#CCC" />
+           <Label
+             value={`${graphdata3[1].value}% Similarity`}
+             position="center"
+             fontSize={30}
+             fill="#000"
+           />
+         </Pie>
+       </PieChart>
+     </Col>
+
+     <Col lg="5">
+     <Card className="mb-4">
+       <Card.Body>
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Reference No.</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum3}`}>{case3Data.case_refno}</Link></Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Start Date</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted "> {new Date(case3Data.start_date).toLocaleDateString()}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case End Date</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">{case3Data.end_date ? new Date(case3Data.end_date).toLocaleDateString() : '---'}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Case Status</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">{case3Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         <Row>
+           <Col sm="6">
+             <Card.Text>Latest Diagnosis</Card.Text>
+           </Col>
+           <Col sm="6">
+             <Card.Text className="text-muted ">---</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+         
+       </Card.Body>
+     </Card>
+
+     </Col>
+   </Row>
+    )}
+      
+     
 
     </Col>
   </Row>
 
-    {showPresumptiveModal && (
-        <PresumptiveTBModal
-          show={showPresumptiveModal}
-          onClose={() => setShowPresumptiveModal(false)}
-          caseid={id}
-        />
-      )}
-
-
-    {showLatentModal && (
-          <LatentTBModal
-            show={showLatentModal}
-            onClose={() => setShowLatentModal(false)}
-            caseid={id}
-          />
-        )}
-
+   
   </div>
   
     

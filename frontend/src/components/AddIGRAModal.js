@@ -1,19 +1,18 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
 import edit from '../assets/edit.png';
-import xray from '../assets/xray.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 
-function AddXrayModal(props) {
+function AddIGRAModal(props) {
    
     const[show,setShow] = useState(false)
-    const [xrayValidity, setXrayValidity] = useState([]);
+    const [igraValidity, setIGRAValidity] = useState([]);
     const[hiData, setHIData] = useState([])
 
     useEffect(() => {
 
-        axios.get(`http://localhost:4000/api/hiwithtests/1`)
+        axios.get(`http://localhost:4000/api/hiwithtests/7`)
           .then((response) => {
             setHIData(response.data)
           })
@@ -21,25 +20,22 @@ function AddXrayModal(props) {
             // Handle any errors that occurred during the request
             console.error('Error fetching data:', error);
           });
-        
-        axios.get(`http://localhost:4000/api/validity/1`)
-        .then((response) => {
-        setXrayValidity(response.data)
-        // Call computeValidity after fetching xrayValidity and when issue_date changes
-        computeValidity();
-        })
-        .catch((error) => {
-        // Handle any errors that occurred during the request
-        console.error('Error fetchingdata:', error);
-        });
-        
-  
 
+        axios.get(`http://localhost:4000/api/validity/3`)
+          .then((response) => {
+          setIGRAValidity(response.data)
+          console.log('Validity Months: ', igraValidity);
+          // Call computeValidity after fetching xrayValidity and when issue_date changes
+          computeValidity();
+          })
+          .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetchingdata:', error);
+        });
+    
     }, []);
 
-
-
-    const [xrayValues, setXrayValues] = useState({
+    const [igraValues, setIGRAValues] = useState({
         CaseNo: props.caseNum,
         HINo: '',
         issue_date: new Date().toISOString().split('T')[0],
@@ -49,22 +45,19 @@ function AddXrayModal(props) {
     })
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-  
-
-
-        setXrayValues((prev) => ({ ...prev, [name]: value }));
+        const {name, value} = e.target;
+        setIGRAValues(prev=>({...prev, [name]: value}));
         if (name === 'issue_date') {
             computeValidity();
-          }
-      }
+        }
+    }
 
-      const computeValidity = () => {
+    const computeValidity = () => {
         const today = new Date();
-        const issueDate = new Date(xrayValues.issue_date);
+        const issueDate = new Date(igraValues.issue_date);
 
-        if (xrayValidity.length > 0) {
-        const validityMonths = xrayValidity[0].DGValidityMonths;
+        if (igraValidity.length > 0) {
+        const validityMonths = igraValidity[0].DGValidityMonths;
         const validityExpirationDate = new Date(issueDate);
         validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
 
@@ -73,43 +66,44 @@ function AddXrayModal(props) {
         console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
 
         if (today > validityExpirationDate) {
-            setXrayValues((prev) => ({ ...prev, validity: 0 }));
+            setIGRAValues((prev) => ({ ...prev, validity: 0 }));
         } else {
-            setXrayValues((prev) => ({ ...prev, validity: 1 }));
+            setIGRAValues((prev) => ({ ...prev, validity: 1 }));
         }
         }
     };
 
       const handleSubmit = async (e) => {
-        e.preventDefault();
-        
+        e.preventDefault()
         try{
-            await axios.post("http://localhost:4000/api/newXrayresults", xrayValues)
+            await axios.post("http://localhost:4000/api/newIGRAresults", igraValues)
         }catch(err){
             console.log(err)
         }
-        window.location.reload();
-      }
+
+        window.location.reload()
+    }
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
   return (
         <>
 
-        <button className="btn" onClick={handleShow}> Add XRay </button>
+        <button className="btn" onClick={handleShow}> Add IGRA </button>
 
-        <Modal show={show} onHide={handleClose} backdrop={ 'static' } >
+        <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-        <Modal.Title>  Add Xray Results  </Modal.Title>
+        <Modal.Title>Add IGRA Test Results</Modal.Title>
     </Modal.Header>
     <Modal.Body>
+    <form className="mt-4 justify-content-center">
         <div>
-            <label><strong> Upload Xray File Attachment:</strong></label>
+            <label><strong> Upload IGRA Test File Attachment:</strong></label>
             <input type="file" className="form-control" />
         </div>
         <div className="mt-3"> 
             <label> <strong>Issued by: </strong></label>
-            <select className="form-select" name="HINo" value={xrayValues.HINo} onChange={handleChange}>
+            <select className="form-select" name="HINo" value={igraValues.HINo} onChange={handleChange}>
                 <option value="">Select</option>
               
               {hiData.map((hi, index) => (
@@ -124,21 +118,21 @@ function AddXrayModal(props) {
         </div>
         <div className="mt-3">
             <label><strong>Issued on:</strong></label>
-            <input type="date" className="form-control" name='issue_date' value={xrayValues.issue_date} onChange={handleChange}/>
+            <input type="date" className="form-control" name='issue_date' value={igraValues.issue_date} onChange={handleChange}/>
         </div>
         <div className="mt-3">
             <label><strong>Reference Number:</strong></label>
-            <input type="text" className="form-control" name='test_refno' value={xrayValues.test_refno} onChange={handleChange}/>
+            <input type="text" className="form-control" name='test_refno' value={igraValues.test_refno} onChange={handleChange}/>
         </div>
         <div className="mt-3"> 
-            <label> <strong>Xray Results: </strong></label>
-            <select className="form-select" name='TestValue' value={xrayValues.TestValue} onChange={handleChange}>
+            <label> <strong>IGRA Test Results: </strong></label>
+            <select className="form-select" name='TestValue' value={igraValues.TestValue} onChange={handleChange}>
                 <option value="">Select</option>
-                <option value="With Signs of TB">With Signs of TB</option>
-                <option value="No signs">No signs</option>
-                <option value="Undetermined">Undetermined</option>
+                <option value="Positive">Positive</option>
+                <option value="Negative">Negative</option>
             </select>
         </div>
+    </form>
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
@@ -152,7 +146,5 @@ function AddXrayModal(props) {
   );
 }
 
+export default AddIGRAModal;
 
-
-
-export default AddXrayModal;

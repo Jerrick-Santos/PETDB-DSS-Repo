@@ -27,7 +27,7 @@ const Login = () => {
       window.location.href = '/home';
     } else if (username === '2' && password === 'abc') {
       // Redirect to /adminbhc for username 2
-      window.location.href = '/adminbhc';
+      window.location.href = '/bhc/1';
     } else {
       // Handle incorrect login
       alert('Incorrect username or password');

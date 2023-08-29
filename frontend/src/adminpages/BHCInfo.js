@@ -45,6 +45,37 @@ const BHCInfo = () => {
 
   }, []);
 
+      // Add these state variables
+    const [activePage, setActivePage] = useState(1); // Active page number
+    const itemsPerPage = 5; // Number of items per page
+
+    // Function to handle page change
+    const handlePageChange = (pageNumber) => {
+      setActivePage(pageNumber);
+    };
+
+    // Calculate the index range for the current page
+    const startIndex = (activePage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+        const handleChange = (e) => {
+            setSearchTerm(e.target.value)
+        }
+
+        const handleSubmit = async (e) => {
+            e.preventDefault()
+            axios.get(`http://localhost:4000/api/searchbhchi/${bhcNum}/${searchTerm}`).then(response => {
+                    setBhchiData(response.data);
+                    console.log("added")
+                  })
+                  .catch(error => {
+                    console.error('Error searching patient:', error);
+                  });
+        }
+
+
   return (
     <div>
     <AdminNavBar/>
@@ -108,7 +139,23 @@ const BHCInfo = () => {
           </Card.Body>
         </Card>
 
-        <h1 style={{fontSize:"25px"}}> Nearby Health Institutions </h1>
+        <h1 className="mt-5" style={{fontSize:"25px"}}> Nearby Health Institutions </h1>
+        <Row className="mt-4">
+        <Col lg="7">
+        <form>
+            <div className="input-group" style={{ maxWidth: '290px' }}>
+                {/* Adjust the max-width to control the width of the input field */}
+                <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleChange} placeholder="Search" />
+                <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSubmit} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
+            </div>
+        </form>
+        </Col>
+          <Col  lg="5">
+            <AssignBHCModal id={bhcNum} name={bhcData.BGYName} address={bhcData.address}/>
+          </Col>
+        </Row>
+
+
       <Card className="mt-4 mb-4">
           <Card.Body>
             <Row>
@@ -120,12 +167,12 @@ const BHCInfo = () => {
               </Col>
               
             </Row>
-            {bhchiData.map((bhchi, index) => (
+            {bhchiData.slice(startIndex, endIndex).map((bhchi, index) => (
               <>
                <hr />
             <Row>
               <Col sm="6">
-                <Card.Text>{index+1}. {bhchi.HIName} </Card.Text>
+                <Card.Text>{bhchi.HIName} </Card.Text>
               </Col>
               <Col sm="6">
                 <Card.Text>{bhchi.address} </Card.Text>
@@ -142,13 +189,17 @@ const BHCInfo = () => {
           </Card.Body>
         </Card>
         
-        <Row className="d-flex justify-content-end mb-4" >
-          <Col className="d-flex justify-content-end">
-            <AssignBHCModal id={bhcNum} name={bhcData.BGYName} address={bhcData.address}/>
-          </Col>
-        </Row>
+       
         
-        
+        <Pagination className="mt-3 justify-content-center">
+            <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
+            {Array.from({ length: Math.ceil(bhchiData.length / itemsPerPage) }).map((_, index) => (
+              <Pagination.Item key={index} active={index + 1 === activePage} onClick={() => handlePageChange(index + 1)}>
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(bhchiData.length / itemsPerPage)} />
+          </Pagination>
       </Col>
      
     </Row>

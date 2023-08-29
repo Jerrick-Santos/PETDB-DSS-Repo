@@ -6,7 +6,7 @@ const MainRoutes = require('./routes/mainRoute');
 const kaloyRoute = require('./routes/kaloyRoute');
 const raymondRoute = require('./routes/raymondRoute');
 const diagnoseRoute = require('./routes/diagnoseRoute');
-
+const simCasesRoute = require('./routes/simCasesRoute');
 // CONNECTIONS
 
 app.use(cors({
@@ -71,3 +71,4 @@ app.use('/api', MainRoutes(dbPool));
 app.use('/api', kaloyRoute(dbPool));
 app.use('/api', raymondRoute(dbPool));
 app.use('/api', diagnoseRoute(dbPool));
+app.use('/api', simCasesRoute(dbPool));
