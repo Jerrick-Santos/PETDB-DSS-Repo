@@ -135,10 +135,10 @@ function TSTmodule(TST_result){
 }
 
 function IGRAmodule(IGRA_result){
-    if (TST_result === "Positive"){
+    if (IGRA_result === "Positive"){
         return 1
     }
-    else if (TST_result === "Negative"){
+    else if (IGRA_result === "Negative"){
         return -1
     }
     else {
@@ -282,7 +282,7 @@ module.exports = (db) => {
             }
         });
     })
-    router.get('/diagnose/:caseid', (req, res) => {
+    router.post('/diagnose/:caseid', (req, res) => {
         let ruleNo;
 
         const symptomsObject = {
@@ -676,18 +676,44 @@ module.exports = (db) => {
                                             console.log("Diagnosis Query Results:", diagnosisQueryResults);
 
                                             
-                                            try{
-                                            const {RuleNo} = diagnosisQueryResults[0]
+                                            // try{
+                                            // const {RuleNo} = diagnosisQueryResults[0]
                                 
-                                            // All queries have been executed successfully
-                                            // res.status(200).json(diagnosisQueryResults);
-                                            console.log(RuleNo)
+                                            // // All queries have been executed successfully
+                                            // // res.status(200).json(diagnosisQueryResults);
+                                            // console.log(RuleNo)
+                                            // res.status(200).json("Sunccessful Diagnosis")
+                                            // }
+                                            // catch(e){
+                                            //     res.status(500).json({e: "query is empty"})
+                                            //     console.log("Query is empty")
+                                            // }
 
-                                            }
-                                            catch(e){
-                                                res.status(500).json({e: "query is empty"})
-                                                console.log("Query is empty")
-                                            }
+                                            try{
+                                                    const {RuleNo} = diagnosisQueryResults[0]
+                                        
+                                                    // All queries have been executed successfully
+                                                    // res.status(200).json(diagnosisQueryResults);
+                                                    console.log("Rule Number: " + RuleNo)
+                
+                                                    db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, need_hiv) 
+                                                    VALUES (?, ?, ?, ?)`, 
+                                                    [new Date().toISOString().split('T')[0], caseid, RuleNo, need_hiv], 
+                                                    (error8, InsertResult) => {
+                                                        if (error8) {
+                                                            res.status(500).json({ error: "Did Not Add Data" });
+                                                            return;
+                                                        }
+                                                        else{
+                                                            res.status(200).json(InsertResult)
+                                                        }
+                                                    })
+                
+                                                    }
+                                                    catch(e){
+                                                        res.status(500).json({e: "query is empty"})
+                                                        console.log("Query is empty")
+                                                    }
 
                                         });
                                         
