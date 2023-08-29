@@ -117,6 +117,9 @@ function RIFmodule(RIF_result){
     else if(RIF === "S"){
         return -1
     }
+    else if(RIF === "NA"){
+        return -1
+    }
     else {
         return 0
     }
