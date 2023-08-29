@@ -11,6 +11,7 @@ import AssignHIModal from '../admincomponents/AssignHIModal';
 import Pagination from 'react-bootstrap/Pagination';
 import DeleteHIModal from '../admincomponents/DeleteHIModal';
 import edit from '../assets/edit.png'
+import UpdateHIModal from '../admincomponents/UpdateHIModal';
 
 const HIInfo = () => {
 
@@ -67,11 +68,9 @@ useEffect(() => {
           </Col>
 
           <Col>
-          <img
-                src={edit}
-                className="mt-1 me-2 clickable"
-                style={{ height: "30px" }}
-            />
+              <UpdateHIModal  HINo={hiData.HINo} HIName={hiData.HIName} HIOperatingHouse={hiData.HIOperatingHours}
+                              XCoord={hiData.XCoord} YCoord={hiData.YCoord} HIContactPerson={hiData.HIContactPerson}
+                              HIContactNumber={hiData.HIContactNumber} HIEmailAddress={hiData.HIEmailAddress} />
                <DeleteHIModal HINo={hiData.HINo} HIName={hiData.HIName}/>
           </Col>
          
@@ -157,7 +156,7 @@ useEffect(() => {
                 <Card.Text><strong>Diagnostic Tests</strong></Card.Text>
               </Col>
               <Col sm="4">
-                <Card.Text><strong>Price</strong></Card.Text>
+                <Card.Text><strong>Estimated Price</strong></Card.Text>
               </Col>
               <Col sm="3">
                 <Card.Text><strong>Accepting Voucher</strong></Card.Text>
