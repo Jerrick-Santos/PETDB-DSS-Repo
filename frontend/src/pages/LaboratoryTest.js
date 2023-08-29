@@ -12,6 +12,7 @@ import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 import AddXrayModal from '../components/AddXrayModal';
+import AddIGRAModal from '../components/AddIGRAModal';
 import AddHIVTestModal from '../components/AddTSTModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
@@ -72,7 +73,7 @@ const LaboratoryTest = () => {
       console.error('Error fetchingdata:', error);
     });
 
-    axios.get(`http://localhost:4000/api/testresults/${caseNum}/4`)
+    axios.get(`http://localhost:4000/api/testresults/${caseNum}/7`)
     .then((response) => {
       setIgraData(response.data)
     })
@@ -168,6 +169,7 @@ const LaboratoryTest = () => {
     <AddTSTModal caseNum={caseNum} />
     <AddMTBRIFModal caseNum={caseNum} />
     <AddXrayModal caseNum={caseNum} />
+    <AddIGRAModal caseNum={caseNum} />
     <CaseHeader caseNum={caseNum} />
 
     <hr />
