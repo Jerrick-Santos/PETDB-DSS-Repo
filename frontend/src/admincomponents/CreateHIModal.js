@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
@@ -11,6 +11,61 @@ function CreateHIModal() {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const[regionData, setRegionData] = useState([])
+
+    useEffect(() => {
+
+        axios.get(`http://localhost:4000/api/allregions`)
+          .then((response) => {
+            setRegionData(response.data)
+          })
+          .catch((error) => {
+            // Handle any errors that occurred during the request
+            console.error('Error fetching data:', error);
+          });
+        
+    
+    }, []);
+
+    const [provinceData, setProvinceData] = useState([]);
+
+    const handleRegionChange = (e) => {
+        const selectedRegion = e.target.value;
+        axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
+            .then((response) => {
+                setProvinceData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching provinces:', error);
+            });
+    }
+
+    const [cityData, setCityData] = useState([]);
+
+    const handleProvinceChange = (e) => {
+        const selectedProvince = e.target.value;
+        axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
+            .then((response) => {
+                setCityData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching cities:', error);
+            });
+    }
+
+    const [barangayData, setBarangayData] = useState([]);
+
+    const handleCityChange = (e) => {
+        const selectedCity = e.target.value;
+        axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
+        .then((response) => {
+            setBarangayData(response.data);
+        })
+        .catch((error) => {
+            console.error('Error fetching barangays:', error);
+        });
+    }
 
 
     const [formValues, setFormValues] = useState({
@@ -84,12 +139,40 @@ function CreateHIModal() {
 
                 <div className="form-group col-md-3">
                     <label for="inputCurrRegion">Region</label>
-                    <input type="text" class="form-control"  name='HIRegion' value={formValues.HIRegion} onChange={handleChange} placeholder="Region"/>
+                    <select className="form-select" name="HIRegion" value={formValues.HIRegion} onChange={(e)=>{
+                        handleChange(e);
+                        handleRegionChange(e);
+                    }}>
+                        <option value="">Select</option>
+                    
+                    {regionData.map((hi, index) => (
+                    <>
+                    <option value={hi.region_id}>{hi.region_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
                 <div className="form-group col-md-3">
                     <label for="inputCurrRegion">Province</label>
-                    <input type="text" class="form-control"  name='HIProvince' value={formValues.HIProvince} onChange={handleChange} placeholder="Province"/>
+                    <select className="form-select" name="HIProvince" value={formValues.HIProvince} onChange={(e)=>{
+                        handleChange(e);
+                        handleProvinceChange(e);
+                    }}>
+                        <option value="">Select</option>
+                    
+                    {provinceData.map((hi, index) => (
+                    <>
+                    <option value={hi.province_id}>{hi.province_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
 
              
@@ -99,13 +182,38 @@ function CreateHIModal() {
            
             <div className="form-group col-md-4">
                     <label for="inputCurrCity">City</label>
-                    <input type="text" class="form-control"  name='HICity' value={formValues.HICity} onChange={handleChange}  placeholder="City"/>
+                    <select className="form-select" name="HICity" value={formValues.HICity} onChange={(e)=>{
+                        handleChange(e);
+                        handleCityChange(e);
+                    }}>
+                        <option value="">Select</option>
+                    
+                    {cityData.map((hi, index) => (
+                    <>
+                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
                 
                
             <div class="form-group col-md-4">
                     <label for="inputCurrBarangay">Barangay</label>
-                    <input type="text" class="form-control" name='HIBarangay' value={formValues.HIBarangay} onChange={handleChange} placeholder="Barangay"/>
+                    <select className="form-select" name="HIBarangay" value={formValues.HIBarangay} onChange={handleChange}>
+                        <option value="">Select</option>
+                    
+                    {barangayData.map((hi, index) => (
+                    <>
+                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
                 </div>
                 
 

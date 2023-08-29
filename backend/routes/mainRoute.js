@@ -47,7 +47,9 @@ module.exports = (db) => {
          FROM PEDTBDSS_new.TD_PTCASE sub_pc
          WHERE sub_pc.PatientNo = pc.PatientNo AND sub_pc.start_date = latest_cases.latest_start_date AND sub_pc.case_status = 'O'
      )
- );
+
+ )
+ ORDER BY pt.last_name, pt.first_name, pt.middle_initial;
  
        
     `, (err, results) => {
@@ -68,29 +70,41 @@ module.exports = (db) => {
         const id = req.params.id;
         console.log(id)
         db.query(`
-        SELECT pt.PatientNo, CONCAT(pt.first_name, ' ', pt.middle_initial, '. ' , pt.last_name) AS fullname,
-            pt.birthdate,
-            pt.sex,
-            pt.age,
-            pt.initial_bodyweight,
-            pt.initial_height,
-            pt.nationality,
-            CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
-            CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
-            pt.admission_date,
-            pt.mother_name,
-            pt.m_birthdate,
-            pt.m_contactno,
-            pt.m_email,
-            pt.father_name,
-            pt.f_birthdate,
-            pt.f_contactno,
-            pt.f_email,
-            pt.emergency_name,
-            pt.e_birthdate,
-            pt.e_contactno,
-            pt.e_email
+        SELECT pt.PatientNo, CONCAT(pt.last_name, ', ', pt.first_name, ' ', pt.middle_initial ) AS fullname,
+        pt.birthdate,
+        pt.sex,
+        pt.age,
+        pt.initial_bodyweight,
+        pt.initial_height,
+        pt.nationality,
+        CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pb.barangay_name, ' ', pm.municipality_name, ' ', pp.province_name, ' ', pr.region_name, ' ', pt.per_zipcode) AS per_address,
+        CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', cb.barangay_name, ' ', cm.municipality_name, ' ', cp.province_name, ' ', cr.region_name, ' ', pt.curr_zipcode) AS curr_address,
+        pt.admission_date,
+        pt.mother_name,
+        pt.m_birthdate,
+        pt.m_contactno,
+        pt.m_email,
+        pt.father_name,
+        pt.f_birthdate,
+        pt.f_contactno,
+        pt.f_email,
+        pt.emergency_name,
+        pt.e_birthdate,
+        pt.e_contactno,
+        pt.e_email,
+        pt.guardian_name,
+        pt.g_birthdate,
+        pt.g_contactno,
+        pt.g_email
         FROM PEDTBDSS_new.TD_PTINFORMATION pt
+        JOIN PEDTBDSS_new.table_region cr ON pt.per_region = cr.region_id 
+        JOIN PEDTBDSS_new.table_region pr ON pt.curr_region = pr.region_id 
+        JOIN PEDTBDSS_new.table_province cp ON pt.per_province= cp.province_id 
+        JOIN PEDTBDSS_new.table_province pp ON pt.curr_province = pp.province_id 
+        JOIN PEDTBDSS_new.table_municipality cm ON pt.per_city= cm.municipality_id 
+        JOIN PEDTBDSS_new.table_municipality pm ON pt.curr_city = pm.municipality_id 
+        JOIN PEDTBDSS_new.table_barangay cb ON pt.per_barangay= cb.barangay_id 
+        JOIN PEDTBDSS_new.table_barangay pb ON pt.curr_barangay = pb.barangay_id 
         WHERE pt.PatientNo = ${id};
     `, (err, results) => {
         if (err) {
@@ -199,7 +213,7 @@ module.exports = (db) => {
     })
 
     router.post('/newassessment', (req, res) => {
-        const assessQuery = "INSERT INTO TD_HEALTHASSESSMENT (`CaseNo`, `cough`, `c_weeks`, `c_persist`, `fever`, `fe_weeks`, `fe_persist`, `weight_loss`, `wl_weeks`, `wl_persist`, `night_sweats`, `ns_weeks`, `ns_persist`, `fatigue`, `fat_weeks`, `fat_persist`, `red_playfulness`, `rp_weeks`, `rp_persist`, `dec_acts`, `da_weeks`, `da_persist`, `not_eating_well`, `new_weeks`, `new_persist`, `non_painful_ecl`, `drowsy`, `prevPTB_diagnosed`, `can_stand`, `ass_body_weight`, `ass_height`, `ass_bmi`, `ass_temp`, `ass_bp`, `plhiv`, `hiv`, `mother_hiv`, `smoking`, `drinking`, `sex_active`, `renal_disease`, `malnutrition`, `other_health_issues`, `other_meds`, `other_dd_interacts`, `other_comorbid`, `assessment_date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const assessQuery = "INSERT INTO TD_HEALTHASSESSMENT (`CaseNo`, `cough`, `c_weeks`, `c_persist`, `fever`, `fe_weeks`, `fe_persist`, `weight_loss`, `wl_weeks`, `wl_persist`, `night_sweats`, `ns_weeks`, `ns_persist`, `fatigue`, `fat_weeks`, `fat_persist`, `red_playfulness`, `rp_weeks`, `rp_persist`, `dec_acts`, `da_weeks`, `da_persist`, `not_eating_well`, `new_weeks`, `new_persist`, `non_painful_ecl`, `drowsy`, `prevPTB_diagnosed`, `can_stand`, `ass_body_weight`, `ass_height`, `ass_bmi`, `ass_temp`, `ass_bp`, `plhiv`, `hiv`, `mother_hiv`, `smoking`, `drinking`, `sex_active`, `renal_disease`, `malnutrition`, `other_health_issues`, `other_meds`, `other_dd_interacts`, `other_comorbid`, `assessment_date`, `userNo`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         const assessQueryValues = [
             req.body.case_no,
             req.body.cough,
@@ -248,6 +262,7 @@ module.exports = (db) => {
             req.body.other_dd_interacts,
             req.body.other_comorbid,
             req.body.assessment_date,
+            1,
         ]
         db.query(assessQuery, assessQueryValues, (err, data) => {
             if(err) {
@@ -621,6 +636,27 @@ WHERE
         const testresultsValues = [
             req.body.CaseNo,
             1,
+            req.body.TestValue,
+            req.body.validity,
+            req.body.HINo,
+            req.body.issue_date,
+            req.body.test_refno
+        ]
+        db.query(testresultsQuery, testresultsValues, (err, data) => {
+            if(err) {
+                console.log("Error inserting into TD_DIAGNOSTICRESULTS:", err);
+                return res.json(err)
+            }
+            console.log("Successfully inserted into TD_DIAGNOSTICRESULTS:", data);
+            return res.json(data)
+        })
+    })
+
+    router.post('/newIGRAresults', (req, res) => {
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        const testresultsValues = [
+            req.body.CaseNo,
+            7,
             req.body.TestValue,
             req.body.validity,
             req.body.HINo,

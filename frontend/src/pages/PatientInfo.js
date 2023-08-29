@@ -115,7 +115,7 @@ console.log(patientData)
                 <Card.Text>Initial Height</Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted">{patientData.initial_height} meters </Card.Text>
+                <Card.Text className="text-muted">{patientData.initial_height} CM </Card.Text>
               </Col>
             </Row>
             <hr />
@@ -124,70 +124,32 @@ console.log(patientData)
                 <Card.Text>Initial Weight</Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted">{patientData.initial_bodyweight} kg</Card.Text>
+                <Card.Text className="text-muted">{patientData.initial_bodyweight} KG </Card.Text>
               </Col>
             </Row>
             <hr />
             <Row>
               <Col sm="6">
-                <Card.Text>Address 1</Card.Text>
+                <Card.Text>Current Address</Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted">{patientData.address_1}</Card.Text>
+                <Card.Text className="text-muted">{patientData.curr_address}</Card.Text>
               </Col>
             </Row>
             <hr />
             <Row>
               <Col sm="6">
-                <Card.Text>Address 2</Card.Text>
+                <Card.Text>Permanent Address</Card.Text>
               </Col>
               <Col sm="6">
-                <Card.Text className="text-muted">{patientData.address_2}</Card.Text>
+                <Card.Text className="text-muted">{patientData.per_address}</Card.Text>
               </Col>
             </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>City</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.city}</Card.Text>
-              </Col>
-            </Row>
+            
           </Card.Body>
         </Card>
 
-        <p style={{fontSize:"25px"}}> Patient Record</p>
-        <Card className="mb-4">
-          <Card.Body>
-            <Row>
-              <Col sm="6">
-                <Card.Text>Patient ID</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">-</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>LatentTB ID</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">-</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>PresumptiveTB ID</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">-</Card.Text>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
+        
       </Col>
 
      
@@ -200,119 +162,207 @@ console.log(patientData)
 
 
       <Col>
-      <p style={{fontSize:"25px"}}> Contact Details </p>
-        <Card className="mb-4">
-          <Card.Body>
-            <Row>
-              <Col sm="6">
-                <Card.Text>Mother's Name</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.mother_name}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Mother's Birthdate</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{new Date(patientData.m_birthdate).toLocaleDateString()}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Mother's Contact #</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.m_contactno}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Mother's Email </Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.m_email}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Father's Name</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.father_name}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Father's Birthdate</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{new Date(patientData.f_birthdate).toLocaleDateString()}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Father's Contact #</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.f_contactno}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Father's Email </Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.f_email}</Card.Text>
-              </Col>
-            </Row>
-            <hr /><Row>
-              <Col sm="6">
-                <Card.Text>Emergency Contact Name</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.emergency_name}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Emergency Contact Birthdate</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{new Date(patientData.f_birthdate).toLocaleDateString()}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Emergency Contact #</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.e_contactno}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>Emergency Contact Email </Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text className="text-muted">{patientData.e_email}</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-          </Card.Body>
-        </Card>
-      </Col>
+  <p style={{ fontSize: "25px" }}> Contact Details </p>
+  <Card className="mb-4">
+    <Card.Body>
+      {patientData.guardian_name && (
+        <>
+          <Row>
+            <Col sm="6">
+              <Card.Text>Guardian's Name</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.guardian_name}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Guardian's Birthdate</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {new Date(patientData.g_birthdate).toLocaleDateString()}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Guardian's Contact #</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.g_contactno}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Guardian's Email</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.g_email}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+        </>
+      )}
+
+      {patientData.mother_name && (
+        <>
+          <Row>
+            <Col sm="6">
+              <Card.Text>Mother's Name</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.mother_name}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Mother's Birthdate</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {new Date(patientData.m_birthdate).toLocaleDateString()}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Mother's Contact #</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.m_contactno}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Mother's Email</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.m_email}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+        </>
+      )}
+
+      {patientData.father_name && (
+        <>
+          <Row>
+            <Col sm="6">
+              <Card.Text>Father's Name</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.father_name}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Father's Birthdate</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {new Date(patientData.f_birthdate).toLocaleDateString()}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Father's Contact #</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.f_contactno}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Father's Email</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.f_email}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+        </>
+      )}
+
+      {patientData.emergency_name && (
+        <>
+          <Row>
+            <Col sm="6">
+              <Card.Text>Emergency Contact Name</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.emergency_name}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Emergency Contact Birthdate</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {new Date(patientData.e_birthdate).toLocaleDateString()}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Emergency Contact #</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.e_contactno}
+              </Card.Text>
+            </Col>
+          </Row>
+          <hr />
+          <Row>
+            <Col sm="6">
+              <Card.Text>Emergency Contact Email</Card.Text>
+            </Col>
+            <Col sm="6">
+              <Card.Text className="text-muted">
+                {patientData.e_email}
+              </Card.Text>
+            </Col>
+          </Row>
+        </>
+      )}
+    </Card.Body>
+  </Card>
+</Col>
+
       
       </Col>
     </Row>

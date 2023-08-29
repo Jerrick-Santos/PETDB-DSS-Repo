@@ -129,7 +129,11 @@ letter-spacing: 1px !important;
 .breadcrumb > * div {
 max-width: 60px;
 }
+.summary-card {
+  min-height: 300px; /* Adjust the value as needed */
+}
 
 
 }
+
 
