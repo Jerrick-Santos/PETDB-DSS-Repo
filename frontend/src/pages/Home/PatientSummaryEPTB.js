@@ -21,10 +21,10 @@ const PatientSummaryEPTB = () => {
     const [patientsData, setPatientsData] = useState([]);
 
     const data01 = [
-        { name: 'Bacteriologically Confirmed (Drug Resistant)', value: 400 },
-        { name: 'Bacteriologically Confirmed (Drug Susceptible)', value: 300 },
-        { name: 'Clinically Diagnosed (Drug Resistant)', value: 300 },
-        { name: 'Clinically Diagnosed (Drug Susceptible)', value: 200 },
+        { name: 'Bacteriologically Confirmed (Drug Resistant)', value: 55 },
+        { name: 'Bacteriologically Confirmed (Drug Susceptible)', value: 50 },
+        { name: 'Clinically Diagnosed (Drug Resistant)', value: 23},
+        { name: 'Clinically Diagnosed (Drug Susceptible)', value: 74 },
       ];
 
       const data = [

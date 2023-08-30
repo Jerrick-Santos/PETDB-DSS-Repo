@@ -138,10 +138,13 @@ function AddCloseContactModal(props) {
                 await axios.post("http://localhost:4000/api/addContacts", formValues)
                 setValidated(true)
                 setShow(false)
+                
             }catch(err){
                 console.log(err)
             }
+            
         }
+        window.location.reload()
     }
 
     

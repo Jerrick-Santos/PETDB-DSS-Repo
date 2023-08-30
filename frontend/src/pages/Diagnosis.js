@@ -151,9 +151,10 @@ const Diagnosis = () => {
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
+      <CaseHeader caseNum={caseNum} />
           <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
             <Col lg="11">
-              <CaseHeader caseNum={caseNum} />
+              
             </Col>
 
             <Col lg="11" className="d-flex justify-content-center">

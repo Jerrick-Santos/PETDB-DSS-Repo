@@ -106,19 +106,26 @@ const SimilarCases = () => {
   // Make sure to check if casesData is available before using it
  
     const graphdata1 = [
-    { id: "1", name: "L1", value: (100-(percent1*100)) },
-    { id: "2", name: "L2", value: (percent1*100) }
+    { id: "1", name: "L1", value: 18 },
+    { id: "2", name: "L2", value: 82 }
     ];
 
   const graphdata2 = [
-      { id: "1", name: "L1", value: (100-(percent2*100)) },
-      { id: "2", name: "L2", value: (percent2*100) }
+      { id: "1", name: "L1", value: 93},
+      { id: "2", name: "L2", value: 7 }
       ];
 
   const graphdata3 = [
-        { id: "1", name: "L1", value: (100-(percent3*100)) },
-        { id: "2", name: "L2", value: (percent3*100) }
+        { id: "1", name: "L1", value: 96 },
+        { id: "2", name: "L2", value: 4 }
         ];
+  
+        const graphdata4 = [
+          { id: "1", name: "L1", value: 98.5 },
+          { id: "2", name: "L2", value: 1.5 }
+          ];
+
+  
   
   
     const [activeTab, setActiveTab] = useState('1'); 
@@ -174,33 +181,54 @@ const SimilarCases = () => {
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       <CaseHeader caseNum={caseNum} />
     <hr/>
-      <Row className="mt-5 justify-content-center">
-        <Col lg="9">
-        <h2> Similar Cases </h2>
-      </Col>
-    </Row>
-
+      
     <Row className="mb-3">
       <Col className="text-center">
-        <ButtonGroup>
-          <Button variant="light" onClick={() => setActiveTab('1')}>Similar Case 1</Button>
-          <Button variant="light" onClick={() => setActiveTab('2')}>Similar Case 2</Button>
-          <Button variant="light" onClick={() => setActiveTab('3')}>Similar Case 3</Button>
-        </ButtonGroup>
+      <h2> Similar Cases </h2>
       </Col>
     </Row>
+    
 
-    {activeTab === '1' && (
+ 
      <Row className="mt-5 justify-content-center">
+     
+
      <Col lg="4">
-           <PieChart width={320} height={320}>
+     <Card className="mb-4">
+       <Card.Body>
+         <Row>
+           <Col sm="4">
+             <Card.Text>Similar Cases</Card.Text>
+           </Col>
+           <Col sm="8">
+             <Card.Text className="text-muted ">121 Cases</Card.Text>
+           </Col>
+         </Row>
+         <hr />
+        
+         <Row>
+           <Col sm="4">
+             <Card.Text>Diagnosis</Card.Text>
+           </Col>
+           <Col sm="8">
+             <Card.Text className="text-muted ">Bacteriologically Confirmed - Drug Resistant</Card.Text>
+           </Col>
+         </Row>
+       
+         
+       </Card.Body>
+     </Card>
+
+     </Col>
+     <Col lg="2">
+           <PieChart width={150} height={150}>
          <Pie
            data={graphdata1}
            isAnimationActive={true}
            dataKey="value"
            innerRadius="80%"
            outerRadius="100%"
-           fill="#82ca9d"
+           fill='#56592F'
            startAngle={90}
            endAngle={-270}
            paddingAngle={0}
@@ -208,82 +236,51 @@ const SimilarCases = () => {
          >
            <Cell key="test" fill="#CCC" />
            <Label
-             value={`${graphdata1[1].value}% Similarity`}
+             value={`${graphdata1[1].value}% Likelihood`}
              position="center"
-             fontSize={30}
+             fontSize={15}
              fill="#000"
            />
          </Pie>
        </PieChart>
      </Col>
 
-     <Col lg="5">
+     <Col lg="4">
      <Card className="mb-4">
        <Card.Body>
          <Row>
-           <Col sm="6">
-             <Card.Text>Case Reference No.</Card.Text>
+           <Col sm="4">
+             <Card.Text>Similar Cases</Card.Text>
            </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum1}`}>{case1Data.case_refno}</Link></Card.Text>
+           <Col sm="8">
+             <Card.Text className="text-muted ">121 Cases</Card.Text>
            </Col>
          </Row>
          <hr />
+        
          <Row>
-           <Col sm="6">
-             <Card.Text>Case Start Date</Card.Text>
+           <Col sm="4">
+             <Card.Text>Diagnosis</Card.Text>
            </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted "> {new Date(case1Data.start_date).toLocaleDateString()}</Card.Text>
-           </Col>
-         </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Case End Date</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">{case1Data.end_date ? new Date(case1Data.end_date).toLocaleDateString() : '---'}</Card.Text>
+           <Col sm="8">
+             <Card.Text className="text-muted ">Clinically Diagnosed - Drug Resistant</Card.Text>
            </Col>
          </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Case Status</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">{case1Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
-           </Col>
-         </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Latest Diagnosis</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
-           </Col>
-         </Row>
-         <hr />
+       
          
        </Card.Body>
      </Card>
 
      </Col>
-   </Row>
-    )}
-
-{activeTab === '2' && (
-     <Row className="mt-5 justify-content-center">
-     <Col lg="4">
-           <PieChart width={320} height={320}>
+     <Col lg="2">
+           <PieChart width={150} height={150}>
          <Pie
            data={graphdata2}
            isAnimationActive={true}
            dataKey="value"
            innerRadius="80%"
            outerRadius="100%"
-           fill="#82ca9d"
+           fill='#BECB12'
            startAngle={90}
            endAngle={-270}
            paddingAngle={0}
@@ -291,82 +288,56 @@ const SimilarCases = () => {
          >
            <Cell key="test" fill="#CCC" />
            <Label
-             value={`${graphdata2[1].value}% Similarity`}
+             value={`${graphdata2[1].value}% Likelihood`}
              position="center"
-             fontSize={30}
+             fontSize={15}
              fill="#000"
            />
          </Pie>
        </PieChart>
      </Col>
+     
+   </Row>
 
-     <Col lg="5">
+   <Row className="mt-5 justify-content-center">
+     
+
+     <Col lg="4">
      <Card className="mb-4">
        <Card.Body>
          <Row>
-           <Col sm="6">
-             <Card.Text>Case Reference No.</Card.Text>
+           <Col sm="4">
+             <Card.Text>Similar Cases</Card.Text>
            </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum2}`}>{case2Data.case_refno}</Link></Card.Text>
+           <Col sm="8">
+             <Card.Text className="text-muted ">121 Cases</Card.Text>
            </Col>
          </Row>
          <hr />
+        
          <Row>
-           <Col sm="6">
-             <Card.Text>Case Start Date</Card.Text>
+           <Col sm="4">
+             <Card.Text>Diagnosis</Card.Text>
            </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted "> {new Date(case2Data.start_date).toLocaleDateString()}</Card.Text>
-           </Col>
-         </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Case End Date</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">{case2Data.end_date ? new Date(case2Data.end_date).toLocaleDateString() : '---'}</Card.Text>
+           <Col sm="8">
+             <Card.Text className="text-muted ">EPTB Bacteriologically Confirmed - Drug Susceptible</Card.Text>
            </Col>
          </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Case Status</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">{case2Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
-           </Col>
-         </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Latest Diagnosis</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
-           </Col>
-         </Row>
-         <hr />
+       
          
        </Card.Body>
      </Card>
 
      </Col>
-   </Row>
-    )}
-
-{activeTab === '3' && (
-     <Row className="mt-5 justify-content-center">
-     <Col lg="4">
-           <PieChart width={320} height={320}>
+     <Col lg="2">
+           <PieChart width={150} height={150}>
          <Pie
            data={graphdata3}
            isAnimationActive={true}
            dataKey="value"
            innerRadius="80%"
            outerRadius="100%"
-           fill="#82ca9d"
+           fill='#7D3D07'
            startAngle={90}
            endAngle={-270}
            paddingAngle={0}
@@ -374,72 +345,73 @@ const SimilarCases = () => {
          >
            <Cell key="test" fill="#CCC" />
            <Label
-             value={`${graphdata3[1].value}% Similarity`}
+             value={`${graphdata3[1].value}% Likelihood`}
              position="center"
-             fontSize={30}
+             fontSize={15}
              fill="#000"
            />
          </Pie>
        </PieChart>
      </Col>
 
-     <Col lg="5">
+     <Col lg="4">
      <Card className="mb-4">
        <Card.Body>
          <Row>
-           <Col sm="6">
-             <Card.Text>Case Reference No.</Card.Text>
+           <Col sm="4">
+             <Card.Text>Similar Cases</Card.Text>
            </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted "><Link to={`/closecontacts/${caseNum3}`}>{case3Data.case_refno}</Link></Card.Text>
+           <Col sm="8">
+             <Card.Text className="text-muted ">121 Cases</Card.Text>
            </Col>
          </Row>
          <hr />
+        
          <Row>
-           <Col sm="6">
-             <Card.Text>Case Start Date</Card.Text>
+           <Col sm="4">
+             <Card.Text>Diagnosis</Card.Text>
            </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted "> {new Date(case3Data.start_date).toLocaleDateString()}</Card.Text>
-           </Col>
-         </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Case End Date</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">{case3Data.end_date ? new Date(case3Data.end_date).toLocaleDateString() : '---'}</Card.Text>
+           <Col sm="8">
+             <Card.Text className="text-muted ">No TB</Card.Text>
            </Col>
          </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Case Status</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">{case3Data.case_status === "O" ? "Open" : 'Closed'}</Card.Text>
-           </Col>
-         </Row>
-         <hr />
-         <Row>
-           <Col sm="6">
-             <Card.Text>Latest Diagnosis</Card.Text>
-           </Col>
-           <Col sm="6">
-             <Card.Text className="text-muted ">---</Card.Text>
-           </Col>
-         </Row>
-         <hr />
+       
          
        </Card.Body>
      </Card>
 
      </Col>
-   </Row>
-    )}
-      
+     <Col lg="2">
+           <PieChart width={150} height={150}>
+         <Pie
+           data={graphdata4}
+           isAnimationActive={true}
+           dataKey="value"
+           innerRadius="80%"
+           outerRadius="100%"
+           fill='#0077B6'
+           startAngle={90}
+           endAngle={-270}
+           paddingAngle={0}
+           cornerRadius={5}
+         >
+           <Cell key="test" fill="#CCC" />
+           <Label
+             value={`${graphdata4[1].value}% Likelihood`}
+             position="center"
+             fontSize={15}
+             fill="#000"
+           />
+         </Pie>
+       </PieChart>
+     </Col>
      
+   </Row>
+
+   
+ 
+
+
 
     </Col>
   </Row>

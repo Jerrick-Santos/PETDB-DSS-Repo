@@ -93,7 +93,7 @@ useEffect(() => {
           <tbody>
             {caseData.map((singleCase, index) => (
               <tr key={index}>
-                <td><Link to={`/closecontacts/${caseData[index].CaseNo}`}>{caseData[index].case_refno}</Link></td>
+                <td><Link to={`/closecontacts/${caseData[index].CaseNo}`}><u style={{ color:'black'}}>{caseData[index].case_refno} </u></Link></td>
                 <td>{caseData[index].SRDescription}</td>
                 <td>{caseData[index].formatStartDate}</td>
                 <td>{caseData[index].end_date === null ? "---" : caseData[index].end_date}</td>

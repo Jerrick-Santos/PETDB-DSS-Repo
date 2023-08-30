@@ -151,10 +151,12 @@ function AddAssessPersist(props) {
     
           <Col sm="5">
           <label className="text-muted">Assessed By</label>
+          
             <input
               type="text"
               className="form-control"
               name="assessment_date"
+              value="Reyes, Carlo Orevillo"
               disabled
             />
           </Col>

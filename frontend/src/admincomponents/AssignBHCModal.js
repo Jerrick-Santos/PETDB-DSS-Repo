@@ -88,7 +88,7 @@ const [searchTerm, setSearchTerm] = useState('');
         <>
 
             <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Assign a Health Institution
+                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a nearby Health Institution
               </button>
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='lg'>

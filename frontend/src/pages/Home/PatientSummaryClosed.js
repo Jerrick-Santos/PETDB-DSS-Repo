@@ -20,10 +20,10 @@ const PatientSummaryClosed = () => {
     const [patientsData, setPatientsData] = useState([]);
 
     const data01 = [
-        { name: 'Cured', value: 400 },
-        { name: 'Lost to Follow-up', value: 300 },
-        { name: 'Not Evaluated', value: 300 },
-        { name: 'Died', value: 200 },
+        { name: 'Cured', value: 427 },
+        { name: 'Lost to Follow-up', value: 222 },
+        { name: 'Not Evaluated', value: 310 },
+        { name: 'Died', value: 139},
       ];
 
       const data = [

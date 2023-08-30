@@ -140,6 +140,7 @@ function AddAssessNoPersist(props) {
               type="text"
               className="form-control"
               name="assessment_date"
+              value="Reyes, Carlo Orevillo"
               disabled
             />
           </Col>

@@ -18,11 +18,11 @@ const PatientSummary = () => {
     const [patientsData, setPatientsData] = useState([]);
 
     const data01 = [
-        { name: 'Presumptive', value: 900 },
-        { name: 'Latent', value: 300 },
-        { name: 'Pulmonary', value: 300 },
-        { name: 'ExtraPulmonary', value: 200 },
-        { name: 'Closed', value: 278 },
+        { name: 'Presumptive', value: 927 },
+        { name: 'Latent', value: 313 },
+        { name: 'Pulmonary', value: 322 },
+        { name: 'ExtraPulmonary', value: 202 },
+        { name: 'Closed', value: 1098 },
       ];
 
       const data = [

@@ -151,15 +151,7 @@ const Treatments = () => {
                 <Card.Text className="text-muted">Available</Card.Text>
               </Col>
             </Row>
-            <hr />
-            <Row>
-            <Col sm="2">
-                <Card.Text>Remarks</Card.Text>
-              </Col>
-              <Col sm="8">
-                <Card.Text>Take Neozep after every meal and Biogesic during the full moon.</Card.Text>
-              </Col>
-            </Row>
+            
           </Card.Body>
           
         </Card>
