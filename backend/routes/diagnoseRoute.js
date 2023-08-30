@@ -603,9 +603,12 @@ module.exports = (db) => {
                                     inputObject.has_TBcontact = -1
                                     symptomsObject.has_TBcontact = -1
                                 } else {
-                                    highSuspicionObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                    inputObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                    symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    // highSuspicionObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    // inputObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    // symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    highSuspicionObject.has_TBcontact = -1
+                                    inputObject.has_TBcontact = -1
+                                    symptomsObject.has_TBcontact = -1
                                 }
 
                                 console.log(symptomsObject)
