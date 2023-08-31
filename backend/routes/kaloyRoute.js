@@ -143,16 +143,16 @@ module.exports = (db) => {
 
                 const refno = req.body.case_refno;
 
-                db.query(q, [values], (err, data) => {
+                await db.query(q, [values], (err, data) => {
                     if(err) {
-                        return res.json(err)
+                        return res.status(500).json(err);
                     } 
                     console.log("Successfully added Patient!")
                 });   
 
                 const secq = "SELECT MAX(PatientNo) AS MaxPatientNo FROM PEDTBDSS_new.TD_PTINFORMATION;"
             
-                db.query(secq, (err, results) => {
+                await db.query(secq, (err, results) => {
                     if (err) {
                         console.log(err);
                         return res.status(500).send("Error querying patient"); 
@@ -166,7 +166,7 @@ module.exports = (db) => {
                         db.query(thirdq, [patientNo, refno, 2, req.body.admission_date, "O"], (err, data) => {
                             if(err) {
                                 console.log("Error inserting into TD_PTCASE:", err);
-                                return res.json(err)
+                                return res.status(500).json(err);
                             }
                             console.log("Successfully inserted into TD_PTCASE:", data);
                             return res.json(data)
