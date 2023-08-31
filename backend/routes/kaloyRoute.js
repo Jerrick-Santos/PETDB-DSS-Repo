@@ -95,7 +95,7 @@ module.exports = (db) => {
             let patientNo = null;
   
             try {
-                const q = "INSERT INTO TD_PTINFORMATION (`last_name`, `first_name`, `middle_initial`, `age`, `sex`, `birthdate`, `initial_bodyweight`, `initial_height`, `nationality`, `per_houseno`, `per_street`, `per_region`, `per_province`, `per_city`, `per_barangay`, `per_zipcode`, `curr_houseno`, `curr_street`, `curr_region`, `curr_province`, `curr_city`, `curr_barangay`, `curr_zipcode`, `admission_date`, `guardian_name`, `g_relationship`, `g_birthdate`, `g_contactno`, `g_email`, `mother_name`, `m_birthdate`, `m_contactno`, `m_email`, `father_name`, `f_birthdate`, `f_contactno`, `f_email`, `emergency_name`, `e_relationship`, `e_birthdate`, `e_contactno`, `e_email`) VALUES (?)"
+                const q = "INSERT INTO TD_PTINFORMATION (`last_name`, `first_name`, `middle_initial`, `age`, `sex`, `birthdate`, `initial_bodyweight`, `initial_height`, `nationality`, `per_houseno`, `per_street`, `per_region`, `per_province`, `per_city`, `per_barangay`, `per_zipcode`, `curr_houseno`, `curr_street`, `curr_region`, `curr_province`, `curr_city`, `curr_barangay`, `curr_zipcode`, `admission_date`, `guardian_name`, `g_relationship`, `g_birthdate`, `g_contactno`, `g_email`, `mother_name`, `m_birthdate`, `m_contactno`, `m_email`, `father_name`, `f_birthdate`, `f_contactno`, `f_email`, `emergency_name`, `e_relationship`, `e_birthdate`, `e_contactno`, `e_email`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
                 const values = [
                     req.body.last_name,
                     req.body.first_name,
