@@ -155,6 +155,7 @@ const AddPatient = () => {
         curr_zipcode: "",
         admission_date: new Date().toISOString().split('T')[0],
         guardian_name: "",
+        g_relationship: "",
         g_birthdate: "",
         g_contactno: "",
         g_email: "",
@@ -167,6 +168,7 @@ const AddPatient = () => {
         f_contactno: "",
         f_email: "",
         emergency_name: "",
+        e_relationship: "",
         e_birthdate: "",
         e_contactno: "",
         e_email: "",
@@ -544,14 +546,18 @@ const AddPatient = () => {
                     <input type="text" class="form-control" id="inputGuardianName" name='guardian_name' onChange={handleChange} placeholder="Name"/>
                 </div>
                 <div class="form-group col-md-2">
+                    <label for="inputGuardianRelationship">Relationship</label>
+                    <input type="text" class="form-control" id="inputGuardianRelationship" name='g_relationship' onChange={handleChange} placeholder="Relationship"/>
+                </div>
+                <div class="form-group col-md-2">
                     <label for="inputGuardianBirth">Birthdate</label>
                     <input type="date" class="form-control" id="inputGuardianBirth" name='g_birthdate' onChange={handleChange} placeholder="Guardian's Name"/>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputGuardianContact">Contact #</label>
                     <input type="text" class="form-control" id="inputGuardianContact" name='g_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputGuardianEmail">Email</label>
                     <input type="text" class="form-control" id="inputGuardianEmail" name='g_email' onChange={handleChange} placeholder="sample@sample.com"/>
                 </div>
@@ -595,20 +601,24 @@ const AddPatient = () => {
                 </div>
             </Row>
 
-            <Row className="mt-2 mb-3 justify-content-center">
+            <Row className="mt-2 mb-5 justify-content-center">
                 <div class="form-group col-md-3">
                     <label for="inputEmergencyName">Emergency Contact Name</label>
                     <input type="text" class="form-control" id="inputEmergencyName" name='emergency_name' onChange={handleChange} placeholder="Name"/>
                 </div>
                 <div class="form-group col-md-2">
+                    <label for="inputEmergencyRelationship">Relationship</label>
+                    <input type="text" class="form-control" id="inputEmergencyRelationship" name='e_relationship' onChange={handleChange} placeholder="Relationship"/>
+                </div>
+                <div class="form-group col-md-2">
                     <label for="inputEmergencyBirth">Birthdate</label>
                     <input type="date" class="form-control" id="inputEmergencyBirth" name='e_birthdate' onChange={handleChange} placeholder="Mother's Name"/>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputEmergencyContact">Contact #</label>
                     <input type="text" class="form-control" id="inputEmergencyContact" name='e_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="inputEmergencyEmail">Email</label>
                     <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com"/>
                 </div>
