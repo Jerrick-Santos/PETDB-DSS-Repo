@@ -71,7 +71,8 @@ module.exports = (db) => {
 
             db.query(secq, values, (err, results) => {
                 if (err) {
-                    console.log(err)
+                    console.log(err);
+                    return res.status(500).send("Error querying patient"); 
                 } else {
                     console.log("Query executed successfully:", results)
                     targetPatientID = results[0].PatientNo;

@@ -527,7 +527,7 @@ const AddPatient = () => {
                             checked={isAutoFillActive}
                             onChange={handleAutoFill}
                         />
-                        Auto-Fill Current Address
+                        Same as Permanent Address
                     </label>
                 </div>
             </Row>
