@@ -93,14 +93,16 @@ function AddCloseContactModal(props) {
         const { first_name, last_name, middle_initial, birthdate, sex, contact_relationship, contact_num} = formValues
         const newErrors = {}
 
+        console.log(birthdate, new Date())
+
         // VALID CHECKERS
         if (!first_name) newErrors.first_name = "Input cannot be empty"
         if (!last_name) newErrors.last_name = "Input cannot be empty"
         if (!middle_initial) newErrors.middle_initial = "Input cannot be empty"
-        if (birthdate === new Date()) newErrors.birthdate = "Please select a date"
+        if (new Date(birthdate).toLocaleDateString() === new Date().toLocaleDateString()) newErrors.birthdate = "Please select a date"
         if (sex === "") newErrors.sex = "Please select an option"
-        // if (!contact_relationship) newErrors.contact_relationship = "Input cannot be empty"
-        if (contact_num.length != 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
+        if (!contact_relationship) newErrors.contact_relationship = "Input cannot be empty"
+        //if (contact_num.length != 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
 
 
         return newErrors
@@ -144,16 +146,19 @@ function AddCloseContactModal(props) {
             // TRY-CATCH FOR BACKEND INTERACTION
             try{
                 console.log("Form Submitted: ", formValues)
-                await axios.post("http://localhost:4000/api/addContacts", formValues)
+                axios.post("http://localhost:4000/api/addContacts", formValues)
+
                 setValidated(true)
                 setShow(false)
+                window.location.reload(false)
+
                 
             }catch(err){
                 console.log(err)
             }
             
         }
-        window.location.reload()
+        
     }
 
     
@@ -255,7 +260,7 @@ function AddCloseContactModal(props) {
                         placeholder='Relationship to Patient'
                         name='contact_relationship'
                         onChange={handleChange}
-                        // isInvalid={!!errors.contact_relationship}
+                        isInvalid={!!errors.contact_relationship}
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>{errors.contact_relationship}</Form.Control.Feedback>
@@ -294,8 +299,8 @@ function AddCloseContactModal(props) {
                         name='contact_num'
                         value={formValues.contact_num}
                         onChange={handleChange}
-                        pattern="^\d{0}$|^\d{11}$" 
-                        isInvalid={!/^(\d{0}|\d{11})?$/.test(formValues.contact_num)}
+                        //pattern="^\d{0}$|^\d{11}$" 
+                        //isInvalid={!/^(\d{0}|\d{11})?$/.test(formValues.contact_num)}
                     />
                     <Form.Control.Feedback type='invalid'>{errors.contact_num}</Form.Control.Feedback>
                 </Form.Group>

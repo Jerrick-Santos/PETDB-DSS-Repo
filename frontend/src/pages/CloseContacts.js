@@ -71,21 +71,21 @@ const CloseContacts = () => {
             let next_ha, days_until_ha, next_xray, days_until_xray
             // setting HA data
             if (ha_start_dates.data.length > 0) {
-              next_ha = addMonths(new Date(ha_start_dates.data[0].ha_start), 6).toLocaleDateString()
+              next_ha = addMonths(new Date(ha_start_dates.data[0].ha_start), 6).toLocaleDateString().replaceAll("/", "-")
               console.log("DATE UNTIL NEXT HA:", next_ha)
             }
             else {
-              next_ha = addMonths(new Date(latest_case.data[0].start_date), 6).toLocaleDateString()
+              next_ha = addMonths(new Date(latest_case.data[0].start_date), 6).toLocaleDateString().replaceAll("/", "-")
               console.log("[NO HA YET] DATE UNTIL NEXT HA:", next_ha)
             }
 
             // setting XRAY data
             if (xray_start_dates.data.length > 0){
-              next_xray = addMonths(new Date(xray_start_dates.data[0].issue_date), 12).toLocaleDateString()
+              next_xray = addMonths(new Date(xray_start_dates.data[0].issue_date), 12).toLocaleDateString().replaceAll("/", "-")
               console.log("DATE UNTIL NEXT XRAY:", next_xray)
             }
             else {
-              next_xray = addMonths(new Date(latest_case.data[0].start_date), 12).toLocaleDateString()
+              next_xray = addMonths(new Date(latest_case.data[0].start_date), 12).toLocaleDateString().replaceAll("/", "-")
               console.log("[NO XRAY YET] DATE UNTIL NEXT XRAY:", next_xray)
             }
 
@@ -251,7 +251,7 @@ const CloseContacts = () => {
                         )}
                       </td>
                       <td>{contact.last_name+", "+contact.first_name+" "+contact.middle_initial}</td>
-                      <td>{new Date(contact.birthdate).toLocaleDateString()}</td>
+                      <td>{new Date(contact.birthdate).toLocaleDateString().replaceAll("/", "-")}</td>
                       <td>{contact.sex === "M" ? "Male": "Female"}</td>
                       <td>{contact.contact_relationship}</td>
                       <td>{contact.contact_person === null ? <em>self</em> : contact.contact_person}</td>
