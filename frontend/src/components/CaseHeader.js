@@ -35,11 +35,11 @@ const CaseHeader = (props) => {
                 </Row>
 
                 <Row>
-                    <Col><strong>Case Start Date:</strong> {new Date(patientData.start_date).toLocaleDateString()}</Col>
+                    <Col><strong>Case Start Date:</strong> {new Date(patientData.start_date).toLocaleDateString().replaceAll("/", "-")}</Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Case End Date:</strong> {patientData.end_date === null ? " --" : new Date(patientData.end_date).toLocaleDateString()}</Col>
+                    <Col><strong>Case End Date:</strong> {patientData.end_date === null ? " --" : new Date(patientData.end_date).toLocaleDateString().replaceAll("/", "-")}</Col>
                 </Row>
 
                 <Row>
