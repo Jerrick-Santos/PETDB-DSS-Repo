@@ -33,12 +33,12 @@ function ViewSimilarPatientModal(props) {
     return (
         <>
             {props.visible && (
-                <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> View Similar Patients
+                <button className="btn" style={{ color: "white", backgroundColor: 'red', width: "50%", marginRight: "25%", marginLeft: "25%"}} type="button" onClick={handleShow}>
+                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Possible existing patient detected…
                 </button>
             )}
             
-            <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg">
+            <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg" >
                 <Modal.Header style={{color:'white', backgroundColor: "#0077B6"}}>
                     <Modal.Title>View Similar Patients</Modal.Title>
                 </Modal.Header>
@@ -81,6 +81,9 @@ function ViewSimilarPatientModal(props) {
                         </tbody>
                     </table>
                 </Form>
+
+                <div style={{ height: '350px' }}/>
+
                 </Modal.Body>
                 <Modal.Footer>
                     <button type="button" onClick={handleClose} className="btn btn-secondary">Apply</button>

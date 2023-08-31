@@ -26,7 +26,6 @@ module.exports = (db) => {
                         ct.date_added,
                         ct.CaseNo,
                         ct.PatientNo,
-                        ct.date_contacted,
                         ct.ContactNo
                     FROM PEDTBDSS_new.MD_CONTACTTRACING ct
                     JOIN PEDTBDSS_new.TD_PTCASE ptc ON ct.CaseNo = ptc.CaseNo
@@ -94,7 +93,7 @@ module.exports = (db) => {
 
     router.post('/addContacts', async (req, res) => {
 
-        const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, CaseNo} = req.body
+        const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, CaseNo, PatientNo} = req.body
 
         const formattedDate = new Date().toISOString().split('T')[0];
         const formattedBirthdate = new Date(birthdate).toISOString().split('T')[0];
@@ -102,8 +101,8 @@ module.exports = (db) => {
         console.log(req.body);
         
         /** Query Goal: Add the necessary close contact data to the latest case of a specificed patient */
-        await db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, CaseNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-                        [last_name, first_name, middle_initial, formattedBirthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, CaseNo]);
+        await db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, CaseNo, PatientNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                        [last_name, first_name, middle_initial, formattedBirthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, CaseNo, PatientNo]);
         
         // TODO: return value
     }),
@@ -260,7 +259,7 @@ module.exports = (db) => {
     router.get('/getCasePatient/:CaseNo', (req, res) => {
         
         const q = `SELECT
-                    CONCAT(pi.last_name, ", ",pi.first_name, " ", pi.middle_initial) AS patient_name,
+                    CONCAT(UPPER(pi.last_name), ", ",pi.first_name, " ", pi.middle_initial) AS patient_name,
                     ptc.case_refno,
                     ptc.start_date,
                     ptc.end_date,
@@ -326,7 +325,7 @@ module.exports = (db) => {
     }),
 
     router.get('/getLatestCase/:PatientNo', (req, res) => {
-        const q = `SELECT CaseNo
+        const q = `SELECT CaseNo, start_date
         FROM PEDTBDSS_new.TD_PTCASE
         WHERE PatientNo = ${req.params.PatientNo}
         ORDER BY start_date DESC
