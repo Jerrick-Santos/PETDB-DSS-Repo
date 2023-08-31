@@ -24,13 +24,20 @@ const CloseContacts = () => {
   //const [latestCase, setLatestCase] = useState([]); TODO: Re-implement feature
 
   // Helper Functions
-
+  function addMonths(date, months) {
+    var d = date.getDate();
+    date.setMonth(date.getMonth() + months);
+    if (date.getDate() != d) {
+      date.setDate(0);
+    }
+    return date;
+  }
 
   // Load list of close contact
   useEffect(() => {
     async function fetchData() {
 
-      var update = {}
+      
       console.log("UPDATING INFORMATION (0/3): ", update)
 
       var res = await axios.get(`http://localhost:4000/api/getContacts/${caseNum}`)
@@ -38,15 +45,13 @@ const CloseContacts = () => {
 
       setCloseContactListData(res.data.map(contact => ({
         ...contact,
-        num_ha: null,
-        latest_ha: null,
-        days_ha: null,
-        num_xray: null,
-        latest_xray: null,
-        days_xray: null
+        next_ha: null,
+        days_until_ha: null,
+        next_xray: null,
+        days_until_xray: null,
       })));
       
-      
+      var update = {}
 
       await Promise.all(res.data.map(async x => {
         if (x.PatientNo != null) {
@@ -63,44 +68,42 @@ const CloseContacts = () => {
             console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${x.PatientNo}]`, xray_start_dates.data)
 
             
-
+            let next_ha, days_until_ha, next_xray, days_until_xray
             // setting HA data
             if (ha_start_dates.data.length > 0) {
-              const time_diff_ha = new Date() - new Date(ha_start_dates.data[0].ha_start)
-              const days_diff_ha = Math.floor(time_diff_ha / (1000 * 60 * 60  * 24))
-
-              const updatedPropsHA = {
-                num_ha: ha_start_dates.data.length,
-                latest_ha: new Date(ha_start_dates.data[0].ha_start).toLocaleDateString(),
-                days_ha: days_diff_ha
-              };
-            
-              //update.push(updateContactData(x, updatedPropsHA));
-              update = {...x, ...updatedPropsHA}
-
-              console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${latest_case.data[0].CaseNo}] REPORTING HA UPDATE: number of HA: ${updatedPropsHA.num_ha}, latest_ha: ${updatedPropsHA.latest_ha}, number of days since last ha: ${updatedPropsHA.days_ha}`)
-              console.log("UPDATING INFORMATION (1/2): ", update)
+              next_ha = addMonths(new Date(ha_start_dates.data[0].ha_start), 6).toLocaleDateString()
+              console.log("DATE UNTIL NEXT HA:", next_ha)
             }
-
-            
+            else {
+              next_ha = addMonths(new Date(latest_case.data[0].start_date), 6).toLocaleDateString()
+              console.log("[NO HA YET] DATE UNTIL NEXT HA:", next_ha)
+            }
 
             // setting XRAY data
             if (xray_start_dates.data.length > 0){
-              const time_diff_xray = new Date() - new Date(xray_start_dates.data[0].issue_date)
-              const days_diff_xray = Math.floor(time_diff_xray / (1000 * 60 * 60  * 24))
-
-              const updatedPropsXray = {
-                num_xray: xray_start_dates.data.length,
-                latest_xray: new Date(xray_start_dates.data[0].issue_date).toLocaleDateString(),
-                days_xray: days_diff_xray
-              };
-            
-              //update.push(updateContactData(x, updatedPropsXray));
-              update = {...update, ...updatedPropsXray}
-
-              console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${latest_case.data[0].CaseNo}] REPORTING XRAY UPDATE: number of XRAY: ${updatedPropsXray.num_xray}, latest_xray: ${updatedPropsXray.latest_xray}, number of days since last xray: ${updatedPropsXray.days_xray}`)
-              console.log("UPDATING INFORMATION (2/3): ", update)
+              next_xray = addMonths(new Date(xray_start_dates.data[0].issue_date), 12).toLocaleDateString()
+              console.log("DATE UNTIL NEXT XRAY:", next_xray)
             }
+            else {
+              next_xray = addMonths(new Date(latest_case.data[0].start_date), 12).toLocaleDateString()
+              console.log("[NO XRAY YET] DATE UNTIL NEXT XRAY:", next_xray)
+            }
+
+            days_until_ha = Math.floor((new Date(next_ha) - new Date())/ (1000 * 60 * 60 * 24))
+            days_until_xray = Math.floor((new Date(next_xray) - new Date())/ (1000 * 60 * 60 * 24))
+            
+            console.log("DAYS TILL NEXT HA/XRAY: ", days_until_ha, "/", days_until_xray)
+
+            const updatedProps = {
+              next_xray: next_xray,
+              days_until_xray: days_until_xray,
+              next_ha: next_ha,
+              days_until_ha: days_until_ha
+            };
+        
+            update = {...x, ...updatedProps}
+
+            console.log("UPDATING INFORMATION (2/3): ", update)
 
             setCloseContactListData(prevData =>
               prevData.map(contact => {
@@ -256,21 +259,51 @@ const CloseContacts = () => {
                       <td>{contact.contact_email}</td>
                       
                       
-                      {/*Display HA information*/}
-                      <td>
-                        {contact.num_ha === null ? "NO RECORD" :
-                          `${contact.latest_ha} (${contact.days_ha})`
-                        }
-                      </td>
+                      {/*Display Next Assessment Information
+                          Logic:
+                            1. If the user is not a patient, show NO RECORD
+                            2. IF the days left until assessment is:
+                              a. 0 < x < 7 -> yellow
+                              b. x < 0     -> red 
+                      */}
 
-                      <td>
-                        {contact.num_xray === null ? "NO RECORD" :
-                          `${contact.latest_xray} (${contact.days_xray})`
-                        }
-                      </td>
-                      
+                      {contact.PatientNo === null ? (
+                          <td>NO RECORD</td>
+                        ) : (
+                          <>
+                            {contact.days_until_ha <= 7 && contact.days_until_ha >= 0 ? (
+                              <td style={{ backgroundColor: "yellow" }}>{contact.next_ha} ASSESSMENT INCOMING</td>
+                            ) : (
+                              <>
+                                {contact.days_until_ha < 0 ? (
+                                  <td style={{ backgroundColor: "red" }}>{contact.next_ha} EXPECTED ASSESSMENT DATE EXCEEDED. CONTACT IMMEDIATELY </td>
+                                ) : (
+                                  <td>{contact.next_ha}</td>
+                                )}
+                              </>
+                            )}
+                          </>
+                        )
+                      }
 
-                      
+                      {contact.PatientNo === null ? (
+                          <td>NO RECORD</td>
+                        ) : (
+                          <>
+                            {contact.days_until_xray <= 7 && contact.days_until_xray >= 0 ? (
+                              <td style={{ backgroundColor: "yellow" }}>{contact.next_xray} ASSESSMENT INCOMING</td>
+                            ) : (
+                              <>
+                                {contact.days_until_xray < 0 ? (
+                                  <td style={{ backgroundColor: "red" }}>{contact.next_xray} EXPECTED ASSESSMENT DATE EXCEEDED. CONTACT IMMEDIATELY</td>
+                                ) : (
+                                  <td>{contact.next_xray}</td>
+                                )}
+                              </>
+                            )}
+                          </>
+                        )
+                      }
                     </tr>
                   ))
                 }

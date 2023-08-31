@@ -64,21 +64,29 @@ function AddCloseContactModal(props) {
     };
 
     
-    useEffect(() => {
-        if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
-          console.log("Similarity Check Condition Triggered");
-          fetchData().then(similarData => {
-            setSimilarPatients(similarData);
-            setShowSimilar(similarData.length > 0);
-          });
-        }
-    }, [formValues]);
+    // useEffect(() => {
+    //     if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
+    //       console.log("Similarity Check Condition Triggered");
+    //       fetchData().then(similarData => {
+    //         setSimilarPatients(similarData);
+    //         setShowSimilar(similarData.length > 0);
+    //       });
+    //     }
+    // }, [formValues]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
         console.log(name, value);
         setFormValues(prev=>({...prev, [name]: value}));
         console.log(formValues.first_name)
+
+        if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
+            console.log("Similarity Check Condition Triggered");
+            fetchData().then(similarData => {
+              setSimilarPatients(similarData);
+              setShowSimilar(similarData.length > 0);
+            });
+        }
     }
 
     const validateForm = () => {
@@ -106,7 +114,8 @@ function AddCloseContactModal(props) {
 
             console.log("SELECTED PATIENT FROM INDEX: ", selectedPatient)
 
-            setFormValues({
+            setFormValues(prevData => ({
+                ...prevData,
                 last_name: selectedPatient.last_name,
                 first_name: selectedPatient.first_name,
                 middle_initial: selectedPatient.middle_initial,
@@ -116,8 +125,8 @@ function AddCloseContactModal(props) {
                 contact_num: selectedPatient.e_contactno,
                 contact_email: selectedPatient.e_email,
                 CaseNo: props.id,
-                PatientNo: selectedPatient.PatientNo
-            });
+                PatientNo: selectedPatient.PatientNo,
+            }));
 
             console.log("UPDATED FORM VALUES FROM SIMILARITY: ", formValues)
         }
