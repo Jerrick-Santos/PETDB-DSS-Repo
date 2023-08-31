@@ -143,7 +143,7 @@ module.exports = (db) => {
 
                 const refno = req.body.case_refno;
 
-                await db.query(q, [values], (err, data) => {
+                db.query(q, [values], (err, data) => {
                     if(err) {
                         return res.json(err)
                     } 
@@ -152,7 +152,7 @@ module.exports = (db) => {
 
                 const secq = "SELECT MAX(PatientNo) AS MaxPatientNo FROM PEDTBDSS_new.TD_PTINFORMATION;"
             
-                await db.query(secq, (err, results) => {
+                db.query(secq, (err, results) => {
                     if (err) {
                         console.log(err);
                         return res.status(500).send("Error querying patient"); 
