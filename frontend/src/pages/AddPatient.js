@@ -1,6 +1,8 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
@@ -15,6 +17,13 @@ const AddPatient = () => {
     const [isCurrentAddressDisabled, setIsCurrentAddressDisabled] = useState(false);
     const [calculatedAge, setCalculatedAge] = useState(null);
     let age = null;
+
+    const [showConsentModal, setShowConsentModal] = useState(true);
+    const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+
+    const handleCloseConsentModal = () => {
+        setShowConsentModal(false);
+    };
 
     const[regionData, setRegionData] = useState([])
 
@@ -258,7 +267,39 @@ const AddPatient = () => {
     <div>
       <NavBar/>
 
-    
+            <Modal show={showConsentModal} onHide={handleCloseConsentModal}  backdrop={ 'static' } size='lg'>
+                <Modal.Header style={{color:'white', backgroundColor: "#0077B6"}}>
+                    <Modal.Title>Privacy Consent Reminder</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p style={{ textAlign: 'justify' }}>Privacy Notice: It has been explained to me that all information collected in this form shall only be used for the purposes
+                    of clinical management, program management, and/or provision of psychosocial and financial support. <br/><br/>If I have any query on or
+                    wish to revoke this authorization, I shall notify the facility head or contact <b>ntp.helpdesk@doh.gov.ph</b> or <b>(02) 8230-9626</b>. <br/><br/>
+                    <span style={{ fontWeight: 'bold', color: 'red' }}>
+                        All information collected shall remain secured and confidential and only authorized personnel shall have access to them.
+                    </span>
+                    </p>
+                    <div className="form-check">
+                        <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="consentCheckbox"
+                            checked={isCheckboxChecked}
+                            onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
+                            required
+                        />
+                        <label className="form-check-label" htmlFor="consentCheckbox">
+                            Patient has signed consent form
+                        </label>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseConsentModal} disabled={!isCheckboxChecked}>
+                        Proceed
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
       {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
       <Row className="mt-5 justify-content-center" >
         <Col lg="9" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
@@ -424,7 +465,14 @@ const AddPatient = () => {
 
             <Row className="mb-2 justify-content-center">
                  <div className="form-group col-md-11">
-                    <p style={{fontSize:"25px"}}> <strong> Current Address  </strong> </p>
+                    <p> <strong style={{fontSize:"25px"}}> Current Address&nbsp;  </strong> <label>
+                        <input
+                            type="checkbox"
+                            checked={isAutoFillActive}
+                            onChange={handleAutoFill}
+                        />
+                        &nbsp;Same as Permanent Address
+                    </label></p>
                 </div>
             </Row>
 
@@ -517,19 +565,6 @@ const AddPatient = () => {
                     <input type="text" class="form-control" id="inputCurrZip" name='curr_zipcode' value={isAutoFillActive ? patient.per_zipcode : patient.curr_zipcode} onChange={handleChange}  placeholder="Zip" disabled={isCurrentAddressDisabled}/>
                 </div>
                 
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-11">
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={isAutoFillActive}
-                            onChange={handleAutoFill}
-                        />
-                        Same as Permanent Address
-                    </label>
-                </div>
             </Row>
 
             <hr/>
