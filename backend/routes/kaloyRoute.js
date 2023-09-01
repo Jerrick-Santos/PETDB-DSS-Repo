@@ -92,7 +92,7 @@ module.exports = (db) => {
 
                 }
             });*/
-            let patientNo = null;
+            /*let patientNo = null;
   
             try {
                 const q = "INSERT INTO TD_PTINFORMATION (`last_name`, `first_name`, `middle_initial`, `age`, `sex`, `birthdate`, `initial_bodyweight`, `initial_height`, `nationality`, `per_houseno`, `per_street`, `per_region`, `per_province`, `per_city`, `per_barangay`, `per_zipcode`, `curr_houseno`, `curr_street`, `curr_region`, `curr_province`, `curr_city`, `curr_barangay`, `curr_zipcode`, `admission_date`, `guardian_name`, `g_relationship`, `g_birthdate`, `g_contactno`, `g_email`, `mother_name`, `m_birthdate`, `m_contactno`, `m_email`, `father_name`, `f_birthdate`, `f_contactno`, `f_email`, `emergency_name`, `e_relationship`, `e_birthdate`, `e_contactno`, `e_email`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -178,7 +178,90 @@ module.exports = (db) => {
             } catch (err) {
                 console.error(err);
                 res.status(500).send("Error adding patient and case");
-            }
+            }*/
+
+            
+                // Insert patient information into the database
+                const insertPatientQuery = `
+                    INSERT INTO TD_PTINFORMATION (
+                        last_name, first_name, middle_initial, age, sex, birthdate, initial_bodyweight, initial_height, nationality, per_houseno, per_street, per_region, per_province, per_city, per_barangay, per_zipcode, curr_houseno, curr_street, curr_region, curr_province, curr_city, curr_barangay, curr_zipcode, admission_date, guardian_name, g_relationship, g_birthdate, g_contactno, g_email, mother_name, m_birthdate, m_contactno, m_email, father_name, f_birthdate, f_contactno, f_email, emergency_name, e_relationship, e_birthdate, e_contactno, e_email
+                    ) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+    
+                const patientValues = [
+                    // ... Populate values based on req.body
+                    req.body.last_name,
+                    req.body.first_name,
+                    req.body.middle_initial,
+                    req.body.age,
+                    req.body.sex,
+                    req.body.birthdate,
+                    req.body.initial_bodyweight,
+                    req.body.initial_height,
+                    req.body.nationality,
+                    req.body.per_houseno,
+                    req.body.per_street,
+                    req.body.per_region,
+                    req.body.per_province,
+                    req.body.per_city,
+                    req.body.per_barangay,
+                    req.body.per_zipcode,
+                    req.body.curr_houseno,
+                    req.body.curr_street,
+                    req.body.curr_region,
+                    req.body.curr_province,
+                    req.body.curr_city,
+                    req.body.curr_barangay,
+                    req.body.curr_zipcode,
+                    req.body.admission_date,
+                    req.body.guardian_name,
+                    req.body.g_relationship,
+                    req.body.g_birthdate,
+                    req.body.g_contactno,
+                    req.body.g_email,
+                    req.body.mother_name,
+                    req.body.m_birthdate,
+                    req.body.m_contactno,
+                    req.body.m_email,
+                    req.body.father_name,
+                    req.body.f_birthdate,
+                    req.body.f_contactno,
+                    req.body.f_email,
+                    req.body.emergency_name,
+                    req.body.e_relationship,
+                    req.body.e_birthdate,
+                    req.body.e_contactno,
+                    req.body.e_email,
+                ];
+    
+                // Retrieve the PatientNo for the inserted patient
+                db.query(insertPatientQuery, patientValues, (err, result) => {
+                    if (err) {
+                        return res.status(500).json(err);
+                    }
+                
+                    // Retrieve the last inserted ID
+                    const patientNo = result.insertId;
+                
+                    // Use patientNo in subsequent queries
+                    const refno = req.body.case_refno;
+                
+                    // Now you can insert data into TD_PTCASE using patientNo
+                    const insertCaseQuery = `
+                        INSERT INTO TD_PTCASE (PatientNo, case_refno, SRNo, start_date, case_status)
+                        VALUES (?, ?, ?, ?, ?)`;
+                
+                    const caseValues = [patientNo, refno, 2, req.body.admission_date, "O"];
+                
+                    db.query(insertCaseQuery, caseValues, (err, caseResult) => {
+                        if (err) {
+                            return res.status(500).json(err);
+                        }
+                        
+                        console.log("Successfully inserted into TD_PTCASE:", caseResult);
+                        return res.json(caseResult);
+                    });
+                });
            
         
     });
