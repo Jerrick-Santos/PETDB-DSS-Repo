@@ -38,7 +38,7 @@ function AddMTBRIFModal(props) {
     const [mtbValues, setMTBValues] = useState({
         CaseNo: props.caseNum,
         HINo: '',
-        issue_date:'',
+        issue_date: new Date().toISOString().split('T')[0],
         test_refno:'',
         TestValue: '',
         validity: 1,
@@ -46,7 +46,7 @@ function AddMTBRIFModal(props) {
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setMTBValues(prev=>({...prev, [name]: value}));
+        setMTBValues((prev)=>({...prev, [name]: value}));
         if (name === 'issue_date') {
             computeValidity();
         }
