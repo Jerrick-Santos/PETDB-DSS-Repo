@@ -10,6 +10,15 @@ function AddMTBRIFModal(props) {
     const [mtbValidity, setMTBValidity] = useState([]);
     const[hiData, setHIData] = useState([])
 
+    const [mtbValues, setMTBValues] = useState({
+            CaseNo: props.caseNum,
+            HINo: '',
+            issue_date: new Date().toISOString().split('T')[0],
+            test_refno:'',
+            TestValue: '',
+            validity: 1,
+    })
+
     useEffect(() => {
 
         axios.get(`http://localhost:4000/api/hiwithtests/2`)
@@ -33,16 +42,9 @@ function AddMTBRIFModal(props) {
           console.error('Error fetchingdata:', error);
         });
     
-    }, []);
+    }, [mtbValues.issue_date, mtbValidity]);
 
-    const [mtbValues, setMTBValues] = useState({
-        CaseNo: props.caseNum,
-        HINo: '',
-        issue_date: new Date().toISOString().split('T')[0],
-        test_refno:'',
-        TestValue: '',
-        validity: 1,
-    })
+    
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -57,19 +59,19 @@ function AddMTBRIFModal(props) {
         const issueDate = new Date(mtbValues.issue_date);
 
         if (mtbValidity.length > 0) {
-        const validityMonths = mtbValidity[0].DGValidityMonths;
-        const validityExpirationDate = new Date(issueDate);
-        validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+            const validityMonths = mtbValidity[0].DGValidityMonths;
+            const validityExpirationDate = new Date(issueDate);
+            validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
 
-        console.log('Today: ', today);
-        console.log('issueDate: ', issueDate);
-        console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+            console.log('Today: ', today);
+            console.log('issueDate: ', issueDate);
+            console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1);
 
-        if (today > validityExpirationDate) {
-            setMTBValues((prev) => ({ ...prev, validity: 0 }));
-        } else {
-            setMTBValues((prev) => ({ ...prev, validity: 1 }));
-        }
+            if (today > validityExpirationDate) {
+                setMTBValues((prev) => ({ ...prev, validity: 0 }));
+            } else {
+                setMTBValues((prev) => ({ ...prev, validity: 1 }));
+            }
         }
     };
 
