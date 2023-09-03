@@ -729,6 +729,9 @@ module.exports = (db) => {
                                     if (resultObject[key] === null) {
                                         resultObject[key] = 0;
                                     }
+                                    else{
+                                        resultObject[key] = (resultObject[key] / diagnosisValues.length) * 100
+                                    }
                                 }
 
                                 console.log(resultObject);
