@@ -14,7 +14,7 @@ import AddHIVTestModal from '../components/AddTSTModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
 import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
-import XrayRecomModal from '../components/XrayRecomModal';
+import ViewMapRecomModal from '../components/ViewMapRecomModal';
 import AssessmentFormNew from '../components/AssessmentPersistence';
 import AssessmentNoPersistence from '../components/AssessmentNoPersistence';
 import AssessmentPersistence from '../components/AssessmentPersistence';

@@ -14,7 +14,7 @@ import AddHIVTestModal from './AddTSTModal';
 import AddMTBRIFModal from './AddMTBRIFModal';
 import AssessmentSummaryModal from './AssessmentSummaryModal';
 import ShowDiagnosisModal from './ShowDiagnosisModal';
-import XrayRecomModal from './XrayRecomModal';
+import ViewMapRecomModal from './ViewMapRecomModal';
 
 const AssessmentFormNoPersistence = () => {
   return (
