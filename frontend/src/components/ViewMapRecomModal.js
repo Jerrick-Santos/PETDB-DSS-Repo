@@ -47,7 +47,7 @@ function ViewMapRecomModal() {
 
 
     // MAP SETTERS
-    const [center, setCenter] = useState({lat: 17.44212, lng: 78.391384});
+    const [center, setCenter] = useState({lat: 14.6091, lng: 121.0223});
     const ZOOM_LEVEL = 15;
     
 
