@@ -1232,6 +1232,95 @@ router.patch('/updatehistatus/:id', (req, res) => {
     );
 });
 
+router.get('/chartdata/:id', (req, res) => {
+    const year = req.params.id;
+    db.query(`
+    SELECT
+    YEAR(dg.DGDate) AS DiagnosisYear,
+    MONTH(dg.DGDate) AS DiagnosisMonth,
+    CASE
+        WHEN dr.diagnosis LIKE '%Presumptive TB%' THEN 'Presumptive TB'
+        WHEN dr.diagnosis LIKE '%Bacteriologically Confirmed - Drug Resistant%' THEN 'Bacteriologically Confirmed - Drug Resistant'
+        WHEN dr.diagnosis LIKE '%Bacteriologically Confirmed - Drug Sensitive%' THEN 'Bacteriologically Confirmed - Drug Sensitive'
+        WHEN dr.diagnosis LIKE '%Clinically Diagnosed TB%' THEN 'Clinically Diagnosed TB'
+        WHEN dr.diagnosis LIKE '%Latent TB%' THEN 'Latent TB'
+        ELSE 'Other'
+    END AS DiagnosisType,
+    SUM(CASE WHEN c.case_status = 'O' AND dr.EPTBpositive = 1 THEN 1 ELSE 0 END) AS OpenCasesWithEPTB,
+    SUM(CASE WHEN c.case_status = 'O' AND dr.EPTBpositive = -1 THEN 1 ELSE 0 END) AS OpenCasesWithoutEPTB,
+    SUM(CASE WHEN c.case_status = 'C' AND c.SRNo = 1 THEN 1 ELSE 0 END) AS ClosedCasesWithSRNo1,
+    SUM(CASE WHEN c.case_status = 'C' AND c.SRNo = 3 THEN 1 ELSE 0 END) AS ClosedCasesWithSRNo3,
+    SUM(CASE WHEN c.case_status = 'C' AND c.SRNo = 4 THEN 1 ELSE 0 END) AS ClosedCasesWithSRNo4,
+    SUM(CASE WHEN c.case_status = 'C' AND c.SRNo = 5 THEN 1 ELSE 0 END) AS ClosedCasesWithSRNo5
+FROM PEDTBDSS_new.TD_PTDIAGNOSIS dg
+JOIN PEDTBDSS_new.MD_DIAGNOSISRULES dr ON dg.RuleNo = dr.RuleNo
+JOIN PEDTBDSS_new.TD_PTCASE c ON dg.CaseNo = c.CaseNo
+WHERE (c.case_refno, dg.DGNO) IN (
+    SELECT c1.case_refno, MAX(d1.DGNO)
+    FROM PEDTBDSS_new.TD_PTDIAGNOSIS d1
+    JOIN PEDTBDSS_new.TD_PTCASE c1 ON d1.CaseNo = c1.CaseNo
+    GROUP BY c1.case_refno
+)
+AND YEAR(dg.DGDate) =  ${year}
+GROUP BY YEAR(dg.DGDate), MONTH(dg.DGDate), DiagnosisType
+ORDER BY DiagnosisMonth, DiagnosisType;
+
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+});
+})
+
+router.get('/chartyear', (req, res) => {
+    const year = req.params.id;
+    db.query(`
+    SELECT DISTINCT dy.DiagnosisYear 
+    FROM(SELECT
+       YEAR(dg.DGDate) AS DiagnosisYear,
+       MONTH(dg.DGDate) AS DiagnosisMonth,
+       CASE
+           WHEN dr.diagnosis LIKE '%Presumptive TB%' THEN 'Presumptive TB'
+           WHEN dr.diagnosis LIKE '%Bacteriologically Confirmed - Drug Resistant%' THEN 'Bacteriologically Confirmed - Drug Resistant'
+           WHEN dr.diagnosis LIKE '%Bacteriologically Confirmed - Drug Sensitive%' THEN 'Bacteriologically Confirmed - Drug Sensitive'
+           WHEN dr.diagnosis LIKE '%Clinically Diagnosed TB%' THEN 'Clinically Diagnosed TB'
+           WHEN dr.diagnosis LIKE '%Latent TB%' THEN 'Latent TB'
+           ELSE 'Other'
+       END AS DiagnosisType,
+       SUM(CASE WHEN c.case_status = 'O' AND dr.EPTBpositive = 1 THEN 1 ELSE 0 END) AS OpenCasesWithEPTB,
+       SUM(CASE WHEN c.case_status = 'O' AND dr.EPTBpositive = -1 THEN 1 ELSE 0 END) AS OpenCasesWithoutEPTB,
+       SUM(CASE WHEN c.case_status = 'C' AND c.SRNo = 1 THEN 1 ELSE 0 END) AS ClosedCasesWithSRNo1,
+       SUM(CASE WHEN c.case_status = 'C' AND c.SRNo = 3 THEN 1 ELSE 0 END) AS ClosedCasesWithSRNo3,
+       SUM(CASE WHEN c.case_status = 'C' AND c.SRNo = 4 THEN 1 ELSE 0 END) AS ClosedCasesWithSRNo4,
+       SUM(CASE WHEN c.case_status = 'C' AND c.SRNo = 5 THEN 1 ELSE 0 END) AS ClosedCasesWithSRNo5
+   FROM PEDTBDSS_new.TD_PTDIAGNOSIS dg
+   JOIN PEDTBDSS_new.MD_DIAGNOSISRULES dr ON dg.RuleNo = dr.RuleNo
+   JOIN PEDTBDSS_new.TD_PTCASE c ON dg.CaseNo = c.CaseNo
+   WHERE (c.case_refno, dg.DGNO) IN (
+       SELECT c1.case_refno, MAX(d1.DGNO)
+       FROM PEDTBDSS_new.TD_PTDIAGNOSIS d1
+       JOIN PEDTBDSS_new.TD_PTCASE c1 ON d1.CaseNo = c1.CaseNo
+       GROUP BY c1.case_refno
+   )
+   GROUP BY YEAR(dg.DGDate), MONTH(dg.DGDate), DiagnosisType
+   ORDER BY DiagnosisMonth, DiagnosisType) dy;
+
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+});
+})
 
   
 

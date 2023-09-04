@@ -13,6 +13,7 @@ import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import PresumptiveTBModal from '../components/PresumptiveTBModal';
+import XrayRecomModal from '../components/XrayRecomModal';
 import LatentTBModal from '../components/LatentTBModal';
 import CaseHeader from '../components/CaseHeader'
 
@@ -167,6 +168,11 @@ const Diagnosis = () => {
               >
                 Diagnose TB Status
               </button>
+              
+            </Col>
+
+            <Col lg="11" className="d-flex justify-content-center">
+              <XrayRecomModal/>
               
             </Col>
             
