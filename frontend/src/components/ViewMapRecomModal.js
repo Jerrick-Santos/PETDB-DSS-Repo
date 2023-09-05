@@ -6,7 +6,7 @@ import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import  MarkerClusterGroup  from "react-leaflet-markercluster";
 import localforage from 'localforage';
-import 'leaflet.offline';
+import { MBTiles } from 'leaflet.offline';
 import L, { Map } from "leaflet";
 
 
@@ -17,33 +17,43 @@ function ViewMapRecomModal() {
     // const position = [this.state.lat, this.state.lng];
     const mapRef = useRef()
     // OFFLINE MAP
-    useEffect(() => {
-        if(mapRef.current){
+    // useEffect(() => {
+    //     if(mapRef.current){
             
-            const map = mapRef.current.getLeafletElement();
-          // @ts-ignore
-          const tileLayerOffline = L.tileLayer.offline(
-            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            {
-              attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-              minZoom: 13,
-            }
-          );
+    //         const map = mapRef.current.getLeafletElement();
+    //       // @ts-ignore
+    //       const tileLayerOffline = L.tileLayer.offline(
+    //         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    //         {
+    //           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    //           minZoom: 13,
+    //         }
+    //       );
       
-          tileLayerOffline.addTo(map);
+    //       tileLayerOffline.addTo(map);
       
-          // @ts-ignore
-          const controlSaveTiles = L.control.savetiles(
-            tileLayerOffline, 
-            {
-              zoomlevels: [13, 14, 15, 16], // optional zoomlevels to save, default current zoomlevel
-            }
-          );
+    //       // @ts-ignore
+    //       const controlSaveTiles = L.control.savetiles(
+    //         tileLayerOffline, 
+    //         {
+    //           zoomlevels: [13, 14, 15, 16], // optional zoomlevels to save, default current zoomlevel
+    //         }
+    //       );
       
-          controlSaveTiles.addTo(map);
-          console.log("MAP SUCCESSFULLY OFFLINE")
-        }
-    }, [mapRef]);
+    //       controlSaveTiles.addTo(map);
+    //       console.log("MAP SUCCESSFULLY OFFLINE")
+    //     }
+    // }, [mapRef]);
+
+    useEffect(() => {
+      if(mapRef.current){
+        const map = mapRef.current.getLeafletElement();
+        let mbtiles = new MBTiles('../assets/osm-2020-02-10-v3.11_asia_philippines.mbtiles', {});
+        let tileLayer = L.tileLayer.offline(mbtiles);
+        tileLayer.addTo(map)
+        L.control.savetiles(tileLayer).addTo(map);
+      }
+    }, [mapRef])
 
 
     // MAP SETTERS
