@@ -89,7 +89,7 @@ function AddIGRAModal(props) {
   return (
         <>
 
-        <button className="btn" onClick={handleShow}> Add IGRA </button>
+        <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleShow}> Add IGRA </button>
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>

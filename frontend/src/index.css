@@ -136,4 +136,7 @@ max-width: 60px;
 
 }
 
-
+.leaflet-container {
+  height: 600px;
+  width: 100%;
+}
