@@ -20,6 +20,7 @@ const AddPatient = () => {
 
     const [showConsentModal, setShowConsentModal] = useState(true);
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const handleCloseConsentModal = () => {
         setShowConsentModal(false);
@@ -428,6 +429,7 @@ const AddPatient = () => {
                 age: calculatedAge
             };
             await axios.post("http://localhost:4000/api/newpatient", patientData)
+            setShowSuccessModal(true);
         }catch(err){
             console.log(err)
         }
@@ -918,6 +920,21 @@ const AddPatient = () => {
           </div>
             </form>
 
+            <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+                <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}} closeButton>
+                    <Modal.Title>Patient Added!</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    Patient added successfully.
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>
+                    Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
       </Col>
     </Row>
