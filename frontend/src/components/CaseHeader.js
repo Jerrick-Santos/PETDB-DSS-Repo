@@ -6,6 +6,7 @@ import NavBar from '../components/NavBar';
 import axios from 'axios';
 import user from '../assets/user.png';
 import Badge from 'react-bootstrap/Badge';
+import CloseCaseModal from './CloseCaseModal';
 
 const CaseHeader = (props) => {
 
@@ -39,7 +40,8 @@ const CaseHeader = (props) => {
                 </Row>
 
                 <Row>
-                  <Col><Badge bg="secondary">Case End Date:</Badge> {patientData.end_date === null ? " --" : new Date(patientData.end_date).toLocaleDateString().replaceAll("/", "-")}</Col>
+                  <Col><Badge bg="secondary">Case End Date:</Badge> <CloseCaseModal />
+                  </Col>
                 </Row>
 
                 <Row>
