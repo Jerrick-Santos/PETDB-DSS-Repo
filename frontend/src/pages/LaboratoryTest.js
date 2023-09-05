@@ -166,10 +166,10 @@ const LaboratoryTest = () => {
     </Row>
     <Row className="justify-content-center">
   <Col lg="10" style={{ color: '#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-    <AddTSTModal caseNum={caseNum} />
-    <AddMTBRIFModal caseNum={caseNum} />
-    <AddXrayModal caseNum={caseNum} />
-    <AddIGRAModal caseNum={caseNum} />
+   
+    
+    
+    
     <CaseHeader caseNum={caseNum} />
 
     <hr />
@@ -190,6 +190,7 @@ const LaboratoryTest = () => {
       <Row className="justify-content-center">
       <Col lg="8">
       <p> <strong> XRay Tests </strong> </p>
+      
         <Card className="mb-4">
           <Card.Body>
             <Row>
@@ -239,6 +240,7 @@ const LaboratoryTest = () => {
           
           </Card.Body>
         </Card>
+        <AddXrayModal caseNum={caseNum} />
       </Col>
       <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange1(activePage1 - 1)} disabled={activePage1 === 1} />
@@ -301,7 +303,7 @@ const LaboratoryTest = () => {
                     ))}
           </Card.Body>
         </Card>
-       
+        <AddMTBRIFModal caseNum={caseNum} />
       </Col>
       <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange2(activePage2 - 1)} disabled={activePage2 === 1} />
@@ -364,7 +366,7 @@ const LaboratoryTest = () => {
                     ))}
           </Card.Body>
         </Card>
-       
+        <AddTSTModal caseNum={caseNum} />
       </Col>
       <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange3(activePage3 - 1)} disabled={activePage3 === 1} />
@@ -428,7 +430,7 @@ const LaboratoryTest = () => {
                     ))}
           </Card.Body>
         </Card>
-       
+        <AddIGRAModal caseNum={caseNum} />
       </Col>
       <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange4(activePage4 - 1)} disabled={activePage4 === 1} />

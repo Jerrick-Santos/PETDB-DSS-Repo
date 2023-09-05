@@ -1,6 +1,6 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col,ListGroup } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
 import user from '../assets/user.png';
@@ -16,6 +16,8 @@ import PresumptiveTBModal from '../components/PresumptiveTBModal';
 import XrayRecomModal from '../components/XrayRecomModal';
 import LatentTBModal from '../components/LatentTBModal';
 import CaseHeader from '../components/CaseHeader'
+import Badge from 'react-bootstrap/Badge';
+import Pagination from 'react-bootstrap/Pagination';
 
 
 const Diagnosis = () => {
@@ -30,6 +32,20 @@ const Diagnosis = () => {
   const [latentData, setLatentData] = useState();
   const [isLoading, setIsLoading] = useState(false); // To manage loading state
   const [patientData, setPatientData] = useState([]);
+  const [reload, setReload] = useState(false);
+
+      // Add these state variables
+const [activePage, setActivePage] = useState(1); // Active page number
+const itemsPerPage = 1; // Number of items per page
+
+// Function to handle page change
+const handlePageChange = (pageNumber) => {
+  setActivePage(pageNumber);
+};
+
+// Calculate the index range for the current page
+const startIndex = (activePage - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
 
   const handleButtonClick = async () => {
     setIsLoading(true);
@@ -77,6 +93,8 @@ const Diagnosis = () => {
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
+      setReload(!reload);
+      setActivePage(1);
     }
   };
   
@@ -88,7 +106,7 @@ const Diagnosis = () => {
       .catch(error => {
         console.error('Error fetching patients:', error);
       });
-  }, []);
+  }, [reload]);
 
   useEffect(() => {
     axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
@@ -176,60 +194,131 @@ const Diagnosis = () => {
               
             </Col>
             
-            <Col lg="11">
-            <hr/>
-            <table className="table caption-top bg-white rounded mt-3">
-        <caption className=' fs-4'>Diagnosis Records</caption>
-        <thead>
-                    <tr>
-                        <th scope="col">Date Diagnosed</th>    
-                        <th scope="col">TB Status</th>
-                        <th scope="col">Diagnosis</th>
-                        <th scope="col">EPTB?</th>
-                        <th scope="col">Further Evaluation Required</th>
-                        <th scope="col">Request HIV Test</th>
-                        <th scope="col">Request XRAY</th>
-                        <th scope="col">Request MTB/RIF</th>
-                        <th scope="col">Request TST</th>
-                        <th scope="col">Request IGRA</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {diagnosisData.map((diagnosis, index) => (
-                    <tr key={index}>
-                        {/* DATE DIAGNOSED */}
-                        <td>{new Date(diagnosis.DGDate).toLocaleDateString()}</td>
-                        {/* TB STATUS */}
-                        <td>
-                        {diagnosis.confirmed_tb === 1 ? "CONFIRMED" :
-                        diagnosis.presumptive_tb === 1 ? "PRESUMPTIVE" :
-                        diagnosis.latent_tb === 1 ? "LATENT" :
-                        diagnosis.no_tb === 1 ? "NO TB":
-                        "NONE"}
-                        </td>
-                        {/* DIAGNOSIS */}
-                        <td>{diagnosis.diagnosis}</td>
-                        {/* EPTB */}
-                        <td>
-                          {
-                            diagnosis.EPTBpositive === 1 ? "YES": "NO"
-                          }
-                        </td>
+            <Col className="mb-4" lg="11">
 
-                        {/* Further Evaluation Required */}
-                        <td>
-                        {diagnosis.need_eval === 1 ? "YES" :"NO"}
-                        </td>
-                        {/* Request HIV Test */}
-                        <td>{diagnosis.need_hiv === 1 ? "YES" : "NO"}</td>
-                        <td>{diagnosis.need_xray === 1 ? "YES" : "NO"}</td>
-                        <td>{diagnosis.need_mtb === 1 ? "YES" : "NO"}</td>
-                        <td>{diagnosis.need_tst === 1 ? "YES" : "NO"}</td>
-                        <td>{diagnosis.need_igra === 1 ? "YES" : "NO"}</td>
-                    </tr>
+            {diagnosisData.slice(startIndex, endIndex).map((diagnosis, index) => (
+              <>
+              <hr/>
+                <Row>
+                <Col lg="2"> 
+                  <Badge bg="secondary"> Date Diagnosed: </Badge> 
+                </Col>
+                <Col lg="2"> 
+                   <strong> {new Date(diagnosis.DGDate).toLocaleDateString()}</strong>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col lg="2"> 
+                  <Badge bg="secondary"> TB Status: </Badge> 
+                </Col>
+                <Col lg="8"> 
+                
+                        {diagnosis.confirmed_tb === 1 ? "Confirmed" :
+                        diagnosis.presumptive_tb === 1 ? "Presumptive" :
+                        diagnosis.latent_tb === 1 ? "Latent" :
+                        diagnosis.no_tb === 1 ? "NO TB":
+                        "None"} 
+                </Col>
+              </Row>
+
+              <Row>
+                <Col lg="2"> 
+                  <Badge bg="secondary"> Diagnosis: </Badge> 
+                </Col>
+                <Col lg="8"> 
+                  <strong>
+                    
+                  {(diagnosis.diagnosis.includes("Resistant") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed - Drug Resistant TB" :
+                (diagnosis.diagnosis.includes("Resistant") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed - Drug Resistant TB" :
+                (diagnosis.diagnosis.includes("Sensitive") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed - Drug Sensitive TB" :
+                (diagnosis.diagnosis.includes("Sensitive") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed - Drug Sensitive TB" :
+                (diagnosis.diagnosis.includes("Clinical") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Clinically Diagnosed TB" :
+                (diagnosis.diagnosis.includes("Clinical") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Clinically Diagnosed TB" :  
+                diagnosis.diagnosis.includes("Presumptive") ? "Presumptive Tuberculosis" : 
+                diagnosis.diagnosis.includes("Latent") ? "Latent Tuberculosis" : 
+                        "NONE"} </strong>
+                </Col>
+              </Row>
+
+        <Row className="mt-4">
+
+       
+            <Col style={{fontSize:"18px"}}> {(diagnosis.need_eval === 1) ? "The following tests are needed for further evaluation:" :
+                        "No further evaluation is needed"} </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"20px"}}>
+              <strong>
+              {(diagnosis.need_hiv === 1) ? "HIV Test" : ""}
+              </strong>
+            
+             </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"20px"}}>
+            <strong>
+            {(diagnosis.need_xray === 1) ? "Xray" : ""}
+              </strong>
+            
+             </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"20px"}}>
+            <strong>
+            {(diagnosis.need_mtb === 1) ? "MTB/RIF" : ""}
+              </strong>
+            
+            
+             </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"20px"}}>
+            
+            <strong>
+            {(diagnosis.need_tst === 1) ? "TST Test" : ""}
+              </strong>
+            
+             </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"20px"}}>
+            <strong>
+            {(diagnosis.need_igra === 1) ? "IGRA Test" : ""}
+              </strong>
+          
+             </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"18px"}}> Please advice patient and parent to avoid close contact to contain the spread of TB.</Col>
+        </Row>
+
+        
+
+                   </>
                     ))}
-                </tbody>
-            </table>
+             
+       
+        
+            
+             {diagnosisData.length > 0 && (
+  <Pagination className="mt-3 justify-content-center">
+    <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
+    {Array.from({ length: Math.ceil(diagnosisData.length / itemsPerPage) }).map((_, index) => (
+      <Pagination.Item key={index} active={index + 1 === activePage} onClick={() => handlePageChange(index + 1)}>
+        {index + 1}
+      </Pagination.Item>
+    ))}
+    <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(diagnosisData.length / itemsPerPage)} />
+  </Pagination>
+)}
+
 
 
             </Col>

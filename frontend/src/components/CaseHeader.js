@@ -5,7 +5,7 @@ import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
 import user from '../assets/user.png';
-
+import Badge from 'react-bootstrap/Badge';
 
 const CaseHeader = (props) => {
 
@@ -27,28 +27,26 @@ const CaseHeader = (props) => {
         <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
             <Col className="ms-5" lg="12">
                 <Row>
-                    <Col><strong>Case No:</strong> {patientData.case_refno}</Col>
+                    <Col><Badge bg="secondary">Case No: </Badge> {patientData.case_refno} </Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Patient Name:</strong> <Link to={`/patient/${patientData.PatientNo}`}><u style={{ color:'black'}}>{patientData.patient_name} </u></Link></Col>
+                    <Col><Badge bg="secondary">Patient Name: </Badge> <Link to={`/patient/${patientData.PatientNo}`}><u style={{ color:'black'}}>{patientData.patient_name} </u></Link></Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Case Start Date:</strong> {new Date(patientData.start_date).toLocaleDateString().replaceAll("/", "-")}</Col>
+                     <Col><Badge bg="secondary">Case Start Date:</Badge> {new Date(patientData.start_date).toLocaleDateString().replaceAll("/", "-")}</Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Case End Date:</strong> {patientData.end_date === null ? " --" : new Date(patientData.end_date).toLocaleDateString().replaceAll("/", "-")}</Col>
+                  <Col><Badge bg="secondary">Case End Date:</Badge> {patientData.end_date === null ? " --" : new Date(patientData.end_date).toLocaleDateString().replaceAll("/", "-")}</Col>
                 </Row>
 
                 <Row>
-                    <Col><strong>Case Status:</strong> {patientData.case_status === "C" ? "Closed" : "Ongoing"} </Col>
+                <Col><Badge bg="secondary">Case Status:</Badge> {patientData.case_status === "C" ? "Closed" : "Ongoing"}</Col>
                 </Row>
 
-                <Row>
-                    <Col><strong>Presumptive ID:</strong> {patientData.presumptive_id === null ? "--" : patientData.presumptive_id}</Col>
-                </Row>
+               
             </Col>
         </Row>
     )

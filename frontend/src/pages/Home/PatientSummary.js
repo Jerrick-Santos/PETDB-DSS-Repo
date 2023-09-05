@@ -979,7 +979,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
             </Col>
 
     </Row>
-    
+    <Row className="mb-3 mt-4 justify-content-center">
     <div className='col-md-2 p-1'>
       <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>
         <div>
@@ -1031,6 +1031,8 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
       </div>
       </Link>
     </div>
+    </Row>
+    <Row className="mb-3 mt-4 justify-content-center">
 
                     <PieChart width={450} height={400}  className="justify-content-center me-1" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '2px', borderStyle: 'solid', borderRadius: '20px' }}>
                     <Pie
@@ -1083,6 +1085,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         </LineChart>
                 
             </div>
+            </Row>
   </div>
  
 </div>

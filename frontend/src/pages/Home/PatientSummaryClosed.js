@@ -730,57 +730,57 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
      {/* Showing 4 summary cards which will have a clickable function that affects the overall patient table
         once backend has been implemented*/}
   <div className='container-fluid justify-content-center'>
-  <div className='row g-3 my-2 justify-content-center'>
 
-  <Row >
+  <Row className="mb-3 mt-4 justify-content-center">
     
             
-    <Col md="2" className="mt-4 me-4">
+            <Col md="8" className="me-4">
+                  
+                  <div
+            className="mt-3 input-group"
+            style={{
+              maxWidth: '290px',
+              display: 'flex',
+              backgroundColor: '#0077B6',
+              borderRadius: '6px', // Adding borderRadius for rounding the outer div
+              overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: '#0077B6',
+                width: '30px',
+                height: '100%',
+              }}
+            >
+              <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+            </div>
+            <select
+              className="form-select"
+              onChange={(e) => {
+                resetAllVariables(); // Call the resetAllVariables function before updating currentYear
+                setCurrentYear(e.target.value);
+              }}
+            >
+
+              {years.map((data, index) => (
+                <>
+                    <option value={data.DiagnosisYear}>{data.DiagnosisYear}</option>
+
+                    </>
+                  ))}
+              
           
-          <div
-    className="mt-3 input-group"
-    style={{
-      maxWidth: '290px',
-      display: 'flex',
-      backgroundColor: '#0077B6',
-      borderRadius: '6px', // Adding borderRadius for rounding the outer div
-      overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
-    }}
-  >
-    <div
-      style={{
-        backgroundColor: '#0077B6',
-        width: '30px',
-        height: '100%',
-      }}
-    >
-      <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
-    </div>
-    <select
-      className="form-select"
-      onChange={(e) => {
-        resetAllVariables(); // Call the resetAllVariables function before updating currentYear
-        setCurrentYear(e.target.value);
-      }}
-    >
+              {/* Add more cities as needed */}
+            </select>
+          </div>
 
-      {years.map((data, index) => (
-        <>
-            <option value={data.DiagnosisYear}>{data.DiagnosisYear}</option>
+            </Col>
+        
 
-            </>
-          ))}
-      
-  
-      {/* Add more cities as needed */}
-    </select>
-  </div>
-
-    </Col>
-    
-
-</Row>
-    <div className='col-md-3 p-1'>
+    </Row>
+<Row className='row g-3 my-2 justify-content-center'>
+    <div className='col-md-2 p-1'>
       <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[0].value}</h3>
@@ -789,7 +789,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>
     </div>
-    <div className='col-md-3 p-1'>
+    <div className='col-md-2 p-1'>
     <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[1], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[1].value}</h3>
@@ -798,7 +798,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>
     </div>
-    <div className='col-md-3 p-1'>
+    <div className='col-md-2 p-1'>
       <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[2], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[2].value}</h3>
@@ -807,7 +807,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>
     </div>
-    <div className='col-md-3 p-1'>
+    <div className='col-md-2 p-1'>
       <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[3], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[3].value}</h3>
@@ -816,6 +816,8 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>
     </div>
+    </Row>
+    <Row className='row g-3 my-2 justify-content-center'>
     
                     <PieChart width={450} height={400}  className="justify-content-center me-1" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '2px', borderStyle: 'solid', borderRadius: '20px' }}>
                     <Pie
@@ -868,7 +870,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         </LineChart>
                 
             </div>
-  </div>
+            </Row>
  
 </div>
 
