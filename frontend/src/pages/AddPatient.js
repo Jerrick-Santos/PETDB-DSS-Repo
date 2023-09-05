@@ -213,6 +213,171 @@ const AddPatient = () => {
         }
     };
 
+    const [firstNameError, setFirstNameError] = useState('');
+    const [middleNameError, setMiddleNameError] = useState('');
+    const [lastNameError, setLastNameError] = useState('');
+    const [birthdateError, setBirthdateError] = useState('');
+    const [sexError, setSexError] = useState('');
+    const [nationalityError, setNationalityError] = useState('');
+    const [bodyWeightError, setBodyWeightError] = useState('');
+    const [heightError, setHeightError] = useState('');
+    const [permHouseError, setPermHouseError] = useState('');
+    const [permStreetError, setPermStreetError] = useState('');
+    const [permRegionError, setPermRegionError] = useState('');
+    const [permProvinceError, setPermProvinceError] = useState('');
+    const [permCityError, setPermCityError] = useState('');
+    const [permBarangayError, setPermBarangayError] = useState('');
+    const [permZipError, setPermZipError] = useState('');
+    const [currHouseError, setCurrHouseError] = useState('');
+    const [currStreetError, setCurrStreetError] = useState('');
+    const [currRegionError, setCurrRegionError] = useState('');
+    const [currProvinceError, setCurrProvinceError] = useState('');
+    const [currCityError, setCurrCityError] = useState('');
+    const [currBarangayError, setCurrBarangayError] = useState('');
+    const [currZipError, setCurrZipError] = useState('');
+
+    const validate = () => {
+        let firstNameError = '';
+        if (!patient.first_name) {
+            firstNameError = 'First name is required';
+        }
+        setFirstNameError(firstNameError);
+
+        let middleNameError = '';
+        if (!patient.middle_initial) {
+            middleNameError = 'Middle name is required';
+        }
+        setMiddleNameError(middleNameError);
+
+        let lastNameError = '';
+        if (!patient.last_name) {
+            lastNameError = 'Last name is required';
+        }
+        setLastNameError(lastNameError);        
+
+        let birthdateError = '';
+        if (!patient.birthdate) {
+            birthdateError = 'Birthdate is required';
+        }
+        setBirthdateError(birthdateError);
+
+        let sexError = '';
+        if (!patient.sex) {
+            sexError = 'Sex is required';
+        }
+        setSexError(sexError);
+
+        let nationalityError = '';
+        if (!patient.nationality) {
+            nationalityError = 'Nationality is required';
+        }
+        setNationalityError(nationalityError);
+
+        let bodyWeightError = '';
+        if (!patient.initial_bodyweight) {
+            bodyWeightError = 'Body Weight is required';
+        }
+        setBodyWeightError(bodyWeightError);
+    
+        let heightError = '';
+        if (!patient.initial_height) {
+            heightError = 'Height is required';
+        }
+        setHeightError(heightError);
+
+        // PERMANENT ADDRESS
+        let permHouseError = '';
+        if (!patient.per_houseno) {
+            permHouseError = 'Required';
+        }
+        setPermHouseError(permHouseError);
+
+        let permStreetError = '';
+        if (!patient.per_street) {
+            permStreetError = 'Required';
+        }
+        setPermStreetError(permStreetError);
+
+        let permRegionError = '';
+        if (!patient.per_region) {
+            permRegionError = 'Required';
+        }
+        setPermRegionError(permRegionError);
+
+        let permProvinceError = '';
+        if (!patient.per_province) {
+            permProvinceError = 'Required';
+        }
+        setPermProvinceError(permProvinceError);
+
+        let permCityError = '';
+        if (!patient.per_city) {
+            permCityError = 'Required';
+        }
+        setPermCityError(permCityError);
+
+        let permBarangayError = '';
+        if (!patient.per_barangay) {
+            permBarangayError = 'Required';
+        }
+        setPermBarangayError(permBarangayError);
+
+        let permZipError = '';
+        if (!patient.per_zipcode) {
+            permZipError = 'Required';
+        }
+        setPermZipError(permZipError);
+
+        // CURRENT ADDRESS
+        let currHouseError = '';
+        if (!patient.curr_houseno) {
+            currHouseError = 'Required';
+        }
+        setCurrHouseError(currHouseError);
+
+        let currStreetError = '';
+        if (!patient.curr_street) {
+            currStreetError = 'Required';
+        }
+        setCurrStreetError(currStreetError);
+
+        let currRegionError = '';
+        if (!patient.curr_region) {
+            currRegionError = 'Required';
+        }
+        setCurrRegionError(currRegionError);
+
+        let currProvinceError = '';
+        if (!patient.curr_province) {
+            currProvinceError = 'Required';
+        }
+        setCurrProvinceError(currProvinceError);
+
+        let currCityError = '';
+        if (!patient.curr_city) {
+            currCityError = 'Required';
+        }
+        setCurrCityError(currCityError);
+
+        let currBarangayError = '';
+        if (!patient.curr_barangay) {
+            currBarangayError = 'Required';
+        }
+        setCurrBarangayError(currBarangayError);
+
+        let currZipError = '';
+        if (!patient.curr_zipcode) {
+            currZipError = 'Required';
+        }
+        setCurrZipError(currZipError);
+
+        if (firstNameError || middleNameError || lastNameError || birthdateError || sexError || nationalityError || bodyWeightError || heightError || permHouseError || permStreetError || permRegionError || permProvinceError || permCityError || permBarangayError || permZipError || currHouseError || currStreetError || currRegionError || currProvinceError || currCityError || currBarangayError || currZipError) {
+            return false;
+        }
+
+        return true;
+    }
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         let newValue = value;
@@ -251,6 +416,12 @@ const AddPatient = () => {
 
     const handleClick = async e => {
         e.preventDefault()
+
+        const isValid = validate();
+        if(!isValid) {
+            return;
+        }
+
         try{
             const patientData = {
                 ...patient,
@@ -314,25 +485,37 @@ const AddPatient = () => {
             
       
             <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-5">
+                <div className="form-group col-md-4">
                     <label for="inputFirstName">First Name</label>
                     <input type="text" class="form-control" id="inputFirstName" name='first_name' onChange={handleChange} placeholder="First Name"/>
+                    {firstNameError && (
+                        <p style={{color: 'red'}}>{firstNameError}</p>  
+                    )}
                 </div>
 
-                <div className="form-group col-md-2">
+                <div className="form-group col-md-3">
                     <label for="inputMI">Middle Name</label>
                     <input type="text" class="form-control" id="inputMI" name='middle_initial' onChange={handleChange} placeholder="Middle Name"/>
+                    {middleNameError && (
+                        <p style={{color: 'red'}}>{middleNameError}</p>
+                    )}
                 </div>
 
                 <div className="form-group col-md-4">
                     <label for="inputLastName">Last Name</label>
                     <input type="text" class="form-control" id="inputLastName" name='last_name' onChange={handleChange} placeholder="Last Name"/>
+                    {lastNameError && (
+                        <p style={{color: 'red'}}>{lastNameError}</p>
+                    )}
                 </div>
               </Row>
               <Row className="mb-5 justify-content-center">
                 <div className="form-group col-md-2">
                     <label for="inputBirthdate">Birthdate</label>
                     <input type="date" class="form-control" id="inputBirthdate" name='birthdate' onChange={handleChange} />
+                    {birthdateError && (
+                        <p style={{color: 'red'}}>{birthdateError}</p>
+                    )}
                 </div>
                 
                 <div className="form-group col-md-2">
@@ -342,6 +525,9 @@ const AddPatient = () => {
                     <option value="M" >Male</option>
                     <option value="F" >Female</option>
                 </select>
+                    {sexError && (
+                        <p style={{color: 'red'}}>{sexError}</p>
+                    )}
                 </div>
 
                 <div className="form-group col-md-1">
@@ -352,16 +538,25 @@ const AddPatient = () => {
                 <div className="form-group col-md-2">
                     <label for="inputNationality">Nationality</label>
                     <input type="text" class="form-control" id="inputNationality"  name='nationality' onChange={handleChange} placeholder="Nationality"/>
+                    {nationalityError && (
+                        <p style={{color: 'red'}}>{nationalityError}</p>
+                    )}
                 </div>
                 
                 <div className="form-group col-md-2">
                     <label for="inputWeight">Body Weight</label>
                     <input type="number" class="form-control" id="inputWeight"  name='initial_bodyweight' onChange={handleChange} placeholder="Weight (kg)"/> 
+                    {bodyWeightError && (
+                        <p style={{color: 'red'}}>{bodyWeightError}</p>
+                    )}
                 </div>
                 
                 <div className="form-group col-md-2">
                     <label for="inputHeight">Height</label>
                     <input type="number" class="form-control" id="inputHeight"  name='initial_height' onChange={handleChange} placeholder="Height (cm)"/>
+                    {heightError && (
+                        <p style={{color: 'red'}}>{heightError}</p>
+                    )}
                 </div>
             </Row>
             <hr/>
@@ -376,11 +571,17 @@ const AddPatient = () => {
                 <div class="form-group col-md-1">
                     <label for="inputPermHouseNo">House #</label>
                     <input type="text" class="form-control" id="inputPermHouseNo" name='per_houseno' onChange={handleChange}  placeholder="House No."/>
+                    {permHouseError && (
+                        <p style={{color: 'red'}}>{permHouseError}</p>  
+                    )}
                 </div>
                 
                 <div class="form-group col-md-1">
                     <label for="inputPermStreet">Street</label>
                     <input type="text" class="form-control" id="inputPermStreet" name='per_street' onChange={handleChange}  placeholder="Street"/>
+                    {permStreetError && (
+                        <p style={{color: 'red'}}>{permStreetError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-2">
@@ -400,6 +601,9 @@ const AddPatient = () => {
         
 
                     </select>
+                    {permRegionError && (
+                        <p style={{color: 'red'}}>{permRegionError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-2">
@@ -419,6 +623,9 @@ const AddPatient = () => {
         
 
                     </select>
+                    {permProvinceError && (
+                        <p style={{color: 'red'}}>{permProvinceError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-2">
@@ -438,6 +645,9 @@ const AddPatient = () => {
         
 
                     </select>
+                    {permCityError && (
+                        <p style={{color: 'red'}}>{permCityError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-2">
@@ -454,11 +664,17 @@ const AddPatient = () => {
         
 
                     </select>
+                    {permBarangayError && (
+                        <p style={{color: 'red'}}>{permBarangayError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-1">
                     <label for="inputPermZip">Zip Code</label>
                     <input type="text" class="form-control" id="inputPermZip" name='per_zipcode' onChange={handleChange}  placeholder="Zip"/>
+                    {permZipError && (
+                        <p style={{color: 'red'}}>{permZipError}</p>  
+                    )}
                 </div>
                 
             </Row>
@@ -480,11 +696,17 @@ const AddPatient = () => {
             <div class="form-group col-md-1">
                     <label for="inputCurrHouseNo">House #</label>
                     <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' value={isAutoFillActive ? patient.per_houseno : patient.curr_houseno} onChange={handleChange}  placeholder="House No." disabled={isCurrentAddressDisabled}/>
+                    {currHouseError && (
+                        <p style={{color: 'red'}}>{currHouseError}</p>  
+                    )}
                 </div>
                 
                 <div class="form-group col-md-1">
                     <label for="inputCurrStreet">Street</label>
                     <input type="text" class="form-control" id="inputCurrStreet" name='curr_street' value={isAutoFillActive ? patient.per_street : patient.curr_street} onChange={handleChange}  placeholder="Street" disabled={isCurrentAddressDisabled}/>
+                    {currStreetError && (
+                        <p style={{color: 'red'}}>{currStreetError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-2">
@@ -504,6 +726,9 @@ const AddPatient = () => {
         
 
                     </select>
+                    {currRegionError && (
+                        <p style={{color: 'red'}}>{currRegionError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-2">
@@ -523,6 +748,9 @@ const AddPatient = () => {
         
 
                     </select>
+                    {currProvinceError && (
+                        <p style={{color: 'red'}}>{currProvinceError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-2">
@@ -542,6 +770,9 @@ const AddPatient = () => {
         
 
                     </select>
+                    {currCityError && (
+                        <p style={{color: 'red'}}>{currCityError}</p>  
+                    )}
                 </div>
 
                 <div class="form-group col-md-2">
@@ -558,11 +789,17 @@ const AddPatient = () => {
         
 
                     </select>
+                    {currBarangayError && (
+                        <p style={{color: 'red'}}>{currBarangayError}</p>  
+                    )}
                 </div> 
 
                 <div class="form-group col-md-1">
                     <label for="inputCurrZip">Zip Code</label>
                     <input type="text" class="form-control" id="inputCurrZip" name='curr_zipcode' value={isAutoFillActive ? patient.per_zipcode : patient.curr_zipcode} onChange={handleChange}  placeholder="Zip" disabled={isCurrentAddressDisabled}/>
+                    {currZipError && (
+                        <p style={{color: 'red'}}>{currZipError}</p>  
+                    )}
                 </div>
                 
             </Row>

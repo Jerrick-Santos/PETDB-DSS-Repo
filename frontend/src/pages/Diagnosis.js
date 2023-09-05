@@ -13,7 +13,7 @@ import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import PresumptiveTBModal from '../components/PresumptiveTBModal';
-import XrayRecomModal from '../components/XrayRecomModal';
+import ViewMapRecomModal from '../components/ViewMapRecomModal';
 import LatentTBModal from '../components/LatentTBModal';
 import CaseHeader from '../components/CaseHeader'
 import Badge from 'react-bootstrap/Badge';
@@ -190,7 +190,7 @@ const endIndex = startIndex + itemsPerPage;
             </Col>
 
             <Col lg="11" className="d-flex justify-content-center">
-              <XrayRecomModal/>
+              <ViewMapRecomModal/>
               
             </Col>
             

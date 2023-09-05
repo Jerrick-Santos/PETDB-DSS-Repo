@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import React, {useState} from 'react';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
-import XrayRecomModal from './XrayRecomModal';
+import ViewMapRecomModal from './ViewMapRecomModal';
 
 
 function ShowDiagnosisModal() {
@@ -34,7 +34,7 @@ function ShowDiagnosisModal() {
         </Row>
 
         <Row className="mt-4">
-            <Col><XrayRecomModal/> </Col>
+            <Col><ViewMapRecomModal/> </Col>
         </Row>
 
         <Row className="mt-4">
