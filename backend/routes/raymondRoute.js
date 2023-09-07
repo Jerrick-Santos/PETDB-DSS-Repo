@@ -24,16 +24,16 @@ module.exports = (db) => {
                         ct.contact_email,
                         ct.contact_relationship,
                         ct.date_added,
-                        ct.CaseNo,
                         ct.PatientNo,
                         ct.ContactNo
                     FROM PEDTBDSS_new.MD_CONTACTTRACING ct
-                    JOIN PEDTBDSS_new.TD_PTCASE ptc ON ct.CaseNo = ptc.CaseNo
-                    WHERE ptc.CaseNo = ${case_id};
+                    JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON ct.ContactNo = ctc.ContactNo
+                    JOIN PEDTBDSS_new.TD_PTCASE ptc ON ctc.CaseNo = ptc.CaseNo
+                    WHERE ptc.CaseNo = ?;
         `;
 
     
-        db.query(query, (err, results) => {
+        db.query(query, [case_id], (err, results) => {
             if (err) {
                 console.error(err);
             }
@@ -93,18 +93,44 @@ module.exports = (db) => {
 
     router.post('/addContacts', async (req, res) => {
 
-        const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, CaseNo, PatientNo} = req.body
+        const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, PatientNo} = req.body
 
         const formattedDate = new Date().toISOString().split('T')[0];
         const formattedBirthdate = new Date(birthdate).toISOString().split('T')[0];
-        /**TESTING */
-        console.log(req.body);
         
-        /** Query Goal: Add the necessary close contact data to the latest case of a specificed patient */
-        await db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, CaseNo, PatientNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-                        [last_name, first_name, middle_initial, formattedBirthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, CaseNo, PatientNo]);
-        
-        // TODO: return value
+        let exist
+        await db.query('SELECT ContactNo FROM MD_CONTACTTRACING WHERE last_name LIKE ? AND first_name LIKE ? AND middle_initial LIKE ?', [String(last_name), String(first_name), String(middle_initial)], (err, data) => {
+            if (err) {console.log(err)} else {
+
+                console.log("data: ",data)
+                if (data && data.length > 0) { exist = data[0].ContactNo } else { exist = null }
+                console.log("EXIST_RES LOG: ", exist)
+
+
+                if (exist == null) {
+                    // TODO: Check if the relationship exists
+                    db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, PatientNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [last_name, first_name, middle_initial, formattedBirthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, PatientNo], (err, data) => {
+                        if (err) {console.log(err)} else {
+
+                            db.query('SELECT MAX(ContactNo) AS latest FROM MD_CONTACTTRACING', [], (err, data) => {
+                                if (err) {console.log(err)} else {
+                                    db.query('INSERT INTO MD_CTRACECASE (ContactNo, CaseNo) VALUES (?, ?)', [data[0].latest, req.body.CaseNo], (err, data) => {
+                                        console.log("success!! --1 "); res.status(200).json({message: 'Success... New close contact added to database'})
+                                    })
+                                }
+                            }) 
+
+                        }
+                    });
+                } else {
+                    db.query('INSERT INTO MD_CTRACECASE (ContactNo, CaseNo) VALUES (?, ?)', [exist, req.body.CaseNo], (err, data) => {
+                        if (err) {console.log(err)} else { res.status(200).json({message: 'Success... New case added to close contact'}) }
+                    })
+                }
+
+            }
+        })
     }),
 
     // TO BE DELETED: (Original Purpose: Submit close contact details to patient table, but can use addPatient instead)
