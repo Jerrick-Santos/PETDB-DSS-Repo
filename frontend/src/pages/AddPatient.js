@@ -10,7 +10,7 @@ import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AddPatient = () => {
     const [isAutoFillActive, setIsAutoFillActive] = useState(false);
@@ -930,9 +930,11 @@ const AddPatient = () => {
                 </Modal.Body>
 
                 <Modal.Footer>
+                    <Link to={`/allpatient`}>
                     <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>
                     Close
                     </Button>
+                    </Link>
                 </Modal.Footer>
             </Modal>
 
