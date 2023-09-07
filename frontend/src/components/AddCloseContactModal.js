@@ -146,7 +146,7 @@ function AddCloseContactModal(props) {
             // TRY-CATCH FOR BACKEND INTERACTION
             try{
                 console.log("Form Submitted: ", formValues)
-                axios.post("http://localhost:4000/api/addContacts", formValues)
+                await axios.post("http://localhost:4000/api/addContacts", formValues)
 
                 setValidated(true)
                 setShow(false)

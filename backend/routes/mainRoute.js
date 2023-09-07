@@ -1322,7 +1322,44 @@ router.get('/chartyear', (req, res) => {
 });
 })
 
+ //get all tests that are NOT under a given HI id
+ router.get('/treatments/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT * FROM PEDTBDSS_new.TD_TREATMENTS
+    WHERE CaseNo=${id};
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+});
+});
   
+
+router.post('/addtreatment', (req, res) => {
+    const q = "INSERT INTO TD_TREATMENTS(`CaseNo`, `Medicine`, `Dosage`, `Frequency`, `Period`) VALUES (?, ?, ?, ?, ?)"
+    const values = [
+        req.body.CaseNo,
+        req.body.Medicine,
+        req.body.Dosage,
+        req.body.Frequency,
+        req.body.Period,
+    ]
+
+    db.query(q, values, (err, data) => {
+        if(err) {
+            console.log("Error inserting into MD_DGTESTS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully inserted into MD_DGTESTS:", data);
+        return res.json(data)
+    });
+})
 
     return router;
 };

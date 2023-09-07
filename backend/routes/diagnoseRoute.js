@@ -168,6 +168,29 @@ function detectContactTB(input_contact_status){
 module.exports = (db) => {
     // Attach the 'db' connection to all route handlers before returning the router
 
+    router.patch('/closecase/:caseid/:decision', (req, res) => {
+        const caseid = req.params.caseid
+        const decision = req.params.decision
+
+        
+        db.query(`UPDATE PEDTBDSS_new.TD_PTCASE
+        SET case_status = 'C', SRNo = ?, end_date = curdate()
+        WHERE CaseNo = ?;`, 
+        [decision, caseid], 
+        (error, CaseClosed) => {
+            if (error) {
+                console.log("Close Case Unsuccessful")
+                res.status(500).json({ error: error });
+                return;
+            }
+            else{
+                console.log("Cased Closed")
+                res.status(200).json(CaseClosed)
+            }
+        })
+
+    })
+
     // ADD TO LATENT ML
     router.post('/addlatent/:caseid/:latentref', (req, res) => {
         const caseid = req.params.caseid
@@ -500,7 +523,7 @@ module.exports = (db) => {
                         res.status(500).json({ error: "Error fetching MTB data" });
                         return;
                     }
-
+                    console.log(MTBResults)
                     console.log("QUERY 3: MTB - CHECK")
 
                     if (MTBResults.length === 0) {
@@ -603,12 +626,12 @@ module.exports = (db) => {
                                     inputObject.has_TBcontact = -1
                                     symptomsObject.has_TBcontact = -1
                                 } else {
-                                    // highSuspicionObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                    // inputObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                    // symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                    highSuspicionObject.has_TBcontact = -1
-                                    inputObject.has_TBcontact = -1
-                                    symptomsObject.has_TBcontact = -1
+                                    highSuspicionObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    inputObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                    // highSuspicionObject.has_TBcontact = -1
+                                    // inputObject.has_TBcontact = -1
+                                    // symptomsObject.has_TBcontact = -1
                                 }
 
                                 console.log(symptomsObject)

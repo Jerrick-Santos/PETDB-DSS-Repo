@@ -10,19 +10,20 @@ import treatment from '../assets/treatment.png';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import CaseHeader from '../components/CaseHeader'
+import AddTreatmentModal from '../components/AddTreatmentModal';
 
 const Treatments = () => {
 
   const { id } = useParams();
   var caseNum = id
 
-  const [patientData, setPatientData] = useState([]);
+  const [treatmentsData, setTreatmentsData] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+    axios.get(`http://localhost:4000/api/treatments/${caseNum}`)
     .then(res => {
       console.log(res);
-      setPatientData(res.data[0]);
+      setTreatmentsData(res.data);
     })
     .catch(err => {
       console.error(err);
@@ -94,68 +95,51 @@ const Treatments = () => {
      
 
     {/* Laboratory Tests of the Patient*/}
-      <Col lg="11">
+      <Col lg="9">
       <p style={{fontSize:"25px"}}> Treatments </p>
         <Card className="mb-4">
           <Card.Body>
             <Row>
-              <Col sm="2">
+              <Col sm="3">
                 <Card.Text>Medicine</Card.Text>
               </Col>
-              <Col sm="2">
+              <Col sm="3">
                 <Card.Text>Dosage</Card.Text>
               </Col>
-              <Col sm="2">
+              <Col sm="3">
                 <Card.Text>Frequency</Card.Text>
               </Col>
-              <Col sm="2">
+              <Col sm="3">
                 <Card.Text>Length</Card.Text>
               </Col>
-              <Col sm="4">
-                <Card.Text>Availability in the Health Center</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-            <Col sm="2">
-                <Card.Text className="text-muted">Neozep</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">500 mg</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">3x a day</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">6 months</Card.Text>
-              </Col>
-              <Col sm="4">
-                <Card.Text className="text-muted">Available</Card.Text>
-              </Col>
-            </Row>
-            <hr />
-            <Row>
-            <Col sm="2">
-                <Card.Text className="text-muted">Biogesic</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">250 mg</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">6x a day</Card.Text>
-              </Col>
-              <Col sm="2">
-                <Card.Text className="text-muted">6 months</Card.Text>
-              </Col>
-              <Col sm="4">
-                <Card.Text className="text-muted">Available</Card.Text>
-              </Col>
+              
             </Row>
             
+            {treatmentsData.map((data, index) => (
+              <>
+               <hr />
+            <Row>
+              <Col sm="3">
+                <Card.Text>{data.Medicine}</Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text>{data.Dosage}</Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text>{data.Frequency}</Card.Text>
+              </Col>
+              <Col sm="3">
+                <Card.Text>{data.Period}</Card.Text>
+              </Col>
+              
+            </Row>
+                   </>
+                    ))}
+          
           </Card.Body>
           
         </Card>
-        <button className="btn ms-1 mb-5" style={{color: "white", backgroundColor: '#0077B6'}} type="button"> Treatment Accomplished </button>
+        <AddTreatmentModal caseID={caseNum}/>
       </Col>
     </Row>
 

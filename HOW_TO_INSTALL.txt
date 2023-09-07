@@ -1,0 +1,5 @@
+1. Install node.js
+2. Run "node installDependencies.js"
+3. cd frontend "npm start"
+4. cd..
+5. cd backend "npm run dev"

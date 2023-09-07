@@ -64,7 +64,7 @@ const AddPatientContact = () => {
         .catch(err => {
           console.error(err);
         })
-      }, [ContactNo])
+    }, [ContactNo])
 
     const handleChange = (e) => {
         const {name, value} = e.target;
