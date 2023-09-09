@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
+import bin from '../assets/bin.png'
 import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
@@ -11,6 +12,8 @@ import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import CaseHeader from '../components/CaseHeader'
 import AddTreatmentModal from '../components/AddTreatmentModal';
+import UpdateTreatment from '../components/UpdateTreatment';
+import DeleteTreatment from '../components/DeleteTreatment';
 
 const Treatments = () => {
 
@@ -109,8 +112,8 @@ const Treatments = () => {
               <Col sm="3">
                 <Card.Text>Frequency</Card.Text>
               </Col>
-              <Col sm="3">
-                <Card.Text>Length</Card.Text>
+              <Col sm="2">
+                <Card.Text>Period</Card.Text>
               </Col>
               
             </Row>
@@ -128,8 +131,15 @@ const Treatments = () => {
               <Col sm="3">
                 <Card.Text>{data.Frequency}</Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text>{data.Period}</Card.Text>
+              </Col>
+              <Col sm="1">
+                <Card.Text className="text-muted">
+               <UpdateTreatment/>
+
+                <DeleteTreatment/>
+                  </Card.Text>
               </Col>
               
             </Row>

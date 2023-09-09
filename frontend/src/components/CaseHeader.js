@@ -41,10 +41,10 @@ const CaseHeader = (props) => {
 
                 <Row>
                   <Col><Badge bg="secondary">Case End Date:</Badge> {patientData.case_status === "O" ? (
-  <CloseCaseModal caseid={props.caseNum} />
-) : patientData.case_status === "C" ? (
-  <>{new Date(patientData.end_date).toLocaleDateString().replaceAll("/", "-")}</>
-) : null}
+                <CloseCaseModal caseid={props.caseNum} />
+                ) : patientData.case_status === "C" ? (
+                <>{new Date(patientData.end_date).toLocaleDateString().replaceAll("/", "-")}</>
+                ) : null}
                   </Col>
                 </Row>
 

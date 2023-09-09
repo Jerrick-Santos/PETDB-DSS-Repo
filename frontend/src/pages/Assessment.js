@@ -22,6 +22,10 @@ import AddAssessPersist from '../components/AddAssessPersist';
 import AddAssessNoPersist from '../components/AddAssessNoPersist';
 import CaseHeader from '../components/CaseHeader';
 import Pagination from 'react-bootstrap/Pagination';
+import bin from '../assets/bin.png'
+import edit from '../assets/edit.png'
+import UpdateAssessment from '../components/UpdateAssessment';
+import DeleteAssessment from '../components/DeleteAssessment';
 
 const Assessment = () => {
 
@@ -217,8 +221,16 @@ const endIndex = startIndex + itemsPerPage;
                       
                       </Card.Text>
               </Col>
-              <Col sm="6">
+              <Col sm="5">
                 <Card.Text>{ass.user_fullname}</Card.Text>
+              </Col>
+              <Col sm="1">
+                <Card.Text>
+              
+                <UpdateAssessment/>
+               <DeleteAssessment/>
+                 
+            </Card.Text>
               </Col>
             </Row>
                    </>

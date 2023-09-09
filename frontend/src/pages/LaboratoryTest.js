@@ -20,6 +20,12 @@ import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
 import AddTSTModal from '../components/AddTSTModal';
 import CaseHeader from '../components/CaseHeader'
 import Pagination from 'react-bootstrap/Pagination';
+import bin from '../assets/bin.png'
+import DeleteTest from '../components/DeleteTest';
+import UpdateIGRA from '../components/UpdateIGRA';
+import UpdateTST from '../components/UpdateTST';
+import UpdateMTBRIF from '../components/UpdateMTBRIF';
+import UpdateXray from '../components/UpdateXray';
 
 
 const LaboratoryTest = () => {
@@ -188,8 +194,8 @@ const LaboratoryTest = () => {
 
     {activeTab === 'xray' && (
       <Row className="justify-content-center">
-      <Col lg="8">
-      <p> <strong> XRay Tests </strong> </p>
+      <Col lg="10">
+      <p> <strong> X-ray Tests </strong> </p>
       
         <Card className="mb-4">
           <Card.Body>
@@ -203,7 +209,7 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text>Ref. #</Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text>Result</Card.Text>
               </Col>
               <Col sm="2">
@@ -225,11 +231,18 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text className="text-muted">{xray.test_refno} </Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text className="text-muted">{xray.TestValue}</Card.Text>
               </Col>
               <Col sm="2">
                 <Card.Text className="text-muted">{xray.validity === 1 ? "VALID" : "OUTDATED"}   </Card.Text>
+              </Col>
+              <Col sm="1">
+                <Card.Text className="text-muted">
+                <UpdateXray DGResultsNo={xray.DGResultsNo}/>
+
+              <DeleteTest DGResultsNo={xray.DGResultsNo}/>
+                  </Card.Text>
               </Col>
             </Row>
                    </>
@@ -258,7 +271,7 @@ const LaboratoryTest = () => {
       /* MTB/RIF Tests */
       // ... (your MTB/RIF tests code)
       <Row className="justify-content-center">
-      <Col lg="8">
+      <Col lg="10">
       <p> <strong> MTB/RIF Tests </strong> </p>
         <Card className="mb-4">
           <Card.Body>
@@ -272,7 +285,7 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text>Ref. #</Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text>Result</Card.Text>
               </Col>
               <Col sm="2">
@@ -292,11 +305,18 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text className="text-muted">{mtb.test_refno} </Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text className="text-muted">{mtb.TestValue}</Card.Text>
               </Col>
               <Col sm="2">
                 <Card.Text className="text-muted">{mtb.validity === 1 ? "VALID" : "OUTDATED"}   </Card.Text>
+              </Col>
+              <Col sm="1">
+                <Card.Text className="text-muted">
+                <UpdateMTBRIF DGResultsNo={mtb.DGResultsNo}/>
+
+              <DeleteTest DGResultsNo={mtb.DGResultsNo}/>  
+                  </Card.Text>
               </Col>
             </Row>
                    </>
@@ -321,7 +341,7 @@ const LaboratoryTest = () => {
       /* TST Tests */
       // ... (your TST tests code)
       <Row className="justify-content-center">
-      <Col lg="8">
+      <Col lg="10">
       <p> <strong> TST Tests </strong> </p>
         <Card className="mb-4">
           <Card.Body>
@@ -335,7 +355,7 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text>Ref. #</Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text>Result</Card.Text>
               </Col>
               <Col sm="2">
@@ -355,11 +375,17 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text className="text-muted"> {tst.test_refno}</Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text className="text-muted">{tst.TestValue}</Card.Text>
               </Col>
               <Col sm="2">
                 <Card.Text className="text-muted">{tst.validity === 1 ? "VALID" : "OUTDATED"}   </Card.Text>
+              </Col>
+              <Col sm="1">
+                <Card.Text className="text-muted">
+              <UpdateTST DGResultsNo={tst.DGResultsNo}/>
+            <DeleteTest DGResultsNo={tst.DGResultsNo}/>
+                  </Card.Text>
               </Col>
             </Row>
                    </>
@@ -385,7 +411,7 @@ const LaboratoryTest = () => {
       /* TST Tests */
       // ... (your TST tests code)
       <Row className="justify-content-center">
-      <Col lg="8">
+      <Col lg="10">
       <p> <strong> IGRA Tests </strong> </p>
         <Card className="mb-4">
           <Card.Body>
@@ -399,7 +425,7 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text>Ref. #</Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text>Result</Card.Text>
               </Col>
               <Col sm="2">
@@ -419,11 +445,18 @@ const LaboratoryTest = () => {
               <Col sm="2">
                 <Card.Text className="text-muted">{igra.test_refno}</Card.Text>
               </Col>
-              <Col sm="3">
+              <Col sm="2">
                 <Card.Text className="text-muted">{igra.TestValue}</Card.Text>
               </Col>
               <Col sm="2">
                 <Card.Text className="text-muted">{igra.validity === 1 ? "VALID" : "OUTDATED"}   </Card.Text>
+              </Col>
+              <Col sm="1">
+                <Card.Text className="text-muted">
+                <UpdateIGRA DGResultsNo={igra.DGResultsNo}/>
+
+                <DeleteTest DGResultsNo={igra.DGResultsNo}/>
+                  </Card.Text>
               </Col>
             </Row>
                    </>

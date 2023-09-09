@@ -141,7 +141,7 @@ const SimilarCases = () => {
          <Card.Text className="text-muted "> Bacteriologically Confirmed - Drug Resistant</Card.Text>
        </Col>
        <Col sm="5">
-         <Card.Text> <strong>{casesData.bd_res}% </strong></Card.Text>
+         <Card.Text> <strong>{parseFloat(casesData.bd_res).toFixed(2)}% </strong></Card.Text>
        </Col>
      </Row>
      <hr/> 
@@ -150,7 +150,7 @@ const SimilarCases = () => {
          <Card.Text className="text-muted "> Bacteriologically Confirmed - Drug Sensitive</Card.Text>
        </Col>
        <Col sm="5">
-         <Card.Text> <strong>{casesData.bd_nonres}%  </strong></Card.Text>
+         <Card.Text> <strong>{parseFloat(casesData.bd_nonres).toFixed(2)}%  </strong></Card.Text>
        </Col>
      </Row>
      <hr/> 
@@ -159,7 +159,7 @@ const SimilarCases = () => {
          <Card.Text className="text-muted "> Clinically Diagnosed</Card.Text>
        </Col>
        <Col sm="5">
-         <Card.Text> <strong>{casesData.clinical_diag}%  </strong></Card.Text>
+         <Card.Text> <strong>{parseFloat(casesData.clinical_diag).toFixed(2)}%  </strong></Card.Text>
        </Col>
      </Row>
     <hr/> 
@@ -168,7 +168,7 @@ const SimilarCases = () => {
          <Card.Text className="text-muted "> No Tuberculosis</Card.Text>
        </Col>
        <Col sm="5">
-         <Card.Text> <strong>{casesData.no_tb}%  </strong></Card.Text>
+         <Card.Text> <strong>{parseFloat(casesData.no_tb).toFixed(2)}%  </strong></Card.Text>
        </Col>
      </Row>
    
