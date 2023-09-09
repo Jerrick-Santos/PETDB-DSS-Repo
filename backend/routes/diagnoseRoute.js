@@ -392,12 +392,15 @@ module.exports = (db) => {
         LIMIT 1;`;
 
         //GET CONTACT TRACING DATA
-        const TBContactQuery = `SELECT ds.diagnosis
+        const TBContactQuery = `SELECT dr.diagnosis
         FROM PEDTBDSS_new.TD_PTCASE ptd
-        JOIN PEDTBDSS_new.MD_CONTACTTRACING ct ON ptd.CaseNo = ct.CaseNo
-        LEFT JOIN PEDTBDSS_new.TD_PTDIAGNOSIS d ON ct.CaseNo = d.CaseNo
-        LEFT JOIN PEDTBDSS_new.MD_DIAGNOSISRULES ds ON d.RuleNo = ds.RuleNo
-        WHERE ptd.CaseNo = ${caseid};`;
+        JOIN PEDTBDSS_new.TD_PTDIAGNOSIS pt ON ptd.CaseNo = pt.Caseno
+        JOIN PEDTBDSS_new.MD_DIAGNOSISRULES dr ON pt.RuleNo = dr.RuleNo 
+        WHERE ptd.PatientNo IN (SELECT ct.PatientNo
+        FROM PEDTBDSS_new.TD_PTCASE ptd
+        JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON ptd.CaseNo = ctc.CaseNo
+        JOIN PEDTBDSS_new.MD_CONTACTTRACING ct ON ctc.ContactNo = ct.ContactNo
+        WHERE ptd.CaseNo = ${caseid})`;
 
         //GET FIRST DIAGNOSIS OR NOT 
         const firstDiagnosisQuery = `SELECT *
