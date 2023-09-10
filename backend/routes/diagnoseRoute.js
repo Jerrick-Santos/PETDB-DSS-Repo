@@ -426,6 +426,19 @@ module.exports = (db) => {
         JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
         WHERE ptc.CaseNo = ${caseid};`
 
+        //CHECK IF PREVIOUS DIAGNOSIS RULE IS THE SAME 
+        const noChangeChecker = `
+                SELECT t2.RuleNo
+                FROM (SELECT c.CaseNo, MAX(d.DGNo) AS DGNo
+                FROM PEDTBDSS_new.TD_PTCASE c
+                JOIN PEDTBDSS_new.TD_PTDIAGNOSIS d ON c.CaseNo = d.CaseNo
+                JOIN PEDTBDSS_new.MD_DIAGNOSISRULES dr ON d.RuleNo = dr.RuleNo
+                GROUP BY c.CaseNo) t1 
+                JOIN PEDTBDSS_new.TD_PTDIAGNOSIS t2 ON t1.DGNo = t2.DGNo
+                JOIN PEDTBDSS_new.MD_DIAGNOSISRULES t3 ON t2.RuleNo = t3.RuleNo
+                WHERE t1.CaseNo = ${caseid};
+                `
+
 
         const test = ``
 
@@ -708,33 +721,55 @@ module.exports = (db) => {
 
                                             console.log("Diagnosis Query Results:", diagnosisQueryResults);
 
-                                        
+                                            const {RuleNo} = diagnosisQueryResults[0]
 
-                                            try{
-                                                    const {RuleNo} = diagnosisQueryResults[0]
-                                                    console.log("TEST" + RuleNo)
-                                                    // All queries have been executed successfully
-                                                    // res.status(200).json(diagnosisQueryResults);
-                                                    console.log("Rule Number: " + RuleNo)
-                
-                                                    db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, need_hiv) 
-                                                    VALUES (?, ?, ?, ?)`, 
-                                                    [new Date().toISOString().split('T')[0], caseid, RuleNo, need_hiv], 
-                                                    (error8, InsertResult) => {
-                                                        if (error8) {
-                                                            res.status(500).json({ error: "Did Not Add Data" });
-                                                            return;
-                                                        }
-                                                        else{
-                                                            res.status(200).json(InsertResult)
-                                                        }
-                                                    })
-                
+                                                db.query(noChangeChecker, (errorChecker, changeQueryResults) => {
+
+                                                    if (errorChecker) {
+                                                        res.status(500).json({ error: "Change Checker Failed" });
+                                                        return;
                                                     }
-                                                    catch(e){
-                                                        res.status(500).json({e: "query is empty"})
-                                                        console.log("Query is empty")
+
+                                                    console.log("CHANGE CHECKER - CHECK")
+
+                                                    const prevRule = changeQueryResults[0].RuleNo
+
+                                                    console.log("previous rule: " + prevRule)
+
+                                                    if(prevRule === RuleNo){
+                                                        res.status(200).json({sameCase: 1})
+                                                        return;
+                                                    
                                                     }
+                                                    
+
+                                                    try{
+                                                            
+                                                            console.log("TEST" + RuleNo)
+                                                            // All queries have been executed successfully
+                                                            // res.status(200).json(diagnosisQueryResults);
+                                                            console.log("Rule Number: " + RuleNo)
+                        
+                                                            db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, need_hiv) 
+                                                            VALUES (?, ?, ?, ?)`, 
+                                                            [new Date().toISOString().split('T')[0], caseid, RuleNo, need_hiv], 
+                                                            (error8, InsertResult) => {
+                                                                if (error8) {
+                                                                    res.status(500).json({ error: "Did Not Add Data" });
+                                                                    return;
+                                                                }
+                                                                else{
+                                                                    res.status(200).json(InsertResult)
+                                                                }
+                                                            })
+                        
+                                                            }
+                                                            catch(e){
+                                                                res.status(500).json({e: "query is empty"})
+                                                                console.log("Query is empty")
+                                                            }
+
+                                            });
 
                                         });
                                         
@@ -744,59 +779,7 @@ module.exports = (db) => {
 
                                 });
 
-                                
-
-                                // db.query(`SELECT *
-                                // FROM PEDTBDSS_new.MD_DIAGNOSISRULES
-                                // WHERE c_symp = ${inputObject.c_symp} AND 
-                                // plhiv = ${inputObject.plhiv} AND
-                                // hiv = ${inputObject.hiv} AND
-                                // first_diag = ${inputObject.first_diag} AND
-                                // has_TBcontact = ${inputObject.has_TBcontact} AND
-                                // ETPB_symp = ${inputObject.ETPB_symp} AND 
-                                // xray = ${inputObject.xray} AND
-                                // MTB_positive = ${inputObject.MTB_positive} AND 
-                                // RIF_resistant = ${inputObject.RIF_resistant} AND
-                                // tst = ${inputObject.tst};`, (error7, diagnosisQueryResults) => {
-
-                                //     if (error7) {
-                                //         res.status(500).json({ error: "Error fetching diagnosis data" });
-                                //         return;
-                                //     }
-
-                                //     console.log(inputObject)
-
-                                //     console.log("Diagnosis Query Results:", diagnosisQueryResults);
-
-                                    
-                                //     try{
-                                //     const {RuleNo} = diagnosisQueryResults[0]
-                        
-                                //     // All queries have been executed successfully
-                                //     // res.status(200).json(diagnosisQueryResults);
-                                //     console.log(RuleNo)
-
-                                //     db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo) 
-                                //     VALUES (?, ?, ?)`, 
-                                //     [new Date().toISOString().split('T')[0], caseid, RuleNo], 
-                                //     (error8, InsertResult) => {
-                                //         if (error8) {
-                                //             res.status(500).json({ error: "Did Not Add Data" });
-                                //             return;
-                                //         }
-                                //         else{
-                                //             res.status(200).json(InsertResult)
-                                //         }
-                                //     })
-
-                                //     }
-                                //     catch(e){
-                                //         res.status(500).json({e: "query is empty"})
-                                //         console.log("Query is empty")
-                                //     }
-
-                                // });
-
+                            
 
                                 
                             });
