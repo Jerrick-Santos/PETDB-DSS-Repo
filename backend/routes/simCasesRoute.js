@@ -492,7 +492,7 @@ module.exports = (db) => {
 
                             db.query(`
                             SELECT 
-                            t4.diagnosis
+                            t4.diagnosis, t4.EPTBpositive
                             FROM (SELECT d.CaseNo, MAX(d.DGNo) AS latest_diagnosis, MAX(ha.AssessNo) AS latest_healthassess
                             FROM PEDTBDSS_new.TD_PTDIAGNOSIS d 
                             JOIN  PEDTBDSS_new.TD_HEALTHASSESSMENT ha ON d.CaseNo = ha.CaseNo
@@ -689,10 +689,12 @@ module.exports = (db) => {
                                 console.log(CompareResults)
 
                                 const diagnosisValues = CompareResults.map(result => result.diagnosis);
+                                const tbTypeValues = CompareResults.map(result => result.EPTBpositive);
 
                                 const TOTAL_SIMCASES = CompareResults.length
                                 console.log(TOTAL_SIMCASES)
-                                console.log(diagnosisValues)
+                                console.log('diagnosis values: ' + diagnosisValues)
+                                console.log('tb type values: ' + tbTypeValues)
 
                                 // Create a mapping object
                                 const mapping = {
@@ -702,19 +704,35 @@ module.exports = (db) => {
                                     "NO TB": "no_tb"
                                 };
 
+                                const typeMapping = {
+                                    1: "eptb", 
+                                    "-1": "ptb"
+                                };
+
                                 // Initialize the object with null values
                                 const resultObject = {
                                     bd_res: null,
                                     bd_nonres: null,
                                     clinical_diag: null,
-                                    no_tb: null
+                                    no_tb: null,
+                                    ptb: null,
+                                    eptb: null
                                 };
+
 
                                 // Step 1: Count the occurrences
                                 const occurrenceCounts = diagnosisValues.reduce((counts, item) => {
                                     counts[item] = (counts[item] || 0) + 1;
                                     return counts;
                                 }, {});
+
+                                const occurrenceCountsTBType = tbTypeValues.reduce((counts, item) => {
+                                    counts[item] = (counts[item] || 0) + 1;
+                                    return counts;
+                                }, {});
+
+                                console.log(occurrenceCountsTBType)
+            
 
                                 // Step 2: Map the occurrences to the result object
                                 for (const key in occurrenceCounts) {
@@ -724,13 +742,20 @@ module.exports = (db) => {
                                     }
                                 }
 
+                                for (const key in occurrenceCountsTBType) {
+                                    const mappedKey = typeMapping[key];
+                                    if (mappedKey) {
+                                        resultObject[mappedKey] = occurrenceCountsTBType[key];
+                                    }
+                                }
+
                                 //Step 3: Remove NULL VALUES
                                 for (const key in resultObject) {
                                     if (resultObject[key] === null) {
                                         resultObject[key] = 0;
                                     }
                                     else{
-                                        resultObject[key] = (resultObject[key] / diagnosisValues.length) * 100
+                                        resultObject[key] = ((resultObject[key] / diagnosisValues.length) * 100).toFixed(2);
                                     }
                                 }
 

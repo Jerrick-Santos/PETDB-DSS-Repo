@@ -696,7 +696,8 @@ module.exports = (db) => {
                                         MTB_positive = ${inputObject.MTB_positive} AND 
                                         RIF_resistant = ${inputObject.RIF_resistant} AND
                                         tst = ${inputObject.tst} AND
-                                        igra = ${inputObject.igra};`, (error7, diagnosisQueryResults) => {
+                                        igra = ${inputObject.igra} AND
+                                        EPTBpositive = ${inputObject.EPTB_symp} ;`, (error7, diagnosisQueryResults) => {
 
                                             if (error7) {
                                                 res.status(500).json({ error: "Error fetching diagnosis data" });
@@ -707,23 +708,11 @@ module.exports = (db) => {
 
                                             console.log("Diagnosis Query Results:", diagnosisQueryResults);
 
-                                            
-                                            // try{
-                                            // const {RuleNo} = diagnosisQueryResults[0]
-                                
-                                            // // All queries have been executed successfully
-                                            // // res.status(200).json(diagnosisQueryResults);
-                                            // console.log(RuleNo)
-                                            // res.status(200).json("Sunccessful Diagnosis")
-                                            // }
-                                            // catch(e){
-                                            //     res.status(500).json({e: "query is empty"})
-                                            //     console.log("Query is empty")
-                                            // }
+                                        
 
                                             try{
                                                     const {RuleNo} = diagnosisQueryResults[0]
-                                        
+                                                    console.log("TEST" + RuleNo)
                                                     // All queries have been executed successfully
                                                     // res.status(200).json(diagnosisQueryResults);
                                                     console.log("Rule Number: " + RuleNo)
