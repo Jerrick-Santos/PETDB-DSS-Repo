@@ -722,7 +722,7 @@ module.exports = (db) => {
                                             console.log("Diagnosis Query Results:", diagnosisQueryResults);
 
                                             const {RuleNo} = diagnosisQueryResults[0]
-
+                                            console.log(RuleNo)
                                                 db.query(noChangeChecker, (errorChecker, changeQueryResults) => {
 
                                                     if (errorChecker) {
@@ -732,15 +732,16 @@ module.exports = (db) => {
 
                                                     console.log("CHANGE CHECKER - CHECK")
 
+                                                    if(changeQueryResults.length !== 0){
                                                     const prevRule = changeQueryResults[0].RuleNo
 
-                                                    console.log("previous rule: " + prevRule)
 
-                                                    if(prevRule === RuleNo){
+                                                    if(prevRule === RuleNo && prevRule != null){
                                                         res.status(200).json({sameCase: 1})
                                                         return;
                                                     
                                                     }
+                                                    }   
                                                     
 
                                                     try{
