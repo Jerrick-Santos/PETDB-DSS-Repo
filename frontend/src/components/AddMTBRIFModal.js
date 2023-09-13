@@ -35,7 +35,7 @@ function AddMTBRIFModal(props) {
           console.error('Error fetchingdata:', error);
         });
     
-    }, [mtbValues.issue_date, mtbValidity]);
+    }, []);
 
     const [mtbValues, setMTBValues] = useState({
             CaseNo: props.caseNum,
