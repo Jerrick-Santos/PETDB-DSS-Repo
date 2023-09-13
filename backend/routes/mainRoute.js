@@ -1193,7 +1193,7 @@ router.get('/checkhiref/:id', (req, res) => {
 })
 })
 
-router.post('/updateXray', (req, res) => {
+router.post('/updatetests', (req, res) => {
     const values = [
         req.body.HINo,
         req.body.issue_date,

@@ -49,7 +49,7 @@ function UpdateXray(props) {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
-            await axios.post("http://localhost:4000/api/updateXray", formValues)
+            await axios.post("http://localhost:4000/api/updatetests", formValues)
         }catch(err){
             console.log(err)
         }
