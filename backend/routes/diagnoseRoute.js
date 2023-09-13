@@ -354,6 +354,14 @@ module.exports = (db) => {
             EPTB_symp: null
         }
 
+        const dataIdObject = {
+            healthassess_id: null,
+            xray_id: null, 
+            mtb_id: null,
+            tst_id: null, 
+            igra_id: null
+        }
+
         const caseid = req.params.caseid
     
         //GET ASSESSEMENT DATA 
@@ -470,9 +478,13 @@ module.exports = (db) => {
 
                         fatigue, red_playfulness, dec_acts, not_eating_well,
 
-                        prevPTB_diagnosed
+                        prevPTB_diagnosed,
+
+                        AssessNo
                         
                     } = assessmentResults[0];
+
+                    dataIdObject.healthassess_id = AssessNo
 
                     console.log("QUERY 1: ASSESSMENT - CHECK")
 
@@ -527,12 +539,15 @@ module.exports = (db) => {
 
                 if (xrayResults.length === 0) {
                     inputObject.xray = 0
+                    dataIdObject.xray_id = null
                 } else {
-                    const {TestValue} = xrayResults[0]
+                    const {TestValue, DGResultsNo} = xrayResults[0]
 
                     inputObject.xray = xrayModule(TestValue)
                     console.log(inputObject.xray)
+                    dataIdObject.xray_id = DGResultsNo
                 }
+
 
                 db.query(MTBQuery, (error3, MTBResults) => {
                     if (error3) {
@@ -545,10 +560,11 @@ module.exports = (db) => {
                     if (MTBResults.length === 0) {
                         inputObject.MTB_positive = 0 
                         inputObject.RIF_resistant = 0
+                        dataIdObject.mtb_id = null
                     } else {
-                        const {TestValue} = MTBResults[0]
+                        const {TestValue, DGResultsNo} = MTBResults[0]
 
-                        
+                        dataIdObject.mtb_id = DGResultsNo
                         inputObject.MTB_positive = MTBmodule(TestValue)
                         console.log(inputObject.MTB_positive)
                         inputObject.RIF_resistant = RIFmodule(TestValue)
@@ -565,10 +581,11 @@ module.exports = (db) => {
 
                         if (TSTResults.length === 0) {
                             inputObject.tst = 0;
+                            dataIdObject.tst_id = null;
                         } else {
-                            const {TestValue} = TSTResults[0]
+                            const {TestValue, DGResultsNo} = TSTResults[0]
 
-                            
+                            dataIdObject.tst_id = DGResultsNo
                             inputObject.tst = TSTmodule(TestValue)
                             console.log(inputObject.tst)
                         }
@@ -584,9 +601,10 @@ module.exports = (db) => {
     
                             if (IGRAResults.length === 0) {
                                 inputObject.igra = 0;
+                                dataIdObject.igra_id = null;
                             } else {
-                                const {TestValue} = IGRAResults[0]
-    
+                                const {TestValue, DGResultsNo} = IGRAResults[0]
+                                dataIdObject.igra_id = DGResultsNo;
                                 
                                 inputObject.igra = IGRAmodule(TestValue)
                             }
@@ -750,16 +768,17 @@ module.exports = (db) => {
                                                             // All queries have been executed successfully
                                                             // res.status(200).json(diagnosisQueryResults);
                                                             console.log("Rule Number: " + RuleNo)
-                        
-                                                            db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, need_hiv) 
-                                                            VALUES (?, ?, ?, ?)`, 
-                                                            [new Date().toISOString().split('T')[0], caseid, RuleNo, need_hiv], 
+                                                            console.log(dataIdObject)
+                                                            db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, need_hiv, healthassess_id, xray_id, mtb_id, tst_id, igra_id) 
+                                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                            [new Date().toISOString().split('T')[0], caseid, RuleNo, need_hiv, dataIdObject.healthassess_id, dataIdObject.xray_id, dataIdObject.mtb_id, dataIdObject.tst_id, dataIdObject.igra_id], 
                                                             (error8, InsertResult) => {
                                                                 if (error8) {
                                                                     res.status(500).json({ error: "Did Not Add Data" });
                                                                     return;
                                                                 }
                                                                 else{
+                                                                    
                                                                     res.status(200).json(InsertResult)
                                                                 }
                                                             })
