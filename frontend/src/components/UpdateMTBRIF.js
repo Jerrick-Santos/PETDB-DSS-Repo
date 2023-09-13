@@ -12,6 +12,7 @@ function UpdateMTBRIF(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const [mtbValidity, setMTBValidity] = useState([]);
 
     const[hiData, setHIData] = useState([])
 
@@ -26,9 +27,17 @@ function UpdateMTBRIF(props) {
             console.error('Error fetching data:', error);
           });
         
-       
-        
-  
+        axios.get(`http://localhost:4000/api/validity/2`)
+          .then((response) => {
+          setMTBValidity(response.data)
+          console.log('Validity Months: ', mtbValidity);
+          // Call computeValidity after fetching xrayValidity and when issue_date changes
+          computeValidity();
+          })
+          .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetchingdata:', error);
+        });
 
     }, []);
 
@@ -39,21 +48,51 @@ function UpdateMTBRIF(props) {
         issue_date: props.issue_date,
         test_refno: props.test_refno,
         TestValue: props.TestValue,
+        validity: props.validity,
     });
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setFormValues(prev=>({...prev, [name]: value}));
+        setFormValues((prev)=>({...prev, [name]: value}));
+        if (name === 'issue_date') {
+            computeValidity();
+        }
     }
+
+    const computeValidity = () => {
+        const today = new Date();
+        const issueDate = new Date(formValues.issue_date);
+
+            const validityMonths = mtbValidity[0].DGValidityMonths;
+            issueDate.setMonth(issueDate.getMonth() + validityMonths);
+
+            console.log('Today: ', today);
+            console.log('issueDate: ', issueDate);
+            console.log("Computed Validity: ", today > issueDate ? 0 : 1);
+
+            
+        
+              const calculatedValidity = today <= issueDate ? 1 : 0;
+
+              // Log calculated validity
+              console.log("Calculated validity:", calculatedValidity);
+            
+              setFormValues(prev => ({
+                ...prev,
+                validity: calculatedValidity
+              }));     
+        
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
             await axios.post("http://localhost:4000/api/updatetests", formValues)
+            window.location.reload()
         }catch(err){
             console.log(err)
         }
-        window.location.reload()
+        
     }
   return (
         <>

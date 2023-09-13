@@ -13,6 +13,7 @@ function UpdateXray(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [xrayValidity, setXrayValidity] = useState([]);
 
     const[hiData, setHIData] = useState([])
 
@@ -27,9 +28,17 @@ function UpdateXray(props) {
             console.error('Error fetching data:', error);
           });
         
-       
-        
-  
+        axios.get(`http://localhost:4000/api/validity/1`)
+          .then((response) => {
+          setXrayValidity(response.data)
+          console.log('Validity Months: ', xrayValidity);
+          // Call computeValidity after fetching xrayValidity and when issue_date changes
+          computeValidity();
+          })
+          .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetchingdata:', error);
+        });
 
     }, []);
 
@@ -39,12 +48,41 @@ function UpdateXray(props) {
         issue_date: props.issue_date,
         test_refno: props.test_refno,
         TestValue: props.TestValue,
+        validity: props.validity,
     });
 
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormValues(prev=>({...prev, [name]: value}));
+        if (name === 'issue_date') {
+            computeValidity();
+        }
     }
+
+    const computeValidity = () => {
+        const today = new Date();
+        const issueDate = new Date(formValues.issue_date);
+
+            const validityMonths = xrayValidity[0].DGValidityMonths;
+            issueDate.setMonth(issueDate.getMonth() + validityMonths);
+
+            console.log('Today: ', today);
+            console.log('issueDate: ', issueDate);
+            console.log("Computed Validity: ", today > issueDate ? 0 : 1);
+
+            
+        
+              const calculatedValidity = today <= issueDate ? 1 : 0;
+
+              // Log calculated validity
+              console.log("Calculated validity:", calculatedValidity);
+            
+              setFormValues(prev => ({
+                ...prev,
+                validity: calculatedValidity
+              }));     
+        
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault()

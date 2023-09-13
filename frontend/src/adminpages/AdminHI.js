@@ -11,13 +11,75 @@ import Pagination from 'react-bootstrap/Pagination';
 import bin from '../assets/bin.png'
 import edit from '../assets/edit.png'
 import filter from '../assets/filter.png'
+import sort from '../assets/sort.png'
 import DeleteHIModal from '../admincomponents/DeleteHIModal';
-
+import Badge from 'react-bootstrap/Badge';
 
 
 const AdminHI = () => {
   const [hiData, setHiData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedBarangay, setSelectedBarangay] = useState('');
+  const [selectedSort, setSelectedSort] = useState('');
+
+  const[regionData, setRegionData] = useState([])
+
+  useEffect(() => {
+
+      axios.get(`http://localhost:4000/api/allregions`)
+        .then((response) => {
+          setRegionData(response.data)
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetching data:', error);
+        });
+      
+  
+  }, []);
+
+  const [provinceData, setProvinceData] = useState([]);
+
+  const handleRegionChange = (e) => {
+      const selectedRegion = e.target.value;
+      axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
+          .then((response) => {
+              setProvinceData(response.data);
+          })
+          .catch((error) => {
+              console.error('Error fetching provinces:', error);
+          });
+  }
+
+  const [cityData, setCityData] = useState([]);
+
+  const handleProvinceChange = (e) => {
+      const selectedProvince = e.target.value;
+      axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
+          .then((response) => {
+              setCityData(response.data);
+          })
+          .catch((error) => {
+              console.error('Error fetching cities:', error);
+          });
+  }
+
+  const [barangayData, setBarangayData] = useState([]);
+
+  const handleCityChange = (e) => {
+      const selectedCity = e.target.value;
+      axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
+      .then((response) => {
+          setBarangayData(response.data);
+      })
+      .catch((error) => {
+          console.error('Error fetching barangays:', error);
+      });
+  }
+
 
 
 useEffect(() => {
@@ -69,6 +131,72 @@ const [searchTerm, setSearchTerm] = useState('');
               });
     }
 
+    // Filter the hiData based on selectedStatus
+    const filteredHiData = hiData.filter((item) => {
+      if (selectedStatus === "") {
+        // If no filter is selected, show all items
+        return true;
+      } else {
+        // Filter based on the selected option (1 for active, 0 for deactivated)
+        return item.isActive === parseInt(selectedStatus);
+      }
+    });
+
+    // Apply additional filters to filteredHiData based on selectedRegion
+    const filteredHiData2 = filteredHiData.filter((item) => {
+      if (selectedRegion === "") {
+        // If no region filter is selected, show all items in filteredHiData
+        return true;
+      } else {
+        // Filter based on the selected region
+        return item.HIRegion === parseInt(selectedRegion);
+      }
+    });
+
+    const filteredHiData3 = filteredHiData2.filter((item) => {
+      if (selectedProvince === "") {
+        // If no region filter is selected, show all items in filteredHiData
+        return true;
+      } else {
+        // Filter based on the selected region
+        return item.HIProvince === parseInt(selectedProvince);
+      }
+    });
+
+    const filteredHiData4 = filteredHiData3.filter((item) => {
+      if (selectedCity === "") {
+        // If no region filter is selected, show all items in filteredHiData
+        return true;
+      } else {
+        // Filter based on the selected region
+        return item.HICity === parseInt(selectedCity);
+      }
+    });
+
+    const filteredHiData5 = filteredHiData4.filter((item) => {
+      if (selectedBarangay === "") {
+        // If no region filter is selected, show all items in filteredHiData
+        return true;
+      } else {
+        // Filter based on the selected region
+        return item.HIBarangay === parseInt(selectedBarangay);
+      }
+    });
+
+    if (selectedSort === "1") {
+      filteredHiData5.sort((a, b) => {
+        // Compare two items for sorting in descending order (Z-A)
+        const nameA = a.HIName; // Replace 'propertyToSort' with the actual property name you want to sort by
+        const nameB = b.HIName; // Replace 'propertyToSort' with the actual property name you want to sort by
+    
+        // Use localeCompare to perform a case-insensitive comparison
+        return nameB.localeCompare(nameA);
+      });
+    }
+    
+
+    
+
 
 
   return (
@@ -84,49 +212,92 @@ const [searchTerm, setSearchTerm] = useState('');
       <Col lg="11">
       <h1 style={{fontSize:"35px"}}> Health Institutions (HI) </h1>
       <Row>
-        <Col lg="2">
+        <Col lg="4">
         <form>
-            <div className="mb- mt-3 input-group" style={{ maxWidth: '290px' }}>
+            <div className="mb- mt-3 input-group" style={{ maxWidth: '390px' }}>
                 {/* Adjust the max-width to control the width of the input field */}
                 <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleChange} placeholder="Search" />
                 <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSubmit} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
             </div>
         </form>
         </Col>
-        <Col lg="2">
+        <Col lg="4">
         
-      <div
-        className="mb-2 mt-3 input-group"
-        style={{
-          maxWidth: '290px',
-          display: 'flex',
-          backgroundColor: '#0077B6',
-          borderRadius: '6px', // Adding borderRadius for rounding the outer div
-          overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
-        }}
-      >
         <div
+          className="mb-2 mt-3 input-group"
           style={{
+            maxWidth: '400px',
+            display: 'flex',
             backgroundColor: '#0077B6',
-            width: '30px',
-            height: '100%',
+            borderRadius: '6px', // Adding borderRadius for rounding the outer div
+            overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
           }}
         >
-           <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+          <div
+            style={{
+              backgroundColor: '#0077B6',
+              width: '30px',
+              height: '100%',
+            }}
+          >
+             <img className="ms-1 mt-2" src={sort} style={{height:"20px"}}alt="" />
+          </div>
+          <select
+            className="form-select"
+            value={selectedSort}
+            onChange={(e) => setSelectedSort(e.target.value)}
+          >
+            <option value="">Sort Alphabetically (A-Z)</option>
+            <option value="1">Sort Alphabetically (Z-A)</option>
+          </select>
+  
         </div>
-        <select
-          className="form-select"
+  
+          </Col>
+        <Col lg="4">
+        
+        <div
+          className="mb-2 mt-3 input-group"
+          style={{
+            maxWidth: '400px',
+            display: 'flex',
+            backgroundColor: '#0077B6',
+            borderRadius: '6px', // Adding borderRadius for rounding the outer div
+            overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+          }}
         >
-          <option value="">Filter Status</option>
-          <option value="city1">Active</option>
-          <option value="city2">Deactivated</option>
-         
-        </select>
-      </div>
+          <div
+            style={{
+              backgroundColor: '#0077B6',
+              width: '30px',
+              height: '100%',
+            }}
+          >
+             <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+          </div>
+          <select
+            className="form-select"
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+          >
+            <option value="">All Status</option>
+            <option value="1">Active</option>
+            <option value="0">Deactivated</option>
+          </select>
+  
+        </div>
+  
+          </Col>
+      
 
-        </Col>
+        
+      </Row>
 
-        <Col lg="2">
+      <Row>
+        
+      
+
+        <Col lg="3">
         
         <div
   className="mb-2 mt-3 input-group"
@@ -147,19 +318,30 @@ const [searchTerm, setSearchTerm] = useState('');
   >
      <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
   </div>
-  <select
-    className="form-select"
-  >
-    <option value="">Filter Region</option>
-    <option value="city1">City 1</option>
-    <option value="city2">City 2</option>
-    {/* Add more cities as needed */}
-  </select>
+  <select className="form-select" name="HIRegion" value={selectedRegion} onChange={(e)=>{
+                        setSelectedRegion(e.target.value);
+                        setSelectedProvince('');
+                        setSelectedCity('');
+                        setSelectedBarangay('');
+                        handleRegionChange(e);
+                        
+                    }}>
+                        <option value="">All Regions</option>
+                    
+                    {regionData.map((hi, index) => (
+                    <>
+                    <option value={hi.region_id}>{hi.region_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
 </div>
 
   </Col>
 
-  <Col lg="2">
+  <Col lg="3">
         
         <div
   className="mb-2 mt-3 input-group"
@@ -180,19 +362,28 @@ const [searchTerm, setSearchTerm] = useState('');
   >
      <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
   </div>
-  <select
-    className="form-select"
-  >
-    <option value="">Filter Province</option>
-    <option value="city1">City 1</option>
-    <option value="city2">City 2</option>
-    {/* Add more cities as needed */}
-  </select>
+  <select className="form-select" name="HIProvince" value={selectedProvince} disabled={selectedRegion===''} onChange={(e)=>{
+                        setSelectedProvince(e.target.value);
+                        setSelectedCity('');
+                        setSelectedBarangay('');
+                        handleProvinceChange(e);
+                    }}>
+                        <option value="">All Province</option>
+                    
+                    {provinceData.map((hi, index) => (
+                    <>
+                    <option value={hi.province_id}>{hi.province_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
 </div>
 
   </Col>
 
-  <Col lg="2">
+  <Col lg="3">
         
         <div
   className="mb-2 mt-3 input-group"
@@ -213,19 +404,27 @@ const [searchTerm, setSearchTerm] = useState('');
   >
      <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
   </div>
-  <select
-    className="form-select"
-  >
-    <option value="">Filter City</option>
-    <option value="city1">City 1</option>
-    <option value="city2">City 2</option>
-    {/* Add more cities as needed */}
-  </select>
+  <select className="form-select" name="HICity" value={selectedCity} disabled={selectedProvince===''} onChange={(e)=>{
+                        setSelectedCity(e.target.value);
+                        setSelectedBarangay('');
+                        handleCityChange(e);
+                    }}>
+                        <option value="">All Cities</option>
+                    
+                    {cityData.map((hi, index) => (
+                    <>
+                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
 </div>
 
   </Col>
 
-  <Col lg="2">
+  <Col lg="3">
         
         <div
   className="mb-2 mt-3 input-group"
@@ -246,14 +445,20 @@ const [searchTerm, setSearchTerm] = useState('');
   >
      <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
   </div>
-  <select
-    className="form-select"
-  >
-    <option value="">Filter Barangay</option>
-    <option value="city1">City 1</option>
-    <option value="city2">City 2</option>
-    {/* Add more cities as needed */}
-  </select>
+  <select className="form-select" name="HIBarangay" value={selectedBarangay} disabled={selectedCity===''} onChange={(e)=>{
+                        setSelectedBarangay(e.target.value);
+                    }}>
+                        <option value="">All Barangays</option>
+                    
+                    {barangayData.map((hi, index) => (
+                    <>
+                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
+                    
+                        </>
+                            ))}
+        
+
+                    </select>
 </div>
 
   </Col>
@@ -279,7 +484,7 @@ const [searchTerm, setSearchTerm] = useState('');
               
             </Row>
             
-            {hiData.slice(startIndex, endIndex).map((hi, index) => (
+            {filteredHiData5.slice(startIndex, endIndex).map((hi, index) => (
               <>
               <hr/>
                      <Row>
@@ -293,7 +498,12 @@ const [searchTerm, setSearchTerm] = useState('');
                        <Card.Text>{hi.HIOperatingHours}</Card.Text>
                      </Col>
                      <Col sm="2">
-                       <Card.Text>{hi.isActive === 1 ? "Active": "Deactivated"}</Card.Text>
+                       <Card.Text> {hi.isActive === 1 ? (
+                <Badge style={{fontSize: 16}} bg="success"> Active </Badge>
+                ) : hi.isActive === 0 ? (
+                  <Badge  style={{fontSize: 16}} bg="danger"> Deactivated </Badge>
+                ) : null}
+                </Card.Text>
                      </Col>
                     
             
@@ -310,12 +520,12 @@ const [searchTerm, setSearchTerm] = useState('');
            {/* Pagination component */}
           <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
-            {Array.from({ length: Math.ceil(hiData.length / itemsPerPage) }).map((_, index) => (
+            {Array.from({ length: Math.ceil(filteredHiData5.length / itemsPerPage) }).map((_, index) => (
               <Pagination.Item key={index} active={index + 1 === activePage} onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
               </Pagination.Item>
             ))}
-            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(hiData.length / itemsPerPage)} />
+            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(filteredHiData5.length / itemsPerPage)} />
           </Pagination>
 
 

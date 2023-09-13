@@ -706,6 +706,10 @@ WHERE
         db.query(`
         SELECT h.HINo,
         h.HIName, 
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion,
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
@@ -884,6 +888,10 @@ WHERE
         db.query(`
         SELECT h.HINo,
         h.HIName, 
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion, 
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
@@ -917,6 +925,10 @@ WHERE
         db.query(`
         SELECT h.HINo,
         h.HIName, 
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion, 
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
@@ -952,6 +964,10 @@ WHERE
         db.query(`
         SELECT h.HINo,
         h.HIName, 
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion,
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
@@ -1030,6 +1046,10 @@ WHERE
         db.query(`
         SELECT h.HINo,
         h.HIName, 
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion,
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
@@ -1067,6 +1087,10 @@ WHERE
         db.query(`
         SELECT h.HINo,
         h.HIName, 
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion,
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
@@ -1143,6 +1167,10 @@ WHERE
         db.query(`
         SELECT h.HINo,
         h.HIName, 
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion, 
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
         h.HIOperatingHours,
         h.HIContactNumber,
@@ -1199,11 +1227,12 @@ router.post('/updatetests', (req, res) => {
         req.body.issue_date,
         req.body.test_refno,
         req.body.TestValue,
+        req.body.validity,
         req.body.DGResultsNo,
     ]
 
     db.query(`UPDATE 	TD_DIAGNOSTICRESULTS
-                SET		HINo = ?, issue_date = ?, test_refno = ?, TestValue = ?
+                SET		HINo = ?, issue_date = ?, test_refno = ?, TestValue = ?, validity = ?
                 WHERE	DGResultsNo = ?;
             `, values, (err, data) => {
         if(err) {

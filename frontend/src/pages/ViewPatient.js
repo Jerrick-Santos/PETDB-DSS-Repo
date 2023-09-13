@@ -8,12 +8,76 @@ import axios from 'axios';
 import AdvancedSearch from '../components/AdvancedSearch';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import Pagination from 'react-bootstrap/Pagination';
-
+import Badge from 'react-bootstrap/Badge';
+import filter from '../assets/filter.png'
+import sort from '../assets/sort.png'
 
 
 const ViewPatient = () => {
 
     const [patientsData, setPatientsData] = useState([]);
+    const [selectedStatus, setSelectedStatus] = useState('');
+    const [selectedRegion, setSelectedRegion] = useState('');
+    const [selectedProvince, setSelectedProvince] = useState('');
+    const [selectedCity, setSelectedCity] = useState('');
+    const [selectedBarangay, setSelectedBarangay] = useState('');
+    const [selectedSort, setSelectedSort] = useState('');
+
+  const[regionData, setRegionData] = useState([])
+
+  useEffect(() => {
+
+      axios.get(`http://localhost:4000/api/allregions`)
+        .then((response) => {
+          setRegionData(response.data)
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetching data:', error);
+        });
+      
+  
+  }, []);
+
+  const [provinceData, setProvinceData] = useState([]);
+
+  const handleRegionChange = (e) => {
+      const selectedRegion = e.target.value;
+      axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
+          .then((response) => {
+              setProvinceData(response.data);
+          })
+          .catch((error) => {
+              console.error('Error fetching provinces:', error);
+          });
+  }
+
+  const [cityData, setCityData] = useState([]);
+
+  const handleProvinceChange = (e) => {
+      const selectedProvince = e.target.value;
+      axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
+          .then((response) => {
+              setCityData(response.data);
+          })
+          .catch((error) => {
+              console.error('Error fetching cities:', error);
+          });
+  }
+
+  const [barangayData, setBarangayData] = useState([]);
+
+  const handleCityChange = (e) => {
+      const selectedCity = e.target.value;
+      axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
+      .then((response) => {
+          setBarangayData(response.data);
+      })
+      .catch((error) => {
+          console.error('Error fetching barangays:', error);
+      });
+  }
+
 
     useEffect(() => {
       axios.get("http://localhost:4000/api/allpatients")
@@ -63,6 +127,69 @@ const ViewPatient = () => {
     console.log(patientsData)
 
 
+      // Filter the hiData based on selectedStatus
+      const filteredData = patientsData.filter((item) => {
+        if (selectedStatus === "") {
+          // If no filter is selected, show all items
+          return true;
+        } else {
+          // Filter based on the selected option (1 for active, 0 for deactivated)
+          return item.case_status === selectedStatus;
+        }
+      });
+  
+  
+      if (selectedSort === "1") {
+        filteredData.sort((a, b) => {
+          // Compare two items for sorting in descending order (Z-A)
+          const nameA = a.fullname; // Replace 'propertyToSort' with the actual property name you want to sort by
+          const nameB = b.fullname; // Replace 'propertyToSort' with the actual property name you want to sort by
+      
+          // Use localeCompare to perform a case-insensitive comparison
+          return nameB.localeCompare(nameA);
+        });
+      } else if (selectedSort === "2") {
+        filteredData.sort((a, b) => {
+          // Compare two items for sorting in descending order (Z-A)
+          const nameA = a.case_refno; // Replace 'propertyToSort' with the actual property name you want to sort by
+          const nameB = b.case_refno; // Replace 'propertyToSort' with the actual property name you want to sort by
+      
+          // Use localeCompare to perform a case-insensitive comparison
+          return nameA.localeCompare(nameB);
+        });
+      } else if (selectedSort === "3") {
+        filteredData.sort((a, b) => {
+          // Compare two items for sorting in descending order (Z-A)
+          const nameA = a.case_refno; // Replace 'propertyToSort' with the actual property name you want to sort by
+          const nameB = b.case_refno; // Replace 'propertyToSort' with the actual property name you want to sort by
+      
+          // Use localeCompare to perform a case-insensitive comparison
+          return nameB.localeCompare(nameA);
+        });
+      } else if (selectedSort === "4") {
+        filteredData.sort((a, b) => {
+          // Compare two items for sorting in ascending order (oldest to newest)
+          const dateA = new Date(a.admission_date);
+          const dateB = new Date(b.admission_date);
+          return dateA - dateB;
+        });
+      } else if (selectedSort === "5") {
+        filteredData.sort((a, b) => {
+          // Compare two items for sorting in descending order (newest to oldest)
+          const dateA = new Date(a.admission_date);
+          const dateB = new Date(b.admission_date);
+          return dateB - dateA;
+        });
+      }
+     
+      
+      
+      
+      
+      
+  
+      
+
   return (
     <div>
     <NavBar/>
@@ -80,19 +207,102 @@ const ViewPatient = () => {
                 <h1 className="mt-4" style={{fontSize:"35px"}}> Patient Record </h1>
                 </Col>
             </Row>
-    <div className="d-flex  mb-2 mt-3">
-    <form>
-        <div className="input-group">
-            {/* Adjust the max-width to control the width of the input field */}
-            <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleChange} placeholder="Keyword" />
-            <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSubmit} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
-        </div>
-    </form>
-    <div className="ms-4">
-        {/* Adjust the width of the Advanced Search button */}
+
+
+            <Row>
+            <Col lg="4">
+        <form>
+            <div className=" mt-3 input-group" style={{ maxWidth: '100%' }}>
+                {/* Adjust the max-width to control the width of the input field */}
+                <input type="search"  className="form-control" name="searchTerm" value={searchTerm} onChange={handleChange} placeholder="Search" />
+                <button className="btn me-auto" style={{ color: "white", backgroundColor: '#0077B6' }} onClick={handleSubmit} type="submit">  <img src={search} style={{height:"20px"}}alt="" /></button>
+            </div>
+        </form>
+        </Col>
+        <Col lg="2" className="mt-3">
+        
         <AdvancedSearch/>
-    </div>
-    </div>
+
+        </Col>
+
+       
+        <Col lg="3">
+        <div
+          className="mb-2 mt-3 input-group"
+          style={{
+            maxWidth: '100%',
+            display: 'flex',
+            backgroundColor: '#0077B6',
+            borderRadius: '6px', // Adding borderRadius for rounding the outer div
+            overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#0077B6',
+              width: '30px',
+              height: '100%',
+            }}
+          >
+             <img className="ms-1 mt-2" src={sort} style={{height:"20px"}}alt="" />
+          </div>
+          <select
+            className="form-select"
+            value={selectedSort}
+            onChange={(e) => setSelectedSort(e.target.value)}
+          >
+            <option value="">Sort by Name (A-Z)</option>
+            <option value="1">Sort by Name (Z-A)</option>
+            <option value="2">Sort by Case (A-Z)</option>
+            <option value="3">Sort by Case (Z-A)</option>
+            <option value="4">Sort by Date Added (A-Z)</option>
+            <option value="5">Sort by Date Added (Z-A)</option>
+          </select>
+  
+        </div>
+  
+          </Col>
+        <Col lg="3">
+        
+        <div
+          className="mb-2 mt-3 input-group"
+          style={{
+            maxWidth: '100%' ,
+            display: 'flex',
+            backgroundColor: '#0077B6',
+            borderRadius: '6px', // Adding borderRadius for rounding the outer div
+            overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#0077B6',
+              width: '30px',
+              height: '100%',
+            }}
+          >
+             <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
+          </div>
+          <select
+            className="form-select"
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+          >
+            <option value="">All Case Status</option>
+            <option value="O">Ongoing</option>
+            <option value="C">Closed</option>
+          </select>
+  
+        </div>
+  
+          </Col>
+      
+
+        
+      </Row>
+
+      
+    
     </Col>
     </Row>
     
@@ -115,7 +325,7 @@ const ViewPatient = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {patientsData.slice(startIndex, endIndex).map((patient, index) => (
+                    {filteredData.slice(startIndex, endIndex).map((patient, index) => (
                     <tr key={index}>
                         <td>
                         <Link to={`/patient/${patient.PatientNo}`}>
@@ -131,7 +341,11 @@ const ViewPatient = () => {
                             </p>
                         </Link>
                         </td>
-                        <td>{patient.case_status === "O" ? "Ongoing": "Closed"}</td>
+                        <td>{patient.case_status === "O" ? (
+                          <Badge style={{fontSize: 14}} bg="success"> Ongoing </Badge>
+                          ) : patient.case_status === "C" ? (
+                            <Badge  style={{fontSize: 14}} bg="danger"> Closed </Badge>
+                          ) : null}</td>
                         <td>{new Date(patient.admission_date).toLocaleDateString()}</td>
                     </tr>
                     ))}
@@ -144,12 +358,12 @@ const ViewPatient = () => {
             </Col>
             <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
-            {Array.from({ length: Math.ceil(patientsData.length / itemsPerPage) }).map((_, index) => (
+            {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }).map((_, index) => (
               <Pagination.Item key={index} active={index + 1 === activePage} onClick={() => handlePageChange(index + 1)}>
                 {index + 1}
               </Pagination.Item>
             ))}
-            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(patientsData.length / itemsPerPage)} />
+            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(filteredData.length / itemsPerPage)} />
           </Pagination>
             </Row>
         

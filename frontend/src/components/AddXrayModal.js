@@ -72,11 +72,11 @@ function AddXrayModal(props) {
         console.log('issueDate: ', issueDate);
         console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
 
-        if (today > validityExpirationDate) {
-            setXrayValues((prev) => ({ ...prev, validity: 0 }));
-        } else {
+        if (today <= validityExpirationDate) {
             setXrayValues((prev) => ({ ...prev, validity: 1 }));
-        }
+          } else {
+            setXrayValues((prev) => ({ ...prev, validity: 0 }));
+          }
         }
     };
 
