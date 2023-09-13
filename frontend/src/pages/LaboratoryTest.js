@@ -313,7 +313,7 @@ const LaboratoryTest = () => {
               </Col>
               <Col sm="1">
                 <Card.Text className="text-muted">
-                <UpdateMTBRIF DGResultsNo={mtb.DGResultsNo}/>
+                <UpdateMTBRIF DGResultsNo={mtb.DGResultsNo} HINo={mtb.HINo} issue_date={mtb.issue_date} test_refno={mtb.test_refno} TestValue={mtb.TestValue} validity={mtb.validity}/>
 
               <DeleteTest DGResultsNo={mtb.DGResultsNo}/>  
                   </Card.Text>

@@ -1199,11 +1199,12 @@ router.post('/updatetests', (req, res) => {
         req.body.issue_date,
         req.body.test_refno,
         req.body.TestValue,
+        req.body.validity,
         req.body.DGResultsNo,
     ]
 
     db.query(`UPDATE 	TD_DIAGNOSTICRESULTS
-                SET		HINo = ?, issue_date = ?, test_refno = ?, TestValue = ?
+                SET		HINo = ?, issue_date = ?, test_refno = ?, TestValue = ?, validity = ?
                 WHERE	DGResultsNo = ?;
             `, values, (err, data) => {
         if(err) {
