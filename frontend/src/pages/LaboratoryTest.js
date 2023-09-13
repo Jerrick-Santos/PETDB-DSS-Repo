@@ -239,7 +239,7 @@ const LaboratoryTest = () => {
               </Col>
               <Col sm="1">
                 <Card.Text className="text-muted">
-                <UpdateXray DGResultsNo={xray.DGResultsNo}/>
+                <UpdateXray DGResultsNo={xray.DGResultsNo} HINo={xray.HINo} issue_date={xray.issue_date} test_refno={xray.test_refno} TestValue={xray.TestValue} validity={xray.validity}/>
 
               <DeleteTest DGResultsNo={xray.DGResultsNo}/>
                   </Card.Text>
