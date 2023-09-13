@@ -71,7 +71,7 @@ function AdvancedSearch(){
   return (
         <>
         <Link to={"/allpatient"}>
-        <button className="btn" onClick={handleShow} style={{ color: "white", backgroundColor: '#0077B6' }} type="submit">Advanced Search</button>
+        <button className="btn" onClick={handleShow} style={{ color: "white", backgroundColor: '#0077B6', minWidth: '100%'}} type="submit">Advanced Search</button>
         </Link>
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="xl">
