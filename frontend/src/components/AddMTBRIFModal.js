@@ -67,11 +67,11 @@ function AddMTBRIFModal(props) {
             console.log('issueDate: ', issueDate);
             console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1);
 
-            if (today > validityExpirationDate) {
-                setMTBValues((prev) => ({ ...prev, validity: 0 }));
-            } else {
+            if (today <= validityExpirationDate) {
                 setMTBValues((prev) => ({ ...prev, validity: 1 }));
-            }
+              } else {
+                setMTBValues((prev) => ({ ...prev, validity: 0 }));
+              }
         }
     };
 
