@@ -1193,6 +1193,28 @@ router.get('/checkhiref/:id', (req, res) => {
 })
 })
 
+router.post('/updateXray', (req, res) => {
+    const values = [
+        req.body.HINo,
+        req.body.issue_date,
+        req.body.test_refno,
+        req.body.TestValue,
+        req.body.DGResultsNo,
+    ]
+
+    db.query(`UPDATE 	TD_DIAGNOSTICRESULTS
+                SET		HINo = ?, issue_date = ?, test_refno = ?, TestValue = ?
+                WHERE	DGResultsNo = ?;
+            `, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  TD_DIAGNOSTICRESULTS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  TD_DIAGNOSTICRESULTS:", data);
+        return res.json(data)
+    });
+})
+
 //Delete a row in MD_HI based on a given id
 router.delete('/deletehi/:id', (req, res) => {
     const id = req.params.id;
