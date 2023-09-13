@@ -13,6 +13,8 @@ function UpdateMTBRIF(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const[hiData, setHIData] = useState([])
+
     useEffect(() => {
 
         axios.get(`http://localhost:4000/api/hiwithtests/2`)
