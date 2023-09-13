@@ -10,14 +10,7 @@ function AddMTBRIFModal(props) {
     const [mtbValidity, setMTBValidity] = useState([]);
     const[hiData, setHIData] = useState([])
 
-    const [mtbValues, setMTBValues] = useState({
-            CaseNo: props.caseNum,
-            HINo: '',
-            issue_date: new Date().toISOString().split('T')[0],
-            test_refno:'',
-            TestValue: '',
-            validity: 1,
-    })
+    
 
     useEffect(() => {
 
@@ -44,7 +37,14 @@ function AddMTBRIFModal(props) {
     
     }, [mtbValues.issue_date, mtbValidity]);
 
-    
+    const [mtbValues, setMTBValues] = useState({
+            CaseNo: props.caseNum,
+            HINo: '',
+            issue_date: new Date().toISOString().split('T')[0],
+            test_refno:'',
+            TestValue: '',
+            validity: 1,
+    })
 
     const handleChange = (e) => {
         const {name, value} = e.target;
