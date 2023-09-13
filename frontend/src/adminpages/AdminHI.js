@@ -17,6 +17,7 @@ import DeleteHIModal from '../admincomponents/DeleteHIModal';
 
 const AdminHI = () => {
   const [hiData, setHiData] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState('');
 
 
 useEffect(() => {
@@ -29,6 +30,13 @@ useEffect(() => {
     });
 }, []);
 
+console.log(hiData)
+ // Function to handle dropdown change
+ const handleStatusChange = (event) => {
+  setSelectedStatus(event.target.value);
+};
+
+// Filter the hiData based on selectedStatus
 
 
 // Add these state variables
@@ -87,7 +95,7 @@ const [searchTerm, setSearchTerm] = useState('');
         </Col>
         <Col lg="2">
         
-              <div
+      <div
         className="mb-2 mt-3 input-group"
         style={{
           maxWidth: '290px',
@@ -110,9 +118,9 @@ const [searchTerm, setSearchTerm] = useState('');
           className="form-select"
         >
           <option value="">Filter Status</option>
-          <option value="city1">City 1</option>
-          <option value="city2">City 2</option>
-          {/* Add more cities as needed */}
+          <option value="city1">Active</option>
+          <option value="city2">Deactivated</option>
+         
         </select>
       </div>
 
