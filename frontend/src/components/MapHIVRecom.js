@@ -8,42 +8,13 @@ import  MarkerClusterGroup  from "react-leaflet-markercluster";
 import localforage from 'localforage';
 import { MBTiles } from 'leaflet.offline';
 import L, { Map } from "leaflet";
-
+import axios from 'axios';
 
 
 function MapHIVRecom() {
    
-    // Map Constructor
-    // const position = [this.state.lat, this.state.lng];
+    const userid = 1
     const mapRef = useRef()
-    // OFFLINE MAP
-    // useEffect(() => {
-    //     if(mapRef.current){
-            
-    //         const map = mapRef.current.getLeafletElement();
-    //       // @ts-ignore
-    //       const tileLayerOffline = L.tileLayer.offline(
-    //         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    //         {
-    //           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-    //           minZoom: 13,
-    //         }
-    //       );
-      
-    //       tileLayerOffline.addTo(map);
-      
-    //       // @ts-ignore
-    //       const controlSaveTiles = L.control.savetiles(
-    //         tileLayerOffline, 
-    //         {
-    //           zoomlevels: [13, 14, 15, 16], // optional zoomlevels to save, default current zoomlevel
-    //         }
-    //       );
-      
-    //       controlSaveTiles.addTo(map);
-    //       console.log("MAP SUCCESSFULLY OFFLINE")
-    //     }
-    // }, [mapRef]);
 
     useEffect(() => {
       if(mapRef.current){
@@ -55,11 +26,24 @@ function MapHIVRecom() {
       }
     }, [mapRef])
 
+    // Loading coordinate data
+    useEffect(() => {
+        axios.get(`http://localhost:4000/api/loadLocation/${userid}`)
+            .then(res => {
+                const { res1, res2 } = res.data
+                setLocations(res2)
+                setCenter({lat:res1.XCoord, lng:res1.YCoord})
+            })
+            .catch(err => {
+                console.error(err);
+            })
+    }, [])
+
 
     // MAP SETTERS
-    const [center, setCenter] = useState({lat: 14.6091, lng: 121.0223});
+    const [center, setCenter] = useState({lat:null, lng:null});
     const ZOOM_LEVEL = 15;
-    
+    const [locations, setLocations] = useState([])
 
     // MODAL SETTERS
     const [show,setShow] = useState(false)
@@ -79,26 +63,32 @@ function MapHIVRecom() {
             <Modal.Body>
 
                 <Row className="mt-2">
-                    <Col>Recommended Site for Testing:<strong> DLSHSI</strong></Col>
+                    <Col>Recommended Site for Testing:<strong>{/** INSERT DATA */}</strong></Col>
                 </Row>
                 <Row className="mt-2">
-                    <Col>Operating Hours:<strong> Everyday 7:00 AM - 4:00 PM</strong></Col>
+                    <Col>Operating Hours:<strong> {/** INSERT DATA */} </strong></Col>
                 </Row>
 
 
                 <Row className="mt-4">
                     {/* <img src={map} style={{width:"100%" , opacity:"1"}}/> */}
 
-                    <MapContainer center={[center.lat, center.lng]} zoom={13} scrollWheelZoom={false}>
+                    <MapContainer center={[center.lat, center.lng]} zoom={ZOOM_LEVEL} scrollWheelZoom={false}>
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        <Marker position={[center.lat, center.lng]}>
-                            <Popup>
-                            A pretty CSS3 popup. <br /> Easily customizable.
-                            </Popup>
-                        </Marker>
+
+                        {locations.map((hi) => {
+                            return (
+                                <Marker position = {[hi.XCoord, hi.YCoord]}>
+                                    <Popup>
+                                        {hi.HIName} <br />
+                                        {hi.HIOperatingHours}
+                                    </Popup>
+                                </Marker>
+                            )
+                        })}
                     </MapContainer>
                 </Row>
 

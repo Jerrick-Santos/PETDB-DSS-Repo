@@ -1,11 +1,34 @@
 const express = require('express');
 const router = express.Router();
 
+
 //Enter routes here
 
 // Export the router with the attached 'db' connection
 module.exports = (db) => {
     // Attach the 'db' connection to all route handlers before returning the router
+    const util = require('util');
+    const queryPromise = util.promisify(db.query).bind(db);
+
+    // helper functions
+    function getHaversineDistance(lng2, lat2, lng1, lat1) {
+        // COMPUTED USING HAVERSINE FORMULA
+    
+        const rad = (Math.PI / 180)
+        lng1 *= rad
+        lat1 *= rad
+        lng2 *= rad
+        lat2 *= rad
+        
+        // console.log("COORD IN RAD: ", lng1, lat1, lng2, lat2);
+    
+        let dist = 2 * 6371.009 * Math.asin(Math.sqrt((Math.sin((lat2 - lat1) ** 2 / 2)) + (Math.cos(lat1) * Math.cos(lat2) * (Math.sin((lng2 - lng1) ** 2 / 2)))))
+    
+        // console.log("DIST: ", dist)
+    
+        return dist;
+    }
+
 
     router.get('/getContacts/:CaseNo', (req, res) => {
 
@@ -261,6 +284,54 @@ module.exports = (db) => {
                 res.send(results)
             }
         })
+    }),
+
+    router.get('/loadLocations/:userid', async (req, res) => {
+        /** ROUTER GOAL: get barangay and health institution information associated to the logged user */
+        
+        const user_query = `SELECT b.BGYNo, b.XCoord, b.YCoord FROM PEDTBDSS_new.MD_USERS u JOIN PEDTBDSS_new.MD_BARANGAYS b ON u.BGYNo = b.BGYNo WHERE userNo = ?;`
+        const hi_query = `SELECT * 
+                        FROM PEDTBDSS_new.MD_BRGYHI bhi
+                        JOIN PEDTBDSS_new.MD_HI hi ON bhi.HINo = hi.HINo
+                        WHERE BGYNo = ?
+                        AND hi.isActive = 1;`
+
+        try {
+            let res1, res2
+            res1 = await queryPromise(user_query, [req.params.userid])
+            console.log("QUERY 1: ", res1)
+            if (res1 && res1.length > 0) {
+                res2 = await queryPromise(hi_query, [res1[0].BGYNo])
+                console.log("QUERY 2: ", res2)
+            }
+
+            if (res2 && res2.length > 0 && res1 && res1.length > 0) {
+                let dist_arr = []
+                res2.map((hi) => {
+                    // console.log(hi.XCoord, hi.YCoord, res1[0].XCoord, res1[0].YCoord)
+                    let distance = getHaversineDistance(hi.XCoord, hi.YCoord, res1[0].XCoord, res1[0].YCoord)
+                    hi.distance = distance
+                    dist_arr.push(distance)
+                })
+
+                let min_dist = dist_arr[dist_arr.indexOf(Math.min(...dist_arr))]
+                // console.log(min_dist)
+                res2.map((hi) => {
+                    if (hi.distance === min_dist) { hi.isClosest = 1 } else { hi.isClosest = 0 }
+                })
+
+                const response = {
+                    res1: res1[0],
+                    res2: res2
+                }
+                res.send(response)
+                return
+            }
+            res.json({message: 'user does not exist'})
+        } catch (error) {
+            console.error(error)
+        }
+        
     })
     
 

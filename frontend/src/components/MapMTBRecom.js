@@ -8,42 +8,14 @@ import  MarkerClusterGroup  from "react-leaflet-markercluster";
 import localforage from 'localforage';
 import { MBTiles } from 'leaflet.offline';
 import L, { Map } from "leaflet";
-
+import axios from 'axios';
 
 
 function MapMTBRecom() {
    
-    // Map Constructor
-    // const position = [this.state.lat, this.state.lng];
+    
     const mapRef = useRef()
-    // OFFLINE MAP
-    // useEffect(() => {
-    //     if(mapRef.current){
-            
-    //         const map = mapRef.current.getLeafletElement();
-    //       // @ts-ignore
-    //       const tileLayerOffline = L.tileLayer.offline(
-    //         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    //         {
-    //           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-    //           minZoom: 13,
-    //         }
-    //       );
-      
-    //       tileLayerOffline.addTo(map);
-      
-    //       // @ts-ignore
-    //       const controlSaveTiles = L.control.savetiles(
-    //         tileLayerOffline, 
-    //         {
-    //           zoomlevels: [13, 14, 15, 16], // optional zoomlevels to save, default current zoomlevel
-    //         }
-    //       );
-      
-    //       controlSaveTiles.addTo(map);
-    //       console.log("MAP SUCCESSFULLY OFFLINE")
-    //     }
-    // }, [mapRef]);
+    const userid = 1
 
     useEffect(() => {
       if(mapRef.current){
@@ -55,10 +27,26 @@ function MapMTBRecom() {
       }
     }, [mapRef])
 
+    // Loading coordinate data
+    useEffect(() => {
+        axios.get(`http://localhost:4000/api/loadLocations/${userid}`)
+            .then(res => {
+                const { res1, res2 } = res.data
+                setLocations(res2)
+                setCenter(res1)
+                setMapLoaded(true)
+                console.log("reached")
+            })
+            .catch(err => {
+                console.error(err);
+            })
+    }, [])
 
-    // MAP SETTERS
-    const [center, setCenter] = useState({lat: 14.6091, lng: 121.0223});
+
+    const [center, setCenter] = useState({});
     const ZOOM_LEVEL = 15;
+    const [locations, setLocations] = useState([])
+    const [mapLoaded, setMapLoaded] = useState(false)
     
 
     // MODAL SETTERS
@@ -79,27 +67,42 @@ function MapMTBRecom() {
             <Modal.Body>
 
                 <Row className="mt-2">
-                    <Col>Recommended Site for Testing:<strong> DLSHSI</strong></Col>
+                    {/* <Col>Recommended Site for Testing:<strong></strong></Col> */}
                 </Row>
                 <Row className="mt-2">
-                    <Col>Operating Hours:<strong> Everyday 7:00 AM - 4:00 PM</strong></Col>
+                    {/* <Col>Operating Hours:<strong></strong></Col> */}
                 </Row>
 
 
                 <Row className="mt-4">
                     {/* <img src={map} style={{width:"100%" , opacity:"1"}}/> */}
 
-                    <MapContainer center={[center.lat, center.lng]} zoom={13} scrollWheelZoom={false}>
-                        <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <Marker position={[center.lat, center.lng]}>
-                            <Popup>
-                            A pretty CSS3 popup. <br /> Easily customizable.
-                            </Popup>
-                        </Marker>
-                    </MapContainer>
+                    {mapLoaded && center && (
+                        <MapContainer center={[center.XCoord, center.YCoord]} zoom={ZOOM_LEVEL} scrollWheelZoom={false}>
+                            
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                
+                            />
+
+                            {locations.length > 0 && locations.map((hi, index) => {
+                                
+                                return (
+                                    <Marker position = {[hi.XCoord, hi.YCoord]} key={index}>
+                                        <Popup>
+                                            {hi.HIName} <br />
+                                            {hi.HIOperatingHours}
+                                        </Popup>
+                                    </Marker>
+                                )
+
+                            })}
+
+                            <Marker style={{ opacity: 1 }} position={[center.XCoord, center.YCoord]} />
+
+                        </MapContainer>
+                    )}
                 </Row>
 
             </Modal.Body>
