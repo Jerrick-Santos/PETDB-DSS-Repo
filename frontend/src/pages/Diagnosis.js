@@ -18,6 +18,11 @@ import LatentTBModal from '../components/LatentTBModal';
 import CaseHeader from '../components/CaseHeader'
 import Badge from 'react-bootstrap/Badge';
 import Pagination from 'react-bootstrap/Pagination';
+import MapHIVRecom from '../components/MapHIVRecom';
+import MapXrayRecom from '../components/MapXrayRecom';
+import MapMTBRecom from '../components/MapMTBRecom';
+import MapTSTRecom from '../components/MapTSTRecom';
+import MapIGRARecom from '../components/MapIGRARecom';
 
 
 const Diagnosis = () => {
@@ -189,10 +194,7 @@ const endIndex = startIndex + itemsPerPage;
               
             </Col>
 
-            <Col lg="11" className="d-flex justify-content-center">
-              <ViewMapRecomModal/>
-              
-            </Col>
+           
             
             <Col className="mb-4" lg="11">
 
@@ -250,47 +252,51 @@ const endIndex = startIndex + itemsPerPage;
 
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
-              <strong>
-              {(diagnosis.need_hiv === 1) ? "HIV Test" : ""}
-              </strong>
+            {(diagnosis.need_hiv === 1) ? (
+                <MapHIVRecom/>
+                ) : null}
+             
             
              </Col>
         </Row>
 
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
-            <strong>
-            {(diagnosis.need_xray === 1) ? "Xray" : ""}
-              </strong>
-            
-             </Col>
-        </Row>
-
-        <Row className="mt-1">
-            <Col style={{fontSize:"20px"}}>
-            <strong>
-            {(diagnosis.need_mtb === 1) ? "MTB/RIF" : ""}
-              </strong>
-            
-            
+            {(diagnosis.need_xray === 1) ? (
+                <MapXrayRecom/>
+                ) : null}
+             
+           
              </Col>
         </Row>
 
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
             
-            <strong>
-            {(diagnosis.need_tst === 1) ? "TST Test" : ""}
-              </strong>
+              {(diagnosis.need_mtb === 1) ? (
+                <MapMTBRecom/>
+                ) : null}
+              
+            
             
              </Col>
         </Row>
 
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
-            <strong>
-            {(diagnosis.need_igra === 1) ? "IGRA Test" : ""}
-              </strong>
+            
+              {(diagnosis.need_tst === 1) ? (
+                <MapTSTRecom/>
+                ) : null}
+            
+             </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"20px"}}>
+              {(diagnosis.need_igra === 1) ? (
+                <MapIGRARecom/>
+                ) : null}
           
              </Col>
         </Row>
