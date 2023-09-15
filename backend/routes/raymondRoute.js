@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const { authenticateToken } = require('./authFunc');
 
 //Enter routes here
 
@@ -286,9 +286,10 @@ module.exports = (db) => {
         })
     }),
 
-    router.get('/loadLocations/:userid', async (req, res) => {
+    router.get('/loadLocations', authenticateToken, async (req, res) => {
         /** ROUTER GOAL: get barangay and health institution information associated to the logged user */
-        
+        const userid = req.user.userNo
+
         const user_query = `SELECT b.BGYNo, b.XCoord, b.YCoord FROM PEDTBDSS_new.MD_USERS u JOIN PEDTBDSS_new.MD_BARANGAYS b ON u.BGYNo = b.BGYNo WHERE userNo = ?;`
         const hi_query = `SELECT * 
                         FROM PEDTBDSS_new.MD_BRGYHI bhi
@@ -298,7 +299,7 @@ module.exports = (db) => {
 
         try {
             let res1, res2
-            res1 = await queryPromise(user_query, [req.params.userid])
+            res1 = await queryPromise(user_query, [userid])
             console.log("QUERY 1: ", res1)
             if (res1 && res1.length > 0) {
                 res2 = await queryPromise(hi_query, [res1[0].BGYNo])

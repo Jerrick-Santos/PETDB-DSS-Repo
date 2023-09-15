@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const session = require('express-session');
-const { autheticateToken } = require('./authFunc');
+const { authenticateToken } = require('./authFunc');
 
 // function autheticateToken(req, res, next) {
 //     const authHeader = req.headers['authorization']
@@ -23,7 +23,7 @@ const { autheticateToken } = require('./authFunc');
 // Export the router with the attached 'db' connection
 module.exports = (db) => {
 
-    router.get('/tokencontent', autheticateToken, (req, res) => {
+    router.get('/tokencontent', authenticateToken, (req, res) => {
 
         const tokenContent = {
             userNo : req.user.userNo,
