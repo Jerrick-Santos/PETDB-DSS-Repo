@@ -1,6 +1,6 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, Badge  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
 import user from '../assets/user.png';
@@ -49,6 +49,8 @@ const CloseContacts = () => {
         days_until_ha: null,
         next_xray: null,
         days_until_xray: null,
+        status_ha: null,
+        status_xray: null
       })));
       
       var update = {}
@@ -94,11 +96,23 @@ const CloseContacts = () => {
             
             console.log("DAYS TILL NEXT HA/XRAY: ", days_until_ha, "/", days_until_xray)
 
+            let status_ha, status_xray
+
+            if (ha_start_dates.data.length === 0 || ha_start_dates.data.length === null) { status_ha = 0 } else { 
+              status_ha = ha_start_dates.data.length;
+            }
+
+            if (xray_start_dates.data.length === 0 || xray_start_dates.data.length === null) { status_xray = 0 } else {
+              status_xray = xray_start_dates.data.length;
+            }
+
             const updatedProps = {
               next_xray: next_xray,
               days_until_xray: days_until_xray,
               next_ha: next_ha,
-              days_until_ha: days_until_ha
+              days_until_ha: days_until_ha,
+              status_ha: status_ha,
+              status_xray: status_xray
             };
         
             update = {...x, ...updatedProps}
@@ -257,53 +271,35 @@ const CloseContacts = () => {
                       <td>{contact.contact_person === null ? <em>self</em> : contact.contact_person}</td>
                       <td>{contact.contact_num}</td>
                       <td>{contact.contact_email}</td>
-                      
-                      
-                      {/*Display Next Assessment Information
-                          Logic:
-                            1. If the user is not a patient, show NO RECORD
-                            2. IF the days left until assessment is:
-                              a. 0 < x < 7 -> yellow
-                              b. x < 0     -> red 
-                      */}
 
                       {contact.PatientNo === null ? (
-                          <td>NO RECORD</td>
+                          <td> <Badge bg='danger'> NO RECORD </Badge> </td>
                         ) : (
                           <>
-                            {contact.days_until_ha <= 7 && contact.days_until_ha >= 0 ? (
-                              <td style={{ backgroundColor: "yellow" }}>{contact.next_ha} ASSESSMENT INCOMING</td>
-                            ) : (
-                              <>
-                                {contact.days_until_ha < 0 ? (
-                                  <td style={{ backgroundColor: "red" }}>{contact.next_ha} EXPECTED ASSESSMENT DATE EXCEEDED. CONTACT IMMEDIATELY </td>
-                                ) : (
-                                  <td>{contact.next_ha}</td>
-                                )}
-                              </>
-                            )}
+                            {contact.status_ha === 2 ? (
+                              <td> <Badge bg='success'> COMPLETE </Badge> </td>
+                              ) : (
+                                <td> <Badge bg='secondary'> { contact.next_ha } </Badge> </td>
+                              )
+                            }
                           </>
                         )
                       }
 
                       {contact.PatientNo === null ? (
-                          <td>NO RECORD</td>
+                          <td><Badge bg='danger'> NO RECORD </Badge></td>
                         ) : (
                           <>
-                            {contact.days_until_xray <= 7 && contact.days_until_xray >= 0 ? (
-                              <td style={{ backgroundColor: "yellow" }}>{contact.next_xray} ASSESSMENT INCOMING</td>
-                            ) : (
-                              <>
-                                {contact.days_until_xray < 0 ? (
-                                  <td style={{ backgroundColor: "red" }}>{contact.next_xray} EXPECTED ASSESSMENT DATE EXCEEDED. CONTACT IMMEDIATELY</td>
-                                ) : (
-                                  <td>{contact.next_xray}</td>
-                                )}
-                              </>
-                            )}
+                            {contact.status_xray === 2 ? (
+                              <td> <Badge bg='success'> COMPLETE </Badge> </td>
+                              ) : (
+                                <td> <Badge bg='secondary'> { contact.next_xray } </Badge> </td>
+                              )
+                            }
                           </>
                         )
                       }
+
                     </tr>
                   ))
                 }
