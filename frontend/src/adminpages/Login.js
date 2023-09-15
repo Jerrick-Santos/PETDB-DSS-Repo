@@ -18,21 +18,73 @@ const Login = () => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
 
-    // Hardcoded credentials for demonstration purposes
-    if (username === '1' && password === 'abc') {
-      // Redirect to /home for username 1
-      window.location.href = '/home';
-    } else if (username === '2' && password === 'abc') {
-      // Redirect to /adminbhc for username 2
-      window.location.href = '/bhc/1';
-    } else {
-      // Handle incorrect login
+    try {
+      const response = await axios.post('http://localhost:4000/api/login', { username, password });
+
+      // Assuming the server responds with a JWT token upon successful login
+      const { accessToken, user_type, BGYNo } = response.data;
+      console.log(response.data)
+      // Store the token securely (e.g., in a secure HTTP cookie or local storage)
+      // Here, we are storing it in local   for demonstration purposes
+      localStorage.setItem('token', accessToken);
+  
+            // Set the token in the Axios default headers
+      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+      console.log(user_type)
+          // Perform redirection based on the 'user_type' received from the server
+      if (user_type === 'BHW') {
+        // Redirect to /home for users with 'BHW' user type
+        window.location.href = '/home';
+      } else if (user_type === 'admin'){
+        // Redirect to another page for users with different user types
+        // Replace '/other-page' with the appropriate URL
+        window.location.href = `/bhc/${BGYNo}`;
+      }
+
+    } catch (error) {
+      console.error('Login failed:', error.message);
       alert('Incorrect username or password');
     }
   };
+
+
+  // const handleLogin = async (event) => {
+  //   event.preventDefault();
+
+  //   try {
+  //     const response = await axios.post('http://localhost:4000/api/login', { username, password });
+
+  //     // Assuming the server responds with a JWT token upon successful login
+  //     const { accessToken, user_type, BGYNo } = response.data;
+  //     console.log(response.data)
+
+  //     // Store the token securely (e.g., in a secure HTTP cookie or local storage)
+  //     // Here, we are storing it in local storage for demonstration purposes
+  //     localStorage.setItem('token', accessToken);
+
+  //     // Set the token in the Axios default headers
+  //     axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+  //     console.log(user_type)
+      
+  //     // Perform redirection based on the 'user_type' received from the server
+  //     if (user_type === 'BHW') {
+  //       // Redirect to /home for users with 'BHW' user type
+  //       window.location.href = '/home';
+  //     } else if (user_type === 'admin'){
+  //       // Redirect to another page for users with different user types
+  //       // Replace '/other-page' with the appropriate URL
+  //       window.location.href = `/bhc/${BGYNo}`;
+  //     }
+
+  //   } catch (error) {
+  //     console.error('Login failed:', error.message);
+  //     alert('Incorrect username or password');
+  //   }
+  // };
 
   return (
     <div style={{ backgroundColor: '#0077B6', minHeight: '100vh' }}>

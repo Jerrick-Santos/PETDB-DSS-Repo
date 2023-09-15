@@ -23,7 +23,7 @@ import PatientSummaryPTB from './pages/Home/PatientSummaryPTB';
 import PatientSummaryEPTB from './pages/Home/PatientSummaryEPTB';
 import PatientSummaryClosed from './pages/Home/PatientSummaryClosed';
 import SimilarCases from './pages/SimilarCases';
-
+import TestRoute from './pages/TestRoute';
 
 function App() {
   return (
@@ -59,6 +59,8 @@ function App() {
                     <Route path="/case/:id" element={<Case/>}/>
                     <Route path="/allpatient/searchpatient/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt/:phn/:ps/:pb/:pc/:pr/:pz/:chn/:cs/:cb/:cc/:cr/:cz/:ad/:mn/:mb/:mc/:me/:fn/:fb/:fc/:fe/:en/:eb/:ec/:ee" element={<AdvanceViewPatient/>}/>
                     <Route path="/addpatient/:id" element={<AddPatientContact/>}/>
+
+                    <Route path="/test" element={<TestRoute/>}/>
                     
                 </Routes>
             </BrowserRouter>
