@@ -2,9 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
 import add from '../assets/add.png';
 import axios from 'axios';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
-import { Link, useParams } from 'react-router-dom';
-import FormControl from 'react-bootstrap/FormControl'
+import { Row, Col  } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import ViewSimilarPatientModal from '../components/ViewSimilarPatientModal'
 
@@ -63,16 +61,6 @@ function AddCloseContactModal(props) {
         }
     };
 
-    
-    // useEffect(() => {
-    //     if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
-    //       console.log("Similarity Check Condition Triggered");
-    //       fetchData().then(similarData => {
-    //         setSimilarPatients(similarData);
-    //         setShowSimilar(similarData.length > 0);
-    //       });
-    //     }
-    // }, [formValues]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -102,7 +90,7 @@ function AddCloseContactModal(props) {
         if (new Date(birthdate).toLocaleDateString() === new Date().toLocaleDateString()) newErrors.birthdate = "Please select a date"
         if (sex === "") newErrors.sex = "Please select an option"
         if (!contact_relationship) newErrors.contact_relationship = "Input cannot be empty"
-        //if (contact_num.length != 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
+        if (contact_num.length !== 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
 
 
         return newErrors

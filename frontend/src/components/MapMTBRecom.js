@@ -14,8 +14,8 @@ import axios from 'axios';
 function MapMTBRecom() {
    
     
+    
     const mapRef = useRef()
-    const userid = 1
 
     useEffect(() => {
       if(mapRef.current){
@@ -29,7 +29,17 @@ function MapMTBRecom() {
 
     // Loading coordinate data
     useEffect(() => {
-        axios.get(`http://localhost:4000/api/loadLocations/${userid}`)
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Token not found in local storage.');
+            return;
+        }
+
+        // Define headers with the JWT token
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+        axios.get(`http://localhost:4000/api/loadLocations`, { headers })
             .then(res => {
                 const { res1, res2 } = res.data
                 setLocations(res2)
