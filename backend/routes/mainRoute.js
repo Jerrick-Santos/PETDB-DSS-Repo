@@ -1244,6 +1244,44 @@ router.post('/updatetests', (req, res) => {
     });
 })
 
+router.get('/checktestsref/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT
+    (SELECT COUNT(*) FROM TD_PTDIAGNOSIS WHERE xray_id = ${id}) +
+    (SELECT COUNT(*) FROM TD_PTDIAGNOSIS WHERE mtb_id = ${id}) +
+    (SELECT COUNT(*) FROM TD_PTDIAGNOSIS WHERE tst_id = ${id}) +
+    (SELECT COUNT(*) FROM TD_PTDIAGNOSIS WHERE igra_id = ${id}) AS total_references;
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+router.delete('/deletetests/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    DELETE FROM TD_DIAGNOSTICRESULTS
+    WHERE DGResultsNo = ${id};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
 //Delete a row in MD_HI based on a given id
 router.delete('/deletehi/:id', (req, res) => {
     const id = req.params.id;

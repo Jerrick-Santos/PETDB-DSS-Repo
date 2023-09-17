@@ -20,7 +20,7 @@ function DeleteTest(props) {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        axios.get(`http://localhost:4000/api/checkhiref/${props.HINo}`)
+        axios.get(`http://localhost:4000/api/checktestsref/${props.DGResultsNo}`)
             .then((response) => {
                 setReference(response.data[0]);
 
@@ -39,12 +39,13 @@ function DeleteTest(props) {
                 // Handle any errors that occurred during the request
                 console.error('Error fetching data:', error);
             });
-    }, [props.HINo]); // Adding props.HINo as dependency
+    }, [props.DGResultsNo]); // Adding props.DGResultsNo as dependency
 
     const handleDelete = async e => {
         e.preventDefault()
         try{
-            await axios.delete(`http://localhost:4000/api/deletehi/${props.HINo}`)
+            await axios.delete(`http://localhost:4000/api/deletetests/${props.DGResultsNo}`)
+            window.location.reload()
         }catch(err){
             console.log(err)
         }
@@ -55,16 +56,6 @@ function DeleteTest(props) {
 
         isActive: 0
     });
-
-    const handleDeactivate = async e => {
-        e.preventDefault()
-        try{
-            await axios.patch(`http://localhost:4000/api/updatehistatus/${props.HINo}`, formValues)
-        }catch(err){
-            console.log(err)
-        }
-       
-    }
 
     return (
         <>
@@ -84,17 +75,9 @@ function DeleteTest(props) {
                 <Modal.Body>
                     {isReferenced ? (
                         <>
-                        <strong>{props.HIName}  </strong>is currently being referenced in other records.   <br/>  <br/>
-                        Would you like to deactivate this record instead?
+                        This test is currently being referenced in other records.   <br/>  <br/>
                         <Row className="mt-4">
                             <Col >
-                            <button className="btn me-2" onClick={handleDeactivate} style={{ color: 'white', backgroundColor: "#0077B6", border: "none" }}>
-                                    <Link to={"/adminhi"} >
-                                        Deactivate
-                                    </Link>
-                                </button>
-                           
-                           
                                 <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
                             </Col>
                         </Row>
@@ -102,7 +85,7 @@ function DeleteTest(props) {
                        
                     ) : (
                         <>
-                        Are you certain you want to delete <strong> {props.HIName}  </strong>?  <br/>  <br/>
+                        Are you certain you want to delete this test?  <br/>  <br/>
                         You can no longer undo this action.
                         <br/>
                         <Row className="mt-4">
