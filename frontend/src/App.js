@@ -18,7 +18,7 @@ import HIInfo from './adminpages/HIInfo';
 import BHCInfo from './adminpages/BHCInfo';
 import AdvanceViewPatient from './pages/AdvanceViewPatient';
 
-import AddPatientContact from './pages/AddPatientContact';
+
 import PatientSummaryPTB from './pages/Home/PatientSummaryPTB';
 import PatientSummaryEPTB from './pages/Home/PatientSummaryEPTB';
 import PatientSummaryClosed from './pages/Home/PatientSummaryClosed';
@@ -51,7 +51,7 @@ const AddPatientWithAccess = withAccessControl(AddPatient, ['BHW']);
 const ViewPatientWithAccess = withAccessControl(ViewPatient, ['BHW']);
 const CaseWithAccess = withAccessControl(Case, ['BHW']);
 const AdvanceViewPatientWithAccess = withAccessControl(AdvanceViewPatient, ['BHW']);
-const AddPatientContactWithAccess = withAccessControl(AddPatientContact, ['BHW']);
+
 
 function App() {
   return (
@@ -89,7 +89,7 @@ function App() {
                     
                     <Route path="/case/:id" element={<CaseWithAccess/>}/>
                     <Route path="/allpatient/searchpatient/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt/:phn/:ps/:pb/:pc/:pr/:pz/:chn/:cs/:cb/:cc/:cr/:cz/:ad/:mn/:mb/:mc/:me/:fn/:fb/:fc/:fe/:en/:eb/:ec/:ee" element={<AdvanceViewPatientWithAccess/>}/>
-                    <Route path="/addpatient/:id" element={<AddPatientContactWithAccess/>}/>
+                    <Route path="/addpatient/:id" element={<AddPatientWithAccess/>}/>
 
                     <Route path="/test" element={<TestRoute/>}/>
                     

@@ -93,11 +93,11 @@ useEffect(() => {
           <tbody>
             {caseData.map((singleCase, index) => (
               <tr key={index}>
-                <td><Link to={`/closecontacts/${caseData[index].CaseNo}`}><u style={{ color:'black'}}>{caseData[index].case_refno} </u></Link></td>
-                <td>{caseData[index].SRDescription}</td>
-                <td>{caseData[index].formatStartDate}</td>
-                <td>{caseData[index].end_date === null ? "---" : caseData[index].end_date}</td>
-                <td>{caseData[index].case_status === "C" ? "Closed" : "Open"}</td>
+                <td><Link to={`/closecontacts/${singleCase.CaseNo}`}><u style={{ color:'black'}}>{singleCase.case_refno} </u></Link></td>
+                <td>{singleCase.SRDescription}</td>
+                <td>{new Date(singleCase.formatStartDate).toLocaleDateString().replaceAll("/", "-")}</td>
+                <td>{singleCase.end_date === null ? "---" : new Date(singleCase.end_date).toLocaleDateString().replaceAll("/", "-")}</td>
+                <td>{singleCase.case_status === "C" ? "Closed" : "Open"}</td>
               </tr>
             ))}
           </tbody>

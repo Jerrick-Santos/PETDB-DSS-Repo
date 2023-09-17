@@ -213,36 +213,6 @@ module.exports = (db) => {
         })
     }),
 
-    router.get('/getPatientNo/:caseNum', (req, res) => {
-
-        const q = `SELECT PatientNo
-        FROM PEDTBDSS_new.TD_PTCASE
-        WHERE CaseNo = ${req.params.caseNum};`
-
-        db.query(q, (err, results) => {
-            if (err) {console.error(err)}
-            else {
-                res.send(results)
-            }
-        })
-    }),
-
-    router.get('/getLatestCase/:PatientNo', (req, res) => {
-        const q = `SELECT CaseNo, start_date
-        FROM PEDTBDSS_new.TD_PTCASE
-        WHERE PatientNo = ${req.params.PatientNo}
-        ORDER BY start_date DESC
-        LIMIT 1;
-        `
-
-        db.query(q, (err, results) => {
-            if (err) {console.error(err)}
-            else {
-                res.send(results)
-            }
-        })
-    }),
-
     router.get('/getCaseStatus/:caseNum', (req, res) => {
         
         const q = `SELECT case_status FROM PEDTBDSS_new.TD_PTCASE WHERE CaseNo = ?;`
@@ -333,6 +303,34 @@ module.exports = (db) => {
             console.error(error)
         }
         
+    }),
+
+    router.get('/getLatestCase/:caseid', (req, res) => {
+        const q = `SELECT MAX(CaseNo) as latest_case
+                    FROM TD_PTCASE
+                    WHERE PatientNo in (SELECT PatientNo
+                                        FROM TD_PTCASE
+                                        WHERE CaseNo = ?);`
+
+        db.query(q, [req.params.caseid], (err, result) => {
+            if (err) { console.error(err) } else { res.send(result) }
+        })
+    }),
+
+    router.get('/getCaseByPatient/:PatientNo', (req, res) => {
+        const q = `SELECT CaseNo, start_date
+        FROM PEDTBDSS_new.TD_PTCASE
+        WHERE PatientNo = ${req.params.PatientNo}
+        ORDER BY start_date DESC
+        LIMIT 1;
+        `
+
+        db.query(q, (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                res.send(results)
+            }
+        })
     })
     
 
