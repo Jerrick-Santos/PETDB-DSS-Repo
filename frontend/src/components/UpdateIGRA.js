@@ -12,6 +12,8 @@ function UpdateIGRA(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const [isReferenced, setIsReferenced] = useState(false);
+    const [reference, setReference] = useState(null);
 
     const [igraValidity, setIGRAValidity] = useState([]);
 
@@ -41,6 +43,28 @@ function UpdateIGRA(props) {
         });
 
     }, []);
+
+    useEffect(() => {
+        axios.get(`http://localhost:4000/api/checktestsref/${props.DGResultsNo}`)
+            .then((response) => {
+                setReference(response.data[0]);
+
+                try {
+                    if (response.data[0].total_references > 0) {
+                        setIsReferenced(true);
+                    } else {
+                        setIsReferenced(false);
+                    }
+                } catch (error) {
+                    // Handle any errors that occur during processing
+                    console.error('Error processing data:', error);
+                }
+            })
+            .catch((error) => {
+                // Handle any errors that occurred during the request
+                console.error('Error fetching data:', error);
+            });
+    }, [props.DGResultsNo]); // Adding props.DGResultsNo as dependency
 
     const [formValues, setFormValues] = useState({
         DGResultsNo: props.DGResultsNo,
@@ -103,11 +127,17 @@ function UpdateIGRA(props) {
                 style={{ height: "20px" }}
                  />
 
-        <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='lg'>
+        <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
         <Modal.Title>Update Health Institution</Modal.Title>
     </Modal.Header>
     <Modal.Body>
+    {isReferenced ? (
+        <>
+        This test is currently being referenced in other records.   <br/>  <br/>
+        </>             
+    ) : (
+        <>
     <form className="mt-4 justify-content-center">
         <div>
             <label><strong> Upload IGRA Test File Attachment:</strong></label>
@@ -145,10 +175,20 @@ function UpdateIGRA(props) {
             </select>
         </div>
     </form>
+    </>
+    )}
     </Modal.Body>
     <Modal.Footer >
+    {isReferenced ? (
+        <>
+        <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+        </>             
+    ) : (
+        <>
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Update</button>
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+        </>
+    )}
     </Modal.Footer>
 </Modal>
 
