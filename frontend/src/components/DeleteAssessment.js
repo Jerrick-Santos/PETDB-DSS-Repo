@@ -20,7 +20,7 @@ function DeleteAssessment(props) {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        axios.get(`http://localhost:4000/api/checkhiref/${props.HINo}`)
+        axios.get(`http://localhost:4000/api/checkassessref/${props.AssessNo}`)
             .then((response) => {
                 setReference(response.data[0]);
 
@@ -39,12 +39,13 @@ function DeleteAssessment(props) {
                 // Handle any errors that occurred during the request
                 console.error('Error fetching data:', error);
             });
-    }, [props.HINo]); // Adding props.HINo as dependency
+    }, [props.AssessNo]); // Adding props.HINo as dependency
 
     const handleDelete = async e => {
         e.preventDefault()
         try{
-            await axios.delete(`http://localhost:4000/api/deletehi/${props.HINo}`)
+            await axios.delete(`http://localhost:4000/api/deleteassess/${props.AssessNo}`)
+            window.location.reload()
         }catch(err){
             console.log(err)
         }
@@ -55,16 +56,6 @@ function DeleteAssessment(props) {
 
         isActive: 0
     });
-
-    const handleDeactivate = async e => {
-        e.preventDefault()
-        try{
-            await axios.patch(`http://localhost:4000/api/updatehistatus/${props.HINo}`, formValues)
-        }catch(err){
-            console.log(err)
-        }
-       
-    }
 
     return (
         <>
@@ -79,55 +70,32 @@ function DeleteAssessment(props) {
 
             <Modal show={show} onHide={handleClose} backdrop={'static'} size="md">
                 <Modal.Header style={{ color: 'white', backgroundColor: "#0077B6" }}>
-                    <Modal.Title>Delete Health Institution</Modal.Title>
+                    <Modal.Title>Delete Health Assessment</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {isReferenced ? (
                         <>
-                        <strong>{props.HIName}  </strong>is currently being referenced in other records.   <br/>  <br/>
-                        Would you like to deactivate this record instead?
-                        <Row className="mt-4">
-                            <Col >
-                            <button className="btn me-2" onClick={handleDeactivate} style={{ color: 'white', backgroundColor: "#0077B6", border: "none" }}>
-                                    <Link to={"/adminhi"} >
-                                        Deactivate
-                                    </Link>
-                                </button>
-                           
-                           
-                                <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
-                            </Col>
-                        </Row>
+                        This assessment is currently being referenced in other records.   <br/>  <br/>
                         </>
-                       
                     ) : (
                         <>
-                        Are you certain you want to delete <strong> {props.HIName}  </strong>?  <br/>  <br/>
+                        Are you certain you want to delete this assessment?  <br/>  <br/>
                         You can no longer undo this action.
-                        <br/>
-                        <Row className="mt-4">
-                            <Col >
-                            
-                            
-                                <button className="btn me-2" onClick={handleDelete} style={{ color: 'white', backgroundColor: "#0077B6", border: "none" }}>
-                                   
-                                        Delete
-                                   
-                                </button>
-                                
-                            
-                                
-                                    
-                           
-
-                             
-                           
-                                <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
-                            </Col>
-                        </Row>
                         </>
                     )}
                 </Modal.Body>
+                <Modal.Footer >
+                {isReferenced ? (
+                    <>
+                    <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+                    </>             
+                ) : (
+                    <>
+                    <button className="btn me-2" onClick={handleDelete} style={{ color: 'white', backgroundColor: "#0077B6", border: "none" }}>Delete</button>
+                    <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+                    </>
+                )}  
+                </Modal.Footer>
             </Modal>
         </>
     );

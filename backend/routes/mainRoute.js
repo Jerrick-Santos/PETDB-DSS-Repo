@@ -1244,6 +1244,142 @@ router.post('/updatetests', (req, res) => {
     });
 })
 
+router.post('/updateassess', (req, res) => {
+    const values = [
+        req.body.ass_bmi,
+        req.body.ass_temp,
+        req.body.ass_bp,
+        req.body.cough,
+        req.body.c_weeks,
+        req.body.c_persist,
+        req.body.fever,
+        req.body.fe_weeks,
+        req.body.fe_persist,
+        req.body.weight_loss,//10
+        req.body.wl_weeks,
+        req.body.wl_persist,
+        req.body.night_sweats,
+        req.body.ns_weeks,
+        req.body.ns_persist,
+        req.body.fatigue,
+        req.body.fat_weeks,
+        req.body.fat_persist,
+        req.body.red_playfulness,
+        req.body.rp_weeks,//10
+        req.body.rp_persist,
+        req.body.dec_acts,
+        req.body.da_weeks,
+        req.body.da_persist,
+        req.body.not_eating_well,
+        req.body.new_weeks,
+        req.body.new_persist,
+        req.body.non_painful_ecl,
+        req.body.drowsy,
+        req.body.can_stand,//10
+        req.body.ass_body_weight,
+        req.body.ass_height,
+        req.body.plhiv,
+        req.body.hiv,
+        req.body.mother_hiv,
+        req.body.smoking,
+        req.body.drinking,
+        req.body.sex_active,
+        req.body.renal_disease,
+        req.body.malnutrition,//10
+        req.body.other_health_issues,
+        req.body.other_meds,
+        req.body.other_dd_interacts,
+        req.body.other_comorbid,
+        req.body.assessment_date,
+        req.body.prevPTB_diagnosed,
+        req.body.AssessNo,//7
+    ]
+
+    db.query(`UPDATE 	TD_HEALTHASSESSMENT
+                SET		ass_bmi = ?, ass_temp = ?, ass_bp = ?, cough = ?, c_weeks = ?, c_persist = ?, fever = ?, fe_weeks = ?, fe_persist = ?, weight_loss = ?, wl_weeks = ?, wl_persist = ?, night_sweats = ?, ns_weeks = ?, ns_persist = ?, fatigue = ?, fat_weeks = ?, fat_persist = ?, red_playfulness = ?, rp_weeks = ?, rp_persist = ?, dec_acts = ?, da_weeks = ?, da_persist = ?, not_eating_well = ?, new_weeks = ?, new_persist = ?, non_painful_ecl = ?, drowsy = ?, can_stand = ?, ass_body_weight = ?, ass_height = ?, plhiv = ?, hiv = ?, mother_hiv = ?, smoking = ?, drinking = ?, sex_active = ?, renal_disease = ?, malnutrition = ?, other_health_issues = ?, other_meds = ?, other_dd_interacts = ?, other_comorbid = ?, assessment_date = ?, prevPTB_diagnosed = ?
+                WHERE	AssessNo = ?;
+            `, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  TD_HEALTHASSESSMENT:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  TD_HEALTHASSESSMENT:", data);
+        return res.json(data)
+    });
+})
+
+router.post('/updateassessnopersist', (req, res) => {
+    const values = [
+        req.body.ass_bmi,
+        req.body.ass_temp,
+        req.body.ass_bp,
+        req.body.cough,
+        req.body.c_weeks,
+        req.body.fever,
+        req.body.fe_weeks,
+        req.body.weight_loss,//10
+        req.body.wl_weeks,
+        req.body.night_sweats,
+        req.body.ns_weeks,
+        req.body.fatigue,
+        req.body.fat_weeks,
+        req.body.red_playfulness,
+        req.body.rp_weeks,//10
+        req.body.dec_acts,
+        req.body.da_weeks,
+        req.body.not_eating_well,
+        req.body.new_weeks,
+        req.body.non_painful_ecl,
+        req.body.drowsy,
+        req.body.can_stand,//10
+        req.body.ass_body_weight,
+        req.body.ass_height,
+        req.body.plhiv,
+        req.body.hiv,
+        req.body.mother_hiv,
+        req.body.smoking,
+        req.body.drinking,
+        req.body.sex_active,
+        req.body.renal_disease,
+        req.body.malnutrition,//10
+        req.body.other_health_issues,
+        req.body.other_meds,
+        req.body.other_dd_interacts,
+        req.body.other_comorbid,
+        req.body.assessment_date,
+        req.body.prevPTB_diagnosed,
+        req.body.AssessNo,//7
+    ]
+
+    db.query(`UPDATE 	TD_HEALTHASSESSMENT
+                SET		ass_bmi = ?, ass_temp = ?, ass_bp = ?, cough = ?, c_weeks = ?, fever = ?, fe_weeks = ?, weight_loss = ?, wl_weeks = ?, night_sweats = ?, ns_weeks = ?, fatigue = ?, fat_weeks = ?, red_playfulness = ?, rp_weeks = ?, dec_acts = ?, da_weeks = ?, not_eating_well = ?, new_weeks = ?, non_painful_ecl = ?, drowsy = ?, can_stand = ?, ass_body_weight = ?, ass_height = ?, plhiv = ?, hiv = ?, mother_hiv = ?, smoking = ?, drinking = ?, sex_active = ?, renal_disease = ?, malnutrition = ?, other_health_issues = ?, other_meds = ?, other_dd_interacts = ?, other_comorbid = ?, assessment_date = ?, prevPTB_diagnosed = ?
+                WHERE	AssessNo = ?;
+            `, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  TD_HEALTHASSESSMENT:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  TD_HEALTHASSESSMENT:", data);
+        return res.json(data)
+    });
+})
+
+router.get('/checkassessref/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT COUNT(*) AS total_references FROM TD_PTDIAGNOSIS WHERE healthassess_id = ${id};
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
 router.get('/checktestsref/:id', (req, res) => {
     const id = req.params.id;
     db.query(`
@@ -1269,6 +1405,24 @@ router.delete('/deletetests/:id', (req, res) => {
     db.query(`
     DELETE FROM TD_DIAGNOSTICRESULTS
     WHERE DGResultsNo = ${id};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+router.delete('/deleteassess/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    DELETE FROM TD_HEALTHASSESSMENT
+    WHERE AssessNo = ${id};
 `,
         [id],
         (err, results) => {
