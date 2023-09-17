@@ -12,6 +12,8 @@ function UpdateXray(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const [isReferenced, setIsReferenced] = useState(false);
+    const [reference, setReference] = useState(null);
 
     const [xrayValidity, setXrayValidity] = useState([]);
 
@@ -41,6 +43,28 @@ function UpdateXray(props) {
         });
 
     }, []);
+
+    useEffect(() => {
+        axios.get(`http://localhost:4000/api/checktestsref/${props.DGResultsNo}`)
+            .then((response) => {
+                setReference(response.data[0]);
+
+                try {
+                    if (response.data[0].total_references > 0) {
+                        setIsReferenced(true);
+                    } else {
+                        setIsReferenced(false);
+                    }
+                } catch (error) {
+                    // Handle any errors that occur during processing
+                    console.error('Error processing data:', error);
+                }
+            })
+            .catch((error) => {
+                // Handle any errors that occurred during the request
+                console.error('Error fetching data:', error);
+            });
+    }, [props.DGResultsNo]); // Adding props.DGResultsNo as dependency
 
     const [formValues, setFormValues] = useState({
         DGResultsNo: props.DGResultsNo,
@@ -108,46 +132,63 @@ function UpdateXray(props) {
         <Modal.Title>Update Xray Test</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-    <div>
-            <label><strong> Update Xray File Attachment:</strong></label>
-            <input type="file" className="form-control" />
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Issued by: </strong></label>
-            <select className="form-select" name="HINo" value={formValues.HINo} onChange={handleChange}>
-                <option value="">Select</option>
-              
-              {hiData.map((hi, index) => (
-              <>
-               <option value={hi.HINo}>{hi.HIName}</option>
-              
-                   </>
-                    ))}
- 
+    {isReferenced ? (
+        <>
+        This test is currently being referenced in other records.   <br/>  <br/>
+        </>             
+    ) : (
+        <>
+            <div>
+                    <label><strong> Update Xray File Attachment:</strong></label>
+                    <input type="file" className="form-control" />
+                </div>
+                <div className="mt-3"> 
+                    <label> <strong>Issued by: </strong></label>
+                    <select className="form-select" name="HINo" value={formValues.HINo} onChange={handleChange}>
+                        <option value="">Select</option>
+                    
+                    {hiData.map((hi, index) => (
+                    <>
+                    <option value={hi.HINo}>{hi.HIName}</option>
+                    
+                        </>
+                            ))}
+        
 
-            </select>
-        </div>
-        <div className="mt-3">
-            <label><strong>Issued on:</strong></label>
-            <input type="date" className="form-control" name='issue_date' value={formValues.issue_date} onChange={handleChange}/>
-        </div>
-        <div className="mt-3">
-            <label><strong>Reference Number:</strong></label>
-            <input type="text" className="form-control" name='test_refno' value={formValues.test_refno} onChange={handleChange}/>
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Xray Results: </strong></label>
-            <select className="form-select" name='TestValue' value={formValues.TestValue} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="With Signs of TB">With Signs of TB</option>
-                <option value="No signs">No signs</option>
-                <option value="Undetermined">Undetermined</option>
-            </select>
-        </div>
+                    </select>
+                </div>
+                <div className="mt-3">
+                    <label><strong>Issued on:</strong></label>
+                    <input type="date" className="form-control" name='issue_date' value={formValues.issue_date} onChange={handleChange}/>
+                </div>
+                <div className="mt-3">
+                    <label><strong>Reference Number:</strong></label>
+                    <input type="text" className="form-control" name='test_refno' value={formValues.test_refno} onChange={handleChange}/>
+                </div>
+                <div className="mt-3"> 
+                    <label> <strong>Xray Results: </strong></label>
+                    <select className="form-select" name='TestValue' value={formValues.TestValue} onChange={handleChange}>
+                        <option value="">Select</option>
+                        <option value="With Signs of TB">With Signs of TB</option>
+                        <option value="No signs">No signs</option>
+                        <option value="Undetermined">Undetermined</option>
+                    </select>
+                </div>
+            </>
+        )}
     </Modal.Body>
     <Modal.Footer >
+    {isReferenced ? (
+        <>
+        <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+        </>             
+    ) : (
+        <>
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Update</button>
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+        </>
+    )}
+        
     </Modal.Footer>
 </Modal>
 

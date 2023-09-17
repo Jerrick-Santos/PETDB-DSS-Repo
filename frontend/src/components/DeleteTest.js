@@ -76,41 +76,26 @@ function DeleteTest(props) {
                     {isReferenced ? (
                         <>
                         This test is currently being referenced in other records.   <br/>  <br/>
-                        <Row className="mt-4">
-                            <Col >
-                                <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
-                            </Col>
-                        </Row>
                         </>
-                       
                     ) : (
                         <>
                         Are you certain you want to delete this test?  <br/>  <br/>
                         You can no longer undo this action.
-                        <br/>
-                        <Row className="mt-4">
-                            <Col >
-                            
-                            
-                                <button className="btn me-2" onClick={handleDelete} style={{ color: 'white', backgroundColor: "#0077B6", border: "none" }}>
-                                   
-                                        Delete
-                                   
-                                </button>
-                                
-                            
-                                
-                                    
-                           
-
-                             
-                           
-                                <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
-                            </Col>
-                        </Row>
                         </>
                     )}
                 </Modal.Body>
+                <Modal.Footer >
+                {isReferenced ? (
+                    <>
+                    <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+                    </>             
+                ) : (
+                    <>
+                    <button className="btn me-2" onClick={handleDelete} style={{ color: 'white', backgroundColor: "#0077B6", border: "none" }}>Delete</button>
+                    <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+                    </>
+                )}  
+                </Modal.Footer>
             </Modal>
         </>
     );
