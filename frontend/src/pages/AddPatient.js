@@ -10,9 +10,25 @@ import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const AddPatient = () => {
+
+    function formatDate(datestring) {
+        const date = new Date(datestring);
+
+        // Extract year, month, and day from the date
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are 0-based
+        const day = String(date.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate
+    }
+
+    const params = useParams()
+    const id = params.id
+
     const [isAutoFillActive, setIsAutoFillActive] = useState(false);
     const [isCurrentAddressDisabled, setIsCurrentAddressDisabled] = useState(false);
     const [calculatedAge, setCalculatedAge] = useState(null);
@@ -435,6 +451,32 @@ const AddPatient = () => {
         }
     }
 
+    // trigger autofill when accessed with parameter
+    useEffect(() => {
+        console.log(id)
+        axios.get(`http://localhost:4000/api/getOneContact/${id}`)
+        .then(res => {
+          console.log(res);
+          setPatient( prev => ({
+            ...prev,
+            ...res.data[0],
+            id
+          }));
+        })
+        .catch(err => {
+          console.error(err);
+        })
+    }, [id ? id : null ])
+
+    // check parameter
+    useEffect(() => {
+        console.log(patient)
+    }, [patient])
+
+    // calculate age for when birthdate is passed from parameter
+    
+
+
   return (
 
     <div>
@@ -489,7 +531,7 @@ const AddPatient = () => {
             <Row className="mb-3 justify-content-center">
                 <div className="form-group col-md-4">
                     <label for="inputFirstName">First Name</label>
-                    <input type="text" class="form-control" id="inputFirstName" name='first_name' onChange={handleChange} placeholder="First Name"/>
+                    <input type="text" class="form-control" id="inputFirstName" name='first_name' onChange={handleChange} placeholder="First Name" value={patient.first_name}/>
                     {firstNameError && (
                         <p style={{color: 'red'}}>{firstNameError}</p>  
                     )}
@@ -497,7 +539,7 @@ const AddPatient = () => {
 
                 <div className="form-group col-md-3">
                     <label for="inputMI">Middle Name</label>
-                    <input type="text" class="form-control" id="inputMI" name='middle_initial' onChange={handleChange} placeholder="Middle Name"/>
+                    <input type="text" class="form-control" id="inputMI" name='middle_initial' onChange={handleChange} placeholder="Middle Name" value={patient.middle_initial}/>
                     {middleNameError && (
                         <p style={{color: 'red'}}>{middleNameError}</p>
                     )}
@@ -505,7 +547,7 @@ const AddPatient = () => {
 
                 <div className="form-group col-md-4">
                     <label for="inputLastName">Last Name</label>
-                    <input type="text" class="form-control" id="inputLastName" name='last_name' onChange={handleChange} placeholder="Last Name"/>
+                    <input type="text" class="form-control" id="inputLastName" name='last_name' onChange={handleChange} placeholder="Last Name" value={patient.last_name} />
                     {lastNameError && (
                         <p style={{color: 'red'}}>{lastNameError}</p>
                     )}
@@ -514,7 +556,7 @@ const AddPatient = () => {
               <Row className="mb-5 justify-content-center">
                 <div className="form-group col-md-2">
                     <label for="inputBirthdate">Birthdate</label>
-                    <input type="date" class="form-control" id="inputBirthdate" name='birthdate' onChange={handleChange} />
+                    <input type="date" class="form-control" id="inputBirthdate" name='birthdate' onChange={handleChange}  />
                     {birthdateError && (
                         <p style={{color: 'red'}}>{birthdateError}</p>
                     )}
@@ -522,7 +564,7 @@ const AddPatient = () => {
                 
                 <div className="form-group col-md-2">
                 <label for="inputSex">Sex</label>
-                <select id="inputSex" class="form-control" name='sex' onChange={handleChange} >
+                <select id="inputSex" class="form-control" name='sex' onChange={handleChange} value={patient.sex} >
                     <option selected>Select</option>
                     <option value="M" >Male</option>
                     <option value="F" >Female</option>
@@ -878,7 +920,7 @@ const AddPatient = () => {
             <Row className="mt-2 mb-5 justify-content-center">
                 <div class="form-group col-md-3">
                     <label for="inputEmergencyName">Emergency Contact Name</label>
-                    <input type="text" class="form-control" id="inputEmergencyName" name='emergency_name' onChange={handleChange} placeholder="Name"/>
+                    <input type="text" class="form-control" id="inputEmergencyName" name='emergency_name' onChange={handleChange} placeholder="Name" value={patient.contact_person ? patient.contact_person : ''}/>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputEmergencyRelationship">Relationship</label>
@@ -886,15 +928,15 @@ const AddPatient = () => {
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputEmergencyBirth">Birthdate</label>
-                    <input type="date" class="form-control" id="inputEmergencyBirth" name='e_birthdate' onChange={handleChange} placeholder="Mother's Name"/>
+                    <input type="date" class="form-control" id="inputEmergencyBirth" name='e_birthdate' onChange={handleChange} placeholder="Mother's Name" />
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputEmergencyContact">Contact #</label>
-                    <input type="text" class="form-control" id="inputEmergencyContact" name='e_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
+                    <input type="text" class="form-control" id="inputEmergencyContact" name='e_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx" value={patient.contact_num ? patient.contact_num : ''}/>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputEmergencyEmail">Email</label>
-                    <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com"/>
+                    <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com" value={patient.contact_email ? patient.contact_email : ''} />
                 </div>
             </Row>
 

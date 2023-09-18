@@ -6,7 +6,7 @@ import axios from 'axios';
 import edit from '../assets/edit.png'
 
 
-function UpdateAssessment(props) {
+function UpdateAssessmentNoPersist(props) {
 
     const assessmentDate = new Date(props.assessment_date);
     const year = assessmentDate.getFullYear();
@@ -50,28 +50,20 @@ function UpdateAssessment(props) {
       ass_bp: props.ass_bp,
       cough: props.cough,
       c_weeks: props.c_weeks,
-      c_persist: props.c_persist,
       fever: props.fever,
       fe_weeks: props.fe_weeks,
-      fe_persist: props.fe_persist,
       weight_loss: props.weight_loss,
       wl_weeks: props.wl_weeks,
-      wl_persist: props.wl_persist,
       night_sweats: props.night_sweats,
       ns_weeks: props.ns_weeks,
-      ns_persist: props.ns_persist,
       fatigue: props.fatigue,
       fat_weeks: props.fat_weeks,
-      fat_persist: props.fat_persist,
       red_playfulness: props.red_playfulness,
       rp_weeks: props.rp_weeks,
-      rp_persist: props.rp_persist,
       dec_acts: props.dec_acts,
       da_weeks: props.da_weeks,
-      da_persist: props.da_persist,
       not_eating_well: props.not_eating_well,
       new_weeks: props.new_weeks,
-      new_persist: props.new_persist,
       non_painful_ecl: props.non_painful_ecl,
       drowsy: props.drowsy,
       can_stand: props.can_stand,
@@ -102,7 +94,7 @@ function UpdateAssessment(props) {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
-            await axios.post("http://localhost:4000/api/updateassess", formValues)
+            await axios.post("http://localhost:4000/api/updateassessnopersist", formValues)
         }catch(err){
             console.log(err)
         }
@@ -214,7 +206,7 @@ function UpdateAssessment(props) {
     <Card className="mb-4">
       <Card.Body>
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text>Symptom</Card.Text>
           </Col>
           <Col sm="3">
@@ -223,14 +215,11 @@ function UpdateAssessment(props) {
           <Col sm="3">
             <Card.Text>2 weeks</Card.Text>
           </Col>
-          <Col sm="3">
-            <Card.Text>Persistence</Card.Text>
-          </Col>
 
         </Row>
         <hr />
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text className="text-muted">Cough</Card.Text>
           </Col>
           <Col sm="3">
@@ -239,13 +228,10 @@ function UpdateAssessment(props) {
           <Col sm="3">
             <input type="checkbox" name='c_weeks' value={formValues.c_weeks} onChange={handleChange} checked={formValues.c_weeks ? true : false}/>
           </Col>
-          <Col sm="3">
-            <input type="checkbox" name='c_persist' value={formValues.c_persist} onChange={handleChange} checked={formValues.c_persist ? true : false}/>
-          </Col>
         </Row>
         <hr />
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text className="text-muted">Fever</Card.Text>
           </Col>
           <Col sm="3">
@@ -254,13 +240,10 @@ function UpdateAssessment(props) {
           <Col sm="3">
             <input type="checkbox" name='fe_weeks' value={formValues.fe_weeks} onChange={handleChange} checked={formValues.fe_weeks ? true : false}/>
           </Col>
-          <Col sm="3">
-            <input type="checkbox" name='fe_persist' value={formValues.fe_persist} onChange={handleChange} checked={formValues.fe_persist ? true : false}/>
-          </Col>
         </Row>
         <hr />
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text className="text-muted">Night Sweats</Card.Text>
           </Col>
           <Col sm="3">
@@ -269,13 +252,10 @@ function UpdateAssessment(props) {
           <Col sm="3">
             <input type="checkbox" name='ns_weeks' value={formValues.ns_weeks} onChange={handleChange} checked={formValues.ns_weeks ? true : false}/>
           </Col>
-          <Col sm="3">
-            <input type="checkbox" name='ns_persist' value={formValues.ns_persist} onChange={handleChange} checked={formValues.ns_persist ? true : false}/>
-          </Col>
         </Row>
         <hr />
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text className="text-muted">Weight Loss</Card.Text>
           </Col>
           <Col sm="3">
@@ -283,9 +263,6 @@ function UpdateAssessment(props) {
           </Col>
           <Col sm="3">
             <input type="checkbox" name='wl_weeks' value={formValues.wl_weeks} onChange={handleChange} checked={formValues.wl_weeks ? true : false}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='wl_persist' value={formValues.wl_persist} onChange={handleChange} checked={formValues.wl_persist ? true : false}/>
           </Col>
         </Row>
       </Card.Body>
@@ -299,7 +276,7 @@ function UpdateAssessment(props) {
     <Card className="mb-4">
       <Card.Body>
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text>Symptom</Card.Text>
           </Col>
           <Col sm="3">
@@ -308,13 +285,10 @@ function UpdateAssessment(props) {
           <Col sm="3">
             <Card.Text>2 weeks</Card.Text>
           </Col>
-          <Col sm="3">
-            <Card.Text>Persistence</Card.Text>
-          </Col>
         </Row>
         <hr />
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text className="text-muted">Fatigue</Card.Text>
           </Col>
           <Col sm="3">
@@ -323,13 +297,10 @@ function UpdateAssessment(props) {
           <Col sm="3">
             <input type="checkbox" name='fat_weeks' value={formValues.fat_weeks} onChange={handleChange} checked={formValues.fat_weeks ? true : false}/>
           </Col>
-          <Col sm="3">
-            <input type="checkbox" name='fat_persist' value={formValues.fat_persist} onChange={handleChange} checked={formValues.fat_persist ? true : false}/>
-          </Col>
         </Row>
         <hr />
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text className="text-muted">Reduced Playfulness</Card.Text>
           </Col>
           <Col sm="3">
@@ -338,13 +309,10 @@ function UpdateAssessment(props) {
           <Col sm="3">
             <input type="checkbox" name='rp_weeks' value={formValues.rp_weeks} onChange={handleChange} checked={formValues.rp_weeks ? true : false}/>
           </Col>
-          <Col sm="3">
-            <input type="checkbox" name='rp_persist' value={formValues.rp_persist} onChange={handleChange} checked={formValues.rp_persist ? true : false}/>
-          </Col>
         </Row>
         <hr />
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text className="text-muted">Decreased Activities</Card.Text>
           </Col>
           <Col sm="3">
@@ -353,13 +321,10 @@ function UpdateAssessment(props) {
           <Col sm="3">
             <input type="checkbox" name='da_weeks' value={formValues.da_weeks} onChange={handleChange} checked={formValues.da_weeks ? true : false}/>
           </Col>
-          <Col sm="3">
-            <input type="checkbox" name='da_persist' value={formValues.da_persist} onChange={handleChange} checked={formValues.da_persist ? true : false}/>
-          </Col>
         </Row>
         <hr />
         <Row>
-          <Col sm="3">
+          <Col sm="6">
             <Card.Text className="text-muted">Not Eating Well</Card.Text>
           </Col>
           <Col sm="3">
@@ -367,9 +332,6 @@ function UpdateAssessment(props) {
           </Col>
           <Col sm="3">
             <input type="checkbox" name='new_weeks' value={formValues.new_weeks} onChange={handleChange} checked={formValues.new_weeks ? true : false}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='new_persist' value={formValues.new_persist} onChange={handleChange} checked={formValues.new_persist ? true : false}/>
           </Col>
         </Row>
       </Card.Body>
@@ -495,7 +457,7 @@ function UpdateAssessment(props) {
             <Card.Text className="text-muted">Do you have a history of drinking?</Card.Text>
           </Col>
           <Col sm="2">
-            <input type="checkbox" name='drinking' onChange={handleChange} checked={formValues.drinking ? true : false}/>
+            <input type="checkbox" name='drinking' value={formValues.drinking} onChange={handleChange} checked={formValues.drinking ? true : false}/>
           </Col>
         </Row>
         <hr />
@@ -612,5 +574,5 @@ function UpdateAssessment(props) {
 
 
 
-export default UpdateAssessment;
+export default UpdateAssessmentNoPersist;
 

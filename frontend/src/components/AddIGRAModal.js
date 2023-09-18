@@ -21,7 +21,7 @@ function AddIGRAModal(props) {
             console.error('Error fetching data:', error);
           });
 
-        axios.get(`http://localhost:4000/api/validity/3`)
+        axios.get(`http://localhost:4000/api/validity/7`)
           .then((response) => {
           setIGRAValidity(response.data)
           console.log('Validity Months: ', igraValidity);
@@ -57,19 +57,19 @@ function AddIGRAModal(props) {
         const issueDate = new Date(igraValues.issue_date);
 
         if (igraValidity.length > 0) {
-        const validityMonths = igraValidity[0].DGValidityMonths;
-        const validityExpirationDate = new Date(issueDate);
-        validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+            const validityMonths = igraValidity[0].DGValidityMonths;
+            const validityExpirationDate = new Date(issueDate);
+            validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
 
-        console.log('Today: ', today);
-        console.log('issueDate: ', issueDate);
-        console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+            console.log('Today: ', today);
+            console.log('issueDate: ', issueDate);
+            console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1);
 
-        if (today > validityExpirationDate) {
-            setIGRAValues((prev) => ({ ...prev, validity: 0 }));
-        } else {
-            setIGRAValues((prev) => ({ ...prev, validity: 1 }));
-        }
+            if (today <= validityExpirationDate) {
+                setIGRAValues((prev) => ({ ...prev, validity: 1 }));
+              } else {
+                setIGRAValues((prev) => ({ ...prev, validity: 0 }));
+              }
         }
     };
 

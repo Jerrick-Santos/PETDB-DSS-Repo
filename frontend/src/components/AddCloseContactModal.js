@@ -2,9 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
 import add from '../assets/add.png';
 import axios from 'axios';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
-import { Link, useParams } from 'react-router-dom';
-import FormControl from 'react-bootstrap/FormControl'
+import { Row, Col  } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import ViewSimilarPatientModal from '../components/ViewSimilarPatientModal'
 
@@ -63,16 +61,6 @@ function AddCloseContactModal(props) {
         }
     };
 
-    
-    // useEffect(() => {
-    //     if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
-    //       console.log("Similarity Check Condition Triggered");
-    //       fetchData().then(similarData => {
-    //         setSimilarPatients(similarData);
-    //         setShowSimilar(similarData.length > 0);
-    //       });
-    //     }
-    // }, [formValues]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -102,7 +90,7 @@ function AddCloseContactModal(props) {
         if (new Date(birthdate).toLocaleDateString() === new Date().toLocaleDateString()) newErrors.birthdate = "Please select a date"
         if (sex === "") newErrors.sex = "Please select an option"
         if (!contact_relationship) newErrors.contact_relationship = "Input cannot be empty"
-        //if (contact_num.length != 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
+        if (contact_num.length !== 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
 
 
         return newErrors
@@ -166,9 +154,9 @@ function AddCloseContactModal(props) {
   return (
         <>
 
-            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
+            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow} disabled={!props.show}>
                 <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a Close Contact
-              </button>
+            </button>
 
     <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg">
         <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
@@ -299,9 +287,9 @@ function AddCloseContactModal(props) {
                         name='contact_num'
                         value={formValues.contact_num}
                         onChange={handleChange}
-                        //pattern="^\d{0}$|^\d{11}$" 
-                        //isInvalid={!/^(\d{0}|\d{11})?$/.test(formValues.contact_num)}
+                        isInvalid={!!errors.contact_num}
                     />
+                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>{errors.contact_num}</Form.Control.Feedback>
                 </Form.Group>
 

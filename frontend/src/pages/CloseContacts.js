@@ -1,6 +1,6 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, Badge  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
 import user from '../assets/user.png';
@@ -21,7 +21,7 @@ const CloseContacts = () => {
   var caseNum = id
 
   const [closeContactListData, setCloseContactListData] = useState([]);
-  //const [latestCase, setLatestCase] = useState([]); TODO: Re-implement feature
+  const [latestCase, setLatestCase] = useState([]);
 
   // Helper Functions
   function addMonths(date, months) {
@@ -37,7 +37,6 @@ const CloseContacts = () => {
   useEffect(() => {
     async function fetchData() {
 
-      
       console.log("UPDATING INFORMATION (0/3): ", update)
 
       var res = await axios.get(`http://localhost:4000/api/getContacts/${caseNum}`)
@@ -49,6 +48,8 @@ const CloseContacts = () => {
         days_until_ha: null,
         next_xray: null,
         days_until_xray: null,
+        status_ha: null,
+        status_xray: null
       })));
       
       var update = {}
@@ -56,7 +57,7 @@ const CloseContacts = () => {
       await Promise.all(res.data.map(async x => {
         if (x.PatientNo != null) {
           // find the latest case of the patient
-          const latest_case = await axios.get(`http://localhost:4000/api/getLatestCase/${x.PatientNo}`)
+          const latest_case = await axios.get(`http://localhost:4000/api/getCaseByPatient/${x.PatientNo}`)
 
           // find the latest and number of ha
           if (latest_case.data.length > 0) {
@@ -94,11 +95,23 @@ const CloseContacts = () => {
             
             console.log("DAYS TILL NEXT HA/XRAY: ", days_until_ha, "/", days_until_xray)
 
+            let status_ha, status_xray
+
+            if (ha_start_dates.data.length === 0 || ha_start_dates.data.length === null) { status_ha = 0 } else { 
+              status_ha = ha_start_dates.data.length;
+            }
+
+            if (xray_start_dates.data.length === 0 || xray_start_dates.data.length === null) { status_xray = 0 } else {
+              status_xray = xray_start_dates.data.length;
+            }
+
             const updatedProps = {
               next_xray: next_xray,
               days_until_xray: days_until_xray,
               next_ha: next_ha,
-              days_until_ha: days_until_ha
+              days_until_ha: days_until_ha,
+              status_ha: status_ha,
+              status_xray: status_xray
             };
         
             update = {...x, ...updatedProps}
@@ -116,12 +129,9 @@ const CloseContacts = () => {
             );
           }
         }
-        
-        // find the latest and number of xray
       }));
       console.log(res);
     }
-
     fetchData()
     
   }, [caseNum])
@@ -130,36 +140,30 @@ const CloseContacts = () => {
     console.log("Updated closeContactListData:", closeContactListData);
   }, [closeContactListData]);
 
-  // // Check backend if case is latest
-  // useEffect(() => {
-  //   console.log(caseNum)
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:4000/api/getPatientNo/${caseNum}`);
-  //       const PatientNo = response.data[0].PatientNo;
-  //       console.log("PATIENTNUM FROM BACKEND: ", PatientNo);
-  
-  //       const result = await axios.get(`http://localhost:4000/api/getLatestCase/${PatientNo}`);
-  //       const CaseNo = result.data[0].CaseNo;
-  //       console.log("LATESTCASE FROM NESTED QUERY: ", CaseNo);
-  
-  //       caseNum === CaseNo ? setLatestCase(true) : setLatestCase(false);
-  //       console.log("IS LATEST CASE?: ", latestCase);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-  
-  //   fetchData();
-  // }, [caseNum, latestCase]);
+  // Check backend if case is latest
+  useEffect(() => {
+    let latest_case
+    console.log(caseNum)
 
-  // useEffect(async () => {
-  //   const response = await axios.get(`http://localhost:4000/api/getCaseStatus/${caseNum}`)
-  //   const cs = response.data[0].case_status
-  //   cs === "O" ? setLatestCase(true) : setLatestCase(false)
-  //   console.log("is this the latest case?", cs)
-  // }, [caseNum])
+    const fetchData = async () => {
+      try {
+
+        const result = await axios.get(`http://localhost:4000/api/getLatestCase/${caseNum}`)
   
+        if (result.data) { 
+          latest_case = result.data[0].latest_case
+          if (latest_case == caseNum) { setLatestCase(true) } else { setLatestCase(false) }
+          console.log('latest case: ', latest_case, " / ", 'current case: ', caseNum)
+        }
+        else { console.log('error retrieving latest case') }
+      } catch (error) {
+        console.error(error)
+      }
+    };
+  
+    fetchData();
+  }, []);
+
 
   return (
     <div>
@@ -257,53 +261,35 @@ const CloseContacts = () => {
                       <td>{contact.contact_person === null ? <em>self</em> : contact.contact_person}</td>
                       <td>{contact.contact_num}</td>
                       <td>{contact.contact_email}</td>
-                      
-                      
-                      {/*Display Next Assessment Information
-                          Logic:
-                            1. If the user is not a patient, show NO RECORD
-                            2. IF the days left until assessment is:
-                              a. 0 < x < 7 -> yellow
-                              b. x < 0     -> red 
-                      */}
 
                       {contact.PatientNo === null ? (
-                          <td>NO RECORD</td>
+                          <td> <Badge bg='danger'> NO RECORD </Badge> </td>
                         ) : (
                           <>
-                            {contact.days_until_ha <= 7 && contact.days_until_ha >= 0 ? (
-                              <td style={{ backgroundColor: "yellow" }}>{contact.next_ha} ASSESSMENT INCOMING</td>
-                            ) : (
-                              <>
-                                {contact.days_until_ha < 0 ? (
-                                  <td style={{ backgroundColor: "red" }}>{contact.next_ha} EXPECTED ASSESSMENT DATE EXCEEDED. CONTACT IMMEDIATELY </td>
-                                ) : (
-                                  <td>{contact.next_ha}</td>
-                                )}
-                              </>
-                            )}
+                            {contact.status_ha === 2 ? (
+                              <td> <Badge bg='success'> COMPLETE </Badge> </td>
+                              ) : (
+                                <td> <Badge bg='secondary'> { contact.next_ha } </Badge> </td>
+                              )
+                            }
                           </>
                         )
                       }
 
                       {contact.PatientNo === null ? (
-                          <td>NO RECORD</td>
+                          <td><Badge bg='danger'> NO RECORD </Badge></td>
                         ) : (
                           <>
-                            {contact.days_until_xray <= 7 && contact.days_until_xray >= 0 ? (
-                              <td style={{ backgroundColor: "yellow" }}>{contact.next_xray} ASSESSMENT INCOMING</td>
-                            ) : (
-                              <>
-                                {contact.days_until_xray < 0 ? (
-                                  <td style={{ backgroundColor: "red" }}>{contact.next_xray} EXPECTED ASSESSMENT DATE EXCEEDED. CONTACT IMMEDIATELY</td>
-                                ) : (
-                                  <td>{contact.next_xray}</td>
-                                )}
-                              </>
-                            )}
+                            {contact.status_xray === 2 ? (
+                              <td> <Badge bg='success'> COMPLETE </Badge> </td>
+                              ) : (
+                                <td> <Badge bg='secondary'> { contact.next_xray } </Badge> </td>
+                              )
+                            }
                           </>
                         )
                       }
+
                     </tr>
                   ))
                 }
@@ -312,7 +298,7 @@ const CloseContacts = () => {
                
             </table>
             <div className="d-flex justify-content-end me-5 mb-5" >
-              <AddCloseContactModal id={caseNum} />
+              <AddCloseContactModal id={caseNum} show={latestCase}/>
           </div>
 
 
