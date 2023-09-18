@@ -47,7 +47,7 @@ const UserList = () => {
                 <Card.Text><strong>Account Status</strong> </Card.Text>
               </Col>
             </Row>
-            {bhcData.map((bhc, index) => (
+            {usersData.map((bhc, index) => (
               <>
               <hr/>
                      <Row>
