@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { authenticateToken } = require('./authFunc');
 
 //interpretation modules
 
@@ -308,8 +309,10 @@ module.exports = (db) => {
             }
         });
     })
-    router.post('/diagnose/:caseid', (req, res) => {
+    router.post('/diagnose/:caseid', authenticateToken, (req, res) => {
         let ruleNo;
+
+        const userid = req.user.userNo
 
         const symptomsObject = {
             c_symp: null, //assessmentQuery (using cardinal symptoms module)
@@ -769,9 +772,9 @@ module.exports = (db) => {
                                                             // res.status(200).json(diagnosisQueryResults);
                                                             console.log("Rule Number: " + RuleNo)
                                                             console.log(dataIdObject)
-                                                            db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, need_hiv, healthassess_id, xray_id, mtb_id, tst_id, igra_id) 
-                                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-                                                            [new Date().toISOString().split('T')[0], caseid, RuleNo, need_hiv, dataIdObject.healthassess_id, dataIdObject.xray_id, dataIdObject.mtb_id, dataIdObject.tst_id, dataIdObject.igra_id], 
+                                                            db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, userNo, need_hiv, healthassess_id, xray_id, mtb_id, tst_id, igra_id) 
+                                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                            [new Date().toISOString().split('T')[0], caseid, RuleNo, userid, need_hiv, dataIdObject.healthassess_id, dataIdObject.xray_id, dataIdObject.mtb_id, dataIdObject.tst_id, dataIdObject.igra_id], 
                                                             (error8, InsertResult) => {
                                                                 if (error8) {
                                                                     res.status(500).json({ error: "Did Not Add Data" });

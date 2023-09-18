@@ -57,7 +57,22 @@ const endIndex = startIndex + itemsPerPage;
   
     try {
       // SET DIAGNOSIS
-      const diagnoseResponse = await axios.post(`http://localhost:4000/api/diagnose/${id}`);
+
+      // Retrieve the JWT token from local storage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Token not found in local storage.');
+        return;
+      }
+
+      // Define headers with the JWT token
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      
+      console.log(headers)
+
+      const diagnoseResponse = await axios.post(`http://localhost:4000/api/diagnose/${id}`, {}, { headers });
       console.log(diagnoseResponse.data);
   
       // GET LATEST DIAGNOSIS
