@@ -1412,5 +1412,25 @@ router.post('/addtreatment', (req, res) => {
     });
 })
 
+router.get('/users/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT CONCAT(u.last_name, ', ', u.first_name, ' ', u.middle_name) AS fullname,
+    u.IDNo,
+    u.passwordChanged
+FROM PEDTBDSS_new.MD_USERS u
+WHERE u.user_type = "BHW" AND u.BGYNo = ${id};
+
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
     return router;
 };

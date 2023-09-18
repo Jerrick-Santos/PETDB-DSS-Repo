@@ -23,6 +23,7 @@ import PatientSummaryPTB from './pages/Home/PatientSummaryPTB';
 import PatientSummaryEPTB from './pages/Home/PatientSummaryEPTB';
 import PatientSummaryClosed from './pages/Home/PatientSummaryClosed';
 import SimilarCases from './pages/SimilarCases';
+import UserList from './adminpages/UserList';
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/adminlabtest" element={<AdminLabTest/>}/>
                     <Route path="/adminhi" element={<AdminHI/>}/>
                     <Route path="/adminbhc" element={<AdminBHC/>}/>
+                    <Route path="/bhw/:id" element={<UserList/>}/>
                     <Route path="/hi/:id" element={<HIInfo/>}/>
                     <Route path="/bhc/:id" element={<BHCInfo/>}/>
                     
