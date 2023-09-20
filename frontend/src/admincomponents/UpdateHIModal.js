@@ -4,12 +4,16 @@ import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import edit from '../assets/edit.png'
-
-
+import Spinner from "react-bootstrap/Spinner";
 function UpdateHIModal(props) {
    
     const[show,setShow] = useState(false)
-
+    const [selectedRegion, setSelectedRegion] = useState("");
+    const [selectedProvince, setSelectedProvince] = useState("");
+    const [selectedCity, setSelectedCity] = useState("");
+    const [selectedBarangay, setSelectedBarangay] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -25,6 +29,30 @@ function UpdateHIModal(props) {
             // Handle any errors that occurred during the request
             console.error('Error fetching data:', error);
           });
+
+          axios.get(`http://localhost:4000/api/provinces/${props.HIRegion}`)
+          .then((response) => {
+              setProvinceData(response.data);
+          })
+          .catch((error) => {
+              console.error('Error fetching provinces:', error);
+          });
+
+          axios.get(`http://localhost:4000/api/cities/${props.HIProvince}`)
+          .then((response) => {
+              setCityData(response.data);
+          })
+          .catch((error) => {
+              console.error('Error fetching cities:', error);
+          });
+
+          axios.get(`http://localhost:4000/api/barangays/${props.HICity}`)
+            .then((response) => {
+                setBarangayData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching barangays:', error);
+            });
         
     
     }, []);
@@ -33,6 +61,14 @@ function UpdateHIModal(props) {
 
     const handleRegionChange = (e) => {
         const selectedRegion = e.target.value;
+
+        setFormValues((prev) => ({
+            ...prev,
+            HIProvince: "",
+            HICity: "",
+            HIBarangay: ""
+          }));
+
         axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
             .then((response) => {
                 setProvinceData(response.data);
@@ -46,6 +82,13 @@ function UpdateHIModal(props) {
 
     const handleProvinceChange = (e) => {
         const selectedProvince = e.target.value;
+
+        setFormValues((prev) => ({
+            ...prev,
+            HICity: "",
+            HIBarangay: ""
+          }));
+
         axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
             .then((response) => {
                 setCityData(response.data);
@@ -59,6 +102,12 @@ function UpdateHIModal(props) {
 
     const handleCityChange = (e) => {
         const selectedCity = e.target.value;
+
+        setFormValues((prev) => ({
+            ...prev,
+            HIBarangay: ""
+          }));
+
         axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
         .then((response) => {
             setBarangayData(response.data);
@@ -74,16 +123,17 @@ function UpdateHIModal(props) {
         HIOperatingHours:props.HIOperatingHours,
         HIContactNumber:props.HIContactNumber,
         HIEmailAddress:props.HIEmailAddress,
-        HIUnitNo:'',
-        HIStreet:'',
-        HIBarangay:'',
-        HICity:'',
-        HIRegion:'',
-        HIZipCode:'',
+        HIUnitNo:props.HIUnitNo,
+        HIStreet:props.HIStreet,
+        HIRegion:props.HIRegion,
+        HIProvince:props.HIProvince,
+        HICity:props.HICity,
+        HIBarangay:props.HIBarangay,
+        HIZipCode:props.HIZipCode,
         XCoord:props.XCoord,
         YCoord:props.YCoord,
         HIContactPerson: props.HIContactPerson,
-        isActive: 1
+        HINo: props.HINo
     });
 
     const handleChange = (e) => {
@@ -94,7 +144,7 @@ function UpdateHIModal(props) {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try{
-            await axios.post("http://localhost:4000/api/newhi", formValues)
+            await axios.post("http://localhost:4000/api/updatehi", formValues)
         }catch(err){
             console.log(err)
         }
@@ -103,18 +153,46 @@ function UpdateHIModal(props) {
   return (
         <>
 
-<img
-                src={edit}
-                className="mt-1 me-2 clickable"
-                onClick={handleShow}
-                style={{ height: "30px" }}
-            />
-
+{props.isActive === 1 ? (
+     
+   <img
+          src={edit}
+          onClick={handleShow}
+          className="mt-1 me-2 clickable"
+          style={{ height: "30px" }}
+     />
+        
+      ) : null}
+      
+      
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='lg'>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
         <Modal.Title>Update Health Institution</Modal.Title>
     </Modal.Header>
     <Modal.Body>
+    {props.HIName === "" ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+                <>
     <form className="mt-3 justify-content-center">
             <Row className="mb-3 justify-content-center">
                 <div className="form-group col-md-12">
@@ -146,6 +224,7 @@ function UpdateHIModal(props) {
                     <select className="form-select" name="HIRegion" value={formValues.HIRegion} onChange={(e)=>{
                         handleChange(e);
                         handleRegionChange(e);
+
                     }}>
                         <option value="">Select</option>
                     
@@ -162,7 +241,7 @@ function UpdateHIModal(props) {
 
                 <div className="form-group col-md-3">
                     <label for="inputCurrRegion">Province</label>
-                    <select className="form-select" name="HIProvince" value={formValues.HIProvince} onChange={(e)=>{
+                    <select className="form-select" name="HIProvince" disabled={formValues.HIRegion === ""} value={formValues.HIProvince} onChange={(e)=>{
                         handleChange(e);
                         handleProvinceChange(e);
                     }}>
@@ -186,7 +265,7 @@ function UpdateHIModal(props) {
            
             <div className="form-group col-md-4">
                     <label for="inputCurrCity">City</label>
-                    <select className="form-select" name="HICity" value={formValues.HICity} onChange={(e)=>{
+                    <select className="form-select" name="HICity" value={formValues.HICity} disabled={formValues.HIProvince === ""} onChange={(e)=>{
                         handleChange(e);
                         handleCityChange(e);
                     }}>
@@ -206,7 +285,7 @@ function UpdateHIModal(props) {
                
             <div class="form-group col-md-4">
                     <label for="inputCurrBarangay">Barangay</label>
-                    <select className="form-select" name="HIBarangay" value={formValues.HIBarangay} onChange={handleChange}>
+                    <select className="form-select" name="HIBarangay" value={formValues.HIBarangay} disabled={formValues.HICity === ""}  onChange={handleChange}>
                         <option value="">Select</option>
                     
                     {barangayData.map((hi, index) => (
@@ -269,9 +348,11 @@ function UpdateHIModal(props) {
 
             
             </form>
+            </>
+              )}
     </Modal.Body>
     <Modal.Footer >
-        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Add</button>
+        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Update</button>
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>

@@ -34,6 +34,8 @@ const AdminHIWithAccess = withAccessControl(AdminHI, ['admin']);
 const AdminBHCWithAccess = withAccessControl(AdminBHC, ['admin']);
 const HIInfoWithAccess = withAccessControl(HIInfo, ['admin']);
 const BHCInfowithAccess = withAccessControl(BHCInfo, ['admin'])
+const UserListwithAccess = withAccessControl(UserList, ['admin'])
+
 
 {/* BHW routes */}
 const PatientSummaryWithAccess = withAccessControl(PatientSummary, ['BHW']);
@@ -68,6 +70,7 @@ function App() {
                     <Route path="/adminbhc" element={<AdminBHCWithAccess/>}/>
                     <Route path="/hi/:id" element={<HIInfoWithAccess/>}/>
                     <Route path="/bhc/:id" element={<BHCInfowithAccess/>}/>
+                    <Route path="/bhw/:id" element={<UserListwithAccess/>}/>
 
 
                     {/* BHW routes */}
