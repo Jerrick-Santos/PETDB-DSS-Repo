@@ -253,7 +253,13 @@ const LaboratoryTest = () => {
           
           </Card.Body>
         </Card>
-        <AddXrayModal caseNum={caseNum} />
+        {patientData.case_status === 'O' ? (
+          <>
+            <AddXrayModal caseNum={caseNum} />
+          </>
+        ) : (
+          <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} disabled> Add XRay </button>
+        )}
       </Col>
       <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange1(activePage1 - 1)} disabled={activePage1 === 1} />
@@ -323,7 +329,13 @@ const LaboratoryTest = () => {
                     ))}
           </Card.Body>
         </Card>
-        <AddMTBRIFModal caseNum={caseNum} />
+        {patientData.case_status === 'O' ? (
+          <>
+            <AddMTBRIFModal caseNum={caseNum} />
+          </>
+        ) : (
+          <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} disabled> Add MTB/RIF</button>
+        )}
       </Col>
       <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange2(activePage2 - 1)} disabled={activePage2 === 1} />
@@ -392,7 +404,13 @@ const LaboratoryTest = () => {
                     ))}
           </Card.Body>
         </Card>
-        <AddTSTModal caseNum={caseNum} />
+        {patientData.case_status === 'O' ? (
+          <>
+            <AddTSTModal caseNum={caseNum} />
+          </>
+        ) : (
+          <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} disabled> Add TST</button>
+        )}
       </Col>
       <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange3(activePage3 - 1)} disabled={activePage3 === 1} />
@@ -463,7 +481,13 @@ const LaboratoryTest = () => {
                     ))}
           </Card.Body>
         </Card>
-        <AddIGRAModal caseNum={caseNum} />
+        {patientData.case_status === 'O' ? (
+          <>
+            <AddIGRAModal caseNum={caseNum} />
+          </>
+        ) : (
+          <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} disabled> Add IGRA</button>
+        )}
       </Col>
       <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange4(activePage4 - 1)} disabled={activePage4 === 1} />

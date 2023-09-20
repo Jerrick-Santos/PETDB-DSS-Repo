@@ -18,11 +18,8 @@ import LatentTBModal from '../components/LatentTBModal';
 import CaseHeader from '../components/CaseHeader'
 import Badge from 'react-bootstrap/Badge';
 import Pagination from 'react-bootstrap/Pagination';
-import MapHIVRecom from '../components/MapHIVRecom';
-import MapXrayRecom from '../components/MapXrayRecom';
-import MapMTBRecom from '../components/MapMTBRecom';
-import MapTSTRecom from '../components/MapTSTRecom';
-import MapIGRARecom from '../components/MapIGRARecom';
+import MapRecom from '../components/MapRecom';
+
 
 
 const Diagnosis = () => {
@@ -57,7 +54,22 @@ const endIndex = startIndex + itemsPerPage;
   
     try {
       // SET DIAGNOSIS
-      const diagnoseResponse = await axios.post(`http://localhost:4000/api/diagnose/${id}`);
+
+      // Retrieve the JWT token from local storage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Token not found in local storage.');
+        return;
+      }
+
+      // Define headers with the JWT token
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      
+      console.log(headers)
+
+      const diagnoseResponse = await axios.post(`http://localhost:4000/api/diagnose/${id}`, {}, { headers });
       console.log(diagnoseResponse.data);
   
       // GET LATEST DIAGNOSIS
@@ -187,7 +199,7 @@ const endIndex = startIndex + itemsPerPage;
                 style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
                 type="button"
                 onClick={handleButtonClick}
-                disabled={isLoading}
+                disabled={isLoading || patientData.case_status === 'C'}
               >
                 Diagnose TB Status
               </button>
@@ -253,7 +265,7 @@ const endIndex = startIndex + itemsPerPage;
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
             {(diagnosis.need_hiv === 1) ? (
-                <MapHIVRecom/>
+                <strong>HIV Test</strong>
                 ) : null}
              
             
@@ -263,7 +275,7 @@ const endIndex = startIndex + itemsPerPage;
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
             {(diagnosis.need_xray === 1) ? (
-                <MapXrayRecom/>
+                <MapRecom test={1} test_name={'X-ray'}/>
                 ) : null}
              
            
@@ -274,7 +286,7 @@ const endIndex = startIndex + itemsPerPage;
             <Col style={{fontSize:"20px"}}>
             
               {(diagnosis.need_mtb === 1) ? (
-                <MapMTBRecom/>
+                <MapRecom test={2} test_name={'MTB'}/>
                 ) : null}
               
             
@@ -286,7 +298,7 @@ const endIndex = startIndex + itemsPerPage;
             <Col style={{fontSize:"20px"}}>
             
               {(diagnosis.need_tst === 1) ? (
-                <MapTSTRecom/>
+                <MapRecom test={3} test_name={'TST'}/>
                 ) : null}
             
              </Col>
@@ -295,7 +307,7 @@ const endIndex = startIndex + itemsPerPage;
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
               {(diagnosis.need_igra === 1) ? (
-                <MapIGRARecom/>
+                <MapRecom test={7} test_name={'IGRA'}/>
                 ) : null}
           
              </Col>

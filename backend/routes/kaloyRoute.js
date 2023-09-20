@@ -256,9 +256,12 @@ module.exports = (db) => {
                     // For converting exisiting close contacts into patients
                     const updateCloseContactQuery = `UPDATE PEDTBDSS_new.MD_CONTACTTRACING SET PatientNo = ? WHERE ContactNo = ?`
 
-                    db.query(updateCloseContactQuery, [patientNo, req.body.id], (err, res) => {
-                        if (err) { console.log(err) }
-                    })
+                    // if passed with a parameter "id", then the soon to be patient is a converted close contact. update close contact with the new patient no
+                    if (req.body.id) {
+                        db.query(updateCloseContactQuery, [patientNo, req.body.id], (err, res) => {
+                            if (err) { console.log(err) }
+                        })
+                    }
 
                     db.query(insertCaseQuery, caseValues, (err, caseResult) => {
                         if (err) {
