@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import React, {useState, useRef, useEffect} from 'react';
 import edit from '../assets/edit.png';
 import map from '../assets/map.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, Badge  } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import  MarkerClusterGroup  from "react-leaflet-markercluster";
 import localforage from 'localforage';
@@ -11,7 +11,7 @@ import L, { Map } from "leaflet";
 import axios from 'axios';
 
 
-function MapMTBRecom() {
+function MapRecom(props) {
    
     
     
@@ -39,7 +39,7 @@ function MapMTBRecom() {
         const headers = {
             Authorization: `Bearer ${token}`,
         };
-        axios.get(`http://localhost:4000/api/loadLocations`, { headers })
+        axios.get(`http://localhost:4000/api/loadLocations/${props.test}`, { headers })
             .then(res => {
                 const { res1, res2 } = res.data
                 setLocations(res2)
@@ -68,21 +68,36 @@ function MapMTBRecom() {
   return (
         <>
 
-        <p className="clickable" onClick={handleShow} style={{color:"black", fontSize:"18px"}} ><strong><u>MTB Test</u></strong></p> 
+        <p className="clickable" onClick={handleShow} style={{color:"black", fontSize:"18px"}} ><strong><u>{props.test_name} Test</u></strong></p> 
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg">
             <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-                <Modal.Title> MTB Testing Recommendation </Modal.Title>
+                <Modal.Title> {props.test_name} Testing Recommendation </Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
-                <Row className="mt-2">
-                    {/* <Col>Recommended Site for Testing:<strong></strong></Col> */}
-                </Row>
-                <Row className="mt-2">
-                    {/* <Col>Operating Hours:<strong></strong></Col> */}
-                </Row>
 
+                {locations && locations.map((hi, index) => {
+                    if (hi.isClosest) {
+                        return (
+                            <>
+                                <Row className="mt-2">
+                                    <Col><Badge bg='secondary'> Name: </Badge> {hi.HIName} </Col>
+                                </Row>
+                                <Row className="mt-2">
+                                    <Col><Badge bg='secondary'> Operating Hours: </Badge> {hi.HIOperatingHours} </Col>
+                                </Row>
+                                <Row className="mt-2">
+                                    <Col><Badge bg='secondary'> Contact Number: </Badge> {hi.HIContactNumber} </Col>
+                                </Row>
+                                <Row className="mt-2">
+                                    
+                                    <Col><Badge bg='secondary'> Email Address: </Badge> {hi.HIEmailAddress} </Col>
+                                </Row>
+                            </>
+                        )
+                    }
+                })}
 
                 <Row className="mt-4">
                     {/* <img src={map} style={{width:"100%" , opacity:"1"}}/> */}
@@ -109,7 +124,11 @@ function MapMTBRecom() {
 
                             })}
 
-                            <Marker style={{ opacity: 1 }} position={[center.XCoord, center.YCoord]} />
+                            <Marker style={{ opacity: 1 }} position={[center.XCoord, center.YCoord]}>
+                                <Popup>
+                                    <strong>{center.BGYName}</strong>
+                                </Popup>
+                            </Marker>
 
                         </MapContainer>
                     )}
@@ -130,5 +149,5 @@ function MapMTBRecom() {
 
 
 
-export default MapMTBRecom;
+export default MapRecom;
 

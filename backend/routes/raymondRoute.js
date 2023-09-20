@@ -256,16 +256,18 @@ module.exports = (db) => {
         })
     }),
 
-    router.get('/loadLocations', authenticateToken, async (req, res) => {
+    router.get('/loadLocations/:test', authenticateToken, async (req, res) => {
         /** ROUTER GOAL: get barangay and health institution information associated to the logged user */
         const userid = req.user.userNo
 
-        const user_query = `SELECT b.BGYNo, b.XCoord, b.YCoord FROM PEDTBDSS_new.MD_USERS u JOIN PEDTBDSS_new.MD_BARANGAYS b ON u.BGYNo = b.BGYNo WHERE userNo = ?;`
+        const user_query = `SELECT b.BGYNo, b.XCoord, b.YCoord, b.BGYName FROM PEDTBDSS_new.MD_USERS u JOIN PEDTBDSS_new.MD_BARANGAYS b ON u.BGYNo = b.BGYNo WHERE userNo = ?;`
         const hi_query = `SELECT * 
                         FROM PEDTBDSS_new.MD_BRGYHI bhi
                         JOIN PEDTBDSS_new.MD_HI hi ON bhi.HINo = hi.HINo
-                        WHERE BGYNo = ?
-                        AND hi.isActive = 1;`
+                        JOIN PEDTBDSS_new.MD_HIDGTESTS hidg ON bhi.HINo = hidg.HINo
+                        WHERE bhi.BGYNo = 1
+                        AND hi.isActive = 1
+                        AND hidg.DGTestNo = ${req.params.test};`
 
         try {
             let res1, res2
@@ -331,6 +333,36 @@ module.exports = (db) => {
                 res.send(results)
             }
         })
+    }),
+
+    // TESTING UPDATED /LOADLOCATION WITH TEST CONDITION
+    router.get('/loadHIwithTest/:test', async (req, res) => {
+
+        /** ROUTER GOAL: /loadLocations but with test */
+        const userid = 1 // test value without authenticatetoken so that you can use postman
+        const user_query = `SELECT b.BGYNo, b.XCoord, b.YCoord FROM PEDTBDSS_new.MD_USERS u JOIN PEDTBDSS_new.MD_BARANGAYS b ON u.BGYNo = b.BGYNo WHERE userNo = ?;`
+        const hi_query = `SELECT * 
+                        FROM PEDTBDSS_new.MD_BRGYHI bhi
+                        JOIN PEDTBDSS_new.MD_HI hi ON bhi.HINo = hi.HINo
+                        JOIN PEDTBDSS_new.MD_HIDGTESTS hidg ON bhi.HINo = hidg.HINo
+                        WHERE bhi.BGYNo = 1
+                        AND hi.isActive = 1
+                        AND hidg.DGTestNo = ${req.params.test};`
+
+        try {
+            let res1, res2
+            res1 = await queryPromise(user_query, [userid])
+            console.log("QUERY 1: ", res1)
+            if (res1 && res1.length > 0) {
+                res2 = await queryPromise(hi_query, [res1[0].BGYNo])
+                console.log("QUERY 2: ", res2)
+
+                // test res.send()
+                res.send(res2)
+            }
+        } catch (error) {
+            console.error(error)
+        }
     })
     
 
