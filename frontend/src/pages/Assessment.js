@@ -5,6 +5,7 @@ import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
 import user from '../assets/user.png';
+import add from '../assets/add.png';
 
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
@@ -35,6 +36,7 @@ const Assessment = () => {
   
   const [patientData, setPatientData] = useState([]);
   const [assessData, setAssessData] = useState([]);
+  const [caseClosed, setCaseClosed] = useState(false);
   useEffect(() => {
 
     axios.get(`http://localhost:4000/api/patientassessment/${caseNum}`)
@@ -53,6 +55,12 @@ const Assessment = () => {
       .then(res => {
         console.log(res);
         setPatientData(res.data[0]);
+        if (res.data[0].case_status === 'C') {
+          // Set a state variable to indicate that the case is closed
+          setCaseClosed(true);
+        } else {
+          setCaseClosed(false);
+        }
       })
       .catch(err => {
         console.error(err);
@@ -125,7 +133,18 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
       {/*Shows general patient information details */}
       <CaseHeader caseNum={caseNum} />
      {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
-     {assessData.length > 0 ? (
+     {caseClosed ? (
+      <Col className="d-flex justify-content-center">
+        <button
+        className="btn"
+        style={{ color: "white", backgroundColor: '#0077B6'}}
+        type="button"
+        disabled
+    >
+        <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add an Assessment
+    </button>
+    </Col>
+        ) : assessData.length > 0 ? (
       <Row className="d-flex justify-content-center mt-4 mb-4" >
       <Col className="d-flex justify-content-center">
       <AddAssessPersist

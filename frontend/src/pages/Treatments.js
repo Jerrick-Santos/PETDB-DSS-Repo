@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
 import bin from '../assets/bin.png'
 import user from '../assets/user.png';
+import add from '../assets/add.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
@@ -21,12 +22,24 @@ const Treatments = () => {
   var caseNum = id
 
   const [treatmentsData, setTreatmentsData] = useState([]);
+  const [patientData, setPatientData] = useState([]);
 
   useEffect(() => {
     axios.get(`http://localhost:4000/api/treatments/${caseNum}`)
     .then(res => {
       console.log(res);
       setTreatmentsData(res.data);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }, [caseNum])
+
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+    .then(res => {
+      console.log(res);
+      setPatientData(res.data[0]);
     })
     .catch(err => {
       console.error(err);
@@ -149,7 +162,15 @@ const Treatments = () => {
           </Card.Body>
           
         </Card>
-        <AddTreatmentModal caseID={caseNum}/>
+        {patientData.case_status === 'O' ? (
+          <>
+            <AddTreatmentModal caseID={caseNum}/>
+          </>
+        ) : (
+          <button className="btn mb-4" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" disabled>
+                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/>     Add a Treatment
+              </button>
+        )}
       </Col>
     </Row>
 

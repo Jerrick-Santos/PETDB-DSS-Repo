@@ -202,7 +202,7 @@ const endIndex = startIndex + itemsPerPage;
                 style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
                 type="button"
                 onClick={handleButtonClick}
-                disabled={isLoading}
+                disabled={isLoading || patientData.case_status === 'C'}
               >
                 Diagnose TB Status
               </button>
