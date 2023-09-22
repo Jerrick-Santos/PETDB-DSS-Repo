@@ -27,7 +27,7 @@ const CloseContacts = () => {
   function addMonths(date, months) {
     var d = date.getDate();
     date.setMonth(date.getMonth() + months);
-    if (date.getDate() != d) {
+    if (date.getDate() !== d) {
       date.setDate(0);
     }
     return date;
@@ -36,8 +36,6 @@ const CloseContacts = () => {
   // Load list of close contact
   useEffect(() => {
     async function fetchData() {
-
-      console.log("UPDATING INFORMATION (0/3): ", update)
 
       var res = await axios.get(`http://localhost:4000/api/getContacts/${caseNum}`)
       console.log(res);
@@ -116,7 +114,7 @@ const CloseContacts = () => {
         
             update = {...x, ...updatedProps}
 
-            console.log("UPDATING INFORMATION (2/3): ", update)
+            console.log("UPDATED INFORMATION: ", update)
 
             setCloseContactListData(prevData =>
               prevData.map(contact => {
@@ -152,8 +150,9 @@ const CloseContacts = () => {
   
         if (result.data) { 
           latest_case = result.data[0].latest_case
-          if (latest_case == caseNum) { setLatestCase(true) } else { setLatestCase(false) }
-          console.log('latest case: ', latest_case, " / ", 'current case: ', caseNum)
+          console.log('latest_case: ', latest_case)
+          console.log('caseNum: ', caseNum)
+          if (latest_case === Number(caseNum)) { setLatestCase(true) } else { setLatestCase(false) }
         }
         else { console.log('error retrieving latest case') }
       } catch (error) {
@@ -162,8 +161,11 @@ const CloseContacts = () => {
     };
   
     fetchData();
-  }, []);
+  }, [caseNum]);
 
+  useEffect(() => {
+    console.log('fetching data: ', latestCase);
+  }, [latestCase]);
 
   return (
     <div>
