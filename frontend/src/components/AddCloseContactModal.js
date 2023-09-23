@@ -13,8 +13,13 @@ function AddCloseContactModal(props) {
     const [show,setShow] = useState(false) // Modal for Close Contact Addition
     const [showSimilar, setShowSimilar] = useState(false) // Modal for View Similar Patient
     const [errors, setErrors] = useState({}); // Stores Form Erros
-    const [similarPatients, setSimilarPatients] = useState([]) // Store List of Similar Patient
-    const [selectedPatientIndex, setSelectedPatientIndex] = useState(null); // Store Index for Similar Patient Array Access
+    const [similarPatients, setSimilarPatients] = useState([]) // Store list of Similar Patient
+    const [selectedPatientIndex, setSelectedPatientIndex] = useState(null); // Store index for Similar Patient Array Access
+
+    // TESTING // ----------------------------------------------------------------
+    const [diagResult, setDiagResult] = useState([]) // Store list of Diagnostic Result from the reference table
+    const [treatmentStatus, setTreatmentStatus] = useState([]) // Store list of Treatment Status from the reference table
+    const [displayDiagTreatment, setDisplayDiagTreatment] = useState(false) // Enable dropdown buttons for diagnostic result and treatment status
 
     // Modal Show and Close
     const handleClose = () => setShow(false);
@@ -32,7 +37,9 @@ function AddCloseContactModal(props) {
         contact_email: '',
         contact_relationship: '',
         CaseNo: props.id,
-        PatientNo: null
+        PatientNo: null,
+        DRNo: null,
+        TSNo: null
     });
 
     // Form Validation 
@@ -61,6 +68,14 @@ function AddCloseContactModal(props) {
         }
     };
 
+    const handleEnableDropdown = () => {
+        setDisplayDiagTreatment(!displayDiagTreatment);
+        setFormValues((prevData) => ({ // reset DRNo and TSNo to null in case of user misinput
+          ...prevData,
+          DRNo: null,
+          TSNo: null,
+        }));
+      };
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -149,7 +164,32 @@ function AddCloseContactModal(props) {
         
     }
 
+    // Load reference information for dropdown selection
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const diag_result = await axios.get('http://localhost:4000/api/getDiagnosisResults')
+                setDiagResult(diag_result.data)
+
+                const treatment_result = await axios.get('http://localhost:4000/api/getTreatmentStatus')
+                setTreatmentStatus(treatment_result.data)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchData()
+    },[])
     
+    // TESTING ---------------------------------------------------------------- //
+    useEffect(() => {
+        console.log(diagResult)
+        console.log(treatmentStatus)
+    }, [diagResult, treatmentStatus])
+
+    useEffect(() => {
+        console.log(formValues)
+    }, [formValues])
+
 
   return (
         <>
@@ -304,6 +344,44 @@ function AddCloseContactModal(props) {
                     />
                 </Form.Group>
             </Row>
+
+            {/** TO CONSIDER CLOSE CONTACTS THAT ALREADY HAVE AN ACTIVE CASE */}
+            <Row className="mt-5 mb-3 justify-content-center">
+
+                <Col>
+                    <strong> Does the close contact have a history with TB or is currently in an active TB case?</strong>
+                </Col>
+                <Col>
+                    <Form.Check type='checkbox' name='showTBHistory' onChange={handleEnableDropdown} />
+                </Col>
+            </Row>
+
+            <Row>
+                <Form.Group as={Col} md="6" controlId="sex">
+                    <Form.Label>TB Diagnostic Result</Form.Label>
+                    <Form.Select aria-label="Diagnostic Result" onChange={handleChange} name='DRNo' value={formValues.DRNo ? formValues.DRNo : ''} disabled={!displayDiagTreatment}>
+                        <option>Select</option>
+                        {diagResult.length > 0 && diagResult && (
+                            diagResult.map((diag, index) => { return (
+                                <option key={index} value={diag.DRNo}>{diag.DRDescription}</option>
+                            )})
+                        )}
+                    </Form.Select>
+                </Form.Group>
+
+                <Form.Group as={Col} md="6" controlId="sex">
+                    <Form.Label>TB Treatment Status</Form.Label>
+                    <Form.Select aria-label="Treatment Status" onChange={handleChange} name='TSNo' value={formValues.TSNo ? formValues.TSNo : ''} disabled={!displayDiagTreatment}>
+                        <option>Select</option>
+                        {treatmentStatus.length > 0 && treatmentStatus && (
+                            treatmentStatus.map((treat, index) => { return (
+                                <option key={index} value={treat.TSNo}>{treat.TSDescription}</option>
+                            )})
+                        )}
+                    </Form.Select>
+                </Form.Group>                   
+            </Row>
+
         </Form>
     </Modal.Body>
     <Modal.Footer>
