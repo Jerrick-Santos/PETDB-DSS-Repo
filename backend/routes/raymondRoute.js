@@ -48,10 +48,14 @@ module.exports = (db) => {
                         ct.contact_relationship,
                         ct.date_added,
                         ct.PatientNo,
-                        ct.ContactNo
+                        ct.ContactNo,
+                        dr.DRDescription,
+                        ts.TSDescription
                     FROM PEDTBDSS_new.MD_CONTACTTRACING ct
                     JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON ct.ContactNo = ctc.ContactNo
                     JOIN PEDTBDSS_new.TD_PTCASE ptc ON ctc.CaseNo = ptc.CaseNo
+                    LEFT JOIN PEDTBDSS_new.REF_DIAGNOSISRESULTS dr ON dr.DRNo = ct.DRNo
+                    LEFT JOIN PEDTBDSS_new.REF_TREATMENTSTATUS ts ON ts.TSNo = ct.TSNo
                     WHERE ptc.CaseNo = ?;
         `;
 
