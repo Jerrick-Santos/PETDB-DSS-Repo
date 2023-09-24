@@ -37,8 +37,6 @@ function AddXrayModal(props) {
 
     }, []);
 
-
-
     const [xrayValues, setXrayValues] = useState({
         CaseNo: props.caseNum,
         HINo: '',
@@ -47,6 +45,43 @@ function AddXrayModal(props) {
         TestValue: '',
         validity: 1,
     })
+
+    const [HINoError, setHIError] = useState('');
+    const [dateError, setDateError] = useState('');
+    const [testError, setTestError] = useState('');
+    const [valueError, setValueError] = useState('');
+
+    const validate = () => {
+        let HINoError = '';
+        if (!xrayValues.HINo) {
+            HINoError = 'Required';
+        }
+        setHIError(HINoError);
+
+        let dateError = '';
+        if (!xrayValues.issue_date) {
+            dateError = 'Required';
+        }
+        setDateError(dateError);
+
+        let testError = '';
+        if (!xrayValues.test_refno) {
+            testError = 'Required';
+        }
+        setTestError(testError);
+
+        let valueError = '';
+        if (!xrayValues.TestValue) {
+            valueError = 'Required';
+        }
+        setValueError(valueError);
+
+        if (HINoError || dateError || testError || valueError) {
+            return false;
+          }
+
+        return true;
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -82,6 +117,11 @@ function AddXrayModal(props) {
 
       const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const isValid = validate();
+        if(!isValid){
+          return;
+        }
         
         try{
             await axios.post("http://localhost:4000/api/newXrayresults", xrayValues)
@@ -121,14 +161,23 @@ function AddXrayModal(props) {
  
 
             </select>
+            {HINoError && (
+                <p style={{color: 'red'}}>{HINoError}</p>  
+            )}
         </div>
         <div className="mt-3">
             <label><strong>Issued on:</strong></label>
             <input type="date" className="form-control" name='issue_date' value={xrayValues.issue_date} onChange={handleChange}/>
+            {dateError && (
+                <p style={{color: 'red'}}>{dateError}</p>  
+            )}
         </div>
         <div className="mt-3">
             <label><strong>Reference Number:</strong></label>
             <input type="text" className="form-control" name='test_refno' value={xrayValues.test_refno} onChange={handleChange}/>
+            {testError && (
+                <p style={{color: 'red'}}>{testError}</p>  
+            )}
         </div>
         <div className="mt-3"> 
             <label> <strong>Xray Results: </strong></label>
@@ -138,6 +187,9 @@ function AddXrayModal(props) {
                 <option value="No signs">No signs</option>
                 <option value="Undetermined">Undetermined</option>
             </select>
+            {valueError && (
+                <p style={{color: 'red'}}>{valueError}</p>  
+            )}
         </div>
     </Modal.Body>
     <Modal.Footer >
