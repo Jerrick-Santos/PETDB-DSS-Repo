@@ -46,6 +46,43 @@ function AddMTBRIFModal(props) {
             validity: 1,
     })
 
+    const [HINoError, setHIError] = useState('');
+    const [dateError, setDateError] = useState('');
+    const [testError, setTestError] = useState('');
+    const [valueError, setValueError] = useState('');
+
+    const validate = () => {
+        let HINoError = '';
+        if (!mtbValues.HINo) {
+            HINoError = 'Required';
+        }
+        setHIError(HINoError);
+
+        let dateError = '';
+        if (!mtbValues.issue_date) {
+            dateError = 'Required';
+        }
+        setDateError(dateError);
+
+        let testError = '';
+        if (!mtbValues.test_refno) {
+            testError = 'Required';
+        }
+        setTestError(testError);
+
+        let valueError = '';
+        if (!mtbValues.TestValue) {
+            valueError = 'Required';
+        }
+        setValueError(valueError);
+
+        if (HINoError || dateError || testError || valueError) {
+            return false;
+          }
+
+        return true;
+    }
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         setMTBValues((prev)=>({...prev, [name]: value}));
@@ -77,6 +114,12 @@ function AddMTBRIFModal(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const isValid = validate();
+        if(!isValid){
+          return;
+        }
+
         try{
             await axios.post("http://localhost:4000/api/newMTBresults", mtbValues)
         }catch(err){
@@ -116,14 +159,23 @@ function AddMTBRIFModal(props) {
  
 
             </select>
+            {HINoError && (
+                <p style={{color: 'red'}}>{HINoError}</p>  
+            )}
         </div>
         <div className="mt-3">
             <label><strong>Issued on:</strong></label>
             <input type="date" className="form-control" name='issue_date' value={mtbValues.issue_date} onChange={handleChange}/>
+            {dateError && (
+                <p style={{color: 'red'}}>{dateError}</p>  
+            )}
         </div>
         <div className="mt-3">
             <label><strong>Reference Number:</strong></label>
             <input type="text" className="form-control" name='test_refno' value={mtbValues.test_refno} onChange={handleChange}/>
+            {testError && (
+                <p style={{color: 'red'}}>{testError}</p>  
+            )}
         </div>
         <div className="mt-3"> 
             <label> <strong>MTB/RIF Results: </strong></label>
@@ -137,6 +189,9 @@ function AddMTBRIFModal(props) {
                 <option value="0-NA">Indeterminate/Error 1st collection</option>
                 <option value="0-NA">Indeterminate/Error 2nd collection</option>
             </select>
+            {valueError && (
+                <p style={{color: 'red'}}>{valueError}</p>  
+            )}
         </div>
     </Modal.Body>
     <Modal.Footer >
