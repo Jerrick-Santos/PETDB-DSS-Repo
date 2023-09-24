@@ -14,6 +14,8 @@ import UpdateHIModal from '../admincomponents/UpdateHIModal';
 import Spinner from "react-bootstrap/Spinner";
 import Badge from "react-bootstrap/Badge";
 import noresult from "../assets/noresult.png";
+import UpdateHIDGTest from '../admincomponents/UpdateHIDGTest';
+import DeleteHIDGTest from '../admincomponents/DeleteHIDGTest';
 
 const HIInfo = () => {
 
@@ -240,6 +242,7 @@ useEffect(() => {
                               <th scope="col">Diagnostic Tests</th>
                               <th scope="col">Estimated Price</th>
                               <th scope="col">Accepting Voucher</th>
+                              <th scope="col">Status</th>
                               <th scope="col"></th>
                             </tr>
                           </thead>
@@ -268,9 +271,32 @@ useEffect(() => {
                                         No{" "}
                                       </Badge>
                                     ) : null}</td>
+                                  <td>{dt.isActive === 1 ? (
+                                      <Badge
+                                        style={{ fontSize: 16 }}
+                                        bg="success"
+                                      >
+                                        {" "}
+                                        Active{" "}
+                                      </Badge>
+                                    ) : dt.isActive === 0  ? (
+                                      <Badge
+                                        style={{ fontSize: 16 }}
+                                        bg="danger"
+                                      >
+                                        {" "}
+                                        Deactivated{" "}
+                                      </Badge>
+                                    ) : null}</td>
                                   <td>
-                                    
-                                  </td>
+                                  {hiData.isActive === 1 ? (
+                                    <>
+                                    <UpdateHIDGTest HINo={dt.HINo} DGTestNo={dt.DGTestNo} AcceptingVoucher={dt.AcceptingVoucher}
+                                                    Price={dt.Price} isActive={dt.isActive} DGTestName={dt.DGTestName}/>
+                                    <DeleteHIDGTest DGTestName={dt.DGTestName} HINo={dt.HINo} DGTestNo={dt.DGTestNo} isActive={dt.isActive}/>
+                                    </>
+                                    ): null}
+                                    </td>
                                 </tr>
                               ))}
                           </tbody>
@@ -305,7 +331,9 @@ useEffect(() => {
         
         <Row className="mb-4">
                     <Col>
+                    {hiData.isActive === 1 ? (
                     <AssignHIModal id={hiNum} name={hiData.HIName} address={hiData.address}/>
+                    ): null}
                     </Col>
 
                     <Col className="d-flex justify-content-end">
@@ -358,11 +386,7 @@ useEffect(() => {
                       ) : null}
                     </Col>
                   </Row>
-        <Row className="d-flex justify-content-end mb-4" >
-          <Col className="d-flex justify-content-end">
-            
-          </Col>
-        </Row>
+        
         
         
       </Col>

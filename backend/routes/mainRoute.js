@@ -574,10 +574,12 @@ WHERE
 
     //create a new diagnostic test
     router.post('/createdt', (req, res) => {
-        const q = "INSERT INTO MD_DGTESTS(`DGTestName`, `DGValidityMonths`) VALUES (?, ?)"
+        const q = "INSERT INTO MD_DGTESTS(`DGTestName`, `DGValidityMonths` , `isRequired` , `isActive`) VALUES (?, ?, ?, ?)"
         const values = [
             req.body.DGTestName,
             req.body.DGValidityMonths,
+            req.body.isRequired,
+            req.body.isActive
         ]
 
         db.query(q, values, (err, data) => {
@@ -842,6 +844,7 @@ WHERE
         db.query(`
         SELECT *
         FROM PEDTBDSS_new.MD_DGTESTS
+        ORDER BY DGTestName
        
     `, (err, results) => {
         if (err) {
@@ -942,8 +945,7 @@ WHERE
         h.HIContactPerson,
         h.HIEmailAddress,
         h.XCoord,
-        h.YCoord,
-        h.isActive
+        h.YCoord
     FROM PEDTBDSS_new.MD_HI h
     JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
     JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
@@ -1157,12 +1159,13 @@ WHERE
 
      //assign a test to an hi by adding to MD_HIDGTESTS
      router.post('/assigntest', (req, res) => {
-        const q = "INSERT INTO MD_HIDGTESTS(`HINo`, `DGTestNo`, `AcceptingVoucher`, `Price` ) VALUES (?, ?, ?, ?)"
+        const q = "INSERT INTO MD_HIDGTESTS(`HINo`, `DGTestNo`, `AcceptingVoucher`, `Price`, `isActive` ) VALUES (?, ?, ?, ?, ?)"
         const values = [
             req.body.HINo,
             req.body.DGTestNo,
             req.body.AcceptingVoucher,
-            req.body.Price
+            req.body.Price,
+            req.body.isActive
         ]
 
         db.query(q, values, (err, data) => {
@@ -1822,6 +1825,210 @@ router.post('/updatehi', (req, res) => {
     });
 })
 
+
+router.get('/checkhidgtestref/:id/:testid', (req, res) => {
+    const id = req.params.id;
+    const testid = req.params.testid;
+    db.query(`
+    SELECT COUNT(*) AS total_references FROM TD_DIAGNOSTICRESULTS WHERE HINo = ${id} AND DGTestNo = ${testid} 
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+
+router.patch('/updatehidgteststatus/:id/:testid', (req, res) => {
+    const isActive = req.body.isActive;
+    const id = req.params.id;
+    const testid = req.params.testid;
+    
+    db.query(
+        `UPDATE MD_HIDGTESTS SET isActive = ? WHERE HINo = ? AND DGTESTNO = ?`,
+        [isActive, id, testid],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ error: 'An error occurred while updating status.' });
+            } else {
+                console.log(`Health institution ${id} status updated to ${isActive}.`);
+                res.json({ message: 'Status updated successfully.' });
+            }
+        }
+    );
+});
+
+router.delete('/deletehidgtest/:id/:testid', (req, res) => {
+    const id = req.params.id;
+    const testid = req.params.testid;
+    db.query(`
+    DELETE FROM MD_HIDGTESTS
+    WHERE  HINo = ${id} AND DGTestNo = ${testid};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+
+router.post('/updatehidgtest', (req, res) => {
+    const values = [
+        req.body.Price,
+        req.body.AcceptingVoucher,
+        req.body.HINo,
+        req.body.DGTestNo
+    ]
+
+    db.query( `UPDATE MD_HIDGTESTS SET Price = ?, AcceptingVoucher = ? WHERE HINo = ? AND DGTESTNO = ?`, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+router.delete('/deletebhchi/:id/:hiid', (req, res) => {
+    const id = req.params.id;
+    const hiid = req.params.hiid;
+    db.query(`
+    DELETE FROM MD_BRGYHI
+    WHERE  BGYNo = ${id} AND HINo = ${hiid};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+router.post('/updatedgtest', (req, res) => {
+    const values = [
+        req.body.DGTestName,
+        req.body.DGValidityMonths,
+        req.body.DGTestNo
+    ]
+
+    db.query( `UPDATE MD_DGTESTS SET DGTestName = ?, DGValidityMonths = ? WHERE DGTestNo = ?`, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+router.get('/checkdgtestref/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT
+    (SELECT COUNT(*) FROM MD_HIDGTESTS WHERE DGTestNo = ${id}) +
+    (SELECT COUNT(*) FROM TD_DIAGNOSTICRESULTS WHERE DGTestNo = ${id}) AS total_references;
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+router.delete('/deletedgtest/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    DELETE FROM MD_DGTESTS
+    WHERE  DGTestNo = ${id};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+router.patch('/updatedgteststatus', (req, res) => {
+    const values = [
+        req.body.isActive,
+        req.body.DGTestNo
+    ]
+
+    db.query( `UPDATE MD_DGTESTS SET isActive = ? WHERE DGTestNo = ?`, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+router.get('/searchdt/:search', (req, res) => {
+    const searchTerm = req.params.search;
+    db.query(`
+    SELECT *
+    FROM PEDTBDSS_new.MD_DGTESTS
+    WHERE 
+    COALESCE(DGTestName, '')
+    LIKE '%${searchTerm}%'
+    ORDER BY DGTestName
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+router.post('/updatepw/:id', (req, res) => {
+    const id = req.params.id;
+    const values = [
+        req.body.pw
+    ]
+
+    db.query(`UPDATE 	MD_USERS
+                SET		pw = ?
+                WHERE	UserNo = ${id};
+            `, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
 
     return router;
 };

@@ -8,6 +8,9 @@ import CreateBHCModal from '../admincomponents/CreateBHCModal';
 import { Link, useParams } from 'react-router-dom';
 import AssignBHCModal from '../admincomponents/AssignBHCModal';
 import Pagination from 'react-bootstrap/Pagination';
+import Badge from "react-bootstrap/Badge";
+import DeleteBHCHI from '../admincomponents/DeleteBHCHI';
+import Spinner from "react-bootstrap/Spinner";
 
 const BHCInfo = () => {
 
@@ -16,6 +19,7 @@ const BHCInfo = () => {
 
   const [bhcData, setBhcData] = useState([]);
   const [bhchiData, setBhchiData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
 
@@ -27,15 +31,11 @@ const BHCInfo = () => {
         // Handle any errors that occurred during the request
         console.error('Error fetching data:', error);
       });
-    
 
-}, []);
-
-  useEffect(() => {
-
-    axios.get(`http://localhost:4000/api/bhchi/${bhcNum}`)
+      axios.get(`http://localhost:4000/api/bhchi/${bhcNum}`)
       .then((response) => {
         setBhchiData(response.data)
+        setIsLoading(false)
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
@@ -43,20 +43,55 @@ const BHCInfo = () => {
       });
     
 
-  }, []);
+}, []);
 
-      // Add these state variables
-    const [activePage, setActivePage] = useState(1); // Active page number
-    const itemsPerPage = 5; // Number of items per page
+ 
 
-    // Function to handle page change
-    const handlePageChange = (pageNumber) => {
-      setActivePage(pageNumber);
-    };
+  ///PAGINATION LOGIC
+  // Add these state variables
+  const [activePage, setActivePage] = useState(1); // Active page number
+  const itemsPerPage = 5; // Number of items per page
 
-    // Calculate the index range for the current page
-    const startIndex = (activePage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+  // Function to handle page change
+  const handlePageChange = (pageNumber) => {
+    setActivePage(pageNumber);
+  };
+
+  // Calculate the index range for the current page
+  const startIndex = (activePage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const maxPageLinks = 10;
+
+  const totalPages = Math.ceil(bhchiData.length / itemsPerPage);
+
+  // Define the number of page links to show before and after the active page
+  const pageLinksToShow = maxPageLinks - 2; // Subtract 2 for Prev and Next buttons
+
+  // Calculate the start and end page numbers to display
+  let startPage = Math.max(
+    1,
+    Math.min(
+      activePage - Math.floor(pageLinksToShow / 2),
+      totalPages - pageLinksToShow + 1,
+    ),
+  );
+  let endPage = Math.min(totalPages, startPage + pageLinksToShow - 1);
+
+  // Adjust the start and end page numbers if they exceed the bounds
+  if (endPage - startPage + 1 < pageLinksToShow) {
+    if (startPage === 1) {
+      endPage = Math.min(totalPages, pageLinksToShow);
+    } else {
+      startPage = Math.max(1, totalPages - pageLinksToShow + 1);
+    }
+  }
+
+  const pageNumbers = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index,
+  );
+
 
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -81,56 +116,78 @@ const BHCInfo = () => {
     <AdminNavBar/>
 
     <Row className="mt-5 justify-content-center" >
-        <Col lg="9" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
+        <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       
-      
+        {isLoading ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+                <>
          {/* Shows the recommended next course of action */}
     <Row className="mt-5 justify-content-center">
-      <Col lg="9">
+      <Col lg="11">
       <h1 style={{fontSize:"35px"}}> Barangay Health Center Profile </h1>
       <Card className="mt-4 mb-4">
           <Card.Body>
             <Row>
-              <Col sm="6">
+              <Col sm="5">
                 <Card.Text><strong>BHC Name</strong></Card.Text>
               </Col>
-              <Col sm="6">
+              <Col sm="7">
                 <Card.Text className="text-muted "> {bhcData.BGYName} </Card.Text>
               </Col>
             </Row>
             <hr />
             <Row>
-              <Col sm="6">
+              <Col sm="5">
                 <Card.Text><strong> Address </strong></Card.Text>
               </Col>
-              <Col sm="6">
+              <Col sm="7">
                 <Card.Text className="text-muted"> {bhcData.address} </Card.Text>
               </Col>
             </Row>
             <hr />
             <Row>
-              <Col sm="6">
+              <Col sm="5">
                 <Card.Text><strong>Operating Hours </strong> </Card.Text>
               </Col>
-              <Col sm="6">
+              <Col sm="7">
                 <Card.Text className="text-muted"> {bhcData.BGYOperatingHours} </Card.Text>
               </Col>
             </Row>
             <hr />
             <Row>
-              <Col sm="6">
+              <Col sm="5">
                 <Card.Text><strong>Contact Number </strong></Card.Text>
               </Col>
-              <Col sm="6">
+              <Col sm="7">
                 <Card.Text className="text-muted">{bhcData.BGYContactNumber} </Card.Text>
               </Col>
             </Row>
             <hr />
             <Row>
-              <Col sm="6">
+              <Col sm="5">
                 <Card.Text><strong>Email Address </strong></Card.Text>
               </Col>
-              <Col sm="6">
+              <Col sm="7">
                 <Card.Text className="text-muted">{bhcData.BGYEmailAddress} </Card.Text>
               </Col>
             </Row>
@@ -150,37 +207,48 @@ const BHCInfo = () => {
             </div>
         </form>
         </Col>
-          <Col  lg="5">
-            <AssignBHCModal id={bhcNum} name={bhcData.BGYName} address={bhcData.address}/>
-          </Col>
+         
         </Row>
 
 
       <Card className="mt-4 mb-4">
           <Card.Body>
-            <Row>
-              <Col sm="6">
-                <Card.Text><strong>Health Institutions</strong></Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text><strong>Address</strong></Card.Text>
-              </Col>
-              
-            </Row>
+            <table className="table caption-top bg-white rounded mt-2 mb-0">
+            <thead>
+                            <tr>
+                              <th scope="col">Health Institutions</th>
+                              <th scope="col">Address</th>
+                              <th scope="col"></th>
+                            </tr>
+                          </thead>
+            
+            <tbody>
             {bhchiData.slice(startIndex, endIndex).map((bhchi, index) => (
-              <>
-               <hr />
-            <Row>
-              <Col sm="6">
-                <Card.Text>{bhchi.HIName} </Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text>{bhchi.address} </Card.Text>
-              </Col>
+              
+               <tr
+                                  key={index}
+                                >
+                                   
+                                  <td><Link to={`/hi/${bhchi.HINo}`}>
+                                      <p style={{ color: "black" }}>
+                                        <u>{bhchi.HIName}</u>{" "}
+                                      </p>{" "}
+                                    </Link>{" "}</td>
+                             
+                                  <td>{bhchi.address}</td>
+                                 
 
-            </Row>
-                   </>
+                                  <td>
+                                    <div className="d-flex justify-content-end">
+                                      <DeleteBHCHI id={bhcNum} HINo={bhchi.HINo} HIName={bhchi.HIName}/>
+                                    </div>
+                                  </td>
+                                </tr>
+               
+                   
                     ))}
+                    </tbody>
+                    </table>
            
            
            
@@ -191,18 +259,69 @@ const BHCInfo = () => {
         
        
         
-        <Pagination className="mt-3 justify-content-center">
-            <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
-            {Array.from({ length: Math.ceil(bhchiData.length / itemsPerPage) }).map((_, index) => (
-              <Pagination.Item key={index} active={index + 1 === activePage} onClick={() => handlePageChange(index + 1)}>
-                {index + 1}
-              </Pagination.Item>
-            ))}
-            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(bhchiData.length / itemsPerPage)} />
-          </Pagination>
+       <Row className="mb-4">
+                    <Col>
+  
+                    
+            <AssignBHCModal id={bhcNum} name={bhcData.BGYName} address={bhcData.address}/>
+   
+                    </Col>
+
+                    <Col className="d-flex justify-content-end">
+                      {bhchiData.length > 0 ? (
+                        <Pagination className="mb-0">
+                          <Pagination.Prev
+                            onClick={() => handlePageChange(activePage - 1)}
+                            disabled={activePage === 1}
+                          />
+
+                          {startPage > 1 && (
+                            <>
+                              <Pagination.Item
+                                onClick={() => handlePageChange(1)}
+                              >
+                                1
+                              </Pagination.Item>
+                              {startPage > 2 && <Pagination.Ellipsis />}
+                            </>
+                          )}
+
+                          {pageNumbers.map((pageNumber) => (
+                            <Pagination.Item
+                              key={pageNumber}
+                              active={pageNumber === activePage}
+                              onClick={() => handlePageChange(pageNumber)}
+                            >
+                              {pageNumber}
+                            </Pagination.Item>
+                          ))}
+
+                          {endPage < totalPages && (
+                            <>
+                              {endPage < totalPages - 1 && (
+                                <Pagination.Ellipsis />
+                              )}
+                              <Pagination.Item
+                                onClick={() => handlePageChange(totalPages)}
+                              >
+                                {totalPages}
+                              </Pagination.Item>
+                            </>
+                          )}
+
+                          <Pagination.Next
+                            onClick={() => handlePageChange(activePage + 1)}
+                            disabled={activePage === totalPages}
+                          />
+                        </Pagination>
+                      ) : null}
+                    </Col>
+                  </Row>
       </Col>
      
     </Row>
+    </>
+              )}
       
       </Col>
     </Row>
