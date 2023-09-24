@@ -893,6 +893,13 @@ WHERE
         h.HIProvince,
         h.HIRegion, 
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
+        h.HIUnitNo,
+        h.HIStreet,
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion,
+        h.HIZipCode,
         h.HIOperatingHours,
         h.HIContactNumber,
         h.HIContactPerson,
@@ -969,6 +976,13 @@ WHERE
         h.HIProvince,
         h.HIRegion,
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
+        h.HIUnitNo,
+        h.HIStreet,
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion,
+        h.HIZipCode,
         h.HIOperatingHours,
         h.HIContactNumber,
         h.HIContactPerson,
@@ -1172,6 +1186,13 @@ WHERE
         h.HIProvince,
         h.HIRegion, 
         CONCAT(h.HIUnitNo, ' ', h.HIStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', h.HIZipCode) AS address,
+        h.HIUnitNo,
+        h.HIStreet,
+        h.HIBarangay,
+        h.HICity,
+        h.HIProvince,
+        h.HIRegion,
+        h.HIZipCode,
         h.HIOperatingHours,
         h.HIContactNumber,
         h.HIContactPerson,
@@ -1607,11 +1628,18 @@ router.post('/addtreatment', (req, res) => {
 router.get('/users/:id', (req, res) => {
     const id = req.params.id;
     db.query(`
-    SELECT CONCAT(u.last_name, ', ', u.first_name, ' ', u.middle_name) AS fullname,
-    u.IDNo,
-    u.passwordChanged
+    
+    SELECT u.userNo,
+    CONCAT(u.last_name, ', ', u.first_name, ' ', u.middle_name) AS fullname,
+    u.last_name,
+    u.first_name,
+    u.middle_name,
+    u.IDNo AS username,
+    u.passwordChanged,
+    u.isActive
 FROM PEDTBDSS_new.MD_USERS u
-WHERE u.user_type = "BHW" AND u.BGYNo = ${id};
+WHERE u.user_type = "BHW" AND u.BGYNo = ${id}
+ORDER BY u.last_name, u.first_name, u.middle_name ;
 
 `, (err, results) => {
     if (err) {
@@ -1624,5 +1652,176 @@ WHERE u.user_type = "BHW" AND u.BGYNo = ${id};
     }
 })
 })
+
+
+router.post('/newuser', (req, res) => {
+    const q = "INSERT INTO MD_USERS (`first_name`, `middle_name`, `last_name`, `IDNo`, `pw`, `BGYNo`, `isActive`, `user_type`, `passwordChanged`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    const values = [
+        req.body.first_name,
+        req.body.middle_name,
+        req.body.last_name,
+        req.body.IDNo,
+        req.body.pw,
+        req.body.BGYNo,
+        req.body.isActive,
+        req.body.user_type,
+        req.body.passwordChanged,
+    ]
+
+    db.query(q, values, (err, data) => {
+        if(err) {
+            console.log("Error inserting into MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully inserted into MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+router.post('/adminupdateuser', (req, res) => {
+    const values = [
+        req.body.first_name,
+        req.body.middle_name,
+        req.body.last_name,
+        req.body.IDNo,
+        req.body.UserNo
+    ]
+
+    db.query(`UPDATE 	MD_USERS
+                SET		first_name = ?, middle_name = ?, last_name = ?, IDNo = ?
+                WHERE	UserNo = ?;
+            `, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+router.get('/checkuserref/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT
+	(SELECT COUNT(*) FROM TD_PTDIAGNOSIS WHERE UserNo = ${id}) +
+	(SELECT COUNT(*) FROM TD_TREATMENTS WHERE UserNo = ${id}) +
+	(SELECT COUNT(*) FROM TD_PTINFORMATION WHERE UserNo = ${id}) +
+	(SELECT COUNT(*) FROM TD_DIAGNOSTICRESULTS WHERE UserNo = ${id}) +
+ 	(SELECT COUNT(*) FROM MD_CONTACTTRACING WHERE UserNo = ${id}) +
+	(SELECT COUNT(*) FROM TD_HEALTHASSESSMENT WHERE UserNo = ${id}) AS total_references;
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+//Delete a row in MD_HI based on a given id
+router.delete('/deleteuser/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    DELETE FROM MD_USERS
+    WHERE userNo = ${id};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+
+router.patch('/updateuserstatus/:id', (req, res) => {
+    const isActive = req.body.isActive;
+    const id = req.params.id;
+    
+    db.query(
+        `UPDATE MD_USERS SET isActive = ? WHERE userNo = ?`,
+        [isActive, id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ error: 'An error occurred while updating status.' });
+            } else {
+                console.log(`User ${id} status updated to ${isActive}.`);
+                res.json({ message: 'Status updated successfully.' });
+            }
+        }
+    );
+});
+
+router.get('/searchuser/:id', (req, res) => {
+    const searchTerm = req.params.id;
+    db.query(`
+    SELECT u.userNo,
+    CONCAT(u.last_name, ', ', u.first_name, ' ', u.middle_name) AS fullname,
+    u.last_name,
+    u.first_name,
+    u.middle_name,
+    u.IDNo AS username,
+    u.passwordChanged,
+    u.isActive
+FROM PEDTBDSS_new.MD_USERS u
+WHERE u.user_type = "BHW" 
+  AND u.BGYNo = 1 
+  AND (
+    CONCAT(COALESCE(u.last_name," "), ' ', COALESCE(u.first_name," "), ' ', COALESCE(u.middle_name," ")) LIKE '%${searchTerm}%'
+    OR CONCAT(COALESCE(u.first_name," "), ' ', COALESCE(u.middle_name," "), ' ', COALESCE(u.last_name," ")) LIKE '%${searchTerm}%'
+    OR CONCAT(COALESCE(u.first_name," "), ' ', COALESCE(u.last_name," ")) LIKE '%${searchTerm}%'
+    OR u.IDNo LIKE '%${searchTerm}%'
+  );
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+});
+});
+
+router.post('/updatehi', (req, res) => {
+    const values = [
+        req.body.HIName,
+        req.body.HIOperatingHours,
+        req.body.HIContactNumber,
+        req.body.HIEmailAddress,
+        req.body.HIUnitNo,
+        req.body.HIStreet,
+        req.body.HIBarangay,
+        req.body.HICity,
+        req.body.HIRegion,
+        req.body.HIProvince,
+        req.body.HIContactPerson,
+        req.body.HINo
+    ]
+
+    db.query(`UPDATE 	MD_HI
+                SET		HIName = ?, HIOperatingHours = ?, HIContactNumber = ?, HIEmailAddress = ?, HIUnitNo = ?, HIStreet = ?, HIBarangay = ?, HICity = ?, HIRegion= ?, HIProvince = ?, HIContactPerson = ?
+                WHERE	HINo = ?;
+            `, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+
     return router;
 };

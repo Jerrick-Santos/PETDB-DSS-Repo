@@ -1,6 +1,6 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col, Badge  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, Badge, Accordion  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
 import user from '../assets/user.png';
@@ -27,7 +27,7 @@ const CloseContacts = () => {
   function addMonths(date, months) {
     var d = date.getDate();
     date.setMonth(date.getMonth() + months);
-    if (date.getDate() != d) {
+    if (date.getDate() !== d) {
       date.setDate(0);
     }
     return date;
@@ -36,8 +36,6 @@ const CloseContacts = () => {
   // Load list of close contact
   useEffect(() => {
     async function fetchData() {
-
-      console.log("UPDATING INFORMATION (0/3): ", update)
 
       var res = await axios.get(`http://localhost:4000/api/getContacts/${caseNum}`)
       console.log(res);
@@ -116,7 +114,7 @@ const CloseContacts = () => {
         
             update = {...x, ...updatedProps}
 
-            console.log("UPDATING INFORMATION (2/3): ", update)
+            console.log("UPDATED INFORMATION: ", update)
 
             setCloseContactListData(prevData =>
               prevData.map(contact => {
@@ -152,8 +150,9 @@ const CloseContacts = () => {
   
         if (result.data) { 
           latest_case = result.data[0].latest_case
-          if (latest_case == caseNum) { setLatestCase(true) } else { setLatestCase(false) }
-          console.log('latest case: ', latest_case, " / ", 'current case: ', caseNum)
+          console.log('latest_case: ', latest_case)
+          console.log('caseNum: ', caseNum)
+          if (latest_case === Number(caseNum)) { setLatestCase(true) } else { setLatestCase(false) }
         }
         else { console.log('error retrieving latest case') }
       } catch (error) {
@@ -162,8 +161,11 @@ const CloseContacts = () => {
     };
   
     fetchData();
-  }, []);
+  }, [caseNum]);
 
+  useEffect(() => {
+    console.log('fetching data: ', latestCase);
+  }, [latestCase]);
 
   return (
     <div>
@@ -232,9 +234,9 @@ const CloseContacts = () => {
                         <th scope="col">Birthdate</th>
                         <th scope="col">Sex</th>
                         <th scope="col">Relationship</th>
-                        <th scope="col">Contact Name</th>
-                        <th scope="col">Contact Number</th>
-                        <th scope="col">Contact Email</th>
+                        <th scope="col">Contact Details</th>
+                        <th scope="col">Diagnostic Result</th>
+                        <th scope="col">Treatment Status</th>
                         <th scope="col">Next HA</th>
                         <th scope="col">Next X-Ray</th>  
                     </tr>
@@ -258,9 +260,28 @@ const CloseContacts = () => {
                       <td>{new Date(contact.birthdate).toLocaleDateString().replaceAll("/", "-")}</td>
                       <td>{contact.sex === "M" ? "Male": "Female"}</td>
                       <td>{contact.contact_relationship}</td>
-                      <td>{contact.contact_person === null ? <em>self</em> : contact.contact_person}</td>
-                      <td>{contact.contact_num}</td>
-                      <td>{contact.contact_email}</td>
+
+                      <td>
+                          <Accordion defaultActiveKey="0">
+                            <Accordion.Item>
+                              <Accordion.Header>Contact Details</Accordion.Header>
+                                <Accordion.Body> 
+                                  <Row>
+                                    <Badge bg='secondary'>Name</Badge> {contact.contact_person}
+                                  </Row>
+                                  <Row>
+                                    <Badge bg='secondary'>Number</Badge> {contact.contact_num}
+                                  </Row>
+                                  <Row>
+                                    <Badge bg='secondary'>Email</Badge> {contact.contact_email}
+                                  </Row>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                          </Accordion>
+                      </td>
+
+                      <td>{contact.DRDescription ? contact.DRDescription : 'none'}</td>
+                      <td>{contact.TSDescription ? contact.TSDescription : 'none'}</td>
 
                       {contact.PatientNo === null ? (
                           <td> <Badge bg='danger'> NO RECORD </Badge> </td>

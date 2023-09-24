@@ -48,10 +48,14 @@ module.exports = (db) => {
                         ct.contact_relationship,
                         ct.date_added,
                         ct.PatientNo,
-                        ct.ContactNo
+                        ct.ContactNo,
+                        dr.DRDescription,
+                        ts.TSDescription
                     FROM PEDTBDSS_new.MD_CONTACTTRACING ct
                     JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON ct.ContactNo = ctc.ContactNo
                     JOIN PEDTBDSS_new.TD_PTCASE ptc ON ctc.CaseNo = ptc.CaseNo
+                    LEFT JOIN PEDTBDSS_new.REF_DIAGNOSISRESULTS dr ON dr.DRNo = ct.DRNo
+                    LEFT JOIN PEDTBDSS_new.REF_TREATMENTSTATUS ts ON ts.TSNo = ct.TSNo
                     WHERE ptc.CaseNo = ?;
         `;
 
@@ -119,7 +123,7 @@ module.exports = (db) => {
 
     router.post('/addContacts', async (req, res) => {
 
-        const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, PatientNo} = req.body
+        const {last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, PatientNo, DRNo, TSNo} = req.body
 
         const formattedDate = new Date().toISOString().split('T')[0];
         const formattedBirthdate = new Date(birthdate).toISOString().split('T')[0];
@@ -135,8 +139,8 @@ module.exports = (db) => {
 
                 if (exist == null) {
                     // TODO: Check if the relationship exists
-                    db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, PatientNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-                    [last_name, first_name, middle_initial, formattedBirthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, PatientNo], (err, data) => {
+                    db.query('INSERT INTO MD_CONTACTTRACING (last_name, first_name, middle_initial, birthdate, sex, contact_person, contact_num, contact_email, contact_relationship, date_added, PatientNo, DRNo, TSNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [last_name, first_name, middle_initial, formattedBirthdate, sex, contact_person, contact_num, contact_email, contact_relationship, formattedDate, PatientNo, DRNo, TSNo], (err, data) => {
                         if (err) {console.log(err)} else {
 
                             db.query('SELECT MAX(ContactNo) AS latest FROM MD_CONTACTTRACING', [], (err, data) => {
@@ -335,34 +339,16 @@ module.exports = (db) => {
         })
     }),
 
-    // TESTING UPDATED /LOADLOCATION WITH TEST CONDITION
-    router.get('/loadHIwithTest/:test', async (req, res) => {
+    router.get('/getDiagnosisResults', (req, res) => {
+        db.query('SELECT * FROM REF_DIAGNOSISRESULTS', (err, results) => {
+            if (err) { console.error(err) } else { res.send(results) }
+        })
+    }),
 
-        /** ROUTER GOAL: /loadLocations but with test */
-        const userid = 1 // test value without authenticatetoken so that you can use postman
-        const user_query = `SELECT b.BGYNo, b.XCoord, b.YCoord FROM PEDTBDSS_new.MD_USERS u JOIN PEDTBDSS_new.MD_BARANGAYS b ON u.BGYNo = b.BGYNo WHERE userNo = ?;`
-        const hi_query = `SELECT * 
-                        FROM PEDTBDSS_new.MD_BRGYHI bhi
-                        JOIN PEDTBDSS_new.MD_HI hi ON bhi.HINo = hi.HINo
-                        JOIN PEDTBDSS_new.MD_HIDGTESTS hidg ON bhi.HINo = hidg.HINo
-                        WHERE bhi.BGYNo = 1
-                        AND hi.isActive = 1
-                        AND hidg.DGTestNo = ${req.params.test};`
-
-        try {
-            let res1, res2
-            res1 = await queryPromise(user_query, [userid])
-            console.log("QUERY 1: ", res1)
-            if (res1 && res1.length > 0) {
-                res2 = await queryPromise(hi_query, [res1[0].BGYNo])
-                console.log("QUERY 2: ", res2)
-
-                // test res.send()
-                res.send(res2)
-            }
-        } catch (error) {
-            console.error(error)
-        }
+    router.get('/getTreatmentStatus', (req, res) => {
+        db.query('SELECT * FROM REF_TREATMENTSTATUS', (err, results) => {
+            if (err) { console.error(err) } else { res.send(results) }
+        })
     })
     
 

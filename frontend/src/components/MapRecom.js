@@ -12,11 +12,10 @@ import axios from 'axios';
 
 
 function MapRecom(props) {
-   
-    
     
     const mapRef = useRef()
 
+    // Caching loaded tiles online to local storage (offline)
     useEffect(() => {
       if(mapRef.current){
         const map = mapRef.current.getLeafletElement();
@@ -50,7 +49,7 @@ function MapRecom(props) {
             .catch(err => {
                 console.error(err);
             })
-    }, [])
+    }, [props.test])
 
 
     const [center, setCenter] = useState({});
