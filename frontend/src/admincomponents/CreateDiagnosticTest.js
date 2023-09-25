@@ -14,7 +14,9 @@ function CreateDiagnosticTest() {
 
     const [formValues, setFormValues] = useState({
         DGTestName:'',
-        DGValidityMonths:''
+        DGValidityMonths:'',
+        isRequired:'0',
+        isActive:'1'
     });
 
     const handleChange = (e) => {

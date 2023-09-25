@@ -339,7 +339,12 @@ module.exports = (db) => {
          FROM PEDTBDSS_new.TD_PTCASE sub_pc
          WHERE sub_pc.PatientNo = pc.PatientNo AND sub_pc.start_date = latest_cases.latest_start_date AND sub_pc.case_status = 'O'
      )
- )) AND CONCAT(COALESCE(pt.last_name," "),COALESCE(pt.first_name," "),COALESCE(pt.middle_initial," "),pc.case_refno,pt.admission_date) LIKE '%${searchTerm}%';
+ )) AND (
+    CONCAT(COALESCE(pt.last_name," "), ' ', COALESCE(pt.first_name," "), ' ', COALESCE(pt.middle_initial," ")) LIKE '%${searchTerm}%'
+    OR CONCAT(COALESCE(pt.first_name," "), ' ', COALESCE(pt.middle_initial," "), ' ', COALESCE(pt.last_name," ")) LIKE '%${searchTerm}%'
+    OR CONCAT(COALESCE(pt.first_name," "), ' ', COALESCE(pt.last_name," ")) LIKE '%${searchTerm}%'
+    OR pc.CaseNo LIKE '%${searchTerm}%'
+  );
 
     `, (err, results) => {
         if (err) {
@@ -353,7 +358,7 @@ module.exports = (db) => {
     });
     });
 
-    router.get('/advancedsearch/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt/:phn/:ps/:pb/:pc/:pr/:pz/:chn/:cs/:cb/:cc/:cr/:cz/:ad/:mn/:mb/:mc/:me/:fn/:fb/:fc/:fe/:en/:eb/:ec/:ee', (req, res) => {
+    router.get('/advancedsearch/:lnm/:fnm/:mnm/:age/:sex/:bd/:nt', (req, res) => {
         const lnm = req.params.lnm.replace('_','');
         const fnm = req.params.fnm.replace('_','');
         const mnm = req.params.mnm.replace('_','');
@@ -361,122 +366,60 @@ module.exports = (db) => {
         const sex = req.params.sex.replace('_','');
         const bd = req.params.bd.replace('_','');
         const nt = req.params.nt.replace('_','');
-        const phn = req.params.phn.replace('_','');
-        const ps = req.params.ps.replace('_','');
-        const pb = req.params.pb.replace('_','');
-        const pc = req.params.pc.replace('_','');
-        const pr = req.params.pr.replace('_','');
-        const pz = req.params.pz.replace('_','');
-        const chn = req.params.chn.replace('_','');
-        const cs = req.params.cs.replace('_','');
-        const cb = req.params.cb.replace('_','');
-        const cc = req.params.cc.replace('_','');
-        const cr = req.params.cr.replace('_','');
-        const cz = req.params.cz.replace('_','');
-        const ad = req.params.ad.replace('_','');
-        const mn = req.params.mn.replace('_','');
-        const mb = req.params.mb.replace('_','');
-        const mc = req.params.mc.replace('_','');
-        const me = req.params.me.replace('_','');
-        const fn = req.params.fn.replace('_','');
-        const fb = req.params.fb.replace('_','');
-        const fc = req.params.fc.replace('_','');
-        const fe = req.params.fe.replace('_','');
-        const en = req.params.en.replace('_','');
-        const eb = req.params.eb.replace('_','');
-        const ec = req.params.ec.replace('_','');
-        const ee = req.params.ee.replace('_','');
+       
         
         db.query(`
-        SELECT
-    pt.PatientNo,
-    CONCAT(
-        COALESCE(pt.first_name, ''),
-        ' ',
-        COALESCE(pt.middle_initial, ''),
-        '. ',
-        COALESCE(pt.last_name, '')
-    ) AS fullname,
-    pt.birthdate,
-    pt.sex,
-    pt.age,
-    pt.initial_bodyweight,
-    pt.initial_height,
-    pt.nationality,
-    CONCAT(
-        COALESCE(pt.per_houseno, ''),
-        ' ',
-        COALESCE(pt.per_street, ''),
-        ' ',
-        COALESCE(pt.per_barangay, ''),
-        ' ',
-        COALESCE(pt.per_city, ''),
-        ' ',
-        COALESCE(pt.per_region, ''),
-        ' ',
-        COALESCE(pt.per_zipcode, '')
-    ) AS per_address,
-    CONCAT(
-        COALESCE(pt.curr_houseno, ''),
-        ' ',
-        COALESCE(pt.curr_street, ''),
-        ' ',
-        COALESCE(pt.curr_barangay, ''),
-        ' ',
-        COALESCE(pt.curr_city, ''),
-        ' ',
-        COALESCE(pt.curr_region, ''),
-        ' ',
-        COALESCE(pt.curr_zipcode, '')
-    ) AS curr_address,
-    pt.admission_date,
-    pt.mother_name,
-    pt.m_birthdate,
-    pt.m_contactno,
-    pt.m_email,
-    pt.father_name,
-    pt.f_birthdate,
-    pt.f_contactno,
-    pt.f_email,
-    pt.emergency_name,
-    pt.e_birthdate,
-    pt.e_contactno,
-    pt.e_email
-FROM PEDTBDSS_new.TD_PTINFORMATION pt
-WHERE 
-    (
-            COALESCE(pt.last_name, '')LIKE "%${lnm}%" AND
-            COALESCE(pt.first_name, '')LIKE "%${fnm}%" AND
-            COALESCE(pt.middle_initial, '')LIKE "%${mnm}%" AND
-            COALESCE(pt.age, '')LIKE "%${age}%" AND
-            COALESCE(pt.sex, '')LIKE "%${sex}%" AND
-            COALESCE(pt.birthdate, '')LIKE "%${bd}%" AND
-            COALESCE(pt.nationality, '')LIKE "%${nt}%" AND
-            COALESCE(pt.per_houseno, '')LIKE "%${phn}%" AND
-            COALESCE(pt.per_street, '')LIKE "%${ps}%" AND
-            COALESCE(pt.per_barangay, '')LIKE "%${pb}%"AND
-            COALESCE(pt.per_city, '')LIKE "%${pc}%"AND
-            COALESCE(pt.per_region, '')LIKE "%${pr}%"AND
-            COALESCE(pt.per_zipcode, '')LIKE "%${pz}%"AND
-            COALESCE(pt.curr_houseno, '')LIKE "%${chn}%"AND
-            COALESCE(pt.curr_street, '')LIKE "%${cs}%"AND
-            COALESCE(pt.curr_barangay, '')LIKE "%${cb}%"AND
-            COALESCE(pt.curr_city, '')LIKE "%${cc}%"AND
-            COALESCE(pt.curr_region, '')LIKE "%${cr}%"AND
-            COALESCE(pt.curr_zipcode, '')LIKE "%${cz}%"AND
-            COALESCE(pt.admission_date, '')LIKE "%${ad}%"AND
-            COALESCE(pt.mother_name, '')LIKE "%${mn}%"AND
-            COALESCE(pt.m_birthdate, '')LIKE "%${mb}%"AND
-            COALESCE(pt.m_contactno, '')LIKE "%${mc}%"AND 
-            COALESCE(pt.m_email, '')LIKE "%${me}%"AND 
-            COALESCE(pt.father_name, '')LIKE "%${fn}%"AND  
-            COALESCE(pt.f_birthdate, '')LIKE "%${fb}%"AND 
-            COALESCE(pt.f_contactno, '')LIKE "%${fc}%"AND  
-            COALESCE(pt.f_email, '')LIKE "%${fe}%"AND  
-            COALESCE(pt.emergency_name, '')LIKE "%${en}%"AND 
-            COALESCE(pt.e_birthdate, '')LIKE "%${eb}%"AND 
-            COALESCE(pt.e_contactno, '')LIKE "%${ec}%"AND 
-            COALESCE(pt.e_email, '')LIKE "%${ee}%");
+        SELECT pt.PatientNo,
+        pc.CaseNo,
+        pc.case_refno, pc.case_status,
+        CONCAT(pt.last_name, ', ', pt.first_name, ' ', pt.middle_initial) AS fullname,
+        pt.birthdate,
+        pt.sex,
+        pt.age,
+        pt.initial_bodyweight,
+        pt.initial_height,
+        pt.nationality,
+        CONCAT(pt.per_houseno, ' ', pt.per_street, ' ', pt.per_barangay, ' ', pt.per_city, ' ', pt.per_region, ' ', pt.per_zipcode) AS per_address,
+        CONCAT(pt.curr_houseno, ' ', pt.curr_street, ' ', pt.curr_barangay, ' ', pt.curr_city, ' ', pt.curr_region, ' ', pt.curr_zipcode) AS curr_address,
+        pt.admission_date,
+        pt.mother_name,
+        pt.m_birthdate,
+        pt.m_contactno,
+        pt.m_email,
+        pt.father_name,
+        pt.f_birthdate,
+        pt.f_contactno,
+        pt.f_email,
+        pt.emergency_name,
+        pt.e_birthdate,
+        pt.e_contactno,
+        pt.e_email
+ FROM PEDTBDSS_new.TD_PTINFORMATION pt
+ JOIN PEDTBDSS_new.TD_PTCASE pc ON pc.PatientNo = pt.PatientNo
+ JOIN (
+     SELECT PatientNo, MAX(start_date) AS latest_start_date
+     FROM PEDTBDSS_new.TD_PTCASE
+     GROUP BY PatientNo
+ ) latest_cases ON pc.PatientNo = latest_cases.PatientNo AND pc.start_date = latest_cases.latest_start_date
+ WHERE (pc.case_status = 'O' OR (
+     pc.case_status <> 'O' AND NOT EXISTS (
+         SELECT 1
+         FROM PEDTBDSS_new.TD_PTCASE sub_pc
+         WHERE sub_pc.PatientNo = pc.PatientNo AND sub_pc.start_date = latest_cases.latest_start_date AND sub_pc.case_status = 'O'
+     )
+ )) AND (
+    COALESCE(pt.last_name, '')LIKE "%${lnm}%" AND
+    COALESCE(pt.first_name, '')LIKE "%${fnm}%" AND
+    COALESCE(pt.middle_initial, '')LIKE "%${mnm}%" AND
+    COALESCE(pt.age, '')LIKE "%${age}%" AND
+    COALESCE(pt.sex, '')LIKE "%${sex}%" AND
+    COALESCE(pt.birthdate, '')LIKE "%${bd}%" AND
+    COALESCE(pt.nationality, '')LIKE "%${nt}%" 
+  );
+
+
+
+       
     `, (err, results) => {
         if (err) {
             console.log(err)
@@ -574,10 +517,12 @@ WHERE
 
     //create a new diagnostic test
     router.post('/createdt', (req, res) => {
-        const q = "INSERT INTO MD_DGTESTS(`DGTestName`, `DGValidityMonths`) VALUES (?, ?)"
+        const q = "INSERT INTO MD_DGTESTS(`DGTestName`, `DGValidityMonths` , `isRequired` , `isActive`) VALUES (?, ?, ?, ?)"
         const values = [
             req.body.DGTestName,
             req.body.DGValidityMonths,
+            req.body.isRequired,
+            req.body.isActive
         ]
 
         db.query(q, values, (err, data) => {
@@ -842,6 +787,7 @@ WHERE
         db.query(`
         SELECT *
         FROM PEDTBDSS_new.MD_DGTESTS
+        ORDER BY DGTestName
        
     `, (err, results) => {
         if (err) {
@@ -942,8 +888,7 @@ WHERE
         h.HIContactPerson,
         h.HIEmailAddress,
         h.XCoord,
-        h.YCoord,
-        h.isActive
+        h.YCoord
     FROM PEDTBDSS_new.MD_HI h
     JOIN PEDTBDSS_new.table_region r ON h.HIRegion = r.region_id 
     JOIN PEDTBDSS_new.table_province p ON h.HIProvince= p.province_id 
@@ -1157,12 +1102,13 @@ WHERE
 
      //assign a test to an hi by adding to MD_HIDGTESTS
      router.post('/assigntest', (req, res) => {
-        const q = "INSERT INTO MD_HIDGTESTS(`HINo`, `DGTestNo`, `AcceptingVoucher`, `Price` ) VALUES (?, ?, ?, ?)"
+        const q = "INSERT INTO MD_HIDGTESTS(`HINo`, `DGTestNo`, `AcceptingVoucher`, `Price`, `isActive` ) VALUES (?, ?, ?, ?, ?)"
         const values = [
             req.body.HINo,
             req.body.DGTestNo,
             req.body.AcceptingVoucher,
-            req.body.Price
+            req.body.Price,
+            req.body.isActive
         ]
 
         db.query(q, values, (err, data) => {
@@ -1822,6 +1768,210 @@ router.post('/updatehi', (req, res) => {
     });
 })
 
+
+router.get('/checkhidgtestref/:id/:testid', (req, res) => {
+    const id = req.params.id;
+    const testid = req.params.testid;
+    db.query(`
+    SELECT COUNT(*) AS total_references FROM TD_DIAGNOSTICRESULTS WHERE HINo = ${id} AND DGTestNo = ${testid} 
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+
+router.patch('/updatehidgteststatus/:id/:testid', (req, res) => {
+    const isActive = req.body.isActive;
+    const id = req.params.id;
+    const testid = req.params.testid;
+    
+    db.query(
+        `UPDATE MD_HIDGTESTS SET isActive = ? WHERE HINo = ? AND DGTESTNO = ?`,
+        [isActive, id, testid],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ error: 'An error occurred while updating status.' });
+            } else {
+                console.log(`Health institution ${id} status updated to ${isActive}.`);
+                res.json({ message: 'Status updated successfully.' });
+            }
+        }
+    );
+});
+
+router.delete('/deletehidgtest/:id/:testid', (req, res) => {
+    const id = req.params.id;
+    const testid = req.params.testid;
+    db.query(`
+    DELETE FROM MD_HIDGTESTS
+    WHERE  HINo = ${id} AND DGTestNo = ${testid};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+
+router.post('/updatehidgtest', (req, res) => {
+    const values = [
+        req.body.Price,
+        req.body.AcceptingVoucher,
+        req.body.HINo,
+        req.body.DGTestNo
+    ]
+
+    db.query( `UPDATE MD_HIDGTESTS SET Price = ?, AcceptingVoucher = ? WHERE HINo = ? AND DGTESTNO = ?`, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+router.delete('/deletebhchi/:id/:hiid', (req, res) => {
+    const id = req.params.id;
+    const hiid = req.params.hiid;
+    db.query(`
+    DELETE FROM MD_BRGYHI
+    WHERE  BGYNo = ${id} AND HINo = ${hiid};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+router.post('/updatedgtest', (req, res) => {
+    const values = [
+        req.body.DGTestName,
+        req.body.DGValidityMonths,
+        req.body.DGTestNo
+    ]
+
+    db.query( `UPDATE MD_DGTESTS SET DGTestName = ?, DGValidityMonths = ? WHERE DGTestNo = ?`, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+router.get('/checkdgtestref/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT
+    (SELECT COUNT(*) FROM MD_HIDGTESTS WHERE DGTestNo = ${id}) +
+    (SELECT COUNT(*) FROM TD_DIAGNOSTICRESULTS WHERE DGTestNo = ${id}) AS total_references;
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+router.delete('/deletedgtest/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    DELETE FROM MD_DGTESTS
+    WHERE  DGTestNo = ${id};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+router.patch('/updatedgteststatus', (req, res) => {
+    const values = [
+        req.body.isActive,
+        req.body.DGTestNo
+    ]
+
+    db.query( `UPDATE MD_DGTESTS SET isActive = ? WHERE DGTestNo = ?`, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
+
+router.get('/searchdt/:search', (req, res) => {
+    const searchTerm = req.params.search;
+    db.query(`
+    SELECT *
+    FROM PEDTBDSS_new.MD_DGTESTS
+    WHERE 
+    COALESCE(DGTestName, '')
+    LIKE '%${searchTerm}%'
+    ORDER BY DGTestName
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+router.post('/updatepw/:id', (req, res) => {
+    const id = req.params.id;
+    const values = [
+        req.body.pw
+    ]
+
+    db.query(`UPDATE 	MD_USERS
+                SET		pw = ?
+                WHERE	UserNo = ${id};
+            `, values, (err, data) => {
+        if(err) {
+            console.log("Error updating into  MD_USERS:", err);
+            return res.json(err)
+        }
+        console.log("Successfully updating into  MD_USERS:", data);
+        return res.json(data)
+    });
+})
 
     return router;
 };

@@ -517,7 +517,7 @@ const AddPatient = () => {
 
       {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
       <Row className="mt-5 justify-content-center" >
-        <Col lg="9" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
+        <Col lg="11" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       
              {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
       <form className="mt-4 justify-content-center">

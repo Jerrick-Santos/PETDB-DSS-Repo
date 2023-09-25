@@ -5,7 +5,7 @@ import { LineChart, Line } from 'recharts';
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, } from 'recharts';
 import { Navbar, Nav, Card, Row, Col, ButtonGroup, Button, Dropdown } from 'react-bootstrap';
 import filter from '../../assets/filter.png'
-
+import Spinner from "react-bootstrap/Spinner";
 
 
 import NavBar from '../../components/NavBar';
@@ -17,6 +17,7 @@ import axios from 'axios';
 const PatientSummary = () => {
 
   const [chartData, setChartData] = useState([]); // Assume you have your data here
+  const [isLoading, setIsLoading] = useState(true);
 
   const [presumptiveTotal, setPresumptiveTotal] = useState(0);
   const [latentTotal, setLatentTotal] = useState(0);
@@ -764,7 +765,7 @@ const PatientSummary = () => {
      
         });
 
-       
+       setIsLoading(false)
 
         
         
@@ -922,8 +923,30 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     <NavBar/>
     <div className='px-3'>
 
-    
-    
+
+    {isLoading ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+    <>
      {/* Showing 4 summary cards which will have a clickable function that affects the overall patient table
         once backend has been implemented*/}
   <div className='container-fluid justify-content-center'>
@@ -1090,10 +1113,14 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
  
 </div>
 
+</>
+              )}
+
        
 
 
     </div>
+    
     </div>
   );
 };

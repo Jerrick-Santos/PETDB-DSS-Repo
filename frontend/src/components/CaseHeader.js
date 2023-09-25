@@ -12,44 +12,45 @@ const CaseHeader = (props) => {
 
     const [patientData, setPatientData] = useState([]);
 
-    useEffect(() => {
-        axios.get(`http://localhost:4000/api/getCasePatient/${props.caseNum}`)
-        .then(res => {
-            console.log(res)
-            setPatientData(res.data[0])
-        })
-        .catch(err => {
-            console.error(err)
-        })
-    }, [props.caseNum])
 
 
     return (
         <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
             <Col className="ms-5" lg="12">
                 <Row>
-                    <Col><Badge bg="secondary">Case No: </Badge> {patientData.case_refno} </Col>
+                    <Col><Badge bg="secondary">Case No: </Badge> {props.case_refno} </Col>
                 </Row>
 
                 <Row>
-                    <Col><Badge bg="secondary">Patient Name: </Badge> <Link to={`/patient/${patientData.PatientNo}`}><u style={{ color:'black'}}>{patientData.patient_name} </u></Link></Col>
+                    <Col><Badge bg="secondary">Patient Name: </Badge> <Link to={`/patient/${props.PatientNo}`}><u style={{ color:'black'}}>{props.patient_name} </u></Link></Col>
                 </Row>
 
                 <Row>
-                     <Col><Badge bg="secondary">Case Start Date:</Badge> {new Date(patientData.start_date).toLocaleDateString().replaceAll("/", "-")}</Col>
+                <Col>
+  <Badge bg="secondary">Case Start Date:</Badge>{" "}
+  {props.start_date
+    ? new Date(props.start_date).toLocaleDateString().replaceAll("/", "-")
+    : null}
+</Col>
                 </Row>
-
+                {props.case_status === "C" ? (
                 <Row>
-                  <Col><Badge bg="secondary">Case End Date:</Badge> {patientData.case_status === "O" ? (
-                <CloseCaseModal caseid={props.caseNum} />
-                ) : patientData.case_status === "C" ? (
-                <>{new Date(patientData.end_date).toLocaleDateString().replaceAll("/", "-")}</>
-                ) : null}
+                  <Col><Badge bg="secondary">Case End Date:</Badge> 
+                  <>{" "}
+               {new Date(props.end_date).toLocaleDateString().replaceAll("/", "-")}
+               </>
                   </Col>
                 </Row>
+                ):null}
 
                 <Row>
-                <Col><Badge bg="secondary">Case Status:</Badge> {patientData.case_status === "C" ? "Closed" : "Ongoing"}</Col>
+                <Col><Badge bg="secondary">Case Status:</Badge> {props.case_status === "O" ? (
+                <CloseCaseModal caseid={props.caseNum} />
+                ) : props.case_status === "C" ? (
+                <><Badge bg="danger">
+                Closed
+              </Badge></>
+                ) : null}</Col>
                 </Row>
 
                

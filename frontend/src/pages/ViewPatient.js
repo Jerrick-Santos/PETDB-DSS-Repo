@@ -1,18 +1,24 @@
 import search from "../assets/search.png";
 import "../index.css";
 import React, { useState, useEffect } from "react";
-
+import Modal from 'react-bootstrap/Modal';
 import NavBar from "../components/NavBar";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import AdvancedSearch from "../components/AdvancedSearch";
 import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import Badge from "react-bootstrap/Badge";
 import filter from "../assets/filter.png";
 import sort from "../assets/sort.png";
+import noresult from "../assets/noresult.png";
+import Spinner from "react-bootstrap/Spinner";
 
 const ViewPatient = () => {
+  const[show,setShow] = useState(false)
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [patientsData, setPatientsData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("");
@@ -82,6 +88,7 @@ const ViewPatient = () => {
       .get("http://localhost:4000/api/allpatients")
       .then((response) => {
         setPatientsData(response.data);
+        setIsLoading(false)
       })
       .catch((error) => {
         console.error("Error fetching patients:", error);
@@ -95,6 +102,43 @@ const ViewPatient = () => {
     setSearchTerm(e.target.value);
   };
 
+  const [advanceData, setAdvanceData] = useState({
+    last_name: "_",
+    first_name: "_",
+    middle_initial: "_",
+    age: "_",
+    sex: "_",
+    birthdate: "_",
+    nationality: "_",
+
+});
+
+
+const handleAdvanceChange = (e) => {
+    const {name, value} = e.target;
+    setAdvanceData(prev=>({...prev, [name]: value}));
+}
+  const handleAdvanceSearch= async (e) => {
+     
+    axios.get(`http://localhost:4000/api/advancedsearch/${advanceData.last_name}/${advanceData.first_name}/${advanceData.middle_initial}/${advanceData.age}/${advanceData.sex}/${advanceData.birthdate}/${advanceData.nationality}`)
+    .then(response => {
+      setPatientsData(response.data);
+      setAdvanceData({
+        last_name: "_",
+        first_name: "_",
+        middle_initial: "_",
+        age: "_",
+        sex: "_",
+        birthdate: "_",
+        nationality: "_",
+      });
+      handleClose()
+      setActivePage(1)
+    })
+    .catch(error => {
+      console.error('Error fetching patients:', error);
+    });
+}
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -102,7 +146,7 @@ const ViewPatient = () => {
       .get(`http://localhost:4000/api/searchpatient/${searchTerm}`)
       .then((response) => {
         setPatientsData(response.data);
-        console.log("added");
+        setActivePage(1)
       })
       .catch((error) => {
         console.error("Error searching patient:", error);
@@ -182,7 +226,7 @@ const ViewPatient = () => {
   const startIndex = (activePage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const maxPageLinks = 4;
+  const maxPageLinks = 8;
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -207,6 +251,7 @@ const ViewPatient = () => {
     (_, index) => startPage + index,
   );
   return (
+    <>
     <div>
       <NavBar />
       <Row className="mt-5 justify-content-center">
@@ -221,11 +266,36 @@ const ViewPatient = () => {
             borderRadius: "20px",
           }}
         >
-          
+           {isLoading ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+                <>
 
           {/* Simple search based on a keyword and a button for advanced Search*/}
           <Row className="justify-content-center">
             <Col className="justify-content-center" lg="10">
+
+
+           
               <Row className="justify-content-center">
                 <Col className="justify-content-center" lg="12">
                   <h1 className="mt-4" style={{ fontSize: "35px" }}>
@@ -264,7 +334,7 @@ const ViewPatient = () => {
                   </form>
                 </Col>
                 <Col lg="2" className="mt-3">
-                  <AdvancedSearch />
+                <button className="btn" onClick={handleShow} style={{ color: "white", backgroundColor: '#0077B6', minWidth: '100%'}} type="submit">Advanced Search</button>
                 </Col>
 
                 <Col lg="3">
@@ -334,7 +404,8 @@ const ViewPatient = () => {
                     <select
                       className="form-select"
                       value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}
+                      onChange={(e) => {setSelectedStatus(e.target.value)
+                                        setActivePage(1)}}
                     >
                       <option value="">All Case Status</option>
                       <option value="O">Ongoing</option>
@@ -446,9 +517,87 @@ const ViewPatient = () => {
               />
             </Pagination>
           </Row>
+
+          </>
+              )}
         </Col>
       </Row>
     </div>
+
+<Modal show={show} onHide={handleClose} backdrop={ 'static' } size="xl">
+<Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
+    <Modal.Title>Advanced Search</Modal.Title>
+</Modal.Header>
+<Modal.Body>
+<form className="mt-4 justify-content-center">
+<Row className="mb-2 justify-content-center">
+             <div className="form-group col-md-11">
+                <p style={{fontSize:"17px"}}> Input a value to the corresponding text boxes to initiate advanced search. Leave unwanted fields blank. </p>
+            </div>
+        </Row>
+        <hr/>
+        <Row className="mb-2 justify-content-center">
+             <div className="form-group col-md-11">
+                <p style={{fontSize:"20px"}}> <strong> Patient Information  </strong> </p>
+            </div>
+        </Row>
+        
+  
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-4">
+                    <label for="inputFirstName">First Name</label>
+                    <input type="text" class="form-control" id="inputFirstName" name='first_name' onChange={handleAdvanceChange} placeholder="First Name"/>
+                </div>
+
+                <div className="form-group col-md-3">
+                    <label for="inputMI">Middle Name</label>
+                    <input type="text" class="form-control" id="inputMI" name='middle_initial' onChange={handleAdvanceChange} placeholder="Middle Name"/>
+                </div>
+
+                <div className="form-group col-md-4">
+                    <label for="inputLastName">Last Name</label>
+                    <input type="text" class="form-control" id="inputLastName" name='last_name' onChange={handleAdvanceChange} placeholder="Last Name"/>
+                </div>
+          </Row>
+          <Row className="mb-5 justify-content-center">
+            <div className="form-group col-md-3">
+                <label for="inputBirthdate">Birthdate</label>
+                <input type="date" class="form-control" id="inputBirthdate" name='birthdate' onChange={handleAdvanceChange} />
+            </div>
+            
+            <div className="form-group col-md-3">
+            <label for="inputSex">Sex</label>
+            <select id="inputSex" class="form-control" name='sex' onChange={handleAdvanceChange} >
+                <option selected>Select</option>
+                <option value="M" >Male</option>
+                <option value="F" >Female</option>
+            </select>
+            </div>
+
+            <div className="form-group col-md-2">
+                <label for="inputAge">Age</label>
+                <input type="number" class="form-control" id="inputAge"  name='age' onChange={handleAdvanceChange} placeholder="Age"/>
+            </div>
+
+            <div className="form-group col-md-3">
+                <label for="inputNationality">Nationality</label>
+                <input type="text" class="form-control" id="inputNationality"  name='nationality' onChange={handleChange} placeholder="Nationality"/>
+            </div>
+            
+        </Row>
+   
+
+        
+        </form>
+</Modal.Body>
+<Modal.Footer >
+   
+    <button className="btn" onClick={handleAdvanceSearch} style={{color:'white', backgroundColor: "#0077B6"}}>Search</button>
+
+    <button type="submit" onClick={handleClose}  className="btn btn-secondary">Close</button>
+</Modal.Footer>
+</Modal>
+</>
   );
 };
 

@@ -31,7 +31,8 @@ function AssignHIModal(props) {
           HINo:props.id,
           DGTestNo:'',
           AcceptingVoucher:'',
-          Price:''
+          Price:'',
+          isActive:'1'
       });
 
       const handleChange = (e) => {

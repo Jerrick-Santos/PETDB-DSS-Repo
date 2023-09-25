@@ -122,11 +122,19 @@ function AddMTBRIFModal(props) {
 
         try{
             await axios.post("http://localhost:4000/api/newMTBresults", mtbValues)
+            props.onTestAdded();
+            setMTBValues((prevMTBValues) => ({
+                ...prevMTBValues,
+                HINo: '',
+                issue_date: new Date().toISOString().split('T')[0],
+                test_refno: '',
+                TestValue: '',
+                validity: 1,
+              }));
+            handleClose()
         }catch(err){
             console.log(err)
         }
-
-        window.location.reload()
     }
 
     const handleClose = () => setShow(false);

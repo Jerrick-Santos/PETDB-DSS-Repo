@@ -26,7 +26,7 @@ const Diagnosis = () => {
 
   {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
   const { id } = useParams();
-
+  const [caseData, setCaseData] = useState([]);
   const [diagnosisData, setdiagnosisData] = useState([]);
   const [presumptiveData, setPresumptiveData] = useState();
   const [showPresumptiveModal, setShowPresumptiveModal] = useState(false);
@@ -129,7 +129,7 @@ const endIndex = startIndex + itemsPerPage;
     axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
     .then(res => {
       console.log(res);
-      setPatientData(res.data[0]);
+      setCaseData(res.data[0]);
     })
     .catch(err => {
       console.error(err);
@@ -187,7 +187,8 @@ const endIndex = startIndex + itemsPerPage;
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-      <CaseHeader caseNum={caseNum} />
+      <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
+                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}/>
           <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
             <Col lg="11">
               
