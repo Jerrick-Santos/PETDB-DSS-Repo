@@ -18,6 +18,21 @@ function UpdateAssessment(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const [bodyWeight, setBodyWeight] = useState(0);
+    const [height, setHeight] = useState(0);
+    const [bmi, setBMI] = useState(null);
+
+    const calculateBMI = () => {
+      if (bodyWeight && height) {
+        const heightInMeters = height / 100; // Convert height to meters
+        const bmiValue = bodyWeight / (heightInMeters * heightInMeters);
+        setBMI(bmiValue.toFixed(2)); // Round BMI to 2 decimal places
+      } else {
+        setBMI(null); // Reset BMI if any of the inputs are empty
+      }
+    };
+
     const [isReferenced, setIsReferenced] = useState(false);
     const [reference, setReference] = useState(null);
 
@@ -42,6 +57,12 @@ function UpdateAssessment(props) {
               console.error('Error fetching data:', error);
           });
   }, [props.AssessNo]); // Adding props.DGResultsNo as dependency
+
+  useEffect(() => {
+
+    calculateBMI();
+  
+  }, [bodyWeight, height]); 
 
     const [formValues, setFormValues] = useState({
       AssessNo: props.AssessNo,
@@ -93,20 +114,98 @@ function UpdateAssessment(props) {
       prevPTB_diagnosed: props.prevPTB_diagnosed,
     });
 
+    const [bodyweightError, setBodyWeightError] = useState('');
+    const [heightError, setHeightError] = useState('');
+    const [bodyTempError, setTempError] = useState('');
+    const [bloodPressError, setBPError] = useState('');
+
+    const validate = () => {
+      let bodyweightError = '';
+      if (!bodyWeight) {
+        bodyweightError = 'Body Weight is required';
+      }
+      setBodyWeightError(bodyweightError);
+
+      let heightError = '';
+      if (!height) {
+        heightError = 'Height is required';
+      }
+      setHeightError(heightError);
+
+      let bodyTempError = '';
+      if (!formValues.ass_temp) {
+        bodyTempError = 'Body Temperature is required';
+      }
+      setTempError(bodyTempError);
+
+      let bloodPressError = '';
+      if (!formValues.ass_bp) {
+        bloodPressError = 'Blood Pressure is required';
+      }
+      setBPError(bloodPressError);
+
+      if (bodyweightError || heightError || bodyTempError || bloodPressError) {
+        return false;
+      }
+
+      return true;
+    }
+
     const handleChange = (e) => {
         const {name, value, type, checked} = e.target;
         const newValue = type === 'checkbox' ? (checked ? 1 : 0) : value;
-        setFormValues(prev=>({...prev, [name]: newValue}));
+        // Update the corresponding state based on the input field
+        if (name === 'ass_body_weight') {
+          setBodyWeight(newValue);
+          setFormValues({
+            ...formValues,
+            ass_body_weight: newValue  
+          });
+        } else if (name === 'ass_height') {
+          setHeight(newValue);
+          setFormValues({
+            ...formValues,
+            ass_height: newValue  
+          });
+        } else {
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
+        }
+
+        if (name === 'ass_body_weight' || name === 'ass_height') {
+          calculateBMI();
+        }
+    }
+
+    const resetValidation = () => {
+      setBodyWeightError('');
+      setHeightError('');
+      setTempError('');
+      setBPError('');
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        resetValidation();
+
+        const isValid = validate();
+        if(!isValid){
+          return;
+        }
+            
         try{
-            await axios.post("http://localhost:4000/api/updateassess", formValues)
+            const updatedAssessFormValues = {
+              ...formValues,
+              ass_body_weight: bodyWeight,
+              ass_height: height,
+              ass_bmi: bmi,
+            };
+            await axios.post("http://localhost:4000/api/updateassess", updatedAssessFormValues)
+            window.location.reload()
         }catch(err){
             console.log(err)
         }
-        window.location.reload()
+        
     }
   return (
         <>
@@ -151,6 +250,9 @@ function UpdateAssessment(props) {
           <Col sm="4">
             <Card.Text>
                 <input type="text" className="form-control" name='ass_body_weight' value={formValues.ass_body_weight} onChange={handleChange} placeholder='in kilograms' />
+                {bodyweightError && (
+                        <p style={{color: 'red'}}>{bodyweightError}</p>  
+                )}
               </Card.Text>
           </Col>
         </Row>
@@ -163,6 +265,9 @@ function UpdateAssessment(props) {
           <Col sm="4">
             <Card.Text>
                 <input type="text" className="form-control" name='ass_height' value={formValues.ass_height} onChange={handleChange} placeholder='in centimeters' />
+                {heightError && (
+                        <p style={{color: 'red'}}>{heightError}</p>  
+                )}
               </Card.Text>
           </Col>
         </Row>
@@ -174,7 +279,7 @@ function UpdateAssessment(props) {
           </Col>
           <Col sm="4">
             <Card.Text>
-                <input type="text" className="form-control" name='ass_bmi' value={formValues.ass_bmi}  onChange={handleChange} readOnly />
+                <input type="text" className="form-control" name='ass_bmi' value={bmi}  onChange={handleChange} readOnly />
               </Card.Text>
           </Col>
         </Row>
@@ -187,6 +292,9 @@ function UpdateAssessment(props) {
           <Col sm="4">
             <Card.Text>
                 <input type="text" className="form-control" name='ass_temp' value={formValues.ass_temp} onChange={handleChange} placeholder='in Celsius' />
+                {bodyTempError && (
+                        <p style={{color: 'red'}}>{bodyTempError}</p>  
+                )}
               </Card.Text>
           </Col>
         </Row>
@@ -199,6 +307,9 @@ function UpdateAssessment(props) {
           <Col sm="4">
             <Card.Text>
                 <input type="text" className="form-control" name='ass_bp' value={formValues.ass_bp} onChange={handleChange} placeholder='systolic/diastolic' />
+                {bloodPressError && (
+                        <p style={{color: 'red'}}>{bloodPressError}</p>  
+                )}
               </Card.Text>
           </Col>
         </Row>
