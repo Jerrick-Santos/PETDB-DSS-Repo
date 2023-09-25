@@ -35,8 +35,8 @@ const CloseCaseModal = (props) => {
   return (
 
     <>
-    <Badge bg="danger" className="btn btn-danger" type="button" onClick={handleShow}>
-    Close Case
+    <Badge bg="success" className="btn" type="button" onClick={handleShow}>
+    Ongoing
   </Badge>
 
     <Modal show={show} onHide={handleClose} backdrop={ 'static' }>

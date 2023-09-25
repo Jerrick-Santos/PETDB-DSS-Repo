@@ -4,57 +4,37 @@ import { Link, useParams } from 'react-router-dom';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
-import user from '../assets/user.png';
 import add from '../assets/add.png';
-
+import noresult from "../assets/noresult.png";
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
-import AddXrayModal from '../components/AddXrayModal';
-import AddHIVTestModal from '../components/AddTSTModal';
-import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
-import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
-import ViewMapRecomModal from '../components/ViewMapRecomModal';
-import AssessmentFormNew from '../components/AssessmentPersistence';
-import AssessmentNoPersistence from '../components/AssessmentNoPersistence';
-import AssessmentPersistence from '../components/AssessmentPersistence';
 import AddAssessPersist from '../components/AddAssessPersist';
 import AddAssessNoPersist from '../components/AddAssessNoPersist';
 import CaseHeader from '../components/CaseHeader';
 import Pagination from 'react-bootstrap/Pagination';
-import bin from '../assets/bin.png'
-import edit from '../assets/edit.png'
 import UpdateAssessment from '../components/UpdateAssessment';
 import UpdateAssessmentNoPersist from '../components/UpdateAssessmentNoPersist';
 import DeleteAssessment from '../components/DeleteAssessment';
+import Spinner from "react-bootstrap/Spinner";
+
 
 const Assessment = () => {
 
   const { id } = useParams();
   var caseNum = id
-  
-  const [patientData, setPatientData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [caseData, setCaseData] = useState([]);
   const [assessData, setAssessData] = useState([]);
   const [caseClosed, setCaseClosed] = useState(false);
   useEffect(() => {
 
-    axios.get(`http://localhost:4000/api/patientassessment/${caseNum}`)
-      .then((response) => {
-        setAssessData(response.data)
-      })
-      .catch((error) => {
-        // Handle any errors that occurred during the request
-        console.error('Error fetching data:', error);
-      });
-    }, []);
-    console.log(typeof assessData)
-
-    useEffect(() => {
-      axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
       .then(res => {
         console.log(res);
-        setPatientData(res.data[0]);
+        setCaseData(res.data[0]);
+        
         if (res.data[0].case_status === 'C') {
           // Set a state variable to indicate that the case is closed
           setCaseClosed(true);
@@ -65,20 +45,64 @@ const Assessment = () => {
       .catch(err => {
         console.error(err);
       })
-    }, [caseNum])
 
-    // Add these state variables
-const [activePage, setActivePage] = useState(1); // Active page number
-const itemsPerPage = 5; // Number of items per page
+    axios.get(`http://localhost:4000/api/patientassessment/${caseNum}`)
+      .then((response) => {
+        setAssessData(response.data)
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
 
-// Function to handle page change
-const handlePageChange = (pageNumber) => {
-  setActivePage(pageNumber);
-};
+      
+    }, []);
 
-// Calculate the index range for the current page
-const startIndex = (activePage - 1) * itemsPerPage;
-const endIndex = startIndex + itemsPerPage;
+
+ ///PAGINATION LOGIC
+  // Add these state variables
+  const [activePage, setActivePage] = useState(1); // Active page number
+  const itemsPerPage = 10; // Number of items per page
+
+  // Function to handle page change
+  const handlePageChange = (pageNumber) => {
+    setActivePage(pageNumber);
+  };
+
+  // Calculate the index range for the current page
+  const startIndex = (activePage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const maxPageLinks = 10;
+
+  const totalPages = Math.ceil(assessData.length / itemsPerPage);
+
+  // Define the number of page links to show before and after the active page
+  const pageLinksToShow = maxPageLinks - 2; // Subtract 2 for Prev and Next buttons
+
+  // Calculate the start and end page numbers to display
+  let startPage = Math.max(
+    1,
+    Math.min(
+      activePage - Math.floor(pageLinksToShow / 2),
+      totalPages - pageLinksToShow + 1,
+    ),
+  );
+  let endPage = Math.min(totalPages, startPage + pageLinksToShow - 1);
+
+  // Adjust the start and end page numbers if they exceed the bounds
+  if (endPage - startPage + 1 < pageLinksToShow) {
+    if (startPage === 1) {
+      endPage = Math.min(totalPages, pageLinksToShow);
+    } else {
+      startPage = Math.max(1, totalPages - pageLinksToShow + 1);
+    }
+  }
+  const pageNumbers = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index,
+  );
 
 const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
   return (
@@ -131,36 +155,33 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
       <Row className="justify-content-center" >
         <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       {/*Shows general patient information details */}
-      <CaseHeader caseNum={caseNum} />
-     {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
-     {caseClosed ? (
-      <Col className="d-flex justify-content-center">
-        <button
-        className="btn"
-        style={{ color: "white", backgroundColor: '#0077B6'}}
-        type="button"
-        disabled
-    >
-        <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add an Assessment
-    </button>
-    </Col>
-        ) : assessData.length > 0 ? (
-      <Row className="d-flex justify-content-center mt-4 mb-4" >
-      <Col className="d-flex justify-content-center">
-      <AddAssessPersist
-          caseNo={caseNum}
-      />
-      </Col>
-    </Row>
-     ) : (
-      <Row className="d-flex justify-content-center mt-4 mb-4" >
-          <Col className="d-flex justify-content-center">
-          <AddAssessNoPersist
-              caseNo={caseNum}
-          />
-          </Col>
-        </Row>
-     )}
+
+      {isLoading ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+                <>
+      <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
+                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}/>
+     
      
 
       
@@ -169,25 +190,27 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
       <Row className="mb-5 mt-2 justify-content-center">
       <Col lg="8">
       <p> <strong> Assessment Record </strong> </p>
+      {assessData.length > 0 ? (
         <Card className="mb-4">
           <Card.Body>
-            <Row>
-              <Col sm="6">
-                <Card.Text>Date of Assessment</Card.Text>
-              </Col>
-              <Col sm="6">
-                <Card.Text>Assessed by</Card.Text>
-              </Col>
+          <table className="table caption-top bg-white rounded mt-2 mb-0">
+                          <thead>
+                            <tr>
+                              <th scope="col">Date of Assessment</th>
+                              <th scope="col">Assessed by</th>
+                              <th scope="col"></th>
+                            </tr>
+                          </thead>
 
-            </Row>
+                          <tbody>
+            
         
             
             {assessData.slice(startIndex, endIndex).map((ass, index) => (
               <>
-               <hr />
-               <Row>
-               <Col sm="6">
-                <Card.Text><AssessmentSummaryModal 
+               <tr key={index}>
+                                  <td>
+                                  <AssessmentSummaryModal 
                       caseNo={caseNum} 
                       date={new Date(ass.assessment_date).toLocaleDateString()} 
                       AssessNo={ass.AssessNo}
@@ -240,15 +263,11 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
                       userNo={ass.userNo}
                       prevPTB_diagnosed={ass.prevPTB_diagnosed} 
                       user_fullname={ass.user_fullname}/>
-                      
-                      </Card.Text>
-              </Col>
-              <Col sm="5">
-                <Card.Text>{ass.user_fullname}</Card.Text>
-              </Col>
-              <Col sm="1">
-                <Card.Text>
-                {minAssessNo === ass.AssessNo ? (
+                                  </td>
+                                  <td>{ass.user_fullname}</td>
+                               
+                                  <td>
+                                  {minAssessNo === ass.AssessNo ? (
                   <UpdateAssessmentNoPersist AssessNo={ass.AssessNo}
                   cough={ass.cough}
                   c_weeks={ass.c_weeks}
@@ -341,34 +360,113 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
                   prevPTB_diagnosed={ass.prevPTB_diagnosed}/>
                 )}
                <DeleteAssessment AssessNo={ass.AssessNo}/>
-                 
-            </Card.Text>
-              </Col>
-            </Row>
+                                  </td>
+                                </tr>
+             
                    </>
                     ))}
-          
+             </tbody>
+                        </table>
 
 
           
           </Card.Body>
         </Card>
-      </Col>
-      <Pagination className="mt-3 justify-content-center">
-            <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
-            {Array.from({ length: Math.ceil(assessData.length / itemsPerPage) }).map((_, index) => (
-              <Pagination.Item key={index} active={index + 1 === activePage} onClick={() => handlePageChange(index + 1)}>
-                {index + 1}
-              </Pagination.Item>
-            ))}
-            <Pagination.Next onClick={() => handlePageChange(activePage + 1)} disabled={activePage === Math.ceil(assessData.length / itemsPerPage)} />
-          </Pagination>
+        ) : (
+                    <Card className="mt-4 mb-4 text-center">
+                      <Row className="mt-4 justify-content-center">
+                        <Col>
+                          <img
+                            src={noresult}
+                            alt="No Results"
+                            style={{ width: "120px", height: "120px" }}
+                          />
+                        </Col>
+                      </Row>
 
-    </Row>
+                      <Card.Body>
+                        <h1 style={{ fontSize: "20px", color: "#808080" }}>
+                          {" "}
+                          No Assessments Found{" "}
+                        </h1>
+                      </Card.Body>
+                    </Card>
+                  )}
+      
+ 
+      <Row className="mb-4">
+                    
+                      {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
+     {caseClosed ? (
+      null
+     ) : (
+          <Col>
+          <AddAssessNoPersist
+              caseNo={caseNum}
+          />
+          </Col>
+     )}
+                    
+                    <Col className="d-flex justify-content-end">
+                      {assessData.length > 0 ? (
+                        <Pagination className="mb-0">
+                          <Pagination.Prev
+                            onClick={() => handlePageChange(activePage - 1)}
+                            disabled={activePage === 1}
+                          />
+
+                          {startPage > 1 && (
+                            <>
+                              <Pagination.Item
+                                onClick={() => handlePageChange(1)}
+                              >
+                                1
+                              </Pagination.Item>
+                              {startPage > 2 && <Pagination.Ellipsis />}
+                            </>
+                          )}
+
+                          {pageNumbers.map((pageNumber) => (
+                            <Pagination.Item
+                              key={pageNumber}
+                              active={pageNumber === activePage}
+                              onClick={() => handlePageChange(pageNumber)}
+                            >
+                              {pageNumber}
+                            </Pagination.Item>
+                          ))}
+
+                          {endPage < totalPages && (
+                            <>
+                              {endPage < totalPages - 1 && (
+                                <Pagination.Ellipsis />
+                              )}
+                              <Pagination.Item
+                                onClick={() => handlePageChange(totalPages)}
+                              >
+                                {totalPages}
+                              </Pagination.Item>
+                            </>
+                          )}
+
+                          <Pagination.Next
+                            onClick={() => handlePageChange(activePage + 1)}
+                            disabled={activePage === totalPages}
+                          />
+                        </Pagination>
+                      ) : null}
+                    </Col>
+                  </Row>
+
+  
 
       {/* Shows the recommended next course of action */}
       
       </Col>
+      </Row>
+      </>
+              )}
+    </Col>
     </Row>
 
     </div>

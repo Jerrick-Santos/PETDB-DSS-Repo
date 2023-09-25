@@ -120,11 +120,19 @@ function AddIGRAModal(props) {
 
         try{
             await axios.post("http://localhost:4000/api/newIGRAresults", igraValues)
+            props.onTestAdded();
+            setIGRAValues((prevIGRAValues) => ({
+                ...prevIGRAValues,
+                HINo: '',
+                issue_date: new Date().toISOString().split('T')[0],
+                test_refno: '',
+                TestValue: '',
+                validity: 1,
+              }));
+            handleClose()
         }catch(err){
             console.log(err)
         }
-
-        window.location.reload()
     }
 
     const handleClose = () => setShow(false);

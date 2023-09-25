@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import NavBar from './components/NavBar';
 
 // Define your access denied component
 const AccessDenied = () => (
@@ -53,7 +54,7 @@ const withAccessControl = (WrappedComponent, allowedUserTypes) => {
 
     if (isLoading) {
       // You can add a loading indicator here if needed
-      return <div>Loading...</div>;
+      return <NavBar/>;
     }
 
     // Render the WrappedComponent if the user has the correct user type

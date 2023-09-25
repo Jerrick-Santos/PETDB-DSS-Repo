@@ -120,11 +120,19 @@ function AddTSTModal(props) {
 
         try{
             await axios.post("http://localhost:4000/api/newTSTresults", tstValues)
+            props.onTestAdded();
+            setTSTValues((prevTSTValues) => ({
+                ...prevTSTValues,
+                HINo: '',
+                issue_date: new Date().toISOString().split('T')[0],
+                test_refno: '',
+                TestValue: '',
+                validity: 1,
+              }));
+            handleClose()
         }catch(err){
             console.log(err)
         }
-
-        window.location.reload()
     }
 
     const handleClose = () => setShow(false);
