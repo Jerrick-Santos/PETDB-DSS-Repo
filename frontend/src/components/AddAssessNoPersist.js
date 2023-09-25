@@ -69,6 +69,43 @@ function AddAssessNoPersist(props) {
         prevPTB_diagnosed: 0,
     });
 
+    const [bodyweightError, setBodyWeightError] = useState('');
+    const [heightError, setHeightError] = useState('');
+    const [bodyTempError, setTempError] = useState('');
+    const [bloodPressError, setBPError] = useState('');
+
+    const validate = () => {
+      let bodyweightError = '';
+      if (!bodyWeight) {
+        bodyweightError = 'Body Weight is required';
+      }
+      setBodyWeightError(bodyweightError);
+
+      let heightError = '';
+      if (!height) {
+        heightError = 'Height is required';
+      }
+      setHeightError(heightError);
+
+      let bodyTempError = '';
+      if (!assessFormValues.ass_temp) {
+        bodyTempError = 'Body Temperature is required';
+      }
+      setTempError(bodyTempError);
+
+      let bloodPressError = '';
+      if (!assessFormValues.ass_bp) {
+        bloodPressError = 'Blood Pressure is required';
+      }
+      setBPError(bloodPressError);
+
+      if (bodyweightError || heightError || bodyTempError || bloodPressError) {
+        return false;
+      }
+
+      return true;
+    }
+
     const handleChange = (e) => {
         const {name, value, type, checked} = e.target;
         const newValue = type === 'checkbox' ? (checked ? 1 : 0) : value;
@@ -87,24 +124,40 @@ function AddAssessNoPersist(props) {
         }
     }
 
+    const resetValidation = () => {
+      setBodyWeightError('');
+      setHeightError('');
+      setTempError('');
+      setBPError('');
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
+        resetValidation();
+
+        const isValid = validate();
+        if(!isValid){
+          return;
+        }
+
         // Update assessFormValues with the latest weight, height, and BMI
-        const updatedAssessFormValues = {
+        
+
+        try{
+          const updatedAssessFormValues = {
           ...assessFormValues,
           ass_body_weight: bodyWeight,
           ass_height: height,
           ass_bmi: bmi,
         };
-
-        try{
             await axios.post("http://localhost:4000/api/newassessment", updatedAssessFormValues)
+            window.location.reload()
         }catch(err){
             console.log(err)
         }
 
-        window.location.reload()
+        
     }
 
   return (
@@ -177,6 +230,9 @@ function AddAssessNoPersist(props) {
           <Col sm="4">
             <Card.Text>
                 <input type="text" className="form-control" name='ass_body_weight' value={assessFormValues.ass_body_weight} onChange={handleChange} placeholder='in kilograms' />
+                {bodyweightError && (
+                        <p style={{color: 'red'}}>{bodyweightError}</p>  
+                )}
               </Card.Text>
           </Col>
         </Row>
@@ -189,6 +245,9 @@ function AddAssessNoPersist(props) {
           <Col sm="4">
             <Card.Text>
                 <input type="text" className="form-control" name='ass_height' value={assessFormValues.ass_height} onChange={handleChange} placeholder='in centimeters' />
+                {heightError && (
+                        <p style={{color: 'red'}}>{heightError}</p>  
+                )}
               </Card.Text>
           </Col>
         </Row>
@@ -213,6 +272,9 @@ function AddAssessNoPersist(props) {
           <Col sm="4">
             <Card.Text>
                 <input type="text" className="form-control" name='ass_temp' value={assessFormValues.ass_temp} onChange={handleChange} placeholder='in Celsius' />
+                {bodyTempError && (
+                        <p style={{color: 'red'}}>{bodyTempError}</p>  
+                )}
               </Card.Text>
           </Col>
         </Row>
@@ -225,6 +287,9 @@ function AddAssessNoPersist(props) {
           <Col sm="4">
             <Card.Text>
                 <input type="text" className="form-control" name='ass_bp' value={assessFormValues.ass_bp} onChange={handleChange} placeholder='systolic/diastolic' />
+                {bloodPressError && (
+                        <p style={{color: 'red'}}>{bloodPressError}</p>  
+                )}
               </Card.Text>
           </Col>
         </Row>
