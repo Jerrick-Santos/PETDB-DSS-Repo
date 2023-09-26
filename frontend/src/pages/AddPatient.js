@@ -14,6 +14,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const AddPatient = () => {
 
+
     function formatDate(datestring) {
         const date = new Date(datestring);
 
@@ -517,6 +518,17 @@ const AddPatient = () => {
     const handleClick = async e => {
         e.preventDefault()
 
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('Token not found in local storage.');
+            return;
+        }
+
+        // Define headers with the JWT token
+        const headers = {
+        Authorization: `Bearer ${token}`,
+        };
+
         const isValid = validate();
         if(!isValid) {
             return;
@@ -527,7 +539,7 @@ const AddPatient = () => {
                 ...patient,
                 age: calculatedAge
             };
-            await axios.post("http://localhost:4000/api/newpatient", patientData)
+            await axios.post("http://localhost:4000/api/newpatient", patientData, { headers })
             setShowSuccessModal(true);
         }catch(err){
             console.log(err)

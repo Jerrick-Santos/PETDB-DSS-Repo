@@ -301,7 +301,7 @@ const CloseContacts = () => {
                     <tr>
                         <th scope="col">Patient</th>
                         <th scope="col">Full Name</th>
-                        <th scope="col">Birthdate</th>
+                        <th scope="col">Age</th>
                         <th scope="col">Sex</th>
                         <th scope="col">Relationship</th>
                         <th scope="col">Contact Details</th>

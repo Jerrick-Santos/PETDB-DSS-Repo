@@ -195,6 +195,11 @@ useEffect(() => {
                                   {" "}
                                   Cured{" "}
                                 </Badge>
+                              ) : singleCase.SRDescription === "Manual entry" ? (
+                                <Badge style={{ fontSize: 14 }} bg="danger">
+                                  {" "}
+                                  Manual entry{" "}
+                                </Badge>
                               ) : null}</td>
               </tr>
             ))}
