@@ -43,6 +43,8 @@ function AddDSTModal(props) {
         issue_date: new Date().toISOString().split('T')[0],
         test_refno:'',
         TestValue: '',
+        drug2: '',
+        drug3: '',
         validity: 1,
     })
 
@@ -50,6 +52,8 @@ function AddDSTModal(props) {
     const [dateError, setDateError] = useState('');
     const [testError, setTestError] = useState('');
     const [valueError, setValueError] = useState('');
+    const [drug2Error, setDrug2Error] = useState('');
+    const [drug3Error, setDrug3Error] = useState('');
 
     const validate = () => {
         let HINoError = '';
@@ -76,7 +80,19 @@ function AddDSTModal(props) {
         }
         setValueError(valueError);
 
-        if (HINoError || dateError || testError || valueError) {
+        let drug2Error = '';
+        if (!dstValues.drug2) {
+            drug2Error = 'Required';
+        }
+        setDrug2Error(drug2Error);
+
+        let drug3Error = '';
+        if (!dstValues.drug3) {
+            drug3Error = 'Required';
+        }
+        setDrug3Error(drug3Error);
+
+        if (HINoError || dateError || testError || valueError || drug2Error || drug3Error) {
             return false;
           }
 
@@ -191,15 +207,39 @@ function AddDSTModal(props) {
             )}
         </div>
         <div className="mt-3"> 
-            <label> <strong>DST Results: </strong></label>
+            <label> <strong>Drug 1: </strong></label>
             <select className="form-select" name='TestValue' value={dstValues.TestValue} onChange={handleChange}>
                 <option value="">Select</option>
-                <option value="With Signs of TB">With Signs of TB</option>
-                <option value="No signs">No signs</option>
-                <option value="Undetermined">Undetermined</option>
+                <option value="R">Resistant</option>
+                <option value="S">Susceptible</option>
+                <option value="NA">Indeterminate</option>
             </select>
             {valueError && (
                 <p style={{color: 'red'}}>{valueError}</p>  
+            )}
+        </div>
+        <div className="mt-3"> 
+            <label> <strong>Drug 2: </strong></label>
+            <select className="form-select" name='drug2' value={dstValues.drug2} onChange={handleChange}>
+                <option value="">Select</option>
+                <option value="R">Resistant</option>
+                <option value="S">Susceptible</option>
+                <option value="NA">Indeterminate</option>
+            </select>
+            {drug2Error && (
+                <p style={{color: 'red'}}>{drug2Error}</p>  
+            )}
+        </div>
+        <div className="mt-3"> 
+            <label> <strong>Drug 3: </strong></label>
+            <select className="form-select" name='drug3' value={dstValues.drug3} onChange={handleChange}>
+                <option value="">Select</option>
+                <option value="R">Resistant</option>
+                <option value="S">Susceptible</option>
+                <option value="NA">Indeterminate</option>
+            </select>
+            {drug3Error && (
+                <p style={{color: 'red'}}>{drug3Error}</p>  
             )}
         </div>
     </Modal.Body>
