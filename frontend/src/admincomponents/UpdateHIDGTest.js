@@ -18,6 +18,29 @@ function UpdateHIDGTest(props) {
     Price:props.Price
 });
 
+const [vouchError, setVouchError] = useState('');
+const [priceError, setPriceError] = useState('');
+
+const validate = () => {
+  let vouchError = '';
+  if (!formValues.AcceptingVoucher) {
+    vouchError = 'Required';
+  }
+  setVouchError(vouchError);
+
+  let priceError = '';
+  if (!formValues.Price) {
+    priceError = 'Required';
+  }
+  setPriceError(priceError);
+
+  if (vouchError || priceError) {
+    return false;
+  }
+
+  return true;
+}
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
@@ -25,6 +48,12 @@ function UpdateHIDGTest(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const isValid = validate();
+    if(!isValid) {
+        return;
+    }
+
     try {
       await axios.post("http://localhost:4000/api/updatehidgtest", formValues);
     } catch (err) {
@@ -61,6 +90,9 @@ function UpdateHIDGTest(props) {
       <Col lg="7"> 
             <label><strong>Price</strong></label>
             <input type="number" className="form-control" name="Price" value={formValues.Price} onChange={handleChange}/>
+            {priceError && (
+                        <p style={{color: 'red'}}>{priceError}</p>  
+                    )}
       </Col>
 
       <Col lg="5"> 
@@ -71,6 +103,9 @@ function UpdateHIDGTest(props) {
                 <option value="2">No</option>
 
             </select>
+            {vouchError && (
+                        <p style={{color: 'red'}}>{vouchError}</p>  
+                    )}
       </Col>
     </Row>
            

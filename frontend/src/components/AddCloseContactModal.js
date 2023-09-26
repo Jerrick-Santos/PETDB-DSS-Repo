@@ -8,6 +8,29 @@ import ViewSimilarPatientModal from '../components/ViewSimilarPatientModal'
 
 function AddCloseContactModal(props) {
    
+    function clearForms() {
+        const defaultValues = {
+            last_name: '',
+            first_name: '',
+            middle_initial: '',
+            birthdate: new Date(),
+            sex: '',
+            contact_person: '',
+            contact_num: '',
+            contact_email: '',
+            contact_relationship: '',
+            CaseNo: props.id,
+            PatientNo: null,
+            DRNo: null,
+            TSNo: null
+        }
+        setFormValues(defaultValues)
+        setSelectedPatientIndex(null)
+        setDisableForms(false)
+        setSimilarPatients([])
+        setErrors({})
+        setShowSimilar(false)
+    }
     
     const [validated, setValidated] = useState(false); // Form Validation
     const [show,setShow] = useState(false) // Modal for Close Contact Addition
@@ -16,13 +39,17 @@ function AddCloseContactModal(props) {
     const [similarPatients, setSimilarPatients] = useState([]) // Store list of Similar Patient
     const [selectedPatientIndex, setSelectedPatientIndex] = useState(null); // Store index for Similar Patient Array Access
 
-    // TESTING // ----------------------------------------------------------------
+    const [disableForms, setDisableForms] = useState(false)
+   
     const [diagResult, setDiagResult] = useState([]) // Store list of Diagnostic Result from the reference table
     const [treatmentStatus, setTreatmentStatus] = useState([]) // Store list of Treatment Status from the reference table
     const [displayDiagTreatment, setDisplayDiagTreatment] = useState(false) // Enable dropdown buttons for diagnostic result and treatment status
 
     // Modal Show and Close
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setShow(false)
+        clearForms()
+    }
     const handleShow = () => setShow(true);
 
     // Form Values
@@ -60,11 +87,18 @@ function AddCloseContactModal(props) {
     // Fetch function for similar patient by name
     const fetchData = async () => {
         try {
-          const result = await axios.get(`http://localhost:4000/api/getSimilarPatients/${formValues.first_name}/${formValues.middle_initial}/${formValues.last_name}`);
-          return result.data;
+          const patientResult = await axios.get(`http://localhost:4000/api/getSimilarPatients/${formValues.first_name}/${formValues.middle_initial}/${formValues.last_name}`);
+          const contactsResult = await axios.get(`http://localhost:4000/api/getSimilarContacts/${formValues.first_name}/${formValues.middle_initial}/${formValues.last_name}`);
+
+          console.log(patientResult.data, contactsResult.data)
+
+          const combinedData = [...patientResult.data, ...contactsResult.data];
+          return {
+            combinedData: combinedData
+          } 
         } catch (error) {
           console.error('Error fetching data:', error);
-          return [];
+          return { patientData: [], contactsData: [] };
         }
     };
 
@@ -85,10 +119,12 @@ function AddCloseContactModal(props) {
 
         if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
             console.log("Similarity Check Condition Triggered");
-            fetchData().then(similarData => {
-              setSimilarPatients(similarData);
-              setShowSimilar(similarData.length > 0);
+            fetchData().then(({ combinedData }) => {
+              setSimilarPatients(combinedData);
+              setShowSimilar(combinedData.length > 0);
             });
+
+
         }
     }
 
@@ -119,6 +155,12 @@ function AddCloseContactModal(props) {
 
             console.log("SELECTED PATIENT FROM INDEX: ", selectedPatient)
 
+            let contact_name, contact_number, contact_emailadd
+
+            selectedPatient.emergency_name ? contact_name = selectedPatient.emergency_name : contact_name = selectedPatient.contact_person
+            selectedPatient.e_contactno ? contact_number = selectedPatient.e_contactno : contact_number = selectedPatient.contact_num
+            selectedPatient.e_email ? contact_emailadd = selectedPatient.e_email : contact_emailadd = selectedPatient.contact_email
+
             setFormValues(prevData => ({
                 ...prevData,
                 last_name: selectedPatient.last_name,
@@ -126,12 +168,16 @@ function AddCloseContactModal(props) {
                 middle_initial: selectedPatient.middle_initial,
                 birthdate: new Date(selectedPatient.birthdate).toISOString(),
                 sex: selectedPatient.sex,
-                contact_person: selectedPatient.emergency_name,
-                contact_num: selectedPatient.e_contactno,
-                contact_email: selectedPatient.e_email,
+                contact_person: contact_name,
+                contact_num: contact_number,
+                contact_email: contact_emailadd,
                 CaseNo: props.id,
                 PatientNo: selectedPatient.PatientNo,
+                DRNo: selectedPatient.DRNo,
+                TSNo: selectedPatient.TSNo
             }));
+
+            setDisableForms(true)
 
             console.log("UPDATED FORM VALUES FROM SIMILARITY: ", formValues)
         }
@@ -190,6 +236,10 @@ function AddCloseContactModal(props) {
         console.log(formValues)
     }, [formValues])
 
+    const handleClear = () => {
+        clearForms()
+    } 
+
 
   return (
         <>
@@ -218,6 +268,7 @@ function AddCloseContactModal(props) {
                         onChange={e => setField('first_name', e.target.value)}
                         value={formValues.first_name}
                         isInvalid={!!errors.first_name}
+                        disabled={disableForms}
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>{errors.first_name}</Form.Control.Feedback>
@@ -232,7 +283,8 @@ function AddCloseContactModal(props) {
                         name='middle_initial'
                         onChange={e => setField('middle_initial', e.target.value)}
                         value={formValues.middle_initial}
-                        isInvalid={!!errors.middle_initial} 
+                        isInvalid={!!errors.middle_initial}
+                        disabled={disableForms} 
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>{errors.middle_initial}</Form.Control.Feedback>
@@ -247,7 +299,8 @@ function AddCloseContactModal(props) {
                         name='last_name'
                         onChange={e => setField('last_name', e.target.value)}
                         value={formValues.last_name}
-                        isInvalid={!!errors.last_name} 
+                        isInvalid={!!errors.last_name}
+                        disabled={disableForms} 
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>{errors.last_name}</Form.Control.Feedback>
@@ -265,6 +318,7 @@ function AddCloseContactModal(props) {
                             onChange={handleChange}
                             value={new Date(formValues.birthdate).toISOString().split('T')[0]}
                             isInvalid={!!errors.birthdate}
+                            disabled={disableForms}
                         />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>{errors.birthdate}</Form.Control.Feedback>
@@ -272,7 +326,7 @@ function AddCloseContactModal(props) {
 
                 <Form.Group as={Col} md="2" controlId="sex">
                     <Form.Label>Sex</Form.Label>
-                    <Form.Select aria-label="Sex" onChange={handleChange} name='sex' isInvalid={!!errors.sex} value={formValues.sex}>
+                    <Form.Select aria-label="Sex" onChange={handleChange} name='sex' isInvalid={!!errors.sex} value={formValues.sex} disabled={disableForms}>
                         <option value="">Select</option>
                         <option value="M">Male</option>
                         <option value="F">Female</option>
@@ -289,6 +343,7 @@ function AddCloseContactModal(props) {
                         name='contact_relationship'
                         onChange={handleChange}
                         isInvalid={!!errors.contact_relationship}
+                        
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>{errors.contact_relationship}</Form.Control.Feedback>
@@ -311,7 +366,8 @@ function AddCloseContactModal(props) {
                         placeholder='Contact Name: Leave blank if contact has their own contact details'
                         name='contact_person'
                         value={formValues.contact_person}
-                        onChange={handleChange} 
+                        onChange={handleChange}
+                        disabled={disableForms} 
                     />
                 </Form.Group>
 
@@ -328,6 +384,7 @@ function AddCloseContactModal(props) {
                         value={formValues.contact_num}
                         onChange={handleChange}
                         isInvalid={!!errors.contact_num}
+                        disabled={disableForms}
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Control.Feedback type='invalid'>{errors.contact_num}</Form.Control.Feedback>
@@ -341,6 +398,7 @@ function AddCloseContactModal(props) {
                         name='contact_email'
                         value={formValues.contact_email}
                         onChange={handleChange} 
+                        disabled={disableForms}
                     />
                 </Form.Group>
             </Row>
@@ -352,7 +410,7 @@ function AddCloseContactModal(props) {
                     <strong> Does the close contact have a history with TB or is currently in an active TB case?</strong>
                 </Col>
                 <Col>
-                    <Form.Check type='checkbox' name='showTBHistory' onChange={handleEnableDropdown} />
+                    <Form.Check type='checkbox' name='showTBHistory' onChange={handleEnableDropdown} disabled={disableForms} />
                 </Col>
             </Row>
 
@@ -385,8 +443,9 @@ function AddCloseContactModal(props) {
         </Form>
     </Modal.Body>
     <Modal.Footer>
-        <button type="submit" onClick={handleSubmit} className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+        <button type='button' onClick={handleClear} className="btn btn-secondary">Clear</button>
         <button type="button" onClick={handleClose} className="btn btn-secondary">Close</button>
+        <button type="submit" onClick={handleSubmit} className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
     </Modal.Footer>
 </Modal>
 

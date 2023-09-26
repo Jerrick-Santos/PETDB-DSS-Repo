@@ -251,17 +251,54 @@ module.exports = (db) => {
                         INSERT INTO TD_PTCASE (PatientNo, case_refno, SRNo, start_date, case_status)
                         VALUES (?, ?, ?, ?, ?)`;
                 
-                    const caseValues = [patientNo, refno, 2, req.body.admission_date, "O"];
+                    var caseValues = [patientNo, refno, 2, req.body.admission_date, "O"];
                     
                     // For converting exisiting close contacts into patients
                     const updateCloseContactQuery = `UPDATE PEDTBDSS_new.MD_CONTACTTRACING SET PatientNo = ? WHERE ContactNo = ?`
-
+                    const searchActiveCaseQuery = `SELECT active FROM REF_DIAGNOSISRESULTS WHERE DRNo = ?`
+                    const insertManualCase = ``
                     // if passed with a parameter "id", then the soon to be patient is a converted close contact. update close contact with the new patient no
                     if (req.body.id) {
                         db.query(updateCloseContactQuery, [patientNo, req.body.id], (err, res) => {
                             if (err) { console.log(err) }
                         })
                     }
+
+                    // TESTING ----------------------------------------
+                    // Changes:: Accounting for new cases
+                    //      CONDITION 1: if they are a close contact convert and have a history of TB and/or treatments
+                            // if (req.body.id && req.body.DRNo && req.body.TSNo) {
+                            //     db.query(searchActiveCaseQuery, [req.body.DRNo], (err, result) => {
+                            //         if (err) { console.error(err) }
+                            //         else {
+                            //             if (result.data[0]) { // CONDITION 2: checking if the diagnosis result is a form of active tb, if yes set case insert query to 'closed'
+                            //                 caseValues[caseValues.length-1] = "C" 
+                            //             }
+
+                            //             db.query(insertCaseQuery, caseValues, (err, caseResult) => {
+                            //                 if (err) {
+                            //                     return res.status(500).json(err);
+                            //                 }
+                                            
+                            //                 if (result.data[0]) {
+                            //                     // create diagnosis record for newly added case using caseResult.insertId
+                            //                 }
+                            //             });
+
+                            //         }
+                            //     })
+                            // }
+                            // else {
+                            //     db.query(insertCaseQuery, caseValues, (err, caseResult) => {
+                            //         if (err) {
+                            //             return res.status(500).json(err);
+                            //         }
+                                    
+                            //         console.log("Successfully inserted into TD_PTCASE:", caseResult);
+                            //         return res.json(caseResult);
+                            //     });
+                            // }
+                    // TESTING -----------------
 
                     db.query(insertCaseQuery, caseValues, (err, caseResult) => {
                         if (err) {
@@ -271,6 +308,7 @@ module.exports = (db) => {
                         console.log("Successfully inserted into TD_PTCASE:", caseResult);
                         return res.json(caseResult);
                     });
+                    
                 });
            
         
