@@ -584,6 +584,68 @@ module.exports = (db) => {
             }
         });
     });
+
+    function DSTinterpreter(drug1, drug2, drug3){
+        let R_count = 0 
+        const drugResults = [drug1, drug2, drug3]
+
+        for (let i = 0; i < drugResults.length; i++) {
+                if(drugResults[i] === "R"){
+                    R_count++;
+                }
+          }
+
+        if(R_count >= 2){
+            return 2;
+        }
+        else if(R_count == 1){
+            return 1;
+        }
+        else {
+            return -1;
+        }
+    }
+
+    router.post('/newDSTresults', (req, res) => {
+        const insertDrugResistance = "INSERT INTO TD_DRUGRESISTANCE (`CaseNo`, `rif`, `drug1`, `drug2`, `drug3`, `DGResultsNo`) VALUES (?, ?, ?, ?, ?, ?)";
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        const testValue = DSTinterpreter(req.body.drug1, req.body.drug2, req.body.drug3)
+        
+        const testresultsValues = [
+            req.body.CaseNo,
+            9,
+            testValue,
+            req.body.validity,
+            req.body.HINo,
+            req.body.issue_date,
+            req.body.test_refno
+        ];
+    
+        db.query(testresultsQuery, testresultsValues, (err, result) => {
+            if (err) {
+                console.log("Error inserting into TD_DIAGNOSTICRESULTS:", err);
+                return res.json(err);
+            }
+    
+            console.log("Successfully inserted into TD_DIAGNOSTICRESULTS:", result);
+    
+            // Get the auto-incremented primary key (DGResultsNo)
+            const DGResultsNo = result.insertId;
+    
+    
+                db.query(insertDrugResistance, [req.body.CaseNo, "NA", req.body.drug1, req.body.drug2, req.body.drug3, DGResultsNo], (err1, result1) => {
+                    if (err1) {
+                        console.log("Error inserting into TD_DRUGRESISTANCE:", err1);
+                        return res.json(err1);
+                    }
+    
+                    console.log("Successfully inserted into TD_DRUGRESISTANCE:", result1);
+    
+                    return res.json(result); // Return the result of the first query
+                });
+
+        });
+    }); 
     
 
     router.post('/newXrayresults', (req, res) => {

@@ -321,12 +321,9 @@ module.exports = (db) => {
             other_symp:  null //assessmentQuery - otherSympModule()
         }
 
-        const highSuspicionObject = {
-            plhiv: null, //assessmentQuery (HIV module)
-            hiv: null,  //assessmentQuery
-            has_TBcontact: null, //TBcontactQuery
-            prevPTB_diagnosed: null, 
-            first_diag: null
+        const hivConcernObject = {
+            hiv: null, //assessmentQuery (HIV module)
+            plhiv: null,  //assessmentQuery
         }
 
         // const inputObject = {
@@ -344,16 +341,17 @@ module.exports = (db) => {
 
         
         const inputObject = {
-            presumptive_tb: null, 
-            high_sus: null,
-            less_five: null,
-            has_TBcontact: null,
-            first_diag: null,
-            xray: null, //xrayQuery
-            MTB_positive: null, //MTBQuery - MTBModule()
-            RIF_resistant: null, //MTBQuery - RIFModule()
-            tst: null, //TSTQuery
-            igra: null, //IGRAQuery
+            has_symp: null, 
+            less_five: null, 
+            has_TBcontact: null, 
+            prevPTB_diagnosed: null, 
+            hiv_concern: null, 
+            xray: null, 
+            MTB_positive: null, 
+            RIF_resistant: null, 
+            tst: null, 
+            igra: null, 
+            dst: null,
             EPTB_symp: null
         }
 
@@ -362,7 +360,8 @@ module.exports = (db) => {
             xray_id: null, 
             mtb_id: null,
             tst_id: null, 
-            igra_id: null
+            igra_id: null,
+            dst_id: null
         }
 
         const caseid = req.params.caseid
@@ -402,16 +401,20 @@ module.exports = (db) => {
         ORDER BY DGResultsNo DESC
         LIMIT 1;`;
 
+        //GET DST 
+        const DSTQuery = `SELECT *
+        FROM PEDTBDSS_new.TD_DIAGNOSTICRESULTS
+        WHERE CaseNo = ${caseid} AND DGTestNo = 9 AND validity = 1
+        ORDER BY DGResultsNo DESC
+        LIMIT 1;`;
+
         //GET CONTACT TRACING DATA
-        const TBContactQuery = `SELECT dr.diagnosis
-        FROM PEDTBDSS_new.TD_PTCASE ptd
-        JOIN PEDTBDSS_new.TD_PTDIAGNOSIS pt ON ptd.CaseNo = pt.Caseno
-        JOIN PEDTBDSS_new.MD_DIAGNOSISRULES dr ON pt.RuleNo = dr.RuleNo 
-        WHERE ptd.PatientNo IN (SELECT ct.PatientNo
-        FROM PEDTBDSS_new.TD_PTCASE ptd
-        JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON ptd.CaseNo = ctc.CaseNo
-        JOIN PEDTBDSS_new.MD_CONTACTTRACING ct ON ctc.ContactNo = ct.ContactNo
-        WHERE ptd.CaseNo = ${caseid})`;
+        const TBContactQuery = `SELECT drs.DRDescription
+        FROM PEDTBDSS_new.TD_PTCASE c
+        JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON c.CaseNo = ctc.CaseNo
+        JOIN PEDTBDSS_new.MD_CONTACTTRACING cc ON ctc.ContactNo = cc.ContactNo
+        JOIN PEDTBDSS_new.REF_DIAGNOSISRESULTS drs ON cc.DRNo = drs.DRNo
+        WHERE c.CaseNo = ${caseid};)`;
 
         //GET FIRST DIAGNOSIS OR NOT 
         const firstDiagnosisQuery = `SELECT *
@@ -419,18 +422,18 @@ module.exports = (db) => {
         JOIN PEDTBDSS_new.TD_PTDIAGNOSIS ptd ON ptc.CaseNo = ptd.CaseNo
         WHERE ptc.CaseNo = ${caseid};`
 
-        const diagnosisQuery = `SELECT *
-        FROM PEDTBDSS_new.MD_DIAGNOSISRULES
-        WHERE c_symp = ${inputObject.c_symp} AND 
-        plhiv = ${inputObject.plhiv} AND
-        hiv = ${inputObject.hiv} AND
-        first_diag = ${inputObject.first_diag} AND
-        has_TBcontact = ${inputObject.has_TBcontact} AND
-        ETPB_symp = ${inputObject.ETPB_symp} AND 
-        xray = ${inputObject.xray} AND
-        MTB_positive = ${inputObject.MTB_positive} AND 
-        RIF_resistant = ${inputObject.RIF_resistant} AND
-        tst = ${inputObject.tst};`
+        // const diagnosisQuery = `SELECT *
+        // FROM PEDTBDSS_new.MD_DIAGNOSISRULES
+        // WHERE c_symp = ${inputObject.c_symp} AND 
+        // plhiv = ${inputObject.plhiv} AND
+        // hiv = ${inputObject.hiv} AND
+        // first_diag = ${inputObject.first_diag} AND
+        // has_TBcontact = ${inputObject.has_TBcontact} AND
+        // ETPB_symp = ${inputObject.ETPB_symp} AND 
+        // xray = ${inputObject.xray} AND
+        // MTB_positive = ${inputObject.MTB_positive} AND 
+        // RIF_resistant = ${inputObject.RIF_resistant} AND
+        // tst = ${inputObject.tst};`
 
         const ageQuery = `SELECT pi.age AS age, pi.birthdate
         FROM PEDTBDSS_new.TD_PTCASE ptc
@@ -449,12 +452,6 @@ module.exports = (db) => {
                 JOIN PEDTBDSS_new.MD_DIAGNOSISRULES t3 ON t2.RuleNo = t3.RuleNo
                 WHERE t1.CaseNo = ${caseid};
                 `
-
-
-        const test = ``
-
-        //INSERT TO A CASE 
-        const diagnoseInsert = ''
         
             // Execute queries
         db.query(assessmentQuery, (error1, assessmentResults) => {
@@ -493,19 +490,19 @@ module.exports = (db) => {
 
                     //MD_SUSPECIONRULES
     
-                    highSuspicionObject.hiv = HIVModule(hiv)
+                    hivConcernObject.hiv = HIVModule(hiv)
 
                     //check 
-                    console.log(highSuspicionObject.hiv)
+                    console.log(hivConcernObject.hiv)
 
-                    highSuspicionObject.plhiv = PLHIVmodule(plhiv, mother_hiv, sex_active)
+                    hivConcernObject.plhiv = PLHIVmodule(plhiv, mother_hiv, sex_active)
 
                     //CHECK 
-                    console.log(highSuspicionObject.plhiv)
+                    console.log(hivConcernObject.plhiv)
 
-                    highSuspicionObject.prevPTB_diagnosed = prevPTBModule(prevPTB_diagnosed)
+                    inputObject.prevPTB_diagnosed = prevPTBModule(prevPTB_diagnosed)
 
-                    console.log(highSuspicionObject.prevPTB_diagnosed)
+                    console.log(inputObject.prevPTB_diagnosed)
 
                     //MD_SYMPTOMS RULES
 
@@ -600,7 +597,7 @@ module.exports = (db) => {
                                 return;
                             }
                             
-                            console.log("QUERY: IGRA - CHECK")
+                            console.log("QUERY 5: IGRA - CHECK")
     
                             if (IGRAResults.length === 0) {
                                 inputObject.igra = 0;
@@ -614,201 +611,225 @@ module.exports = (db) => {
                         
                             console.log("igra value: " + inputObject.igra)
 
-                         db.query(ageQuery, (errorB, AgeResults) => {
-
-                            if (errorB) {
-                                res.status(500).json({ error: "Error fetching AGE data" });
+                        db.query(DSTQuery, (errorA1, DSTesults) => {
+                            
+                            if (errorA1) {
+                                res.status(500).json({ error: "Error fetching DST data" });
                                 return;
                             }
-
-                            console.log("QUERY: AGE - CHECK")
+                            
+                            console.log("QUERY 6: DST - CHECK")
     
-                            if (AgeResults.length === 0) {
-                                inputObject.tst = 0;
+                            if (DSTesults.length === 0) {
+                                inputObject.dst = 0;
+                                dataIdObject.dst_id = null;
                             } else {
-                                const {age} = AgeResults[0]
-    
+                                const {TestValue, DGResultsNo} = DSTesults[0]
+                                dataIdObject.dst_id = DGResultsNo;
                                 
-                                inputObject.less_five = ageModule(age)
-                                console.log(inputObject.less_five)
+                                inputObject.dst = TestValue
                             }
-
-                        db.query(firstDiagnosisQuery, (error5, firstDiagnosisResults) => {
-                            if (error5) {
-                                res.status(500).json({ error: "Error fetching FIRST DIAGNOSIS data" });
-                                return;
-                            }
-
-                            console.log("QUERY 5: FIRST DIAGNOSIS - CHECK")
-
-                            if (firstDiagnosisResults.length === 0) {
-                                
-                                highSuspicionObject.first_diag = 1
-                                inputObject.first_diag = 1
-                            } else {
-                                highSuspicionObject.first_diag = -1
-                                inputObject.first_diag = -1
-                            }
-
-                            db.query(TBContactQuery, (error6, TBcontactResults) => {
-                                if (error6) {
-                                    res.status(500).json({ error: "Error fetching TB CONTACT data" });
-                                    return;
-                                }
-
-                                console.log("QUERY 6: TB CONTACT - CHECK")
-
-                                if (TBcontactResults.length === 0) {
-                                    highSuspicionObject.has_TBcontact = -1
-                                    inputObject.has_TBcontact = -1
-                                    symptomsObject.has_TBcontact = -1
-                                } else {
-                                    highSuspicionObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                    inputObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                    symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                    // highSuspicionObject.has_TBcontact = -1
-                                    // inputObject.has_TBcontact = -1
-                                    // symptomsObject.has_TBcontact = -1
-                                }
-
-                                console.log(symptomsObject)
-                                db.query(`SELECT *
-                                FROM PEDTBDSS_new.MD_SYMPTOMSRULES
-                                WHERE c_symp = ${symptomsObject.c_symp} AND 
-                                EPTB_symp = ${symptomsObject.EPTB_symp} AND 
-                                has_TBcontact = ${symptomsObject.has_TBcontact} AND
-                                other_symp = ${symptomsObject.other_symp};`, (error7, symptomsRules) => {
-
-                                    if (error7) {
-                                        res.status(500).json({ error: error7 });
-                                        return;
-                                    }
-
-                                    console.log(symptomsObject)
-
-                                    console.log("Symptoms Query Results", symptomsRules);
-
-                                    
-                                    const {presumptive} = symptomsRules[0]
-
-                                    inputObject.presumptive_tb = presumptive
                         
-                                    // All queries have been executed successfully
-                                    // res.status(200).json(diagnosisQueryResults);
-                                    console.log(presumptive)
+                            console.log("DST value: " + inputObject.igra)
 
-                                    db.query(`SELECT *
-                                    FROM PEDTBDSS_new.MD_SUSPECIONRULES
-                                    WHERE hiv = ${highSuspicionObject.hiv} AND
-                                    plhiv = ${highSuspicionObject.plhiv} AND 
-                                    has_TBcontact = ${highSuspicionObject.has_TBcontact} AND
-                                    prevPTB_diagnosed =  ${highSuspicionObject.prevPTB_diagnosed} AND 
-                                    first_diag = ${highSuspicionObject.first_diag};`, (error8, suspicionRules) => {
-    
-                                        if (error8) {
-                                            res.status(500).json({ error: "Error fetching SUSPICION RULES data" });
+                                    db.query(ageQuery, (errorB, AgeResults) => {
+
+                                        if (errorB) {
+                                            res.status(500).json({ error: "Error fetching AGE data" });
                                             return;
                                         }
-    
-                                        console.log(symptomsObject)
-    
-                                        console.log("Suspicion Query Results", suspicionRules);
-    
-                                        
-                                        const {high_sus, need_hiv} = suspicionRules[0]
-    
-                                        inputObject.high_sus = high_sus;
 
-                                        db.query(`SELECT *
-                                        FROM PEDTBDSS_new.MD_DIAGNOSISRULES
-                                        WHERE presumptive_tb = ${inputObject.presumptive_tb} AND 
-                                        high_sus = ${inputObject.high_sus} AND
-                                        less_five = ${inputObject.less_five} AND 
-                                        has_TBcontact = ${inputObject.has_TBcontact} AND
-                                        first_diag = ${inputObject.first_diag} AND
-                                        xray = ${inputObject.xray} AND
-                                        MTB_positive = ${inputObject.MTB_positive} AND 
-                                        RIF_resistant = ${inputObject.RIF_resistant} AND
-                                        tst = ${inputObject.tst} AND
-                                        igra = ${inputObject.igra} AND
-                                        EPTBpositive = ${inputObject.EPTB_symp} ;`, (error7, diagnosisQueryResults) => {
+                                        console.log("QUERY: AGE - CHECK")
+                
+                                        if (AgeResults.length === 0) {
+                                            inputObject.tst = 0;
+                                        } else {
+                                            const {age} = AgeResults[0]
+                
+                                            
+                                            inputObject.less_five = ageModule(age)
+                                            console.log(inputObject.less_five)
+                                        }
 
-                                            if (error7) {
-                                                res.status(500).json({ error: "Error fetching diagnosis data" });
+                                    db.query(firstDiagnosisQuery, (error5, firstDiagnosisResults) => {
+                                        if (error5) {
+                                            res.status(500).json({ error: "Error fetching FIRST DIAGNOSIS data" });
+                                            return;
+                                        }
+
+                                        console.log("QUERY 5: FIRST DIAGNOSIS - CHECK")
+
+                                        if (firstDiagnosisResults.length === 0) {
+                                            
+                                            hivConcernObject.first_diag = 1
+                                            inputObject.first_diag = 1
+                                        } else {
+                                            hivConcernObject.first_diag = -1
+                                            inputObject.first_diag = -1
+                                        }
+
+                                        db.query(TBContactQuery, (error6, TBcontactResults) => {
+                                            if (error6) {
+                                                res.status(500).json({ error: "Error fetching TB CONTACT data" });
                                                 return;
                                             }
 
-                                            console.log(inputObject)
+                                            console.log("QUERY 6: TB CONTACT - CHECK")
 
-                                            console.log("Diagnosis Query Results:", diagnosisQueryResults);
+                                            if (TBcontactResults.length === 0) {
+                                                hivConcernObject.has_TBcontact = -1
+                                                inputObject.has_TBcontact = -1
+                                                symptomsObject.has_TBcontact = -1
+                                            } else {
+                                                hivConcernObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                                inputObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                                symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
+                                                // hivConcernObject.has_TBcontact = -1
+                                                // inputObject.has_TBcontact = -1
+                                                // symptomsObject.has_TBcontact = -1
+                                            }
 
-                                            const {RuleNo} = diagnosisQueryResults[0]
-                                            console.log(RuleNo)
-                                                db.query(noChangeChecker, (errorChecker, changeQueryResults) => {
+                                            console.log(symptomsObject)
+                                            db.query(`SELECT *
+                                            FROM PEDTBDSS_new.MD_SYMPTOMSRULES
+                                            WHERE c_symp = ${symptomsObject.c_symp} AND 
+                                            EPTB_symp = ${symptomsObject.EPTB_symp} AND 
+                                            has_TBcontact = ${symptomsObject.has_TBcontact} AND
+                                            other_symp = ${symptomsObject.other_symp};`, (error7, symptomsRules) => {
 
-                                                    if (errorChecker) {
-                                                        res.status(500).json({ error: "Change Checker Failed" });
+                                                if (error7) {
+                                                    res.status(500).json({ error: error7 });
+                                                    return;
+                                                }
+
+                                                console.log(symptomsObject)
+
+                                                console.log("Symptoms Query Results", symptomsRules);
+
+                                                
+                                                const {presumptive} = symptomsRules[0]
+
+                                                inputObject.presumptive_tb = presumptive
+                                    
+                                                // All queries have been executed successfully
+                                                // res.status(200).json(diagnosisQueryResults);
+                                                console.log(presumptive)
+
+                                                db.query(`SELECT *
+                                                FROM PEDTBDSS_new.MD_SUSPECIONRULES
+                                                WHERE hiv = ${hivConcernObject.hiv} AND
+                                                plhiv = ${hivConcernObject.plhiv} AND 
+                                                has_TBcontact = ${hivConcernObject.has_TBcontact} AND
+                                                prevPTB_diagnosed =  ${hivConcernObject.prevPTB_diagnosed} AND 
+                                                first_diag = ${hivConcernObject.first_diag};`, (error8, suspicionRules) => {
+                
+                                                    if (error8) {
+                                                        res.status(500).json({ error: "Error fetching SUSPICION RULES data" });
                                                         return;
                                                     }
-
-                                                    console.log("CHANGE CHECKER - CHECK")
-
-                                                    if(changeQueryResults.length !== 0){
-                                                    const prevRule = changeQueryResults[0].RuleNo
-
-
-                                                    if(prevRule === RuleNo && prevRule != null){
-                                                        res.status(200).json({sameCase: 1})
-                                                        return;
+                
+                                                    console.log(symptomsObject)
+                
+                                                    console.log("Suspicion Query Results", suspicionRules);
+                
                                                     
-                                                    }
-                                                    }   
-                                                    
+                                                    const {high_sus, need_hiv} = suspicionRules[0]
+                
+                                                    inputObject.high_sus = high_sus;
 
-                                                    try{
-                                                            
-                                                            console.log("TEST" + RuleNo)
-                                                            // All queries have been executed successfully
-                                                            // res.status(200).json(diagnosisQueryResults);
-                                                            console.log("Rule Number: " + RuleNo)
-                                                            console.log(dataIdObject)
-                                                            db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, userNo, need_hiv, healthassess_id, xray_id, mtb_id, tst_id, igra_id) 
-                                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-                                                            [new Date().toISOString().split('T')[0], caseid, RuleNo, userid, need_hiv, dataIdObject.healthassess_id, dataIdObject.xray_id, dataIdObject.mtb_id, dataIdObject.tst_id, dataIdObject.igra_id], 
-                                                            (error8, InsertResult) => {
-                                                                if (error8) {
-                                                                    res.status(500).json({ error: "Did Not Add Data" });
+                                                    db.query(`SELECT *
+                                                    FROM PEDTBDSS_new.MD_DIAGNOSISRULES
+                                                    WHERE presumptive_tb = ${inputObject.presumptive_tb} AND 
+                                                    high_sus = ${inputObject.high_sus} AND
+                                                    less_five = ${inputObject.less_five} AND 
+                                                    has_TBcontact = ${inputObject.has_TBcontact} AND
+                                                    first_diag = ${inputObject.first_diag} AND
+                                                    xray = ${inputObject.xray} AND
+                                                    MTB_positive = ${inputObject.MTB_positive} AND 
+                                                    RIF_resistant = ${inputObject.RIF_resistant} AND
+                                                    tst = ${inputObject.tst} AND
+                                                    igra = ${inputObject.igra} AND
+                                                    EPTBpositive = ${inputObject.EPTB_symp} ;`, (error7, diagnosisQueryResults) => {
+
+                                                        if (error7) {
+                                                            res.status(500).json({ error: "Error fetching diagnosis data" });
+                                                            return;
+                                                        }
+
+                                                        console.log(inputObject)
+
+                                                        console.log("Diagnosis Query Results:", diagnosisQueryResults);
+
+                                                        const {RuleNo} = diagnosisQueryResults[0]
+                                                        console.log(RuleNo)
+                                                            db.query(noChangeChecker, (errorChecker, changeQueryResults) => {
+
+                                                                if (errorChecker) {
+                                                                    res.status(500).json({ error: "Change Checker Failed" });
                                                                     return;
                                                                 }
-                                                                else{
-                                                                    
-                                                                    res.status(200).json(InsertResult)
+
+                                                                console.log("CHANGE CHECKER - CHECK")
+
+                                                                if(changeQueryResults.length !== 0){
+                                                                const prevRule = changeQueryResults[0].RuleNo
+
+
+                                                                if(prevRule === RuleNo && prevRule != null){
+                                                                    res.status(200).json({sameCase: 1})
+                                                                    return;
+                                                                
                                                                 }
-                                                            })
-                        
-                                                            }
-                                                            catch(e){
-                                                                res.status(500).json({e: "query is empty"})
-                                                                console.log("Query is empty")
-                                                            }
+                                                                }   
+                                                                
+
+                                                                try{
+                                                                        
+                                                                        console.log("TEST" + RuleNo)
+                                                                        // All queries have been executed successfully
+                                                                        // res.status(200).json(diagnosisQueryResults);
+                                                                        console.log("Rule Number: " + RuleNo)
+                                                                        console.log(dataIdObject)
+                                                                        db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, userNo, need_hiv, healthassess_id, xray_id, mtb_id, tst_id, igra_id) 
+                                                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                                        [new Date().toISOString().split('T')[0], caseid, RuleNo, userid, need_hiv, dataIdObject.healthassess_id, dataIdObject.xray_id, dataIdObject.mtb_id, dataIdObject.tst_id, dataIdObject.igra_id], 
+                                                                        (error8, InsertResult) => {
+                                                                            if (error8) {
+                                                                                res.status(500).json({ error: "Did Not Add Data" });
+                                                                                return;
+                                                                            }
+                                                                            else{
+                                                                                
+                                                                                res.status(200).json(InsertResult)
+                                                                            }
+                                                                        })
+                                    
+                                                                        }
+                                                                        catch(e){
+                                                                            res.status(500).json({e: "query is empty"})
+                                                                            console.log("Query is empty")
+                                                                        }
+
+                                                        });
+
+                                                    });
+                                                    
+                
+                                                });
+                                                
 
                                             });
 
-                                        });
                                         
-    
+
+                                            
+                                        });
                                     });
-                                    
 
-                                });
+                                }) //AGE END
 
-                            
+                    }); //DST END
 
-                                
-                            });
-                        });
-
-                    })
                     });
 
                  })
