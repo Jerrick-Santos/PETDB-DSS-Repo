@@ -460,34 +460,6 @@ module.exports = (db) => {
 
 
     //ADMIN ROUTES
-    //create a BHC
-    router.post('/newbhc', (req, res) => {
-        const q = "INSERT INTO MD_BARANGAYS (`BGYName`, `BGYOperatingHours`, `BGYContactNumber`, `BGYEmailAddress`, `BGYUnitNo`, `BGYStreet`, `BGYBarangay`, `BGYCity`, `BGYRegion`, `BGYProvince`, `BGYZipCode`, `XCoord`, `YCoord`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-        const values = [
-            req.body.BGYName,
-            req.body.BGYOperatingHours,
-            req.body.BGYContactNumber,
-            req.body.BGYEmailAddress,
-            req.body.BGYUnitNo,
-            req.body.BGYStreet,
-            req.body.BGYBarangay,
-            req.body.BGYCity,
-            req.body.BGYRegion,
-            req.body.BGYRProvince,
-            req.body.BGYZipCode,
-            req.body.XCoord,
-            req.body.YCoord
-        ]
-
-        db.query(q, values, (err, data) => {
-            if(err) {
-                console.log("Error inserting into MD_BARANGAY:", err);
-                return res.json(err)
-            }
-            console.log("Successfully inserted into MD_BARANGAY:", data);
-            return res.json(data)
-        });
-    })
 
     //create a new health institution
     router.post('/newhi', (req, res) => {
