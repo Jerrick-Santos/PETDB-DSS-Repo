@@ -38,7 +38,7 @@ const LaboratoryTest = () => {
   const [tstData, setTstData] = useState([]);
   const [mtbData, setMtbData] = useState([]);
   const [igraData, setIgraData] = useState([]);
-
+  const [dstData, setDstData] = useState([]);
   const [testAdded, setTestAdded] = useState(false);
 
   const [activeTab, setActiveTab] = useState('xray'); 
@@ -81,6 +81,15 @@ const LaboratoryTest = () => {
       console.error('Error fetchingdata:', error);
     });
 
+    axios.get(`http://localhost:4000/api/testresults/${caseNum}/9`)
+    .then((response) => {
+      setDstData(response.data)
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the request
+      console.error('Error fetchingdata:', error);
+    });
+
     axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
     .then(res => {
       console.log(res);
@@ -97,6 +106,7 @@ const LaboratoryTest = () => {
   const [activePage2, setActivePage2] = useState(1);
   const [activePage3, setActivePage3] = useState(1);
   const [activePage4, setActivePage4] = useState(1); // Active page number
+  const [activePage5, setActivePage5] = useState(1); // Active page number
   const itemsPerPage = 5; // Number of items per page
 
   // Function to handle page change
@@ -116,16 +126,22 @@ const LaboratoryTest = () => {
     setActivePage4(pageNumber);
   };
 
+  const handlePageChange5 = (pageNumber) => {
+    setActivePage5(pageNumber);
+  };
+
   // Calculate the index range for the current page
   const startIndex1 = (activePage1 - 1) * itemsPerPage;
   const startIndex2 = (activePage2 - 1) * itemsPerPage;
   const startIndex3 = (activePage3 - 1) * itemsPerPage;
   const startIndex4 = (activePage4 - 1) * itemsPerPage;
+  const startIndex5 = (activePage5 - 1) * itemsPerPage;
 
   const endIndex1 = startIndex1 + itemsPerPage;
   const endIndex2 = startIndex2 + itemsPerPage;
   const endIndex3 = startIndex3 + itemsPerPage;
   const endIndex4 = startIndex4 + itemsPerPage;
+  const endIndex5 = startIndex5 + itemsPerPage;
 
   
   const isTabActive = (tabName) => activeTab === tabName;
@@ -236,6 +252,12 @@ const LaboratoryTest = () => {
           >
             IGRA Tests
           </Button>
+          <Button
+            variant={isTabActive('dst') ? 'primary' : 'light'}
+            onClick={() => setActiveTab('dst')}
+          >
+            DST Tests
+          </Button>
         </ButtonGroup>
       </Col>
     </Row>
@@ -339,15 +361,15 @@ const LaboratoryTest = () => {
               
                   
                   <Col className="d-flex justify-content-end">
-                    {mtbData.length > 0 ? (
+                    {xrayData.length > 0 ? (
                        <Pagination className="mt-3 justify-content-center">
-                       <Pagination.Prev onClick={() => handlePageChange2(activePage2 - 1)} disabled={activePage2 === 1} />
-                       {Array.from({ length: Math.ceil(mtbData.length / itemsPerPage) }).map((_, index) => (
-                         <Pagination.Item key={index} active={index + 1 === activePage2} onClick={() => handlePageChange2(index + 1)}>
+                       <Pagination.Prev onClick={() => handlePageChange1(activePage1 - 1)} disabled={activePage1 === 1} />
+                       {Array.from({ length: Math.ceil(xrayData.length / itemsPerPage) }).map((_, index) => (
+                         <Pagination.Item key={index} active={index + 1 === activePage1} onClick={() => handlePageChange1(index + 1)}>
                            {index + 1}
                          </Pagination.Item>
                        ))}
-                       <Pagination.Next onClick={() => handlePageChange2(activePage2 + 1)} disabled={activePage2 === Math.ceil(mtbData.length / itemsPerPage)} />
+                       <Pagination.Next onClick={() => handlePageChange1(activePage1 + 1)} disabled={activePage1 === Math.ceil(xrayData.length / itemsPerPage)} />
                      </Pagination>
                     ) : null}
                   </Col>
@@ -462,15 +484,15 @@ const LaboratoryTest = () => {
               
                   
                   <Col className="d-flex justify-content-end">
-                    {mtbData.length > 0 ? (
-                       <Pagination>
-                       <Pagination.Prev onClick={() => handlePageChange1(activePage1 - 1)} disabled={activePage1 === 1} />
-                       {Array.from({ length: Math.ceil(xrayData.length / itemsPerPage) }).map((_, index) => (
-                         <Pagination.Item key={index} active={index + 1 === activePage1} onClick={() => handlePageChange1(index + 1)}>
+                  {mtbData.length > 0 ? (
+                       <Pagination className="mt-3 justify-content-center">
+                       <Pagination.Prev onClick={() => handlePageChange2(activePage2 - 1)} disabled={activePage2 === 1} />
+                       {Array.from({ length: Math.ceil(mtbData.length / itemsPerPage) }).map((_, index) => (
+                         <Pagination.Item key={index} active={index + 1 === activePage2} onClick={() => handlePageChange2(index + 1)}>
                            {index + 1}
                          </Pagination.Item>
                        ))}
-                       <Pagination.Next onClick={() => handlePageChange1(activePage1 + 1)} disabled={activePage1 === Math.ceil(xrayData.length / itemsPerPage)} />
+                       <Pagination.Next onClick={() => handlePageChange2(activePage2 + 1)} disabled={activePage2 === Math.ceil(mtbData.length / itemsPerPage)} />
                      </Pagination>
                     ) : null}
                   </Col>
@@ -584,13 +606,13 @@ const LaboratoryTest = () => {
                   <Col className="d-flex justify-content-end">
                     {tstData.length > 0 ? (
                        <Pagination>
-                       <Pagination.Prev onClick={() => handlePageChange1(activePage1 - 1)} disabled={activePage1 === 1} />
-                       {Array.from({ length: Math.ceil(xrayData.length / itemsPerPage) }).map((_, index) => (
-                         <Pagination.Item key={index} active={index + 1 === activePage1} onClick={() => handlePageChange1(index + 1)}>
+                       <Pagination.Prev onClick={() => handlePageChange3(activePage3 - 1)} disabled={activePage3 === 1} />
+                       {Array.from({ length: Math.ceil(tstData.length / itemsPerPage) }).map((_, index) => (
+                         <Pagination.Item key={index} active={index + 1 === activePage3} onClick={() => handlePageChange3(index + 1)}>
                            {index + 1}
                          </Pagination.Item>
                        ))}
-                       <Pagination.Next onClick={() => handlePageChange1(activePage1 + 1)} disabled={activePage1 === Math.ceil(xrayData.length / itemsPerPage)} />
+                       <Pagination.Next onClick={() => handlePageChange3(activePage3 + 1)} disabled={activePage3 === Math.ceil(tstData.length / itemsPerPage)} />
                      </Pagination>
                     ) : null}
                   </Col>
@@ -712,6 +734,126 @@ const LaboratoryTest = () => {
                          ))}
                          <Pagination.Next onClick={() => handlePageChange4(activePage4 + 1)} disabled={activePage4 === Math.ceil(igraData.length / itemsPerPage)} />
                        </Pagination>
+                    ) : null}
+                  </Col>
+                </Row>
+      </Col>
+     
+      </Row>
+     
+</>
+    )}
+
+
+{activeTab === 'dst' && (
+      <>
+      <Row className="justify-content-center">
+      <Col lg="10">
+      <p> <strong> DST Tests </strong> </p>
+      {dstData.length > 0 ? (
+        <Card className="mb-4">
+          <Card.Body>
+          <table className="table caption-top bg-white rounded mt-2 mb-0">
+                          <thead>
+                            <tr>
+                              <th scope="col">Test Location</th>
+                              <th scope="col">Date Tested</th>
+                              <th scope="col">Ref. #</th>
+                              <th scope="col">Result</th>
+                              <th scope="col">Validity</th>
+                              <th scope="col"></th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+            
+            {dstData.slice(startIndex1, endIndex1).map((dst, index) => (
+              <>
+               <tr key={index}>
+                                  <td>
+                                  {dst.HIName} 
+                                  </td>
+                                  <td>{new Date(dst.issue_date).toLocaleDateString()}</td>
+                                  <td>
+                                  {dst.test_refno}
+                                  </td>
+                                  <td>{dst.TestValue} </td>
+                                  <td> {dst.validity === 1 ? (
+                                      <Badge
+                                        style={{ fontSize: 16 }}
+                                        bg="success"
+                                      >
+                                        {" "}
+                                        VALID{" "}
+                                      </Badge>
+                                    ) : dst.validity === 0 ? (
+                                      <Badge
+                                        style={{ fontSize: 16 }}
+                                        bg="danger"
+                                      >
+                                        {" "}
+                                        OUTDATED{" "}
+                                      </Badge>
+                                    ) : null}</td>
+                                    <td> <UpdateXray DGResultsNo={dst.DGResultsNo} HINo={dst.HINo} issue_date={dst.issue_date} test_refno={dst.test_refno} TestValue={dst.TestValue} validity={dst.validity}/>
+                                        <DeleteTest DGResultsNo={dst.DGResultsNo}/></td>
+                                </tr>
+               
+                   </>
+                    ))}
+           </tbody>
+                        </table>
+
+
+          
+          </Card.Body>
+        </Card>
+        ) : (
+                    <Card className="mt-4 mb-4 text-center">
+                      <Row className="mt-4 justify-content-center">
+                        <Col>
+                          <img
+                            src={noresult}
+                            alt="No Results"
+                            style={{ width: "120px", height: "120px" }}
+                          />
+                        </Col>
+                      </Row>
+
+                      <Card.Body>
+                        <h1 style={{ fontSize: "20px", color: "#808080" }}>
+                          {" "}
+                          No Tests Found{" "}
+                        </h1>
+                      </Card.Body>
+                    </Card>
+                  )}
+        <Row className="mb-4">
+                    
+                    {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
+              
+                      <Col>
+                      {caseData.case_status === 'O' ? (
+                                <>
+                                <AddXrayModal caseNum={caseNum} onTestAdded={() => setTestAdded(!testAdded)} />
+                                </>
+                              ) : (
+                               null
+                              )}
+                      </Col>
+              
+                  
+                  <Col className="d-flex justify-content-end">
+                    {dstData.length > 0 ? (
+                       <Pagination className="mt-3 justify-content-center">
+                       <Pagination.Prev onClick={() => handlePageChange5(activePage5 - 1)} disabled={activePage5 === 1} />
+                       {Array.from({ length: Math.ceil(dstData.length / itemsPerPage) }).map((_, index) => (
+                         <Pagination.Item key={index} active={index + 1 === activePage5} onClick={() => handlePageChange5(index + 1)}>
+                           {index + 1}
+                         </Pagination.Item>
+                       ))}
+                       <Pagination.Next onClick={() => handlePageChange5(activePage5 + 1)} disabled={activePage5 === Math.ceil(dstData.length / itemsPerPage)} />
+                     </Pagination>
                     ) : null}
                   </Col>
                 </Row>

@@ -3,13 +3,32 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import NavBar from './components/NavBar';
-
+import lock from './assets/lock.png';
+import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 // Define your access denied component
 const AccessDenied = () => (
-  <div>
-    <p>You are NOT authorized to access this page.</p>
-    {/* Optionally, you can provide a link back to the login page */}
-    <Link to="/">Go back to login</Link>
+
+  <div className="justify-content-center">
+     <Card className="mt-4 mb-4 text-center">
+                      <Row className="mt-4 justify-content-center">
+                        <Col>
+                          <img
+                            src={lock}
+                            alt="No Results"
+                            style={{ width: "120px", height: "120px" }}
+                          />
+                        </Col>
+                      </Row>
+
+                      <Card.Body>
+                        <h1 style={{ fontSize: "20px", color: "#808080" }}>
+                          {" "}
+                          You are NOT authorized to access this page.{" "}
+                        </h1>
+                        <Link to="/">Go back to login</Link>
+                      </Card.Body>
+                    </Card>
+   
   </div>
 );
 
@@ -54,7 +73,11 @@ const withAccessControl = (WrappedComponent, allowedUserTypes) => {
 
     if (isLoading) {
       // You can add a loading indicator here if needed
-      return <NavBar/>;
+      return <><Navbar style={{ backgroundColor: '#0077B6' }}>
+      <Navbar.Brand className="text-light ms-4">PEDIA-TB DSS</Navbar.Brand>
+      
+      
+    </Navbar></>;
     }
 
     // Render the WrappedComponent if the user has the correct user type
