@@ -533,8 +533,18 @@ module.exports = (db) => {
         })
     })
 
+    function interpretRIF(RIF_result){
+        const MTB_RIF = RIF_result.split('-');
+    
+        const RIF = MTB_RIF[1]; 
+
+        return RIF
+
+    }
+
     router.post('/newMTBresults', (req, res) => {
-        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        const insertDrugResistance = "INSERT INTO TD_DRUGRESISTANCE (`CaseNo`, `rif`, `drug1`, `drug2`, `drug3`, `DGResultsNo`) VALUES (?, ?, ?, ?, ?, ?)";
+        const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         const testresultsValues = [
             req.body.CaseNo,
             2,
@@ -543,16 +553,38 @@ module.exports = (db) => {
             req.body.HINo,
             req.body.issue_date,
             req.body.test_refno
-        ]
-        db.query(testresultsQuery, testresultsValues, (err, data) => {
-            if(err) {
+        ];
+    
+        db.query(testresultsQuery, testresultsValues, (err, result) => {
+            if (err) {
                 console.log("Error inserting into TD_DIAGNOSTICRESULTS:", err);
-                return res.json(err)
+                return res.json(err);
             }
-            console.log("Successfully inserted into TD_DIAGNOSTICRESULTS:", data);
-            return res.json(data)
-        })
-    })
+    
+            console.log("Successfully inserted into TD_DIAGNOSTICRESULTS:", result);
+    
+            // Get the auto-incremented primary key (DGResultsNo)
+            const DGResultsNo = result.insertId;
+    
+            const RIFresult = interpretRIF(req.body.TestValue);
+    
+            if (RIFresult === "R" || RIFresult === "S") {
+                db.query(insertDrugResistance, [req.body.CaseNo, RIFresult, "NA", "NA", "NA", DGResultsNo], (err1, result1) => {
+                    if (err1) {
+                        console.log("Error inserting into TD_DRUGRESISTANCE:", err1);
+                        return res.json(err1);
+                    }
+    
+                    console.log("Successfully inserted into TD_DRUGRESISTANCE:", result1);
+    
+                    return res.json(result); // Return the result of the first query
+                });
+            } else {
+                return res.json(result); // Return the result of the first query
+            }
+        });
+    });
+    
 
     router.post('/newXrayresults', (req, res) => {
         const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
