@@ -19,6 +19,43 @@ function UpdateUser(props) {
     UserNo: props.userNo,
   });
 
+  const [IDnoError, setIDError] = useState('');
+  const [firstNameError, setFirstError] = useState('');
+  const [middleNameError, setMiddleError] = useState('');
+  const [lastNameError, setLastError] = useState('');
+
+  const validate = () => {
+    let IDnoError = '';
+    if (!formValues.IDNo) {
+      IDnoError = 'Required';
+    }
+    setIDError(IDnoError);
+
+    let firstNameError = '';
+    if (!formValues.first_name) {
+      firstNameError = 'Required';
+    }
+    setFirstError(firstNameError);
+
+    let middleNameError = '';
+    if (!formValues.middle_name) {
+      middleNameError = 'Required';
+    }
+    setMiddleError(middleNameError); 
+
+    let lastNameError = '';
+    if (!formValues.last_name) {
+      lastNameError = 'Required';
+    }
+    setLastError(lastNameError); 
+
+    if (IDnoError || firstNameError || middleNameError || lastNameError) {
+      return false;
+    }
+
+    return true;
+  }  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
@@ -26,6 +63,12 @@ function UpdateUser(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const isValid = validate();
+    if(!isValid) {
+        return;
+    }
+
     try {
       await axios.post("http://localhost:4000/api/updateuser", formValues);
     } catch (err) {
@@ -60,6 +103,9 @@ function UpdateUser(props) {
                   value={formValues.IDNo}
                   onChange={handleChange}
                 />
+                    {IDnoError && (
+                        <p style={{color: 'red'}}>{IDnoError}</p>  
+                    )}
               </div>
             </Row>
 
@@ -73,6 +119,9 @@ function UpdateUser(props) {
                   value={formValues.first_name}
                   onChange={handleChange}
                 />
+                    {firstNameError && (
+                        <p style={{color: 'red'}}>{firstNameError}</p>  
+                    )}
               </div>
             </Row>
 
@@ -86,6 +135,9 @@ function UpdateUser(props) {
                   value={formValues.middle_name}
                   onChange={handleChange}
                 />
+                    {middleNameError && (
+                        <p style={{color: 'red'}}>{middleNameError}</p>  
+                    )}
               </div>
             </Row>
 
@@ -99,6 +151,9 @@ function UpdateUser(props) {
                   value={formValues.last_name}
                   onChange={handleChange}
                 />
+                    {lastNameError && (
+                        <p style={{color: 'red'}}>{lastNameError}</p>  
+                    )}
               </div>
             </Row>
           </form>
