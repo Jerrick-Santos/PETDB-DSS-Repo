@@ -21,6 +21,7 @@ const TestRoute = () => {
 
       // Handle the response data
       console.log('Response:', response.data);
+      console.log('userid:', response.data.userNo);
     } catch (error) {
       console.error('Error:', error);
     }
