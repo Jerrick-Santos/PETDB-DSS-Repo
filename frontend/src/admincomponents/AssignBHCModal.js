@@ -36,6 +36,22 @@ function AssignBHCModal(props) {
       HINo:''
   });
 
+  const [hiNOError, setHIError] = useState('');
+
+  const validate = () => {
+    let hiNOError = '';
+    if (!formValues.HINo) {
+      hiNOError = 'Required';
+    }
+    setHIError(hiNOError); 
+
+    if (hiNOError) {
+      return false;
+    }
+
+    return true;
+  }
+
 const handleChange = (e) => {
     const {name, value} = e.target;
     setFormValues(prev=>({...prev, [name]: value}));
@@ -43,6 +59,12 @@ const handleChange = (e) => {
 
 const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const isValid = validate();
+    if(!isValid) {
+        return;
+    }
+
     try{
         await axios.post("http://localhost:4000/api/assignhi", formValues)
     }catch(err){
@@ -137,12 +159,15 @@ const [searchTerm, setSearchTerm] = useState('');
             </Row>
                    </>
                     ))}
-            
+
             
             
             
           </Card.Body>
         </Card>
+        {hiNOError && (
+                        <p style={{color: 'red'}}>{hiNOError}</p>  
+                    )}
         <Pagination className="mt-3 justify-content-center">
             <Pagination.Prev onClick={() => handlePageChange(activePage - 1)} disabled={activePage === 1} />
             {Array.from({ length: Math.ceil(hiData.length / itemsPerPage) }).map((_, index) => (
