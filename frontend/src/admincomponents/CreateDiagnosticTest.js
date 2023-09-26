@@ -19,6 +19,29 @@ function CreateDiagnosticTest() {
         isActive:'1'
     });
 
+    const [testNameError, setTestNameError] = useState('');
+    const [validityError, setValidError] = useState('');
+
+    const validate = () => {
+        let testNameError = '';
+        if (!formValues.DGTestName) {
+            testNameError = 'Required';
+        }
+        setTestNameError(testNameError);
+
+        let validityError = '';
+        if (!formValues.DGValidityMonths) {
+            validityError = 'Required';
+        }
+        setValidError(validityError);
+    
+        if (testNameError || validityError) {
+          return false;
+        }
+    
+        return true;
+    }
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormValues(prev=>({...prev, [name]: value}));
@@ -26,6 +49,12 @@ function CreateDiagnosticTest() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const isValid = validate();
+        if(!isValid) {
+            return;
+        }
+
         try{
             await axios.post("http://localhost:4000/api/createdt", formValues)
         }catch(err){
@@ -50,10 +79,16 @@ function CreateDiagnosticTest() {
                 <div className="form-group col-md-8">
                     <label for="inputFirstName">Diagnostic Test Name</label>
                     <input type="text" class="form-control" name="DGTestName" value={formValues.DGTestName} onChange={handleChange} placeholder="Test Name"/>
+                    {testNameError && (
+                        <p style={{color: 'red'}}>{testNameError}</p>  
+                    )}
                 </div>
                 <div className="form-group col-md-4">
                     <label for="inputFirstName">Validity</label>
                     <input type="number" class="form-control" name="DGValidityMonths" value={formValues.DGValidityMonths} onChange={handleChange} placeholder="months"/>
+                    {validityError && (
+                        <p style={{color: 'red'}}>{validityError}</p>  
+                    )}
                 </div>
             </Row>
 
