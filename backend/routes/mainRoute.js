@@ -155,14 +155,19 @@ module.exports = (db) => {
         console.log(id)
         db.query(`
         SELECT
+			
             ptc.CaseNo, 
             ptc.case_refno,
             sr.SRDescription,
             ptc.start_date,
             ptc.end_date,
-            ptc.case_status
+            ptc.case_status,
+            p.PRESref,
+            l.LATENTref
         FROM PEDTBDSS_new.TD_PTCASE ptc
         JOIN PEDTBDSS_new.REF_STATUSREASONS sr ON ptc.SRNo = sr.SRNo
+        LEFT JOIN PEDTBDSS_new.ML_PRESUMPTIVE p ON p.CaseNo = ptc.CaseNo
+        LEFT JOIN PEDTBDSS_new.ML_LATENT l ON l.CaseNo = ptc.CaseNo
         WHERE ptc.PatientNo = ${id}
         ORDER BY ptc.start_date DESC;
     `, (err, results) => {
@@ -262,7 +267,7 @@ module.exports = (db) => {
             req.body.other_dd_interacts,
             req.body.other_comorbid,
             req.body.assessment_date,
-            1,
+            req.body.userNo,
         ]
         db.query(assessQuery, assessQueryValues, (err, data) => {
             if(err) {
@@ -1552,26 +1557,27 @@ router.get('/chartyear', (req, res) => {
   
 
 router.post('/addtreatment', (req, res) => {
-    const q = "INSERT INTO TD_TREATMENTS(`CaseNo`, `Medicine`, `Dosage`, `Frequency`, `Period`) VALUES (?, ?, ?, ?, ?)"
+    const q = "INSERT INTO TD_TREATMENTS(`CaseNo`, `Medicine`, `Dosage`, `Frequency`, `StartDate`, `EndDate`) VALUES (?, ?, ?, ?, ?, ?)"
     const values = [
         req.body.CaseNo,
         req.body.Medicine,
         req.body.Dosage,
         req.body.Frequency,
-        req.body.Period,
+        req.body.StartDate,
+        req.body.EndDate
     ]
 
     db.query(q, values, (err, data) => {
         if(err) {
-            console.log("Error inserting into MD_DGTESTS:", err);
+            console.log("Error inserting into TD_TREATMENTS:", err);
             return res.json(err)
         }
-        console.log("Successfully inserted into MD_DGTESTS:", data);
+        console.log("Successfully inserted into TD_TREATMENTS:", data);
         return res.json(data)
     });
 })
 
-router.get('/users/:id', (req, res) => {
+router.get('/allusers/:id', (req, res) => {
     const id = req.params.id;
     db.query(`
     
@@ -1586,6 +1592,27 @@ router.get('/users/:id', (req, res) => {
 FROM PEDTBDSS_new.MD_USERS u
 WHERE u.user_type = "BHW" AND u.BGYNo = ${id}
 ORDER BY u.last_name, u.first_name, u.middle_name ;
+
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+router.get('/user/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    
+    SELECT 
+    u.passwordChanged
+FROM PEDTBDSS_new.MD_USERS u
+WHERE u.userNo = ${id}
 
 `, (err, results) => {
     if (err) {
@@ -1961,7 +1988,7 @@ router.post('/updatepw/:id', (req, res) => {
     ]
 
     db.query(`UPDATE 	MD_USERS
-                SET		pw = ?
+                SET		pw = ?, passwordChanged=1
                 WHERE	UserNo = ${id};
             `, values, (err, data) => {
         if(err) {

@@ -37,7 +37,7 @@ const AddPatient = () => {
     const [showConsentModal, setShowConsentModal] = useState(true);
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-
+  const [userNum, setUserNum] = useState(null);
     const handleCloseConsentModal = () => {
         setShowConsentModal(false);
     };
@@ -55,6 +55,32 @@ const AddPatient = () => {
             console.error('Error fetching data:', error);
           });
         
+          const fetchData = async () => {
+            try {
+              // Retrieve the JWT token from local storage
+              const token = localStorage.getItem('token');
+              if (!token) {
+                console.error('Token not found in local storage.');
+                return;
+              }
+        
+              // Define headers with the JWT token
+              const headers = {
+                Authorization: `Bearer ${token}`,
+              };
+        
+              // Make an Axios GET request to the /test route with the token in headers
+              const response = await axios.get('http://localhost:4000/api/tokencontent', { headers });
+        
+              // Handle the response data
+              console.log('Response:', response.data);
+              setUserNum(response.data.userNo);
+            } catch (error) {
+              console.error('Error:', error);
+            }
+          };
+        
+          fetchData(); // Call the fetchData function when the component mounts
     
     }, []);
 
@@ -62,6 +88,14 @@ const AddPatient = () => {
 
     const handleRegionChange = (e) => {
         const selectedRegion = e.target.value;
+
+        setPatient((prev) => ({
+            ...prev,
+            per_province: "",
+            per_city: "",
+            per_barangay: ""
+          }));
+
         axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
             .then((response) => {
                 setProvinceData(response.data);
@@ -75,6 +109,11 @@ const AddPatient = () => {
 
     const handleProvinceChange = (e) => {
         const selectedProvince = e.target.value;
+        setPatient((prev) => ({
+            ...prev,
+            per_city: "",
+            per_barangay: ""
+          }));
         axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
             .then((response) => {
                 setCityData(response.data);
@@ -88,6 +127,10 @@ const AddPatient = () => {
 
     const handleCityChange = (e) => {
         const selectedCity = e.target.value;
+        setPatient((prev) => ({
+            ...prev,
+            per_barangay: ""
+          }));
         axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
         .then((response) => {
             setBarangayData(response.data);
@@ -118,6 +161,12 @@ const AddPatient = () => {
     const handleCurrRegionChange = (e) => {
         // Fetch and update province data based on the selected region if needed
         const selectedRegion = e.target.value;
+        setPatient((prev) => ({
+            ...prev,
+            curr_province: "",
+            curr_city: "",
+            curr_barangay: ""
+          }));
         axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
             .then((response) => {
                 setCurrProvinceData(response.data);
@@ -132,6 +181,11 @@ const AddPatient = () => {
     const handleCurrProvinceChange = (e) => {
         // Fetch and update city data based on the selected province if needed
         const selectedProvince = e.target.value;
+        setPatient((prev) => ({
+            ...prev,
+            curr_city: "",
+            curr_barangay: ""
+          }));
         axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
             .then((response) => {
                 setCurrCityData(response.data);
@@ -146,6 +200,10 @@ const AddPatient = () => {
     const handleCurrCityChange = (e) => {
         // Fetch and update barangay data based on the selected city if needed
         const selectedCity = e.target.value;
+        setPatient((prev) => ({
+            ...prev,
+            curr_barangay: ""
+          }));
         axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
         .then((response) => {
             setCurrBarangayData(response.data);
@@ -198,7 +256,8 @@ const AddPatient = () => {
         e_birthdate: new Date().toISOString().split('T')[0],
         e_contactno: "N/A",
         e_email: "N/A",
-        case_refno: "",
+        userNo: userNum
+
     });
 
     const handleAutoFill = () => {
@@ -217,6 +276,30 @@ const AddPatient = () => {
         setIsCurrentAddressDisabled(!isCurrentAddressDisabled);
 
         if (!isAutoFillActive) {
+            axios.get(`http://localhost:4000/api/provinces/${per_region}`)
+          .then((response) => {
+              setCurrProvinceData(response.data);
+          })
+          .catch((error) => {
+              console.error('Error fetching provinces:', error);
+          });
+
+          axios.get(`http://localhost:4000/api/cities/${per_province}`)
+          .then((response) => {
+              setCurrCityData(response.data);
+          })
+          .catch((error) => {
+              console.error('Error fetching cities:', error);
+          });
+
+          axios.get(`http://localhost:4000/api/barangays/${per_city}`)
+            .then((response) => {
+                setCurrBarangayData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching barangays:', error);
+            });
+            
             setPatient(prev => ({
                 ...prev,
                 curr_houseno: per_houseno,
@@ -652,7 +735,7 @@ const AddPatient = () => {
 
                 <div class="form-group col-md-2">
                     <label for="inputPermProvince">Province</label>
-                    <select className="form-select" name="per_province" value={patient.per_province} onChange={(e)=>{
+                    <select className="form-select" name="per_province" disabled={patient.per_region === ""} value={patient.per_province} onChange={(e)=>{
                         handleChange(e);
                         handleProvinceChange(e);
                     }}>
@@ -674,7 +757,7 @@ const AddPatient = () => {
 
                 <div class="form-group col-md-2">
                     <label for="inputPermCity">City</label>
-                    <select className="form-select" name="per_city" value={patient.per_city} onChange={(e)=>{
+                    <select className="form-select" name="per_city" value={patient.per_city} disabled={patient.per_province === ""} onChange={(e)=>{
                         handleChange(e);
                         handleCityChange(e);
                     }}>
@@ -696,7 +779,7 @@ const AddPatient = () => {
 
                 <div class="form-group col-md-2">
                     <label for="inputPermBarangay">Barangay</label>
-                    <select className="form-select" name="per_barangay" value={patient.per_barangay} onChange={handleChange}>
+                    <select className="form-select" name="per_barangay" value={patient.per_barangay} disabled={patient.per_city === ""} onChange={handleChange}>
                         <option value="">Select</option>
                     
                     {barangayData.map((hi, index) => (
@@ -777,10 +860,10 @@ const AddPatient = () => {
 
                 <div class="form-group col-md-2">
                     <label for="inputCurrProvince">Province</label>
-                    <select className="form-select" name="curr_province" value={patient.curr_province} onChange={(e)=>{
+                    <select className="form-select" name="curr_province" value={patient.curr_province}  onChange={(e)=>{
                         handleChange(e);
                         handleCurrProvinceChange(e);
-                    }} disabled={isCurrentAddressDisabled}>
+                    }} disabled={isCurrentAddressDisabled || patient.curr_region === ""}>
                         <option value="">Select</option>
                     
                     {currProvinceData.map((hi, index) => (
@@ -802,7 +885,7 @@ const AddPatient = () => {
                     <select className="form-select" name="curr_city" value={patient.curr_city} onChange={(e)=>{
                         handleChange(e);
                         handleCurrCityChange(e);
-                    }} disabled={isCurrentAddressDisabled}>
+                    }} disabled={isCurrentAddressDisabled || patient.curr_province === ""}>
                         <option value="">Select</option>
                     
                     {currCityData.map((hi, index) => (
@@ -821,7 +904,7 @@ const AddPatient = () => {
 
                 <div class="form-group col-md-2">
                     <label for="inputCurrBarangay">Barangay</label>
-                    <select className="form-select" name="curr_barangay" value={patient.curr_barangay} onChange={handleChange} disabled={isCurrentAddressDisabled}>
+                    <select className="form-select" name="curr_barangay" value={patient.curr_barangay} onChange={handleChange} disabled={isCurrentAddressDisabled || patient.curr_city === ""}>
                         <option value="">Select</option>
                     
                     {currBarangayData.map((hi, index) => (

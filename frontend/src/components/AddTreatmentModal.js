@@ -23,7 +23,8 @@ function AddTreatmentModal(props) {
         Medicine:'',
         Dosage:'',
         Frequency:'',
-        Period:'',
+        StartDate: null,
+        EndDate: null
     });
 
     const handleChange = (e) => {
@@ -60,17 +61,25 @@ function AddTreatmentModal(props) {
                 </div>
                 <div className="form-group col-md-5">
                     <label for="inputFirstName">Dosage</label>
-                    <input type="number" class="form-control" name="Dosage" value={formValues.Dosage} onChange={handleChange} placeholder="dosage of medicine"/>
+                    <input type="text" class="form-control" name="Dosage" value={formValues.Dosage} onChange={handleChange} placeholder="dosage of medicine"/>
                 </div>
             </Row>
             <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-7">
+                <div className="form-group col-md-12">
                     <label for="inputFirstName">Frequency</label>
                     <input type="text" class="form-control" name="Frequency" value={formValues.Frequency} onChange={handleChange} placeholder="frequency of intake"/>
                 </div>
-                <div className="form-group col-md-5">
-                    <label for="inputFirstName">Period</label>
-                    <input type="number" class="form-control" name="Period" value={formValues.Period} onChange={handleChange} placeholder="months"/>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-12">
+                    <label for="inputFirstName">Date Started</label>
+                    <input type="date" class="form-control" name="StartDate" value={formValues.StartDate} onChange={handleChange} />
+                </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-12">
+                    <label for="inputFirstName">Date Ended</label>
+                    <input type="date" class="form-control" name="EndDate" value={formValues.EndDate} onChange={handleChange} />
                 </div>
             </Row>
 

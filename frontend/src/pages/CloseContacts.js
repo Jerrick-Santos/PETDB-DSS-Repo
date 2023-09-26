@@ -12,7 +12,9 @@ import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 import CaseHeader from '../components/CaseHeader';
-
+import test from "../assets/test.png";
+import diagnose from "../assets/diagnose.png";
+import similar from "../assets/similar.png";
 
 const CloseContacts = () => {
 
@@ -187,22 +189,22 @@ const CloseContacts = () => {
           </Link>
           <Link to={`/labtest/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+          <img src={test} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
           </button>
           </Link>
           <Link to={`/diagnosis/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
+          <img src={diagnose} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
           </button>
           </Link>
           <Link to={`/treatments/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatment History
           </button>
           </Link>
           <Link to={`/similarcases/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
+          <img src={similar} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
           </button>
           </Link>
           

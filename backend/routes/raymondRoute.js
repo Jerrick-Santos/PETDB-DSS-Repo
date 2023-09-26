@@ -172,11 +172,17 @@ module.exports = (db) => {
                     ptc.end_date,
                     ptc.presumptive_id,
                     ptc.case_status,
-                    ptc.PatientNo
+                    ptc.PatientNo,
+                    l.LATENTref,
+                    p.PRESref
                    FROM PEDTBDSS_new.TD_PTCASE ptc
                    JOIN PEDTBDSS_new.TD_PTINFORMATION pi ON ptc.PatientNo = pi.PatientNo
+                   LEFT JOIN PEDTBDSS_new.ML_PRESUMPTIVE p ON p.CaseNo = ptc.CaseNo
+                   LEFT JOIN PEDTBDSS_new.ML_LATENT l ON l.CaseNo = ptc.CaseNo
                    WHERE ptc.CaseNo=${req.params.CaseNo}`
-        
+                 
+			
+                  
         db.query(q, (err, result) => {
             if (err) {console.error(err);}
             else {

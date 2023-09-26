@@ -7,20 +7,14 @@ import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
-import add from '../assets/add.png';
 import { Link, useParams } from 'react-router-dom';
-import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
 import AddXrayModal from '../components/AddXrayModal';
 import AddIGRAModal from '../components/AddIGRAModal';
-import AddHIVTestModal from '../components/AddTSTModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
-import AssessmentSummaryModal from '../components/AssessmentSummaryModal';
-import ShowDiagnosisModal from '../components/ShowDiagnosisModal';
 import AddTSTModal from '../components/AddTSTModal';
 import CaseHeader from '../components/CaseHeader'
 import Pagination from 'react-bootstrap/Pagination';
-import bin from '../assets/bin.png'
 import DeleteTest from '../components/DeleteTest';
 import UpdateIGRA from '../components/UpdateIGRA';
 import UpdateTST from '../components/UpdateTST';
@@ -29,6 +23,9 @@ import UpdateXray from '../components/UpdateXray';
 import Badge from "react-bootstrap/Badge";
 import noresult from "../assets/noresult.png";
 import Spinner from "react-bootstrap/Spinner";
+import test from "../assets/test.png";
+import diagnose from "../assets/diagnose.png";
+import similar from "../assets/similar.png";
 
 const LaboratoryTest = () => {
 
@@ -131,6 +128,7 @@ const LaboratoryTest = () => {
   const endIndex4 = startIndex4 + itemsPerPage;
 
   
+  const isTabActive = (tabName) => activeTab === tabName;
   return (
     <div>
     <NavBar/>
@@ -152,21 +150,21 @@ const LaboratoryTest = () => {
           </button>
           </Link>
           <button className="btn ms-1 " style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+          <img src={test} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
           </button>
           <Link to={`/diagnosis/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
+          <img src={diagnose} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
           </button>
           </Link>
           <Link to={`/treatments/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatment History
           </button>
           </Link>
           <Link to={`/similarcases/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
+          <img src={similar} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
           </button>
           </Link>
           
@@ -204,8 +202,9 @@ const LaboratoryTest = () => {
                 </div>
               ) : (
                 <>
-  <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
-                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}/>
+   <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
+                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
+                  PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
 
     <hr />
 
@@ -213,10 +212,30 @@ const LaboratoryTest = () => {
     <Row className="mb-3">
       <Col className="text-center">
         <ButtonGroup>
-          <Button variant="light" onClick={() => setActiveTab('xray')}>XRay Tests</Button>
-          <Button variant="light" onClick={() => setActiveTab('mtb')}>MTB/RIF Tests</Button>
-          <Button variant="light" onClick={() => setActiveTab('tst')}>TST Tests</Button>
-          <Button variant="light" onClick={() => setActiveTab('igra')}>IGRA Tests</Button>
+          <Button
+            variant={isTabActive('xray') ? 'primary' : 'light'}
+            onClick={() => setActiveTab('xray')}
+          >
+            XRay Tests
+          </Button>
+          <Button
+            variant={isTabActive('mtb') ? 'primary' : 'light'}
+            onClick={() => setActiveTab('mtb')}
+          >
+            MTB/RIF Tests
+          </Button>
+          <Button
+            variant={isTabActive('tst') ? 'primary' : 'light'}
+            onClick={() => setActiveTab('tst')}
+          >
+            TST Tests
+          </Button>
+          <Button
+            variant={isTabActive('igra') ? 'primary' : 'light'}
+            onClick={() => setActiveTab('igra')}
+          >
+            IGRA Tests
+          </Button>
         </ButtonGroup>
       </Col>
     </Row>
@@ -299,7 +318,7 @@ const LaboratoryTest = () => {
                       <Card.Body>
                         <h1 style={{ fontSize: "20px", color: "#808080" }}>
                           {" "}
-                          No Assessments Found{" "}
+                          No Tests Found{" "}
                         </h1>
                       </Card.Body>
                     </Card>
@@ -421,7 +440,7 @@ const LaboratoryTest = () => {
                       <Card.Body>
                         <h1 style={{ fontSize: "20px", color: "#808080" }}>
                           {" "}
-                          No Assessments Found{" "}
+                          No Tests Found{" "}
                         </h1>
                       </Card.Body>
                     </Card>
@@ -542,7 +561,7 @@ const LaboratoryTest = () => {
                       <Card.Body>
                         <h1 style={{ fontSize: "20px", color: "#808080" }}>
                           {" "}
-                          No Assessments Found{" "}
+                          No Tests Found{" "}
                         </h1>
                       </Card.Body>
                     </Card>
@@ -662,7 +681,7 @@ const LaboratoryTest = () => {
                       <Card.Body>
                         <h1 style={{ fontSize: "20px", color: "#808080" }}>
                           {" "}
-                          No Assessments Found{" "}
+                          No Tests Found{" "}
                         </h1>
                       </Card.Body>
                     </Card>

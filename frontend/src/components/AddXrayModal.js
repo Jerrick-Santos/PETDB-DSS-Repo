@@ -4,7 +4,7 @@ import edit from '../assets/edit.png';
 import xray from '../assets/xray.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
-
+import add from '../assets/add.png';
 function AddXrayModal(props) {
    
     const[show,setShow] = useState(false)
@@ -146,7 +146,8 @@ function AddXrayModal(props) {
   return (
         <>
 
-        <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleShow}> Add XRay </button>
+        <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleShow}> 
+        <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add XRay </button>
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } >
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>

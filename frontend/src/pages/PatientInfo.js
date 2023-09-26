@@ -9,13 +9,13 @@ import treatment from '../assets/treatment.png';
 import { Link, useParams} from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import Spinner from "react-bootstrap/Spinner";
 
 const PatientInfo = () => {
 
   const { id } = useParams();
   var patientNum = id
-
+  const [isLoading, setIsLoading] = useState(true);
   const [patientData, setPatientData] = useState([]);
 
   useEffect(() => {
@@ -23,6 +23,7 @@ const PatientInfo = () => {
     axios.get(`http://localhost:4000/api/patient/${patientNum}`)
       .then((response) => {
         setPatientData(response.data[0])
+        setIsLoading(false)
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
@@ -68,6 +69,30 @@ console.log(patientData)
       {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
       <Row className="justify-content-center" >
         <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
+
+        {isLoading ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+               
 
         <Row className="mt-5 justify-content-center">
       <Col lg="5">
@@ -165,7 +190,7 @@ console.log(patientData)
   <p style={{ fontSize: "25px" }}> Contact Details </p>
   <Card className="mb-4">
     <Card.Body>
-      {patientData.guardian_name && (
+      {patientData.guardian_name !== "N/A" && (
         <>
           <Row>
             <Col sm="6">
@@ -214,7 +239,7 @@ console.log(patientData)
         </>
       )}
 
-      {patientData.mother_name && (
+      {patientData.mother_name !== "N/A" && (
         <>
           <Row>
             <Col sm="6">
@@ -263,7 +288,7 @@ console.log(patientData)
         </>
       )}
 
-      {patientData.father_name && (
+      {patientData.father_name !== "N/A" && (
         <>
           <Row>
             <Col sm="6">
@@ -312,7 +337,7 @@ console.log(patientData)
         </>
       )}
 
-      {patientData.emergency_name && (
+      {patientData.emergency_name !== "N/A" && (
         <>
           <Row>
             <Col sm="6">
@@ -366,7 +391,7 @@ console.log(patientData)
       
       </Col>
     </Row>
-
+              )}
 
 
       </Col>

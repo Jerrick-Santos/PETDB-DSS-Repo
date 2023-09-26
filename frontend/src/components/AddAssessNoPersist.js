@@ -67,6 +67,7 @@ function AddAssessNoPersist(props) {
         other_comorbid:'',
         assessment_date: new Date().toISOString().split('T')[0],
         prevPTB_diagnosed: 0,
+        userNo: props.userNo
     });
 
     const handleChange = (e) => {
@@ -140,7 +141,7 @@ function AddAssessNoPersist(props) {
               type="text"
               className="form-control"
               name="assessment_date"
-              value="Reyes, Carlo Orevillo"
+              value={props.firstName + " " +props.lastName}
               disabled
             />
           </Col>

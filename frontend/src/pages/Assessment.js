@@ -18,7 +18,9 @@ import UpdateAssessment from '../components/UpdateAssessment';
 import UpdateAssessmentNoPersist from '../components/UpdateAssessmentNoPersist';
 import DeleteAssessment from '../components/DeleteAssessment';
 import Spinner from "react-bootstrap/Spinner";
-
+import test from "../assets/test.png";
+import diagnose from "../assets/diagnose.png";
+import similar from "../assets/similar.png";
 
 const Assessment = () => {
 
@@ -28,6 +30,10 @@ const Assessment = () => {
   const [caseData, setCaseData] = useState([]);
   const [assessData, setAssessData] = useState([]);
   const [caseClosed, setCaseClosed] = useState(false);
+
+  const [userNum, setUserNum] = useState(null);
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
   useEffect(() => {
 
     axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
@@ -56,7 +62,34 @@ const Assessment = () => {
         console.error('Error fetching data:', error);
       });
 
-      
+      const fetchData = async () => {
+        try {
+          // Retrieve the JWT token from local storage
+          const token = localStorage.getItem('token');
+          if (!token) {
+            console.error('Token not found in local storage.');
+            return;
+          }
+    
+          // Define headers with the JWT token
+          const headers = {
+            Authorization: `Bearer ${token}`,
+          };
+    
+          // Make an Axios GET request to the /test route with the token in headers
+          const response = await axios.get('http://localhost:4000/api/tokencontent', { headers });
+    
+          // Handle the response data
+          console.log('Response:', response.data);
+          setUserNum(response.data.userNo);
+          setFirstName(response.data.first_name);
+          setLastName(response.data.last_name);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      };
+    
+      fetchData(); // Call the fetchData function when the component mounts
     }, []);
 
 
@@ -125,22 +158,22 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
           </button>
           <Link to={`/labtest/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+          <img src={test} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
           </button>
           </Link>
           <Link to={`/diagnosis/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
+          <img src={diagnose} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
           </button>
           </Link>
           <Link to={`/treatments/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatment History
           </button>
           </Link>
           <Link to={`/similarcases/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
+          <img src={similar} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
           </button>
           </Link>
             
@@ -180,7 +213,8 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
               ) : (
                 <>
       <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
-                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}/>
+                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
+                  PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
      
      
 
@@ -397,16 +431,28 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
       <Row className="mb-4">
                     
                       {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
-     {caseClosed ? (
-      null
+    {caseData.case_status === "O" ?
+    <>
+     {assessData.length > 0 ? (
+      <Col>
+      <AddAssessPersist
+          caseNo={caseNum}
+          firstName={firstName}
+          lastName={lastName}
+          userNo={userNum}
+      />
+      </Col>
      ) : (
           <Col>
           <AddAssessNoPersist
               caseNo={caseNum}
+              firstName={firstName}
+          lastName={lastName}
+          userNo={userNum}
           />
           </Col>
      )}
-                    
+      </> : null    }          
                     <Col className="d-flex justify-content-end">
                       {assessData.length > 0 ? (
                         <Pagination className="mb-0">

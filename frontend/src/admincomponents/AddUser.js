@@ -15,7 +15,7 @@ function AddUser(props) {
     middle_name: "",
     last_name: "",
     IDNo: "",
-    pw: "abcde",
+    pw: "",
     BGYNo: 1,
     isActive: 1,
     user_type: "BHW",
@@ -102,6 +102,19 @@ function AddUser(props) {
                   class="form-control"
                   name="last_name"
                   value={formValues.last_name}
+                  onChange={handleChange}
+                />
+              </div>
+            </Row>
+
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <label for="inputOperatingHours">Initial Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  name="pw"
+                  value={formValues.pw}
                   onChange={handleChange}
                 />
               </div>

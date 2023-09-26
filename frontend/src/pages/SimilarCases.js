@@ -2,22 +2,17 @@ import '../index.css';
 import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col, ButtonGroup } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
-import edit from '../assets/edit.png';
-import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
-import add from '../assets/add.png';
 import { Link, useParams } from 'react-router-dom';
-import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
-import Button from 'react-bootstrap/Button';
-import PresumptiveTBModal from '../components/PresumptiveTBModal';
-import LatentTBModal from '../components/LatentTBModal';
 import CaseHeader from '../components/CaseHeader'
-import { PieChart, Pie, Cell, Label, Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, } from 'recharts';
-import Badge from 'react-bootstrap/Badge';
-
+import Spinner from "react-bootstrap/Spinner";
+import noresult from "../assets/noresult.png";
+import test from "../assets/test.png";
+import diagnose from "../assets/diagnose.png";
+import similar from "../assets/similar.png";
 
 const SimilarCases = () => {
 
@@ -27,6 +22,9 @@ const SimilarCases = () => {
   var caseNum = id
 
   const [casesData, setCasesData] = useState([]);
+  const [caseData, setCaseData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasAssessment, setHasAssessment] = useState(false);
 
   useEffect(() => {
     axios.get(`http://localhost:4000/api/patientassessment/${caseNum}`)
@@ -37,17 +35,32 @@ const SimilarCases = () => {
       axios.get(`http://localhost:4000/api/getsimcases2/${caseNum}`)
       .then(response => {
         setCasesData(response.data);
-  
+        setIsLoading(false)
+        setHasAssessment(true)
+        
       })
       .catch(error => {
         console.error('Error fetching Sim Cases:', error);
       });
+       } else {
+        setIsLoading(false)
        }
+
+      
     })
     .catch((error) => {
       // Handle any errors that occurred during the request
       console.error('Error fetching data:', error);
     });
+
+    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+      .then(res => {
+        console.log(res);
+        setCaseData(res.data[0]);
+      })
+      .catch(err => {
+        console.error(err);
+      })
 
     
   }, []);
@@ -79,21 +92,21 @@ const SimilarCases = () => {
           </Link>
           <Link to={`/labtest/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+          <img src={test} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
           </button>
           </Link>
           <Link to={`/diagnosis/${caseNum}`}> 
           <button className="btn ms-1 " style={{color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
+          <img src={diagnose} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
           </button>
           </Link>
           <Link to={`/treatments/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatment History
           </button>
           </Link>
           <button className="btn ms-1 " style={{  color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
+          <img src={similar} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
           </button>
       
           
@@ -107,7 +120,33 @@ const SimilarCases = () => {
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-      <CaseHeader caseNum={caseNum} />
+
+      {isLoading ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+                <>
+      <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
+                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
+                  PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
     <hr/>
       
     <Row className="mb-3">
@@ -123,7 +162,7 @@ const SimilarCases = () => {
 
      <Col lg="11">
 
-    
+     {hasAssessment ? (
    <Card className="mb-4">
    <Card.Body>
    <Row>
@@ -175,8 +214,28 @@ const SimilarCases = () => {
      
    </Card.Body>
  </Card>
+ ) : (
+                    <Card className="mb-4 text-center">
+                      <Row className="mt-4 justify-content-center">
+                        <Col>
+                          <img
+                            src={noresult}
+                            alt="No Results"
+                            style={{ width: "120px", height: "120px" }}
+                          />
+                        </Col>
+                      </Row>
 
-    
+                      <Card.Body>
+                        <h1 style={{ fontSize: "20px", color: "#808080" }}>
+                          {" "}
+                          Insufficient Data for Diagnosis Likelihood{" "}
+                        </h1>
+                      </Card.Body>
+                    </Card>
+                  )}
+
+
 
      </Col>
     
@@ -184,7 +243,8 @@ const SimilarCases = () => {
    </Row>
 
    
- 
+   </>
+              )}
 
 
 

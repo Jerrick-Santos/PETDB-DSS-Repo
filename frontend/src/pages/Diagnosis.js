@@ -19,8 +19,11 @@ import CaseHeader from '../components/CaseHeader'
 import Badge from 'react-bootstrap/Badge';
 import Pagination from 'react-bootstrap/Pagination';
 import MapRecom from '../components/MapRecom';
-
-
+import noresult from "../assets/noresult.png";
+import Spinner from "react-bootstrap/Spinner";
+import test from "../assets/test.png";
+import diagnose from "../assets/diagnose.png";
+import similar from "../assets/similar.png";
 
 const Diagnosis = () => {
 
@@ -33,6 +36,7 @@ const Diagnosis = () => {
   const [showLatentModal, setShowLatentModal] = useState(false);
   const [latentData, setLatentData] = useState();
   const [isLoading, setIsLoading] = useState(false); // To manage loading state
+  const [isPageLoading, setIsPageLoading] = useState(true); 
   const [patientData, setPatientData] = useState([]);
   const [reload, setReload] = useState(false);
 
@@ -130,6 +134,7 @@ const endIndex = startIndex + itemsPerPage;
     .then(res => {
       console.log(res);
       setCaseData(res.data[0]);
+      setIsPageLoading(false)
     })
     .catch(err => {
       console.error(err);
@@ -160,20 +165,20 @@ const endIndex = startIndex + itemsPerPage;
           </Link>
           <Link to={`/labtest/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+          <img src={test} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
           </button>
           </Link>
           <button className="btn ms-1 " style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
+          <img src={diagnose} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
           </button>
           <Link to={`/treatments/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatments
+          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatment History
           </button>
           </Link>
           <Link to={`/similarcases/${caseNum}`}> 
           <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
+          <img src={similar} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
           </button>
           </Link>
           
@@ -187,28 +192,66 @@ const endIndex = startIndex + itemsPerPage;
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-      <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
-                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}/>
+
+      {isPageLoading ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+                <>
+       <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
+                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
+                  PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
           <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
             <Col lg="11">
               
             </Col>
 
+            {caseData.case_status === "O" ? (
             <Col lg="11" className="d-flex justify-content-center">
               <button
-                className="btn mt-4"
+                className="btn mt-4 mb-4"
                 style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
                 type="button"
                 onClick={handleButtonClick}
                 disabled={isLoading || patientData.case_status === 'C'}
               >
-                Diagnose TB Status
+                {isLoading ? (
+                  <>
+                <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  <span >{" "}Diagnosing...</span>
+                  </> ) : 
+                "Diagnose TB Status"}
               </button>
               
             </Col>
+             ):null}
 
            
-            
+            {diagnosisData.length > 0 ? (
             <Col className="mb-4" lg="11">
 
             {diagnosisData.slice(startIndex, endIndex).map((diagnosis, index) => (
@@ -341,8 +384,37 @@ const endIndex = startIndex + itemsPerPage;
 
 
             </Col>
-          </Row>
+            ) : (
+                    <>
+                    <hr/>
+                    <Row className="mb-3 justify-content-center" style={{ color:'black'}}>
+            <Col lg="11">
+                      <Row className="mt-2 justify-content-center">
+                        <Col className="d-flex justify-content-center">
+                          <img
+                            src={noresult}
+                            alt="No Results"
+                            style={{ width: "120px", height: "120px" }}
+                          />
+                        </Col>
+                      </Row>
 
+                      <Row>
+                        <Col className="d-flex justify-content-center">
+                        <h1 style={{ fontSize: "20px", color: "#808080" }}>
+                          {" "}
+                          No Diagnosis{" "}
+                        </h1>
+                        </Col>
+                        </Row>
+                        </Col>
+                        </Row>
+                </>
+                  )}
+      
+          </Row>
+          </>
+              )}
     </Col>
   </Row>
 

@@ -82,6 +82,7 @@ function AddAssessPersist(props) {
         other_comorbid:'',
         assessment_date: new Date().toISOString().split('T')[0],
         prevPTB_diagnosed: 0,
+        userNo: props.userNo
     });
 
     const [bodyweightError, setBodyWeightError] = useState('');
@@ -209,7 +210,7 @@ function AddAssessPersist(props) {
               type="text"
               className="form-control"
               name="assessment_date"
-              value="Reyes, Carlo Orevillo"
+              value={props.firstName + " " +props.lastName}
               disabled
             />
           </Col>

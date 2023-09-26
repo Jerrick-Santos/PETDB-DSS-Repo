@@ -5,7 +5,7 @@ import { Row, Col  } from 'react-bootstrap';
 import xrayimg from '../assets/sample_xray.jpg';
 import hivimg from '../assets/sample_hiv.jpg';
 import '../index.css';
-
+import Badge from "react-bootstrap/Badge";
 
 function AssessmentSummaryModal(props) {
    
@@ -104,37 +104,37 @@ function AssessmentSummaryModal(props) {
                 <tbody>
                 <tr>
                         <th scope="col">Symptomatic</th>
-                        <td>{props.cough === 1 ? "YES": "NO"}</td>
-                        <td>{props.fever === 1 ? "YES": "NO"}</td>
-                        <td>{props.night_sweats === 1 ? "YES": "NO"}</td>
-                        <td>{props.weight_loss === 1 ? "YES": "NO"}</td>
-                        <td>{props.fatigue === 1 ? "YES": "NO"}</td>
-                        <td>{props.red_playfulness === 1 ? "YES": "NO"}</td>
-                        <td>{props.dec_acts === 1 ? "YES": "NO"}</td>
-                        <td>{props.not_eating_well === 1 ? "YES": "NO"}</td>
+                        <td>{props.cough === 1 ?  <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.fever === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.night_sweats === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.weight_loss === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.fatigue === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.red_playfulness === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.dec_acts === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.not_eating_well === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
                     </tr>
                     <tr>
                         <th scope="col">More than 2 weeks</th>
-                        <td>{props.c_weeks === 1 ? "YES": "NO"}</td>
-                        <td>{props.fe_weeks === 1 ? "YES": "NO"}</td>
-                        <td>{props.ns_weeks === 1 ? "YES": "NO"}</td>
-                        <td>{props.wl_weeks === 1 ? "YES": "NO"}</td>
-                        <td>{props.fat_weeks === 1 ? "YES": "NO"}</td>
-                        <td>{props.rp_weeks === 1 ? "YES": "NO"}</td>
-                        <td>{props.da_weeks === 1 ? "YES": "NO"}</td>
-                        <td>{props.new_weeks === 1 ? "YES": "NO"}</td>
+                        <td>{props.c_weeks === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.fe_weeks === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.ns_weeks === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.wl_weeks === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.fat_weeks === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.rp_weeks === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.da_weeks === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.new_weeks === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
                     </tr>
 
                     <tr>
                         <th scope="col">Persistence</th>
-                        <td>{props.c_persist === 1 ? "YES": "NO"}</td>
-                        <td>{props.fe_persist  === 1 ? "YES": "NO"}</td>
-                        <td>{props.ns_persist  === 1 ? "YES": "NO"}</td>
-                        <td>{props.wl_persist  === 1 ? "YES": "NO"}</td>
-                        <td>{props.fat_persist  === 1 ? "YES": "NO"}</td>
-                        <td>{props.rp_persist  === 1 ? "YES": "NO"}</td>
-                        <td>{props.da_persist  === 1 ? "YES": "NO"}</td>
-                        <td>{props.new_persist  === 1 ? "YES": "NO"}</td>
+                        <td>{props.c_persist === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.fe_persist  === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.ns_persist  === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.wl_persist  === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.fat_persist  === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.rp_persist  === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.da_persist  === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
+                        <td>{props.new_persist  === 1 ? <Badge style={{ fontSize: 14 }} bg="danger"> YES </Badge>: "NO"}</td>
                     </tr>
                     
                 </tbody>

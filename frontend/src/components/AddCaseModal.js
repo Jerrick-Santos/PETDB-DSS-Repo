@@ -42,7 +42,6 @@ function AddCaseModal(props) {
                 style={{ color: "white", backgroundColor: '#0077B6'}}
                 type="button"
                 onClick={handleShow}
-                disabled={!props.allClosed}
             >
                 <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a Case
             </button>

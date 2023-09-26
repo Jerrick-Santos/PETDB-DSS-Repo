@@ -23,7 +23,7 @@ const UserList = () => {
   const [usersData, setUsersData] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/users/1")
+      .get("http://localhost:4000/api/allusers/1")
       .then((response) => {
         setUsersData(response.data);
         setIsLoading(false);
