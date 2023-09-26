@@ -22,6 +22,50 @@ function AddUser(props) {
     passwordChanged: 0,
   });
 
+  const [IDnoError, setIDError] = useState('');
+  const [firstNameError, setFirstError] = useState('');
+  const [middleNameError, setMiddleError] = useState('');
+  const [lastNameError, setLastError] = useState('');
+  const [initialPassError, setPassError] = useState('');
+
+  const validate = () => {
+    let IDnoError = '';
+    if (!formValues.IDNo) {
+      IDnoError = 'Required';
+    }
+    setIDError(IDnoError);
+
+    let firstNameError = '';
+    if (!formValues.first_name) {
+      firstNameError = 'Required';
+    }
+    setFirstError(firstNameError);
+
+    let middleNameError = '';
+    if (!formValues.middle_name) {
+      middleNameError = 'Required';
+    }
+    setMiddleError(middleNameError); 
+
+    let lastNameError = '';
+    if (!formValues.last_name) {
+      lastNameError = 'Required';
+    }
+    setLastError(lastNameError); 
+
+    let initialPassError = '';
+    if (!formValues.pw) {
+      initialPassError = 'Required';
+    }
+    setPassError(initialPassError); 
+
+    if (IDnoError || firstNameError || middleNameError || lastNameError || initialPassError) {
+      return false;
+    }
+
+    return true;
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
@@ -29,6 +73,12 @@ function AddUser(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const isValid = validate();
+    if(!isValid) {
+        return;
+    }
+
     try {
       await axios.post("http://localhost:4000/api/newuser", formValues);
       props.onUpdate();
@@ -65,6 +115,9 @@ function AddUser(props) {
                   value={formValues.IDNo}
                   onChange={handleChange}
                 />
+                    {IDnoError && (
+                        <p style={{color: 'red'}}>{IDnoError}</p>  
+                    )}
               </div>
             </Row>
 
@@ -78,6 +131,9 @@ function AddUser(props) {
                   value={formValues.first_name}
                   onChange={handleChange}
                 />
+                    {firstNameError && (
+                        <p style={{color: 'red'}}>{firstNameError}</p>  
+                    )}
               </div>
             </Row>
 
@@ -91,6 +147,9 @@ function AddUser(props) {
                   value={formValues.middle_name}
                   onChange={handleChange}
                 />
+                    {middleNameError && (
+                        <p style={{color: 'red'}}>{middleNameError}</p>  
+                    )}
               </div>
             </Row>
 
@@ -104,6 +163,9 @@ function AddUser(props) {
                   value={formValues.last_name}
                   onChange={handleChange}
                 />
+                    {lastNameError && (
+                        <p style={{color: 'red'}}>{lastNameError}</p>  
+                    )}
               </div>
             </Row>
 
@@ -117,6 +179,9 @@ function AddUser(props) {
                   value={formValues.pw}
                   onChange={handleChange}
                 />
+                    {initialPassError && (
+                        <p style={{color: 'red'}}>{initialPassError}</p>  
+                    )}
               </div>
             </Row>
           </form>
