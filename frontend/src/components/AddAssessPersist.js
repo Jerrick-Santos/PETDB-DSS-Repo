@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
@@ -25,6 +25,12 @@ function AddAssessPersist(props) {
         setBMI(null); // Reset BMI if any of the inputs are empty
       }
     };
+
+    useEffect(() => {
+
+      calculateBMI();
+    
+    }, [bodyWeight, height]); 
 
     const [assessFormValues, setAssessFormValues] = useState({
         case_no:props.caseNo,
@@ -129,8 +135,16 @@ function AddAssessPersist(props) {
         // Update the corresponding state based on the input field
         if (name === 'ass_body_weight') {
           setBodyWeight(newValue);
+          setAssessFormValues({
+            ...assessFormValues,
+            ass_body_weight: newValue  
+          });
         } else if (name === 'ass_height') {
           setHeight(newValue);
+          setAssessFormValues({
+            ...assessFormValues,
+            ass_height: newValue  
+          });
         } else {
           setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
         }

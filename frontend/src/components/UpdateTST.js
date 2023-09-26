@@ -74,6 +74,43 @@ function UpdateTST(props) {
         validity: props.validity,
     });
 
+    const [HINoError, setHIError] = useState('');
+    const [dateError, setDateError] = useState('');
+    const [testError, setTestError] = useState('');
+    const [valueError, setValueError] = useState('');
+
+    const validate = () => {
+        let HINoError = '';
+        if (!formValues.HINo) {
+            HINoError = 'Required';
+        }
+        setHIError(HINoError);
+
+        let dateError = '';
+        if (!formValues.issue_date) {
+            dateError = 'Required';
+        }
+        setDateError(dateError);
+
+        let testError = '';
+        if (!formValues.test_refno) {
+            testError = 'Required';
+        }
+        setTestError(testError);
+
+        let valueError = '';
+        if (!formValues.TestValue) {
+            valueError = 'Required';
+        }
+        setValueError(valueError);
+
+        if (HINoError || dateError || testError || valueError) {
+            return false;
+          }
+
+        return true;
+    }
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormValues(prev=>({...prev, [name]: value}));
@@ -109,6 +146,12 @@ function UpdateTST(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const isValid = validate();
+        if(!isValid){
+          return;
+        }
+
         try{
             await axios.post("http://localhost:4000/api/updatetests", formValues)
             window.location.reload()
@@ -156,14 +199,23 @@ function UpdateTST(props) {
  
 
             </select>
+            {HINoError && (
+                <p style={{color: 'red'}}>{HINoError}</p>  
+            )}
         </div>
         <div className="mt-3">
             <label><strong>Issued on:</strong></label>
             <input type="date" className="form-control" name='issue_date' value={formValues.issue_date} onChange={handleChange}/>
+            {dateError && (
+                <p style={{color: 'red'}}>{dateError}</p>  
+            )}
         </div>
         <div className="mt-3">
             <label><strong>Reference Number:</strong></label>
             <input type="text" className="form-control" name='test_refno' value={formValues.test_refno} onChange={handleChange}/>
+            {testError && (
+                <p style={{color: 'red'}}>{testError}</p>  
+            )}
         </div>
         <div className="mt-3"> 
             <label> <strong>TST Test Results: </strong></label>
@@ -173,6 +225,9 @@ function UpdateTST(props) {
                 <option value="&lt;10 MM">&lt;10 MM</option>
                 <option value="10">10</option>
             </select>
+            {valueError && (
+                <p style={{color: 'red'}}>{valueError}</p>  
+            )}
         </div>
     </form>
     </>
