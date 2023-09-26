@@ -98,16 +98,7 @@ module.exports = (db) => {
         /** Query Goals: Used for checking if a similarity exists f */
 
         const query = `
-                    SELECT 
-                        ct.last_name,
-                        ct.first_name,
-                        ct.middle_initial,
-                        ct.birthdate,
-                        ct.sex,
-                        ct.contact_person,
-                        ct.contact_num,
-                        ct.contact_email,
-                        ct.contact_relationship
+                    SELECT *
                     FROM PEDTBDSS_new.MD_CONTACTTRACING ct
                     WHERE ct.ContactNo = ${req.params.ContactNo};
         `;        
@@ -354,6 +345,22 @@ module.exports = (db) => {
     router.get('/getTreatmentStatus', (req, res) => {
         db.query('SELECT * FROM REF_TREATMENTSTATUS', (err, results) => {
             if (err) { console.error(err) } else { res.send(results) }
+        })
+    }),
+
+    router.get('/getSimilarContacts/:first_name/:middle_initial/:last_name', (req, res) => {
+        const q = `SELECT *
+        FROM MD_CONTACTTRACING
+        WHERE last_name like ?
+        AND middle_initial like ?
+        AND first_name like ?;`
+
+        db.query(q, [req.params.last_name, req.params.middle_initial, req.params.first_name], (err, results) => {
+            if (err) {console.error(err)}
+            else {
+                console.log(results)
+                res.send(results)
+            }
         })
     })
     
