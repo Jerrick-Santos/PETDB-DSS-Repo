@@ -314,6 +314,83 @@ module.exports = (db) => {
         
     });
 
+    router.post('/newbhc', async (req, res) => {
+       
+        const q = "INSERT INTO MD_BARANGAYS (`BGYName`, `BGYOperatingHours`, `BGYContactNumber`, `BGYEmailAddress`, `BGYUnitNo`, `BGYStreet`, `BGYBarangay`, `BGYCity`, `BGYRegion`, `BGYProvince`, `BGYZipCode`, `XCoord`, `YCoord`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const values = [
+            req.body.BGYName,
+            req.body.BGYOperatingHours,
+            req.body.BGYContactNumber,
+            req.body.BGYEmailAddress,
+            req.body.BGYUnitNo,
+            req.body.BGYStreet,
+            req.body.BGYBarangay,
+            req.body.BGYCity,
+            req.body.BGYRegion,
+            req.body.BGYProvince,
+            req.body.BGYZipCode,
+            req.body.XCoord,
+            req.body.YCoord
+        ]
+
+                // Insert patient information into the database
+                const insertBHCQuery = "INSERT INTO MD_BARANGAYS (`BGYName`, `BGYOperatingHours`, `BGYContactNumber`, `BGYEmailAddress`, `BGYUnitNo`, `BGYStreet`, `BGYBarangay`, `BGYCity`, `BGYRegion`, `BGYProvince`, `BGYZipCode`, `XCoord`, `YCoord`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+                const BHCValues = [
+                    // ... Populate values based on req.body
+                    req.body.BGYName,
+                    req.body.BGYOperatingHours,
+                    req.body.BGYContactNumber,
+                    req.body.BGYEmailAddress,
+                    req.body.BGYUnitNo,
+                    req.body.BGYStreet,
+                    req.body.BGYBarangay,
+                    req.body.BGYCity,
+                    req.body.BGYRegion,
+                    req.body.BGYProvince,
+                    req.body.BGYZipCode,
+                    req.body.XCoord,
+                    req.body.YCoord
+                ];
+    
+                // Retrieve the PatientNo for the inserted patient
+                db.query(insertBHCQuery, BHCValues, (err, result) => {
+                    if (err) {
+                        return res.status(500).json(err);
+                    }
+                
+                    // Retrieve the last inserted ID
+                    const bhcNo = result.insertId;
+                
+                    // Now you can insert data into TD_PTCASE using patientNo
+                    const insertUserQuery = "INSERT INTO MD_USERS (`first_name`, `middle_name`, `last_name`, `IDNo`, `pw`, `BGYNo`, `isActive`, `user_type`, `passwordChanged`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                    const userValues = [
+                        req.body.first_name,
+                        req.body.middle_name,
+                        req.body.last_name,
+                        req.body.IDNo,
+                        req.body.pw,
+                        bhcNo,
+                        req.body.isActive,
+                        req.body.user_type,
+                        req.body.passwordChanged,
+                    ]
+
+                
+                    db.query(insertUserQuery, userValues, (err, caseResult) => {
+                        if (err) {
+                            return res.status(500).json(err);
+                        }
+                        
+                        console.log("Successfully inserted into TD_PTCASE:", caseResult);
+                        return res.json(caseResult);
+                    });
+                    
+                });
+           
+        
+    });
+
 
     
     return router;
