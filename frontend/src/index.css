@@ -145,3 +145,8 @@ max-width: 60px;
 .last-row {
   border-bottom: 0px solid transparent; /* Removes the bottom border for the last row */
 }
+
+.viewsimilar-modal-style {
+  width: 500px;
+  height: 850px;
+}

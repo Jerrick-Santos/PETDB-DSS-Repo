@@ -24,6 +24,7 @@ const CloseContacts = () => {
 
   const [closeContactListData, setCloseContactListData] = useState([]);
   const [latestCase, setLatestCase] = useState([]);
+  const [caseData, setCaseData] = useState([])
 
   // Helper Functions
   function addMonths(date, months) {
@@ -33,6 +34,17 @@ const CloseContacts = () => {
       date.setDate(0);
     }
     return date;
+  }
+
+  function getAge(birthdate) {
+    const today = new Date();
+    const birthDate = new Date(birthdate);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   }
 
   // Load list of close contact
@@ -169,6 +181,17 @@ const CloseContacts = () => {
     console.log('fetching data: ', latestCase);
   }, [latestCase]);
 
+  useEffect(() => {
+    axios.get(`http://localhost:4000/api/getCasePatient/${caseNum}`)
+    .then(res => {
+      console.log(res);
+      setCaseData(res.data[0]);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }, [caseNum])
+
   return (
     <div>
     <NavBar/>
@@ -222,7 +245,8 @@ const CloseContacts = () => {
       {/*Shows general patient information details */}
       
       {/** NEW CASE HEADER CODE */}
-      <CaseHeader caseNum={caseNum} />
+      <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
+                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}/>
       
       {/* Shows all relevant information of the patient */}
       
@@ -259,7 +283,7 @@ const CloseContacts = () => {
                         )}
                       </td>
                       <td>{contact.last_name+", "+contact.first_name+" "+contact.middle_initial}</td>
-                      <td>{new Date(contact.birthdate).toLocaleDateString().replaceAll("/", "-")}</td>
+                      <td>{getAge(contact.birthdate)}</td>
                       <td>{contact.sex === "M" ? "Male": "Female"}</td>
                       <td>{contact.contact_relationship}</td>
 

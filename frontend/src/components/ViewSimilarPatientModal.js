@@ -34,19 +34,19 @@ function ViewSimilarPatientModal(props) {
         <>
             {props.visible && (
                 <button className="btn" style={{ color: "white", backgroundColor: 'red', width: "50%", marginRight: "25%", marginLeft: "25%"}} type="button" onClick={handleShow}>
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Possible existing patient detected…
+                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Possible existing record/s detected…
                 </button>
             )}
             
-            <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg" >
+            <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg" contentClassName='viewsimilar-modal-style'>
                 <Modal.Header style={{color:'white', backgroundColor: "#0077B6"}}>
-                    <Modal.Title>View Similar Patients</Modal.Title>
+                    <Modal.Title>View Similar Records</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
                 <Form>
                     <table className="table caption-top bg-white rounded mt-4 ms-4 me-5" style={{width:"95%"}}>
-                        <caption className=' fs-4' style={{ color:'#0077B6'}}>View Similar Patients</caption>
+                        <caption className=' fs-4' style={{ color:'#0077B6'}}>View Similar Records</caption>
                         <thead>
                             <tr>
                                 <th scope="col">Select</th>
@@ -54,6 +54,7 @@ function ViewSimilarPatientModal(props) {
                                 <th scope="col">Birthdate</th>
                                 <th scope="col">Age</th>
                                 <th scope="col">Sex</th>
+                                <th scope="col">Origin of Record</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -75,6 +76,7 @@ function ViewSimilarPatientModal(props) {
                                         <td>{new Date(patient.birthdate).toLocaleDateString()}</td>
                                         <td>{calculateAge(patient.birthdate)}</td>
                                         <td>{patient.sex}</td>
+                                        <td>{patient.ContactNo ? "Close Contact" : "Patient"}</td>
                                     </tr>
                                 );
                             })}
@@ -82,11 +84,12 @@ function ViewSimilarPatientModal(props) {
                     </table>
                 </Form>
 
-                <div style={{ height: '350px' }}/>
+                {/* <div style={{ height: '500px' }}/> */}
 
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type="button" onClick={handleClose} className="btn btn-secondary">Apply</button>
+                    <button type="button" onClick={handleClose} className="btn btn-secondary">Close</button>
+                    <button type="button" onClick={handleClose} className="btn btn-primary">Apply</button> 
                 </Modal.Footer>
             </Modal>
         </>
