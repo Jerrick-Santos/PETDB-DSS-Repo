@@ -42,7 +42,7 @@ function AddDSTModal(props) {
         HINo: '',
         issue_date: new Date().toISOString().split('T')[0],
         test_refno:'',
-        TestValue: '',
+        drug1: '',
         drug2: '',
         drug3: '',
         validity: 1,
@@ -75,7 +75,7 @@ function AddDSTModal(props) {
         setTestError(testError);
 
         let valueError = '';
-        if (!dstValues.TestValue) {
+        if (!dstValues.drug1) {
             valueError = 'Required';
         }
         setValueError(valueError);
@@ -140,14 +140,16 @@ function AddDSTModal(props) {
         }
         
         try{
-            await axios.post("http://localhost:4000/api/newDstresults", dstValues)
+            await axios.post("http://localhost:4000/api/newDSTresults", dstValues)
             props.onTestAdded();
             setDstValues((prevDstValues) => ({
                 ...prevDstValues,
                 HINo: '',
                 issue_date: new Date().toISOString().split('T')[0],
                 test_refno: '',
-                TestValue: '',
+                drug1: '',
+                drug2: '',
+                drug3: '',
                 validity: 1,
               }));
             handleClose()
@@ -208,7 +210,7 @@ function AddDSTModal(props) {
         </div>
         <div className="mt-3"> 
             <label> <strong>Drug 1: </strong></label>
-            <select className="form-select" name='TestValue' value={dstValues.TestValue} onChange={handleChange}>
+            <select className="form-select" name='drug1' value={dstValues.drug1} onChange={handleChange}>
                 <option value="">Select</option>
                 <option value="R">Resistant</option>
                 <option value="S">Susceptible</option>
