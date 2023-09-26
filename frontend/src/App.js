@@ -26,6 +26,7 @@ import UserList from './adminpages/UserList';
 import TestRoute from './pages/TestRoute';
 import ProtectedRoute from './ProtectedRoute';
 import withAccessControl from './withAccessControl';
+import SignUpBHC from './adminpages/SignUpBHC';
 
 {/* admin routes */}
 const AdminLabTestwithAccess = withAccessControl(AdminLabTest, ['admin'])
@@ -60,6 +61,7 @@ function App() {
       <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Login/>} />
+                    <Route path="/newbhc" element={<SignUpBHC/>} />
 
                     {/* admin routes */}
                     

@@ -128,15 +128,15 @@ const Login = () => {
                 onChange={handlePasswordChange}
               />
             </div>
-
+            <Row> 
+              <Col>
+              <Link to={"/newbhc"}> <u className="d-flex clickable mt-4 me-4">Sign Up</u></Link>
+              </Col>
+           <Col>
             <div className="d-flex justify-content-end">
-            <Button
-                type="submit"
-                className="mt-4 me-3"
-                style={{ color: 'white', backgroundColor: '#0077B6' }}
-              >
-                <strong>Create BHC</strong>
-              </Button>
+              
+              
+              
               <Button
                 type="submit"
                 className="mt-4"
@@ -145,6 +145,8 @@ const Login = () => {
                 <strong>Log In</strong>
               </Button>
             </div>
+            </Col>
+            </Row>
           </Col>
         </Row>
       </form>

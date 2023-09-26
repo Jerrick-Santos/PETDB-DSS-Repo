@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col, Badge, Accordion  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import edit from '../assets/edit.png';
+import noresult from "../assets/noresult.png";
 import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
@@ -15,13 +16,15 @@ import CaseHeader from '../components/CaseHeader';
 import test from "../assets/test.png";
 import diagnose from "../assets/diagnose.png";
 import similar from "../assets/similar.png";
+import Spinner from "react-bootstrap/Spinner";
+import Pagination from 'react-bootstrap/Pagination';
 
 const CloseContacts = () => {
 
   /*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/
   const { id } = useParams();
   var caseNum = id
-
+  const [isLoading, setIsLoading] = useState(true);
   const [closeContactListData, setCloseContactListData] = useState([]);
   const [latestCase, setLatestCase] = useState([]);
   const [caseData, setCaseData] = useState([])
@@ -138,11 +141,14 @@ const CloseContacts = () => {
                   return contact;
                 }
               })
+              
             );
+            
           }
         }
       }));
       console.log(res);
+      setIsLoading(false);
     }
     fetchData()
     
@@ -191,6 +197,20 @@ const CloseContacts = () => {
       console.error(err);
     })
   }, [caseNum])
+
+  const [activePage1, setActivePage1] = useState(1);
+  const itemsPerPage = 5; // Number of items per page
+
+  // Function to handle page change
+  const handlePageChange1 = (pageNumber) => {
+    setActivePage1(pageNumber);
+  };
+
+
+  // Calculate the index range for the current page
+  const startIndex1 = (activePage1 - 1) * itemsPerPage;
+  const endIndex1 = startIndex1 + itemsPerPage;
+ 
 
   return (
     <div>
@@ -243,14 +263,38 @@ const CloseContacts = () => {
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
 
       {/*Shows general patient information details */}
-      
-      {/** NEW CASE HEADER CODE */}
+      {isLoading ? (
+                <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div>
+              ) : (
+                <>
       <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
-                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}/>
+                  start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
+                  PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
+     
       
       {/* Shows all relevant information of the patient */}
       
       {/* Personal Information of the Patient */}
+      {closeContactListData.length > 0 ? (
       <table className="table caption-top bg-white rounded mt-4 ms-4 me-5" style={{width:"95%"}}>
     <caption className=' fs-4' style={{ color:'#0077B6'}}>Close Contacts</caption>
     <thead>
@@ -268,7 +312,7 @@ const CloseContacts = () => {
                     </tr>
                 </thead>
                 <tbody>
-                {closeContactListData.map((contact, index) => (
+                {closeContactListData.slice(startIndex1, endIndex1).map((contact, index) => (
                     <tr key={index}>
                       {/* Patient Convert Button: Only Applicable to Contacts Under the Age of 15*/}
                       <td>
@@ -344,11 +388,62 @@ const CloseContacts = () => {
                 
                
             </table>
-            <div className="d-flex justify-content-end me-5 mb-5" >
-              <AddCloseContactModal id={caseNum} show={latestCase}/>
-          </div>
+      ) : (
+        <>
+                    <hr/>
+                    <Row className="mb-3 justify-content-center" style={{ color:'black'}}>
+            <Col lg="11">
+                      <Row className="mt-2 justify-content-center">
+                        <Col className="d-flex justify-content-center">
+                          <img
+                            src={noresult}
+                            alt="No Results"
+                            style={{ width: "120px", height: "120px" }}
+                          />
+                        </Col>
+                      </Row>
 
+                      <Row>
+                        <Col className="d-flex justify-content-center">
+                        <h1 style={{ fontSize: "20px", color: "#808080" }}>
+                          {" "}
+                          No Close Contacts{" "}
+                        </h1>
+                        </Col>
+                        </Row>
+                        </Col>
+                        </Row>
+                </>
+      )}
 
+            <Row className="mb-4">
+                    
+                    {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
+              
+                      <Col className="ms-4">
+                      {caseData.case_status === "O" ?
+              <AddCloseContactModal id={caseNum} show={latestCase}/> : null}
+                      </Col>
+              
+                  
+                  <Col className="d-flex justify-content-end me-5">
+                    {closeContactListData.length > 0 ? (
+                       <Pagination className="mt-3 justify-content-center">
+                       <Pagination.Prev onClick={() => handlePageChange1(activePage1 - 1)} disabled={activePage1 === 1} />
+                       {Array.from({ length: Math.ceil(closeContactListData.length / itemsPerPage) }).map((_, index) => (
+                         <Pagination.Item key={index} active={index + 1 === activePage1} onClick={() => handlePageChange1(index + 1)}>
+                           {index + 1}
+                         </Pagination.Item>
+                       ))}
+                       <Pagination.Next onClick={() => handlePageChange1(activePage1 + 1)} disabled={activePage1 === Math.ceil(closeContactListData.length / itemsPerPage)} />
+                     </Pagination>
+                    ) : null}
+                  </Col>
+                </Row>
+          
+
+                </>
+              )}
 
     </Col>
   </Row>
