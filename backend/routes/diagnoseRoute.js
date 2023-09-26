@@ -150,19 +150,19 @@ function IGRAmodule(IGRA_result){
     }
 }
 
-function detectContactTB(input_contact_status){
-    var retVal = -1
-    for (let status of input_contact_status) {
-        const {diagnosis} = status
-        if (diagnosis === 'NO TB' || diagnosis === 'NO TB - Consult for other Diseases' || diagnosis === null) {
-            retVal = -1// If "NO TB" or "NO TB - Consult for other Diseases" is found
-        }
-        else {
-            retVal = 1
-        }
-      }
-      return 1; // If neither "NO TB" nor "NO TB - Consult for other Diseases" is found
-}
+// function detectContactTB(input_contact_status){
+//     var retVal = -1
+//     for (let status of input_contact_status) {
+//         const {diagnosis} = status
+//         if (diagnosis === 'NO TB' || diagnosis === 'NO TB - Consult for other Diseases' || diagnosis === null) {
+//             retVal = -1// If "NO TB" or "NO TB - Consult for other Diseases" is found
+//         }
+//         else {
+//             retVal = 1
+//         }
+//       }
+//       return 1; // If neither "NO TB" nor "NO TB - Consult for other Diseases" is found
+// }
 
 
 // Export the router with the attached 'db' connection
@@ -409,12 +409,12 @@ module.exports = (db) => {
         LIMIT 1;`;
 
         //GET CONTACT TRACING DATA
-        const TBContactQuery = `SELECT drs.DRDescription
+        const TBContactQuery = `SELECT drs.DRDescription, drs.active
         FROM PEDTBDSS_new.TD_PTCASE c
         JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON c.CaseNo = ctc.CaseNo
         JOIN PEDTBDSS_new.MD_CONTACTTRACING cc ON ctc.ContactNo = cc.ContactNo
         JOIN PEDTBDSS_new.REF_DIAGNOSISRESULTS drs ON cc.DRNo = drs.DRNo
-        WHERE c.CaseNo = ${caseid};)`;
+        WHERE c.CaseNo = ${caseid} AND drs.active = 1;`;
 
         //GET FIRST DIAGNOSIS OR NOT 
         const firstDiagnosisQuery = `SELECT *
@@ -677,16 +677,11 @@ module.exports = (db) => {
                                             console.log("QUERY 6: TB CONTACT - CHECK")
 
                                             if (TBcontactResults.length === 0) {
-                                                hivConcernObject.has_TBcontact = -1
                                                 inputObject.has_TBcontact = -1
                                                 symptomsObject.has_TBcontact = -1
                                             } else {
-                                                hivConcernObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                                inputObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                                symptomsObject.has_TBcontact = detectContactTB(TBcontactResults)
-                                                // hivConcernObject.has_TBcontact = -1
-                                                // inputObject.has_TBcontact = -1
-                                                // symptomsObject.has_TBcontact = -1
+                                                inputObject.has_TBcontact = 1
+                                                symptomsObject.has_TBcontact = 1
                                             }
 
                                             console.log(symptomsObject)
@@ -702,26 +697,21 @@ module.exports = (db) => {
                                                     return;
                                                 }
 
-                                                console.log(symptomsObject)
-
                                                 console.log("Symptoms Query Results", symptomsRules);
 
                                                 
-                                                const {presumptive} = symptomsRules[0]
+                                                const {has_symp} = symptomsRules[0]
 
-                                                inputObject.presumptive_tb = presumptive
+                                                inputObject.has_symp = has_symp
                                     
                                                 // All queries have been executed successfully
                                                 // res.status(200).json(diagnosisQueryResults);
-                                                console.log(presumptive)
+                                                console.log(has_symp)
 
                                                 db.query(`SELECT *
-                                                FROM PEDTBDSS_new.MD_SUSPECIONRULES
+                                                FROM PEDTBDSS_new.MD_HIVCONCERN
                                                 WHERE hiv = ${hivConcernObject.hiv} AND
-                                                plhiv = ${hivConcernObject.plhiv} AND 
-                                                has_TBcontact = ${hivConcernObject.has_TBcontact} AND
-                                                prevPTB_diagnosed =  ${hivConcernObject.prevPTB_diagnosed} AND 
-                                                first_diag = ${hivConcernObject.first_diag};`, (error8, suspicionRules) => {
+                                                plhiv = ${hivConcernObject.plhiv};`, (error8, suspicionRules) => {
                 
                                                     if (error8) {
                                                         res.status(500).json({ error: "Error fetching SUSPICION RULES data" });
@@ -733,22 +723,23 @@ module.exports = (db) => {
                                                     console.log("Suspicion Query Results", suspicionRules);
                 
                                                     
-                                                    const {high_sus, need_hiv} = suspicionRules[0]
+                                                    const {hiv_concern, need_hiv} = suspicionRules[0]
                 
-                                                    inputObject.high_sus = high_sus;
+                                                    inputObject.hiv_concern = hiv_concern;
 
                                                     db.query(`SELECT *
                                                     FROM PEDTBDSS_new.MD_DIAGNOSISRULES
-                                                    WHERE presumptive_tb = ${inputObject.presumptive_tb} AND 
-                                                    high_sus = ${inputObject.high_sus} AND
+                                                    WHERE has_symp = ${inputObject.has_symp} AND 
                                                     less_five = ${inputObject.less_five} AND 
                                                     has_TBcontact = ${inputObject.has_TBcontact} AND
-                                                    first_diag = ${inputObject.first_diag} AND
+                                                    prevPTB_diagnosed = ${inputObject.prevPTB_diagnosed} AND
+                                                    hiv_concern = ${inputObject.hiv_concern} AND
                                                     xray = ${inputObject.xray} AND
                                                     MTB_positive = ${inputObject.MTB_positive} AND 
                                                     RIF_resistant = ${inputObject.RIF_resistant} AND
                                                     tst = ${inputObject.tst} AND
                                                     igra = ${inputObject.igra} AND
+                                                    dst = ${inputObject.dst} AND
                                                     EPTBpositive = ${inputObject.EPTB_symp} ;`, (error7, diagnosisQueryResults) => {
 
                                                         if (error7) {
@@ -759,58 +750,63 @@ module.exports = (db) => {
                                                         console.log(inputObject)
 
                                                         console.log("Diagnosis Query Results:", diagnosisQueryResults);
-
-                                                        const {RuleNo} = diagnosisQueryResults[0]
-                                                        console.log(RuleNo)
-                                                            db.query(noChangeChecker, (errorChecker, changeQueryResults) => {
-
-                                                                if (errorChecker) {
-                                                                    res.status(500).json({ error: "Change Checker Failed" });
-                                                                    return;
-                                                                }
-
-                                                                console.log("CHANGE CHECKER - CHECK")
-
-                                                                if(changeQueryResults.length !== 0){
-                                                                const prevRule = changeQueryResults[0].RuleNo
-
-
-                                                                if(prevRule === RuleNo && prevRule != null){
-                                                                    res.status(200).json({sameCase: 1})
-                                                                    return;
-                                                                
-                                                                }
-                                                                }   
-                                                                
-
-                                                                try{
-                                                                        
-                                                                        console.log("TEST" + RuleNo)
-                                                                        // All queries have been executed successfully
-                                                                        // res.status(200).json(diagnosisQueryResults);
-                                                                        console.log("Rule Number: " + RuleNo)
-                                                                        console.log(dataIdObject)
-                                                                        db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, userNo, need_hiv, healthassess_id, xray_id, mtb_id, tst_id, igra_id) 
-                                                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-                                                                        [new Date().toISOString().split('T')[0], caseid, RuleNo, userid, need_hiv, dataIdObject.healthassess_id, dataIdObject.xray_id, dataIdObject.mtb_id, dataIdObject.tst_id, dataIdObject.igra_id], 
-                                                                        (error8, InsertResult) => {
-                                                                            if (error8) {
-                                                                                res.status(500).json({ error: "Did Not Add Data" });
-                                                                                return;
+                                                        try {
+                                                            const {RuleNo} = diagnosisQueryResults[0]
+                                                            console.log(RuleNo)
+                                                                db.query(noChangeChecker, (errorChecker, changeQueryResults) => {
+    
+                                                                    if (errorChecker) {
+                                                                        res.status(500).json({ error: "Change Checker Failed" });
+                                                                        return;
+                                                                    }
+    
+                                                                    console.log("CHANGE CHECKER - CHECK")
+    
+                                                                    if(changeQueryResults.length !== 0){
+                                                                    const prevRule = changeQueryResults[0].RuleNo
+    
+    
+                                                                    if(prevRule === RuleNo && prevRule != null){
+                                                                        res.status(200).json({sameCase: 1})
+                                                                        return;
+                                                                    
+                                                                    }
+                                                                    }   
+                                                                    
+    
+                                                                    try{
+                                                                            
+                                                                            console.log("TEST" + RuleNo)
+                                                                            // All queries have been executed successfully
+                                                                            // res.status(200).json(diagnosisQueryResults);
+                                                                            console.log("Rule Number: " + RuleNo)
+                                                                            console.log(dataIdObject)
+                                                                            db.query(`INSERT INTO PEDTBDSS_new.TD_PTDIAGNOSIS (DGDate, CaseNo, RuleNo, userNo, need_hiv, healthassess_id, xray_id, mtb_id, tst_id, igra_id, dst_id) 
+                                                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                                                                            [new Date().toISOString().split('T')[0], caseid, RuleNo, userid, need_hiv, dataIdObject.healthassess_id, dataIdObject.xray_id, dataIdObject.mtb_id, dataIdObject.tst_id, dataIdObject.igra_id, dataIdObject.dst_id], 
+                                                                            (error8, InsertResult) => {
+                                                                                if (error8) {
+                                                                                    console.log("EEEOOOOOOOR")
+                                                                                    res.status(500).json({ error: "Did Not Add Data" });
+                                                                                    return;
+                                                                                }
+                                                                                else{
+                                                                                    
+                                                                                    res.status(200).json(InsertResult)
+                                                                                }
+                                                                            })
+                                        
                                                                             }
-                                                                            else{
-                                                                                
-                                                                                res.status(200).json(InsertResult)
+                                                                            catch(e){
+                                                                                res.status(500).json({e: "query is empty"})
+                                                                                console.log("Query is empty")
                                                                             }
-                                                                        })
-                                    
-                                                                        }
-                                                                        catch(e){
-                                                                            res.status(500).json({e: "query is empty"})
-                                                                            console.log("Query is empty")
-                                                                        }
+    
+                                                            });
+                                                        } catch (error) {
+                                                            res.status(500).json({error: "query is empty"})
+                                                        }
 
-                                                        });
 
                                                     });
                                                     

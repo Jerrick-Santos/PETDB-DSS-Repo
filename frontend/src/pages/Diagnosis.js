@@ -272,7 +272,8 @@ const endIndex = startIndex + itemsPerPage;
                 </Col>
                 <Col lg="8"> 
                 
-                        {diagnosis.confirmed_tb === 1 ? "Confirmed" :
+                        {diagnosis.cli_diagnosed === 1 ? "Confirmed" :
+                        diagnosis.baconfirmed === 1 ? "Confirmed" :
                         diagnosis.presumptive_tb === 1 ? "Presumptive" :
                         diagnosis.latent_tb === 1 ? "Latent" :
                         diagnosis.no_tb === 1 ? "NO TB":
@@ -293,6 +294,10 @@ const endIndex = startIndex + itemsPerPage;
                 (diagnosis.diagnosis.includes("Sensitive") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed - Drug Sensitive TB" :
                 (diagnosis.diagnosis.includes("Clinical") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Clinically Diagnosed TB" :
                 (diagnosis.diagnosis.includes("Clinical") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Clinically Diagnosed TB" :  
+                (diagnosis.diagnosis.includes("Multi") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed - Multi Drug Resistant TB" :
+                (diagnosis.diagnosis.includes("Multi") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed - Multi Drug Resistant TB" :  
+                (diagnosis.diagnosis.includes("Bacteriologically") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed" :
+                (diagnosis.diagnosis.includes("Bacteriologically") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed" : 
                 diagnosis.diagnosis.includes("Presumptive") ? "Presumptive Tuberculosis" : 
                 diagnosis.diagnosis.includes("Latent") ? "Latent Tuberculosis" : 
                         "NONE"} </strong>
@@ -303,7 +308,7 @@ const endIndex = startIndex + itemsPerPage;
 
        
             <Col style={{fontSize:"18px"}}> {(diagnosis.need_eval === 1) ? "The following tests are needed for further evaluation:" :
-                        "No further evaluation is needed"} </Col>
+                        "Please Refer to a specialist for further Management"} </Col>
         </Row>
 
         <Row className="mt-1">
@@ -352,6 +357,15 @@ const endIndex = startIndex + itemsPerPage;
             <Col style={{fontSize:"20px"}}>
               {(diagnosis.need_igra === 1) ? (
                 <MapRecom test={7} test_name={'IGRA'}/>
+                ) : null}
+          
+             </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"20px"}}>
+              {(diagnosis.need_dst === 1) ? (
+                <MapRecom test={9} test_name={'DST'}/>
                 ) : null}
           
              </Col>
