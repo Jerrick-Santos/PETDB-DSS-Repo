@@ -286,7 +286,7 @@ const CloseContacts = () => {
                 </div>
               ) : (
                 <>
-      <CaseHeader case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
+      <CaseHeader caseNo={caseNum} case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
                   start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
                   PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
      
