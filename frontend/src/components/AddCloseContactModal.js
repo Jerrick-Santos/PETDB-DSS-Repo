@@ -180,11 +180,14 @@ function AddCloseContactModal(props) {
         } else {
             // TRY-CATCH FOR BACKEND INTERACTION
             try{
+                console.log('REACHED SUBMISSION...') //testing
                 if (props.update) {
+                    console.log('REACHED SUBMISSION...updating') //testing
                     console.log("Forms Updated: ", formValues)
                     await axios.post("http://localhost:4000/api/updateContacts", formValues)
                 }
                 else {
+                    console.log('REACHED SUBMISSION...posting') //testing
                     console.log("Form Submitted: ", formValues)
                     await axios.post("http://localhost:4000/api/addContacts", formValues)
                 }
@@ -247,7 +250,8 @@ function AddCloseContactModal(props) {
                 contact_email: props.contact.contact_email,
                 contact_relationship: props.contact.contact_relationship,
                 DRNo: props.contact.DRNo,
-                TSNo: props.contact.TSNo
+                TSNo: props.contact.TSNo,
+                ContactNo: props.contact.ContactNo
             }));
         }
         
