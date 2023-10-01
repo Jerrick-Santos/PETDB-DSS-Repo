@@ -308,7 +308,8 @@ const CloseContacts = () => {
                         <th scope="col">Diagnostic Result</th>
                         <th scope="col">Treatment Status</th>
                         <th scope="col">Next HA</th>
-                        <th scope="col">Next X-Ray</th>  
+                        <th scope="col">Next X-Ray</th>
+                        <th scope="col" />  
                     </tr>
                 </thead>
                 <tbody>
@@ -381,6 +382,7 @@ const CloseContacts = () => {
                         )
                       }
 
+                      <td><AddCloseContactModal id={caseNum} show={latestCase} update={true} contact={contact}/></td>
                     </tr>
                   ))
                 }
