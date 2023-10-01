@@ -23,6 +23,8 @@ const CloseCaseModal = (props) => {
   const handleSubmit = async () => {
     try {
       // Make a POST request with the selected option
+      console.log(props.caseid)
+      console.log(formValues.decision)
       await axios.patch(`http://localhost:4000/api/closecase/${props.caseid}/${formValues.decision}`)
 
       // Close the modal after successful submission

@@ -65,7 +65,7 @@ const CaseHeader = (props) => {
 
                 <Row>
                 <Col><Badge bg="secondary">Case Status:</Badge> {props.case_status === "O" ? (
-                <CloseCaseModal caseid={props.caseNum} />
+                <CloseCaseModal caseid={props.caseNo} />
                 ) : props.case_status === "C" ? (
                 <><Badge bg="danger">
                 Closed
