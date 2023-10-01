@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Row, Col  } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import ViewSimilarPatientModal from '../components/ViewSimilarPatientModal'
+import edit from '../assets/edit.png';
 
 function AddCloseContactModal(props) {
    
@@ -260,10 +261,19 @@ function AddCloseContactModal(props) {
 
   return (
         <>
-
-            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow} disabled={!props.show}>
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> {props.update ? '' : 'Add a Close Contact'}
-            </button>
+            {props.update ? (
+                <img
+                    src={edit}
+                    onClick={handleShow}
+                    className="mb-4 me-1 clickable"
+                    style={{ height: "20px" }}
+                 />
+                ) : (
+                    <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow} disabled={!props.show}>
+                        <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> {props.update ? '' : 'Add a Close Contact'}
+                    </button>
+                )
+            }
 
     <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg">
         <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
