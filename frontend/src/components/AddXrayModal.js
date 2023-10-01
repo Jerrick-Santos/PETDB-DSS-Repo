@@ -5,6 +5,7 @@ import xray from '../assets/xray.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import add from '../assets/add.png';
+import Form from 'react-bootstrap/Form';
 function AddXrayModal(props) {
    
     const[show,setShow] = useState(false)
@@ -59,8 +60,8 @@ function AddXrayModal(props) {
         setHIError(HINoError);
 
         let dateError = '';
-        if (!xrayValues.issue_date) {
-            dateError = 'Required';
+        if (new Date(xrayValues.issue_date).toLocaleDateString() === new Date().toLocaleDateString()) {
+            dateError = 'Please select a date';
         }
         setDateError(dateError);
 
@@ -71,8 +72,8 @@ function AddXrayModal(props) {
         setTestError(testError);
 
         let valueError = '';
-        if (!xrayValues.TestValue) {
-            valueError = 'Required';
+        if (xrayValues.TestValue === "") {
+            valueError = 'Please select an option';
         }
         setValueError(valueError);
 
@@ -154,11 +155,7 @@ function AddXrayModal(props) {
         <Modal.Title>  Add Xray Results  </Modal.Title>
     </Modal.Header>
     <Modal.Body>
-        <div>
-            <label><strong> Upload Xray File Attachment:</strong></label>
-            <input type="file" className="form-control" />
-        </div>
-        <div className="mt-3"> 
+        {/*<div className="mt-3"> 
             <label> <strong>Issued by: </strong></label>
             <select className="form-select" name="HINo" value={xrayValues.HINo} onChange={handleChange}>
                 <option value="">Select</option>
@@ -201,7 +198,69 @@ function AddXrayModal(props) {
             {valueError && (
                 <p style={{color: 'red'}}>{valueError}</p>  
             )}
-        </div>
+            </div>*/}
+        <Form noValidate onSubmit={handleSubmit}>
+            <Row className="mb-3 justify-content-center">
+                <Form.Group as={Col} md="12" className='mb-3' controlId='HINo'>
+                    <Form.Label><strong>Issued by:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="HINo"
+                        name='HINo'
+                        value={xrayValues.HINo}
+                        onChange={handleChange}
+                        isInvalid={HINoError}>
+                            <option value="">Select</option>
+              
+                                {hiData.map((hi, index) => (
+                                <>
+                                <option value={hi.HINo}>{hi.HIName}</option>
+                                
+                                    </>
+                                ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{HINoError}</Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="12" className='mb-3' controlId='issue_date'>
+                    <Form.Label><strong>Issued on:</strong></Form.Label>
+                    <Form.Control
+                        required
+                        type='date'
+                        name='issue_date'
+                        onChange={handleChange}
+                        value={new Date(xrayValues.issue_date).toISOString().split('T')[0]}
+                        isInvalid={dateError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="12" className='mb-3' controlId='test_refno'>
+                    <Form.Label><strong>Reference Number:</strong></Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='test_refno'
+                        onChange={handleChange}
+                        value={xrayValues.test_refno}
+                        isInvalid={testError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{testError}</Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="12" controlId='TestValue'>
+                    <Form.Label><strong>Xray Results:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="TestValue"
+                        name='TestValue'
+                        value={xrayValues.TestValue}
+                        onChange={handleChange}
+                        isInvalid={valueError}>
+                            <option value="">Select</option>
+                            <option value="With Signs of TB">With Signs of TB</option>
+                            <option value="No signs">No signs</option>
+                            <option value="Undetermined">Undetermined</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{valueError}</Form.Control.Feedback>
+                </Form.Group>
+            </Row>
+        </Form>
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
