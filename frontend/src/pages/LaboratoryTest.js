@@ -13,6 +13,7 @@ import AddXrayModal from '../components/AddXrayModal';
 import AddIGRAModal from '../components/AddIGRAModal';
 import AddMTBRIFModal from '../components/AddMTBRIFModal';
 import AddTSTModal from '../components/AddTSTModal';
+import AddDSTModal from '../components/AddDSTModal';
 import CaseHeader from '../components/CaseHeader'
 import Pagination from 'react-bootstrap/Pagination';
 import DeleteTest from '../components/DeleteTest';
@@ -20,6 +21,7 @@ import UpdateIGRA from '../components/UpdateIGRA';
 import UpdateTST from '../components/UpdateTST';
 import UpdateMTBRIF from '../components/UpdateMTBRIF';
 import UpdateXray from '../components/UpdateXray';
+import UpdateDST from '../components/UpdateDST';
 import Badge from "react-bootstrap/Badge";
 import noresult from "../assets/noresult.png";
 import Spinner from "react-bootstrap/Spinner";
@@ -796,7 +798,7 @@ const LaboratoryTest = () => {
                                         OUTDATED{" "}
                                       </Badge>
                                     ) : null}</td>
-                                    <td> <UpdateXray DGResultsNo={dst.DGResultsNo} HINo={dst.HINo} issue_date={dst.issue_date} test_refno={dst.test_refno} TestValue={dst.TestValue} validity={dst.validity}/>
+                                    <td> <UpdateDST DGResultsNo={dst.DGResultsNo} HINo={dst.HINo} issue_date={dst.issue_date} test_refno={dst.test_refno} TestValue={dst.TestValue} validity={dst.validity}/>
                                         <DeleteTest DGResultsNo={dst.DGResultsNo}/></td>
                                 </tr>
                
@@ -836,7 +838,7 @@ const LaboratoryTest = () => {
                       <Col>
                       {caseData.case_status === 'O' ? (
                                 <>
-                                <AddXrayModal caseNum={caseNum} onTestAdded={() => setTestAdded(!testAdded)} />
+                                <AddDSTModal caseNum={caseNum} onTestAdded={() => setTestAdded(!testAdded)} />
                                 </>
                               ) : (
                                null
