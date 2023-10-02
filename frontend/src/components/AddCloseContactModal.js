@@ -105,7 +105,7 @@ function AddCloseContactModal(props) {
     }
 
     useEffect(() => {
-        if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
+        if (formValues.first_name && formValues.last_name && formValues.middle_initial && !props.update) {
             console.log("Similarity Check Condition Triggered");
             fetchData().then(({ combinedData }) => {
               setSimilarPatients(combinedData);
