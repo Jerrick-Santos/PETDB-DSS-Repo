@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Row, Col  } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import ViewSimilarPatientModal from '../components/ViewSimilarPatientModal'
+import edit from '../assets/edit.png';
 
 function AddCloseContactModal(props) {
    
@@ -13,7 +14,7 @@ function AddCloseContactModal(props) {
             last_name: '',
             first_name: '',
             middle_initial: '',
-            birthdate: new Date(),
+            birthdate: null,
             sex: '',
             contact_person: '',
             contact_num: '',
@@ -57,7 +58,7 @@ function AddCloseContactModal(props) {
         last_name: '',
         first_name: '',
         middle_initial: '',
-        birthdate: new Date(),
+        birthdate: null,
         sex: '',
         contact_person: '',
         contact_num: '',
@@ -68,21 +69,6 @@ function AddCloseContactModal(props) {
         DRNo: null,
         TSNo: null
     });
-
-    // Form Validation 
-    const setField = (field, value) => {
-        setFormValues({
-            ...formValues,
-            [field]:value
-        })
-
-        if (errors[field] && value) {
-            setErrors(prevErrors => ({
-                ...prevErrors,
-                [field]: null
-            }));
-        }
-    }
 
     // Fetch function for similar patient by name
     const fetchData = async () => {
@@ -115,18 +101,18 @@ function AddCloseContactModal(props) {
         const {name, value} = e.target;
         console.log(name, value);
         setFormValues(prev=>({...prev, [name]: value}));
-        console.log(formValues.first_name)
+        validateForm()
+    }
 
-        if (formValues.first_name && formValues.last_name && formValues.middle_initial) {
+    useEffect(() => {
+        if (formValues.first_name && formValues.last_name && formValues.middle_initial && !props.update) {
             console.log("Similarity Check Condition Triggered");
             fetchData().then(({ combinedData }) => {
               setSimilarPatients(combinedData);
               setShowSimilar(combinedData.length > 0);
             });
-
-
         }
-    }
+    }, [formValues.first_name, formValues.last_name, formValues.middle_initial])
 
     const validateForm = () => {
         const { first_name, last_name, middle_initial, birthdate, sex, contact_relationship, contact_num} = formValues
@@ -138,11 +124,12 @@ function AddCloseContactModal(props) {
         if (!first_name) newErrors.first_name = "Input cannot be empty"
         if (!last_name) newErrors.last_name = "Input cannot be empty"
         if (!middle_initial) newErrors.middle_initial = "Input cannot be empty"
-        if (new Date(birthdate).toLocaleDateString() === new Date().toLocaleDateString()) newErrors.birthdate = "Please select a date"
+        if (!birthdate) newErrors.birthdate = "Please select a date"
         if (sex === "") newErrors.sex = "Please select an option"
         if (!contact_relationship) newErrors.contact_relationship = "Input cannot be empty"
         if (contact_num.length !== 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
 
+        setErrors(newErrors)
 
         return newErrors
     }
@@ -194,8 +181,17 @@ function AddCloseContactModal(props) {
         } else {
             // TRY-CATCH FOR BACKEND INTERACTION
             try{
-                console.log("Form Submitted: ", formValues)
-                await axios.post("http://localhost:4000/api/addContacts", formValues)
+                console.log('REACHED SUBMISSION...') //testing
+                if (props.update) {
+                    console.log('REACHED SUBMISSION...updating') //testing
+                    console.log("Forms Updated: ", formValues)
+                    await axios.post("http://localhost:4000/api/updateContacts", formValues)
+                }
+                else {
+                    console.log('REACHED SUBMISSION...posting') //testing
+                    console.log("Form Submitted: ", formValues)
+                    await axios.post("http://localhost:4000/api/addContacts", formValues)
+                }
 
                 setValidated(true)
                 setShow(false)
@@ -240,17 +236,48 @@ function AddCloseContactModal(props) {
         clearForms()
     } 
 
+    useEffect(() => {
+        console.log('props.contact: ', props.contact)
+        if (props.update && props.contact) {
+            setFormValues(prevData => ({
+                ...prevData,
+                last_name: props.contact.last_name,
+                first_name: props.contact.first_name,
+                middle_initial: props.contact.middle_initial,
+                birthdate: new Date(props.contact.birthdate).toISOString(),
+                sex: props.contact.sex,
+                contact_person: props.contact.contact_person,
+                contact_num: props.contact.contact_num,
+                contact_email: props.contact.contact_email,
+                contact_relationship: props.contact.contact_relationship,
+                DRNo: props.contact.DRNo,
+                TSNo: props.contact.TSNo,
+                ContactNo: props.contact.ContactNo
+            }));
+        }
+        
+    }, [props.update, props.contact])
+
 
   return (
         <>
-
-            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow} disabled={!props.show}>
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a Close Contact
-            </button>
+            {props.update ? (
+                <img
+                    src={edit}
+                    onClick={handleShow}
+                    className="mb-4 me-1 clickable"
+                    style={{ height: "20px" }}
+                 />
+                ) : (
+                    <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow} disabled={!props.show}>
+                        <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> {props.update ? '' : 'Add a Close Contact'}
+                    </button>
+                )
+            }
 
     <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg">
         <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-            <Modal.Title>Add Close Contact</Modal.Title>
+            <Modal.Title>{props.update ? 'Update Close Contact Record' : 'Add a Close Contact'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
     
@@ -262,10 +289,10 @@ function AddCloseContactModal(props) {
                     <Form.Label>First Name</Form.Label>
                     <Form.Control
                         required
-                        type='text'
+                        type='text' 
                         placeholder='First Name'
                         name='first_name'
-                        onChange={e => setField('first_name', e.target.value)}
+                        onChange={handleChange}
                         value={formValues.first_name}
                         isInvalid={!!errors.first_name}
                         disabled={disableForms}
@@ -281,7 +308,7 @@ function AddCloseContactModal(props) {
                         type='text'
                         placeholder='Middle Name'
                         name='middle_initial'
-                        onChange={e => setField('middle_initial', e.target.value)}
+                        onChange={handleChange}
                         value={formValues.middle_initial}
                         isInvalid={!!errors.middle_initial}
                         disabled={disableForms} 
@@ -297,7 +324,7 @@ function AddCloseContactModal(props) {
                         type='text'
                         placeholder='Last Name'
                         name='last_name'
-                        onChange={e => setField('last_name', e.target.value)}
+                        onChange={handleChange}
                         value={formValues.last_name}
                         isInvalid={!!errors.last_name}
                         disabled={disableForms} 
@@ -316,7 +343,7 @@ function AddCloseContactModal(props) {
                             placeholder='Birthdate'
                             name='birthdate'
                             onChange={handleChange}
-                            value={new Date(formValues.birthdate).toISOString().split('T')[0]}
+                            value={formValues.birthdate ? new Date(formValues.birthdate).toISOString().split('T')[0] : ''}
                             isInvalid={!!errors.birthdate}
                             disabled={disableForms}
                         />
@@ -343,6 +370,7 @@ function AddCloseContactModal(props) {
                         name='contact_relationship'
                         onChange={handleChange}
                         isInvalid={!!errors.contact_relationship}
+                        value={formValues.contact_relationship}
                         
                     />
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -410,7 +438,7 @@ function AddCloseContactModal(props) {
                     <strong> Does the close contact have a history with TB or is currently in an active TB case?</strong>
                 </Col>
                 <Col>
-                    <Form.Check type='checkbox' name='showTBHistory' onChange={handleEnableDropdown} disabled={disableForms} />
+                    <Form.Check type='checkbox' name='showTBHistory' onChange={handleEnableDropdown} disabled={disableForms} checked={!disableForms} />
                 </Col>
             </Row>
 

@@ -479,38 +479,45 @@ const AddPatient = () => {
         return true;
     }
 
+    function getAge(value) {
+        const selectedBirthdate = new Date(value);
+        const currentDate = new Date();
+        age = currentDate.getFullYear() - selectedBirthdate.getFullYear();
+
+        if (age >= 15) {
+            alert("Age must be below 15 years old.");
+            return; // Do not proceed with updating the state
+        }
+
+        if (
+            currentDate.getMonth() < selectedBirthdate.getMonth() ||
+            (currentDate.getMonth() === selectedBirthdate.getMonth() &&
+                currentDate.getDate() < selectedBirthdate.getDate())
+        ) {
+            age--;
+            
+        }
+        setCalculatedAge(age); 
+        return value
+    }
+
     const handleChange = (e) => {
         const {name, value} = e.target;
         let newValue = value;
 
         if (name === 'birthdate') {
-            const selectedBirthdate = new Date(value);
-            const currentDate = new Date();
-            age = currentDate.getFullYear() - selectedBirthdate.getFullYear();
-
-            if (age >= 15) {
-                alert("Age must be below 15 years old.");
-                return; // Do not proceed with updating the state
-            }
-
-            if (
-                currentDate.getMonth() < selectedBirthdate.getMonth() ||
-                (currentDate.getMonth() === selectedBirthdate.getMonth() &&
-                    currentDate.getDate() < selectedBirthdate.getDate())
-            ) {
-                age--;
-            }
-            newValue = value;
+            
+            newValue = getAge(value);
         }
 
         let updatedPatient = {...patient};  
 
         updatedPatient[name] = name === 'last_name' ? value.toUpperCase() : newValue;
 
-        if (name === 'birthdate') {
-            // also update calculatedAge
-            setCalculatedAge(age); 
-        }
+        // if (name === 'birthdate') {
+        //     // also update calculatedAge
+            
+        // }
 
         setPatient(updatedPatient);
     };
@@ -555,6 +562,11 @@ const AddPatient = () => {
           setPatient( prev => ({
             ...prev,
             ...res.data[0],
+            emergency_name: res.data[0].contact_person,
+            e_contactno: res.data[0].contact_num,
+            e_email: res.data[0].contact_email,
+            birthdate: new Date(res.data[0].birthdate).toISOString().split('T')[0],
+            age: getAge(new Date(res.data[0].birthdate).toISOString().split('T')[0]),
             id
           }));
         })
@@ -651,7 +663,7 @@ const AddPatient = () => {
               <Row className="mb-5 justify-content-center">
                 <div className="form-group col-md-2">
                     <label for="inputBirthdate">Birthdate</label>
-                    <input type="date" class="form-control" id="inputBirthdate" name='birthdate' onChange={handleChange}  />
+                    <input type="date" class="form-control" id="inputBirthdate" name='birthdate' onChange={handleChange} value={patient.birthdate} />
                     {birthdateError && (
                         <p style={{color: 'red'}}>{birthdateError}</p>
                     )}
@@ -671,7 +683,7 @@ const AddPatient = () => {
 
                 <div className="form-group col-md-1">
                     <label for="inputAge">Age</label>
-                    <input type="number" class="form-control" id="inputAge"  name='age' value={calculatedAge !== null ? calculatedAge : ''} readOnly placeholder="Age"/>
+                    <input type="number" class="form-control" id="inputAge"  name='age' value={calculatedAge !== null ? calculatedAge : ''} readOnly placeholder="Age"/> {/**calculatedAge !== null ? calculatedAge : '' */}
                 </div>
 
                 <div className="form-group col-md-2">
@@ -1015,7 +1027,7 @@ const AddPatient = () => {
             <Row className="mt-2 mb-5 justify-content-center">
                 <div class="form-group col-md-3">
                     <label for="inputEmergencyName">Emergency Contact Name</label>
-                    <input type="text" class="form-control" id="inputEmergencyName" name='emergency_name' onChange={handleChange} placeholder="Name" value={patient.contact_person ? patient.contact_person : ''}/>
+                    <input type="text" class="form-control" id="inputEmergencyName" name='emergency_name' onChange={handleChange} placeholder="Name" value={patient.emergency_name}/>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputEmergencyRelationship">Relationship</label>
@@ -1027,11 +1039,11 @@ const AddPatient = () => {
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputEmergencyContact">Contact #</label>
-                    <input type="text" class="form-control" id="inputEmergencyContact" name='e_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx" value={patient.contact_num ? patient.contact_num : ''}/>
+                    <input type="text" class="form-control" id="inputEmergencyContact" name='e_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx" value={patient.e_contactno}/>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputEmergencyEmail">Email</label>
-                    <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com" value={patient.contact_email ? patient.contact_email : ''} />
+                    <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com" value={patient.e_email} />
                 </div>
             </Row>
 

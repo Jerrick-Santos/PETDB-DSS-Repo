@@ -2066,5 +2066,28 @@ router.post('/updatepw/:id', (req, res) => {
     });
 })
 
+router.post('/updatetreatments', (req, res) => {
+    const values = [
+        req.body.Medicine,
+        req.body.Dosage,
+        req.body.Frequency,
+        req.body.StartDate,
+        req.body.EndDate,
+        req.body.TreatmentID
+    ]
+
+    db.query(`UPDATE    TD_TREATMENTS
+                SET     Medicine = ?, Dosage = ?, Frequency = ?, StartDate = ?, EndDate = ?
+                WHERE   TreatmentID = ?;
+        `, values, (err, data) => {
+            if (err) {
+                console.log("Error updating into TD_TREATMENTS:", err);
+                return res.json(err)
+            }
+            console.log("Successfully updating into TD_TREATMENTS:", data);
+            return res.json(data)
+    });
+})
+
     return router;
 };

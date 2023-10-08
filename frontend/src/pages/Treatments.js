@@ -213,8 +213,8 @@ const Treatments = () => {
                                   <td>{new Date(data.StartDate).toLocaleDateString()}</td>
                                   <td>{new Date(data.EndDate).toLocaleDateString()}</td>
                                     <td>           
-                                    <UpdateTreatment/>
-                                    <DeleteTreatment/> </td>
+                                    <UpdateTreatment TreatmentID={data.TreatmentID} Medicine={data.Medicine} Dosage={data.Dosage} Frequency={data.Frequency} StartDate={data.StartDate} EndDate={data.EndDate}/>
+                                    <DeleteTreatment TreatmentID={data.TreatmentID}/> </td>
                                 </tr>
                    </>
               

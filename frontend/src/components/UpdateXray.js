@@ -181,10 +181,6 @@ function UpdateXray(props) {
         </>             
     ) : (
         <>
-            <div>
-                    <label><strong> Update Xray File Attachment:</strong></label>
-                    <input type="file" className="form-control" />
-                </div>
                 <div className="mt-3"> 
                     <label> <strong>Issued by: </strong></label>
                     <select className="form-select" name="HINo" value={formValues.HINo} onChange={handleChange}>

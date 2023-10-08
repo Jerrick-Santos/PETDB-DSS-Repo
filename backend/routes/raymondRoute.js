@@ -50,7 +50,10 @@ module.exports = (db) => {
                         ct.PatientNo,
                         ct.ContactNo,
                         dr.DRDescription,
-                        ts.TSDescription
+                        ts.TSDescription,
+                        ct.DRNo,
+                        ct.TSNo,
+                        ct.ContactNo
                     FROM PEDTBDSS_new.MD_CONTACTTRACING ct
                     JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON ct.ContactNo = ctc.ContactNo
                     JOIN PEDTBDSS_new.TD_PTCASE ptc ON ctc.CaseNo = ptc.CaseNo
@@ -362,8 +365,22 @@ module.exports = (db) => {
                 res.send(results)
             }
         })
+    }),
+
+    router.post('/updateContacts', (req, res) => {
+
+        const updateQuery = `UPDATE MD_CONTACTTRACING 
+                            SET last_name = ?, first_name = ?, middle_initial = ?, birthdate = ?, sex = ?, 
+                            contact_person = ?, contact_num = ?, contact_email = ?, contact_relationship = ?, DRNo = ?, TSNo = ?
+                            WHERE ContactNo = ?`
+
+        db.query(updateQuery, [req.body.last_name, req.body.first_name, req.body.middle_initial, new Date(req.body.birthdate).toISOString().split('T')[0], req.body.sex, req.body.contact_person, req.body.contact_num, req.body.contact_email, req.body.contact_relationship, req.body.DRNo, req.body.TSNo, req.body.ContactNo], (err, result) => {
+            if (err) { console.error(err) }
+            else {
+                res.status(200).json({message: 'successful updating of close contact information'})
+            }
+        })
     })
-    
 
     return router;
 

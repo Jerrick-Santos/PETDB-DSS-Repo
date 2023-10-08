@@ -308,7 +308,8 @@ const CloseContacts = () => {
                         <th scope="col">Diagnostic Result</th>
                         <th scope="col">Treatment Status</th>
                         <th scope="col">Next HA</th>
-                        <th scope="col">Next X-Ray</th>  
+                        <th scope="col">Next X-Ray</th>
+                        <th scope="col" />  
                     </tr>
                 </thead>
                 <tbody>
@@ -331,24 +332,34 @@ const CloseContacts = () => {
                       <td>{contact.sex === "M" ? "Male": "Female"}</td>
                       <td>{contact.contact_relationship}</td>
 
-                      <td>
-                          <Accordion defaultActiveKey="0">
-                            <Accordion.Item>
-                              <Accordion.Header>Contact Details</Accordion.Header>
-                                <Accordion.Body> 
+                      {contact.contact_person || contact.contact_num || contact.contact_email ? (
+                        <Accordion defaultActiveKey="0">
+                          <Accordion.Item>
+                            <Accordion.Header>Contact Details</Accordion.Header>
+                              <Accordion.Body>
+                                {contact.contact_person ? (
                                   <Row>
                                     <Badge bg='secondary'>Name</Badge> {contact.contact_person}
                                   </Row>
+                                ) : null}
+
+                                {contact.contact_num ? (
                                   <Row>
                                     <Badge bg='secondary'>Number</Badge> {contact.contact_num}
                                   </Row>
+                                ) : null}
+
+                                {contact.contact_email ? (
                                   <Row>
                                     <Badge bg='secondary'>Email</Badge> {contact.contact_email}
                                   </Row>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                          </Accordion>
-                      </td>
+                                ) : null}
+                              </Accordion.Body>
+                          </Accordion.Item>
+                        </Accordion>
+                      ) : ( 
+                        "No Information Available"
+                      )}
 
                       <td>{contact.DRDescription ? contact.DRDescription : 'none'}</td>
                       <td>{contact.TSDescription ? contact.TSDescription : 'none'}</td>
@@ -381,6 +392,7 @@ const CloseContacts = () => {
                         )
                       }
 
+                      <td><AddCloseContactModal id={caseNum} show={latestCase} update={true} contact={contact}/></td>
                     </tr>
                   ))
                 }
