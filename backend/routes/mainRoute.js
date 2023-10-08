@@ -646,7 +646,25 @@ module.exports = (db) => {
 
         });
     }); 
-    
+
+    router.get('/getDrugResistance/:id', (req, res) => {
+        const testno = req.params.id;
+        db.query(`
+        SELECT * FROM PEDTBDSS_new.TD_DRUGRESISTANCE WHERE DGResultsNo = ${testno};
+        `, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                results.forEach(result => {
+                    console.log(result.age);
+                });
+                console.log("Got Drug Results!")
+                console.log(results)
+                res.send(results)
+            }
+        });
+    })
+
 
     router.post('/newXrayresults', (req, res) => {
         const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -1281,6 +1299,86 @@ router.post('/updatetests', (req, res) => {
         return res.json(data)
     });
 })
+
+router.post('/updateDST', (req, res) => {
+    const TestValue = DSTinterpreter(req.body.drug1, req.body.drug2, req.body.drug3)
+    console.log(TestValue)
+    const testresultsValues = [
+        req.body.HINo,
+        req.body.issue_date,
+        req.body.test_refno,
+        TestValue,
+        req.body.validity,
+        req.body.DGResultsNo,
+    ]
+    
+    db.query(`UPDATE 	TD_DIAGNOSTICRESULTS
+                SET		HINo = ?, issue_date = ?, test_refno = ?, TestValue = ?, validity = ?
+                WHERE	DGResultsNo = ?`, testresultsValues, (err, result) => {
+        if (err) {
+            console.log("Error updating TD_DIAGNOSTICRESULTS:", err);
+            return res.json(err);
+        }
+
+        console.log("Successfully updating TD_DIAGNOSTICRESULTS:", result);
+
+            db.query(`UPDATE    TD_DRUGRESISTANCE
+                        SET     rif = ?, drug1 = ?, drug2 = ?, drug3 = ?
+                        WHERE   DGResultsNo = ?`, ["NA", req.body.drug1, req.body.drug2, req.body.drug3, req.body.DGResultsNo], (err1, result1) => {
+                if (err1) {
+                    console.log("Error updating TD_DRUGRESISTANCE:", err1);
+                    return res.json(err1);
+                }
+
+                console.log("Successfully updating TD_DRUGRESISTANCE:", result1);
+
+                return res.json(result); // Return the result of the first query
+            });
+
+    });
+})
+
+router.post('/updateMTB', (req, res) => {
+    const testresultsValues = [
+        req.body.HINo,
+        req.body.issue_date,
+        req.body.test_refno,
+        req.body.TestValue,
+        req.body.validity,
+        req.body.DGResultsNo,
+    ]
+
+    db.query(`UPDATE    TD_DIAGNOSTICRESULTS
+                SET     HINo = ?, issue_date = ?, test_refno = ?, TestValue = ?, validity = ?
+                WHERE   DGResultsNo = ?;`, testresultsValues, (err, result) => {
+        if (err) {
+            console.log("Error updating TD_DIAGNOSTICRESULTS:", err);
+            return res.json(err);
+        }
+
+        console.log("Successfully updating TD_DIAGNOSTICRESULTS:", result);
+
+        const RIFresult = interpretRIF(req.body.TestValue);
+
+        if (RIFresult === "R" || RIFresult === "S") {
+            db.query(`UPDATE    TD_DRUGRESISTANCE
+                        SET     rif = ?, drug1 = ?, drug2 = ?, drug3 = ?
+                        WHERE   DGResultsNo = ?`, [RIFresult, "NA", "NA", "NA", req.body.DGResultsNo], (err1, result1) => {
+                if (err1) {
+                    console.log("Error updating TD_DRUGRESISTANCE:", err1);
+                    return res.json(err1);
+                }
+
+                console.log("Successfully updating TD_DRUGRESISTANCE:", result1);
+
+                return res.json(result); // Return the result of the first query
+            });
+        } else {
+            return res.json(result); // Return the result of the first query
+        }
+    });
+})
+
 
 router.post('/updateassess', (req, res) => {
     const values = [

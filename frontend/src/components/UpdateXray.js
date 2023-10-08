@@ -147,14 +147,17 @@ function UpdateXray(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-
+        const formattedIssueDate = new Date(formValues.issue_date).toISOString().slice(0, 19).replace('T', ' ');
         const isValid = validate();
         if(!isValid){
           return;
         }
 
         try{
-            await axios.post("http://localhost:4000/api/updatetests", formValues)
+            await axios.post("http://localhost:4000/api/updatetests", {
+                ...formValues,
+                issue_date: formattedIssueDate, // Use the formatted date
+              });
         }catch(err){
             console.log(err)
         }

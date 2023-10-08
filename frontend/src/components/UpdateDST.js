@@ -66,19 +66,51 @@ function UpdateDST(props) {
             });
     }, [props.DGResultsNo]); // Adding props.DGResultsNo as dependency
 
+    const [drugs, setDrugs] = useState([]);
+    useEffect(() => {
+        axios.get(`http://localhost:4000/api/getDrugResistance/${props.DGResultsNo}`)
+          .then((response) => {
+            setDrugs(response.data)
+          })
+          .catch((error) => {
+            // Handle any errors that occurred during the request
+            console.error('Error fetching data:', error);
+          });
+    }, [props.DGResultsNo])
+    
+
     const [formValues, setFormValues] = useState({
         DGResultsNo: props.DGResultsNo,
         HINo: props.HINo,
         issue_date: props.issue_date,
         test_refno: props.test_refno,
-        TestValue: props.TestValue,
+        drug1: '',
+        drug2: '',
+        drug3: '',
         validity: props.validity,
     });
+
+    useEffect(() => {
+        // Check if there are drugs in the array
+        if (drugs.length > 0) {
+            const firstDrugData = drugs[0]; // Get the first item in the array
+    
+            // Update formValues with drug values
+            setFormValues((prev) => ({
+                ...prev,
+                drug1: firstDrugData.drug1,
+                drug2: firstDrugData.drug2,
+                drug3: firstDrugData.drug3,
+            }));
+        }
+    }, [drugs]);
 
     const [HINoError, setHIError] = useState('');
     const [dateError, setDateError] = useState('');
     const [testError, setTestError] = useState('');
-    const [valueError, setValueError] = useState('');
+    const [d1Error, setD1Error] = useState('');
+    const [d2Error, setD2Error] = useState('');
+    const [d3Error, setD3Error] = useState('');
 
     const validate = () => {
         let HINoError = '';
@@ -99,13 +131,25 @@ function UpdateDST(props) {
         }
         setTestError(testError);
 
-        let valueError = '';
-        if (!formValues.TestValue) {
-            valueError = 'Required';
+        let d1Error = '';
+        if (!formValues.drug1) {
+            d1Error = 'Required';
         }
-        setValueError(valueError);
+        setD1Error(d1Error);
 
-        if (HINoError || dateError || testError || valueError) {
+        let d2Error = '';
+        if (!formValues.drug2) {
+            d2Error = 'Required';
+        }
+        setD2Error(d2Error);
+
+        let d3Error = '';
+        if (!formValues.drug3) {
+            d3Error = 'Required';
+        }
+        setD3Error(d3Error);
+
+        if (HINoError || dateError || testError || d1Error || d2Error || d3Error ) {
             return false;
           }
 
@@ -147,14 +191,17 @@ function UpdateDST(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-
+        const formattedIssueDate = new Date(formValues.issue_date).toISOString().slice(0, 19).replace('T', ' ');
         const isValid = validate();
         if(!isValid){
           return;
         }
 
         try{
-            await axios.post("http://localhost:4000/api/updatetests", formValues)
+            await axios.post("http://localhost:4000/api/updateDST", {
+                ...formValues,
+                issue_date: formattedIssueDate, // Use the formatted date
+              });
             window.location.reload()
         }catch(err){
             console.log(err)
@@ -182,8 +229,8 @@ function UpdateDST(props) {
     ) : (
         <>
     <form className="mt-4 justify-content-center">
-        <div>
-            <label><strong> Upload DST Test File Attachment:</strong></label>
+    <div>
+            <label><strong> Upload DST File Attachment:</strong></label>
             <input type="file" className="form-control" />
         </div>
         <div className="mt-3"> 
@@ -219,14 +266,39 @@ function UpdateDST(props) {
             )}
         </div>
         <div className="mt-3"> 
-            <label> <strong>IGRA Test Results: </strong></label>
-            <select className="form-select" name='TestValue' value={formValues.TestValue} onChange={handleChange}>
+            <label> <strong>Drug 1: </strong></label>
+            <select className="form-select" name='drug1' value={formValues.drug1} onChange={handleChange}>
                 <option value="">Select</option>
-                <option value="Positive">Positive</option>
-                <option value="Negative">Negative</option>
+                <option value="R">Resistant</option>
+                <option value="S">Susceptible</option>
+                <option value="NA">Indeterminate</option>
             </select>
-            {valueError && (
-                <p style={{color: 'red'}}>{valueError}</p>  
+            {d1Error && (
+                <p style={{color: 'red'}}>{d1Error}</p>  
+            )}
+        </div>
+        <div className="mt-3"> 
+            <label> <strong>Drug 2: </strong></label>
+            <select className="form-select" name='drug2' value={formValues.drug2} onChange={handleChange}>
+                <option value="">Select</option>
+                <option value="R">Resistant</option>
+                <option value="S">Susceptible</option>
+                <option value="NA">Indeterminate</option>
+            </select>
+            {d2Error && (
+                <p style={{color: 'red'}}>{d2Error}</p>  
+            )}
+        </div>
+        <div className="mt-3"> 
+            <label> <strong>Drug 3: </strong></label>
+            <select className="form-select" name='drug3' value={formValues.drug3} onChange={handleChange}>
+                <option value="">Select</option>
+                <option value="R">Resistant</option>
+                <option value="S">Susceptible</option>
+                <option value="NA">Indeterminate</option>
+            </select>
+            {d3Error && (
+                <p style={{color: 'red'}}>{d3Error}</p>  
             )}
         </div>
     </form>
