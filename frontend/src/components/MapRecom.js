@@ -1,15 +1,11 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useRef, useEffect} from 'react';
-import edit from '../assets/edit.png';
-import map from '../assets/map.png';
-import { Navbar, Nav, Card, Row, Col, Badge  } from 'react-bootstrap';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import  MarkerClusterGroup  from "react-leaflet-markercluster";
-import localforage from 'localforage';
+import { Row, Col, Badge  } from 'react-bootstrap';
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import { MBTiles } from 'leaflet.offline';
-import L, { Map } from "leaflet";
+import L from "leaflet";
 import axios from 'axios';
-
+import pin from '../assets/redpin.png';
 
 function MapRecom(props) {
     
@@ -62,7 +58,12 @@ function MapRecom(props) {
     const [show,setShow] = useState(false)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
+    
+    const customPin = L.icon({
+        iconUrl: pin,
+        iconSize: [30, 40], // Adjust the size as needed
+        iconAnchor: [15, 18], // Adjust the anchor point as needed
+    });
 
   return (
         <>
@@ -111,23 +112,39 @@ function MapRecom(props) {
                             />
 
                             {locations.length > 0 && locations.map((hi, index) => {
-                                
                                 return (
-                                    <Marker position = {[hi.XCoord, hi.YCoord]} key={index}>
-                                        <Popup>
-                                            {hi.HIName} <br />
-                                            {hi.HIOperatingHours}
-                                        </Popup>
-                                    </Marker>
-                                )
+                                    
+                                    <React.Fragment key={index}>
 
+                                        {/** Rendering HI map pins */}
+                                        <Marker opacity={1} position = {[hi.XCoord, hi.YCoord]} key={index}>
+                                            <Popup>
+                                                {hi.HIName} <br />
+                                                {hi.HIOperatingHours}
+                                            </Popup>
+                                        </Marker>
+
+                                        {/* Conditional rendering of a Polyline component if current location is the closest */}
+                                        {hi.isClosest && (
+                                            <Polyline
+                                                positions={[[center.XCoord, center.YCoord], [hi.XCoord, hi.YCoord]]} // Replace with your polyline coordinates
+                                                color="red" // Customize polyline color
+                                            />
+                                        )}
+                                        
+                                        
+                                    </React.Fragment>
+                                    
+                                )
                             })}
 
-                            <Marker style={{ opacity: 1 }} position={[center.XCoord, center.YCoord]}>
+                            <Marker opacity={1} position={[center.XCoord, center.YCoord]} color={'red'} icon={customPin}>
                                 <Popup>
                                     <strong>{center.BGYName}</strong>
                                 </Popup>
                             </Marker>
+
+                            
 
                         </MapContainer>
                     )}
