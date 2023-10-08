@@ -24,9 +24,6 @@ function AddIGRAModal(props) {
         axios.get(`http://localhost:4000/api/validity/7`)
           .then((response) => {
           setIGRAValidity(response.data)
-          console.log('Validity Months: ', igraValidity);
-          // Call computeValidity after fetching xrayValidity and when issue_date changes
-          computeValidity();
           })
           .catch((error) => {
           // Handle any errors that occurred during the request
@@ -84,31 +81,35 @@ function AddIGRAModal(props) {
     const handleChange = (e) => {
         const {name, value} = e.target;
         setIGRAValues(prev=>({...prev, [name]: value}));
-        if (name === 'issue_date') {
-            computeValidity();
-        }
     }
 
-    const computeValidity = () => {
-        const today = new Date();
-        const issueDate = new Date(igraValues.issue_date);
+    useEffect(() => {
 
-        if (igraValidity.length > 0) {
+        const computeValidity = () => {
+            const today = new Date();
+            const issueDate = new Date(igraValues.issue_date);
+            
+    
+            if (igraValidity.length > 0) {
             const validityMonths = igraValidity[0].DGValidityMonths;
             const validityExpirationDate = new Date(issueDate);
+    
             validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
-
+    
             console.log('Today: ', today);
             console.log('issueDate: ', issueDate);
-            console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1);
-
+            console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+    
             if (today <= validityExpirationDate) {
                 setIGRAValues((prev) => ({ ...prev, validity: 1 }));
               } else {
                 setIGRAValues((prev) => ({ ...prev, validity: 0 }));
               }
-        }
-    };
+            }
+        };
+
+        computeValidity()
+    }, [igraValidity, igraValues.issue_date]);
 
       const handleSubmit = async (e) => {
         e.preventDefault()

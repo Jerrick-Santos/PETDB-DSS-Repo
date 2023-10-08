@@ -24,9 +24,6 @@ function AddTSTModal(props) {
         axios.get(`http://localhost:4000/api/validity/3`)
           .then((response) => {
           setTSTValidity(response.data)
-          console.log('Validity Months: ', tstValidity);
-          // Call computeValidity after fetching xrayValidity and when issue_date changes
-          computeValidity();
           })
           .catch((error) => {
           // Handle any errors that occurred during the request
@@ -84,31 +81,35 @@ function AddTSTModal(props) {
     const handleChange = (e) => {
         const {name, value} = e.target;
         setTSTValues(prev=>({...prev, [name]: value}));
-        if (name === 'issue_date') {
-            computeValidity();
-        }
     }
 
-    const computeValidity = () => {
-        const today = new Date();
-        const issueDate = new Date(tstValues.issue_date);
+    useEffect(() => {
 
-        if (tstValidity.length > 0) {
-        const validityMonths = tstValidity[0].DGValidityMonths;
-        const validityExpirationDate = new Date(issueDate);
-        validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+        const computeValidity = () => {
+            const today = new Date();
+            const issueDate = new Date(tstValues.issue_date);
+            
+    
+            if (tstValidity.length > 0) {
+            const validityMonths = tstValidity[0].DGValidityMonths;
+            const validityExpirationDate = new Date(issueDate);
+    
+            validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+    
+            console.log('Today: ', today);
+            console.log('issueDate: ', issueDate);
+            console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+    
+            if (today <= validityExpirationDate) {
+                setTSTValues((prev) => ({ ...prev, validity: 1 }));
+              } else {
+                setTSTValues((prev) => ({ ...prev, validity: 0 }));
+              }
+            }
+        };
 
-        console.log('Today: ', today);
-        console.log('issueDate: ', issueDate);
-        console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
-
-        if (today > validityExpirationDate) {
-            setTSTValues((prev) => ({ ...prev, validity: 0 }));
-        } else {
-            setTSTValues((prev) => ({ ...prev, validity: 1 }));
-        }
-        }
-    };
+        computeValidity()
+    }, [tstValidity, tstValues.issue_date]);
 
       const handleSubmit = async (e) => {
         e.preventDefault()

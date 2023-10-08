@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
@@ -16,15 +16,21 @@ function AddAssessNoPersist(props) {
     const [height, setHeight] = useState(0);
     const [bmi, setBMI] = useState(null);
 
-    const calculateBMI = () => {
-      if (bodyWeight && height) {
-        const heightInMeters = height / 100; // Convert height to meters
-        const bmiValue = bodyWeight / (heightInMeters * heightInMeters);
-        setBMI(bmiValue.toFixed(2)); // Round BMI to 2 decimal places
-      } else {
-        setBMI(null); // Reset BMI if any of the inputs are empty
-      }
-    };
+
+      useEffect(() => {
+
+        const calculateBMI = () => {
+          if (bodyWeight && height) {
+            const heightInMeters = height / 100; // Convert height to meters
+            const bmiValue = bodyWeight / (heightInMeters * heightInMeters);
+            setBMI(bmiValue.toFixed(2)); // Round BMI to 2 decimal places
+          } else {
+            setBMI(null); // Reset BMI if any of the inputs are empty
+          }
+        };
+
+        calculateBMI()
+    }, [bodyWeight, height]);
 
     const [assessFormValues, setAssessFormValues] = useState({
         case_no:props.caseNo,
@@ -120,9 +126,7 @@ function AddAssessNoPersist(props) {
           setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
         }
 
-        if (name === 'ass_body_weight' || name === 'ass_height') {
-          calculateBMI();
-        }
+        
     }
 
     const resetValidation = () => {

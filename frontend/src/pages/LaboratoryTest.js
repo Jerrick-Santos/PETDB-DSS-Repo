@@ -315,7 +315,9 @@ const LaboratoryTest = () => {
                                         OUTDATED{" "}
                                       </Badge>
                                     ) : null}</td>
-                                    <td> <UpdateXray DGResultsNo={xray.DGResultsNo} HINo={xray.HINo} issue_date={xray.issue_date} test_refno={xray.test_refno} TestValue={xray.TestValue} validity={xray.validity}/>
+                                    <td> <UpdateXray DGResultsNo={xray.DGResultsNo} HINo={xray.HINo} issue_date={xray.issue_date} 
+                                                    test_refno={xray.test_refno} TestValue={xray.TestValue} validity={xray.validity}
+                                                    onTestAdded={() => setTestAdded(!testAdded)}/>
                                         <DeleteTest DGResultsNo={xray.DGResultsNo}/></td>
                                 </tr>
                
@@ -677,7 +679,7 @@ const LaboratoryTest = () => {
                                         OUTDATED{" "}
                                       </Badge>
                                     ) : null}</td>
-                                    <td>         <UpdateIGRA DGResultsNo={igra.DGResultsNo} HINo={igra.HINo} issue_date={igra.issue_date} test_refno={igra.test_refno} TestValue={igra.TestValue} validity={igra.validity}/>
+                                    <td>         <UpdateIGRA DGResultsNo={igra.DGResultsNo} HINo={igra.HINo} issue_date={igra.issue_date} test_refno={igra.test_refno} TestValue={igra.TestValue} validity={igra.validity} onTestAdded={() => setTestAdded(!testAdded)}/>
 
 <DeleteTest DGResultsNo={igra.DGResultsNo}/> </td>
                                 </tr>

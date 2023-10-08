@@ -25,16 +25,12 @@ function AddXrayModal(props) {
         axios.get(`http://localhost:4000/api/validity/1`)
         .then((response) => {
         setXrayValidity(response.data)
-        // Call computeValidity after fetching xrayValidity and when issue_date changes
-        computeValidity();
+        
         })
         .catch((error) => {
         // Handle any errors that occurred during the request
         console.error('Error fetchingdata:', error);
         });
-        
-  
-
     }, []);
 
     const [xrayValues, setXrayValues] = useState({
@@ -46,6 +42,36 @@ function AddXrayModal(props) {
         validity: 1,
     })
 
+
+    useEffect(() => {
+
+        const computeValidity = () => {
+            const today = new Date();
+            const issueDate = new Date(xrayValues.issue_date);
+            
+    
+            if (xrayValidity.length > 0) {
+            const validityMonths = xrayValidity[0].DGValidityMonths;
+            const validityExpirationDate = new Date(issueDate);
+    
+            validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+    
+            console.log('Today: ', today);
+            console.log('issueDate: ', issueDate);
+            console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+    
+            if (today <= validityExpirationDate) {
+                setXrayValues((prev) => ({ ...prev, validity: 1 }));
+              } else {
+                setXrayValues((prev) => ({ ...prev, validity: 0 }));
+              }
+            }
+        };
+
+        computeValidity()
+    }, [xrayValidity, xrayValues.issue_date]);
+
+   
     const [HINoError, setHIError] = useState('');
     const [dateError, setDateError] = useState('');
     const [testError, setTestError] = useState('');
@@ -85,35 +111,11 @@ function AddXrayModal(props) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-  
-
 
         setXrayValues((prev) => ({ ...prev, [name]: value }));
-        if (name === 'issue_date') {
-            computeValidity();
-          }
       }
 
-      const computeValidity = () => {
-        const today = new Date();
-        const issueDate = new Date(xrayValues.issue_date);
-
-        if (xrayValidity.length > 0) {
-        const validityMonths = xrayValidity[0].DGValidityMonths;
-        const validityExpirationDate = new Date(issueDate);
-        validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
-
-        console.log('Today: ', today);
-        console.log('issueDate: ', issueDate);
-        console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
-
-        if (today <= validityExpirationDate) {
-            setXrayValues((prev) => ({ ...prev, validity: 1 }));
-          } else {
-            setXrayValues((prev) => ({ ...prev, validity: 0 }));
-          }
-        }
-    };
+     
 
       const handleSubmit = async (e) => {
         e.preventDefault();

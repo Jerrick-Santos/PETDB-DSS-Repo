@@ -46,6 +46,34 @@ function AddMTBRIFModal(props) {
             validity: 1,
     })
 
+    useEffect(() => {
+
+        const computeValidity = () => {
+            const today = new Date();
+            const issueDate = new Date(mtbValues.issue_date);
+            
+    
+            if (mtbValidity.length > 0) {
+            const validityMonths = mtbValidity[0].DGValidityMonths;
+            const validityExpirationDate = new Date(issueDate);
+    
+            validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+    
+            console.log('Today: ', today);
+            console.log('issueDate: ', issueDate);
+            console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+    
+            if (today <= validityExpirationDate) {
+                setMTBValues((prev) => ({ ...prev, validity: 1 }));
+              } else {
+                setMTBValues((prev) => ({ ...prev, validity: 0 }));
+              }
+            }
+        };
+
+        computeValidity()
+    }, [mtbValidity, mtbValues.issue_date]);
+
     const [HINoError, setHIError] = useState('');
     const [dateError, setDateError] = useState('');
     const [testError, setTestError] = useState('');
@@ -86,9 +114,6 @@ function AddMTBRIFModal(props) {
     const handleChange = (e) => {
         const {name, value} = e.target;
         setMTBValues((prev)=>({...prev, [name]: value}));
-        if (name === 'issue_date') {
-            computeValidity();
-        }
     }
 
     const computeValidity = () => {

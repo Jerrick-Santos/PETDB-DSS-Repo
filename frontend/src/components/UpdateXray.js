@@ -33,9 +33,6 @@ function UpdateXray(props) {
         axios.get(`http://localhost:4000/api/validity/1`)
           .then((response) => {
           setXrayValidity(response.data)
-          console.log('Validity Months: ', xrayValidity);
-          // Call computeValidity after fetching xrayValidity and when issue_date changes
-          computeValidity();
           })
           .catch((error) => {
           // Handle any errors that occurred during the request
@@ -74,6 +71,34 @@ function UpdateXray(props) {
         TestValue: props.TestValue,
         validity: props.validity,
     });
+
+    useEffect(() => {
+
+        const computeValidity = () => {
+            const today = new Date();
+            const issueDate = new Date(formValues.issue_date);
+            
+    
+            if (xrayValidity.length > 0) {
+            const validityMonths = xrayValidity[0].DGValidityMonths;
+            const validityExpirationDate = new Date(issueDate);
+    
+            validityExpirationDate.setMonth(validityExpirationDate.getMonth() + validityMonths);
+    
+            console.log('Today: ', today);
+            console.log('issueDate: ', issueDate);
+            console.log("Computed Validity: ", today > validityExpirationDate ? 0 : 1 );
+    
+            if (today <= validityExpirationDate) {
+                setFormValues((prev) => ({ ...prev, validity: 1 }));
+              } else {
+                setFormValues((prev) => ({ ...prev, validity: 0 }));
+              }
+            }
+        };
+
+        computeValidity()
+    }, [xrayValidity, formValues.issue_date]);
 
     const [HINoError, setHIError] = useState('');
     const [dateError, setDateError] = useState('');
@@ -115,35 +140,10 @@ function UpdateXray(props) {
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormValues(prev=>({...prev, [name]: value}));
-        if (name === 'issue_date') {
-            computeValidity();
-        }
     }
 
-    const computeValidity = () => {
-        const today = new Date();
-        const issueDate = new Date(formValues.issue_date);
-
-            const validityMonths = xrayValidity[0].DGValidityMonths;
-            issueDate.setMonth(issueDate.getMonth() + validityMonths);
-
-            console.log('Today: ', today);
-            console.log('issueDate: ', issueDate);
-            console.log("Computed Validity: ", today > issueDate ? 0 : 1);
-
-            
-        
-              const calculatedValidity = today <= issueDate ? 1 : 0;
-
-              // Log calculated validity
-              console.log("Calculated validity:", calculatedValidity);
-            
-              setFormValues(prev => ({
-                ...prev,
-                validity: calculatedValidity
-              }));     
-        
-    };
+ 
+   
 
     const handleSubmit = async (e) => {
         e.preventDefault()
