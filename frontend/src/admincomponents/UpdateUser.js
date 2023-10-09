@@ -23,11 +23,36 @@ function UpdateUser(props) {
   const [firstNameError, setFirstError] = useState('');
   const [middleNameError, setMiddleError] = useState('');
   const [lastNameError, setLastError] = useState('');
+  const [userExist, setUserExist] = useState(false);
+
+  useEffect(() => {
+
+    if (formValues.IDNo) {
+      axios.get(`http://localhost:4000/api/checkuserexist/${formValues.IDNo}`)
+    .then((response) => {
+      if(response.data.length>0 && response.data[0]!==props.userNo){
+        console.log(response.data)
+        setUserExist(true)
+      } else{
+        setUserExist(false)
+      }
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the request
+      console.error('Error fetching data:', error);
+    });
+    }
+    
+      
+  
+  }, [formValues.IDNo]);
 
   const validate = () => {
     let IDnoError = '';
     if (!formValues.IDNo) {
       IDnoError = 'Required';
+    } else if (userExist){
+      IDnoError = 'User ID already exists'
     }
     setIDError(IDnoError);
 
@@ -70,7 +95,7 @@ function UpdateUser(props) {
     }
 
     try {
-      await axios.post("http://localhost:4000/api/updateuser", formValues);
+      await axios.post("http://localhost:4000/api/adminupdateuser", formValues);
     } catch (err) {
       console.log(err);
     }

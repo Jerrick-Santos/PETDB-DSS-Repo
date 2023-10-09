@@ -8,7 +8,9 @@ import ViewSimilarPatientModal from '../components/ViewSimilarPatientModal'
 import edit from '../assets/edit.png';
 
 function AddCloseContactModal(props) {
-   
+    
+    // HELPER FUNCTIONS --------------------------------------------------
+
     function clearForms() {
         const defaultValues = {
             last_name: '',
@@ -31,46 +33,34 @@ function AddCloseContactModal(props) {
         setSimilarPatients([])
         setErrors({})
         setShowSimilar(false)
+        setFormInit(false)
     }
-    
-    const [validated, setValidated] = useState(false); // Form Validation
-    const [show,setShow] = useState(false) // Modal for Close Contact Addition
-    const [showSimilar, setShowSimilar] = useState(false) // Modal for View Similar Patient
-    const [errors, setErrors] = useState({}); // Stores Form Erros
-    const [similarPatients, setSimilarPatients] = useState([]) // Store list of Similar Patient
-    const [selectedPatientIndex, setSelectedPatientIndex] = useState(null); // Store index for Similar Patient Array Access
 
-    const [disableForms, setDisableForms] = useState(false)
-   
-    const [diagResult, setDiagResult] = useState([]) // Store list of Diagnostic Result from the reference table
-    const [treatmentStatus, setTreatmentStatus] = useState([]) // Store list of Treatment Status from the reference table
-    const [displayDiagTreatment, setDisplayDiagTreatment] = useState(false) // Enable dropdown buttons for diagnostic result and treatment status
+    function getAge(){
+        console.log('reached getAge() func')
+        if(!formValues.birthdate) return false; 
 
-    // Modal Show and Close
-    const handleClose = () => {
-        setShow(false)
-        clearForms()
+        const currDate = new Date()
+        const birthdate = new Date(formValues.birthdate)
+        let age = currDate.getFullYear() - birthdate.getFullYear()
+
+        console.log(currDate.getFullYear(), birthdate.getFullYear(), age)
+
+        if (
+            currDate.getMonth() < birthdate.getMonth() ||
+            (currDate.getMonth() === birthdate.getMonth() &&
+                currDate.getDate() < birthdate.getDate())
+        ) {
+            age--;
+        }
+
+        let val
+        age > 15 ? val = true : val = false
+
+        return val
     }
-    const handleShow = () => setShow(true);
 
-    // Form Values
-    const [formValues, setFormValues] = useState({
-        last_name: '',
-        first_name: '',
-        middle_initial: '',
-        birthdate: null,
-        sex: '',
-        contact_person: '',
-        contact_num: '',
-        contact_email: '',
-        contact_relationship: '',
-        CaseNo: props.id,
-        PatientNo: null,
-        DRNo: null,
-        TSNo: null
-    });
-
-    // Fetch function for similar patient by name
+    // fetch function for similar patient by name
     const fetchData = async () => {
         try {
           const patientResult = await axios.get(`http://localhost:4000/api/getSimilarPatients/${formValues.first_name}/${formValues.middle_initial}/${formValues.last_name}`);
@@ -88,37 +78,10 @@ function AddCloseContactModal(props) {
         }
     };
 
-    const handleEnableDropdown = () => {
-        setDisplayDiagTreatment(!displayDiagTreatment);
-        setFormValues((prevData) => ({ // reset DRNo and TSNo to null in case of user misinput
-          ...prevData,
-          DRNo: null,
-          TSNo: null,
-        }));
-      };
-
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        console.log(name, value);
-        setFormValues(prev=>({...prev, [name]: value}));
-        validateForm()
-    }
-
-    useEffect(() => {
-        if (formValues.first_name && formValues.last_name && formValues.middle_initial && !props.update) {
-            console.log("Similarity Check Condition Triggered");
-            fetchData().then(({ combinedData }) => {
-              setSimilarPatients(combinedData);
-              setShowSimilar(combinedData.length > 0);
-            });
-        }
-    }, [formValues.first_name, formValues.last_name, formValues.middle_initial])
-
+    // validate forms
     const validateForm = () => {
-        const { first_name, last_name, middle_initial, birthdate, sex, contact_relationship, contact_num} = formValues
+        const { first_name, last_name, middle_initial, birthdate, sex, contact_relationship, contact_num, contact_person, contact_email } = formValues
         const newErrors = {}
-
-        console.log(birthdate, new Date())
 
         // VALID CHECKERS
         if (!first_name) newErrors.first_name = "Input cannot be empty"
@@ -127,49 +90,74 @@ function AddCloseContactModal(props) {
         if (!birthdate) newErrors.birthdate = "Please select a date"
         if (sex === "") newErrors.sex = "Please select an option"
         if (!contact_relationship) newErrors.contact_relationship = "Input cannot be empty"
-        if (contact_num.length !== 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
+        if (contact_num.length > 11) newErrors.contact_num = "Contact No. must not exceed 11 digits"
+        if ((!contact_person || !contact_num || !contact_email) && !getAge() && birthdate) newErrors.contact_person = "Close contact is under 15, please fill in a guardian contact detail "
 
         setErrors(newErrors)
 
         return newErrors
     }
 
-    useEffect(() => {
-        if (selectedPatientIndex !== null) {
+    // --------------------------------------------------
+    
+    // STATE VARIABLES --------------------------------------------------
+    const [validated, setValidated] = useState(false); // Form Validation
+    const [show,setShow] = useState(false) // Modal for Close Contact Addition
+    const [showSimilar, setShowSimilar] = useState(false) // Modal for View Similar Patient
+    const [errors, setErrors] = useState({}); // Stores Form Erros
+    const [similarPatients, setSimilarPatients] = useState([]) // Store list of Similar Patient
+    const [selectedPatientIndex, setSelectedPatientIndex] = useState(null); // Store index for Similar Patient Array Access
 
-            const index = parseInt(selectedPatientIndex, 10)
-            const selectedPatient = similarPatients[index];
+    const [disableForms, setDisableForms] = useState(false)
+   
+    const [diagResult, setDiagResult] = useState([]) // Store list of Diagnostic Result from the reference table
+    const [treatmentStatus, setTreatmentStatus] = useState([]) // Store list of Treatment Status from the reference table
+    const [displayDiagTreatment, setDisplayDiagTreatment] = useState(false) // Enable dropdown buttons for diagnostic result and treatment status
+    const [formInit, setFormInit] = useState(false) // prevent validation checker on load
+    const [formValues, setFormValues] = useState({ // defualt form values
+        last_name: '',
+        first_name: '',
+        middle_initial: '',
+        birthdate: null,
+        sex: '',
+        contact_person: '',
+        contact_num: '',
+        contact_email: '',
+        contact_relationship: '',
+        CaseNo: props.id,
+        PatientNo: null,
+        DRNo: null,
+        TSNo: null
+    });
+    // ------------------------------------------------------------------
 
-            console.log("SELECTED PATIENT FROM INDEX: ", selectedPatient)
+    // HANDLERS --------------------------------------------------
+    // modal show 
+    const handleClose = () => {
+        setShow(false)
+        clearForms()
+    }
+    const handleShow = () => setShow(true);
 
-            let contact_name, contact_number, contact_emailadd
+    // enable dropdown for tb history
+    const handleEnableDropdown = () => {
+        setDisplayDiagTreatment(!displayDiagTreatment);
+        setFormValues((prevData) => ({ // reset DRNo and TSNo to null in case of user misinput
+          ...prevData,
+          DRNo: null,
+          TSNo: null,
+        }));
+    };
+    
+    // change state variable for form values
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        console.log(name, value);
+        setFormValues(prev=>({...prev, [name]: value}));
+        setFormInit(true)
+    }
 
-            selectedPatient.emergency_name ? contact_name = selectedPatient.emergency_name : contact_name = selectedPatient.contact_person
-            selectedPatient.e_contactno ? contact_number = selectedPatient.e_contactno : contact_number = selectedPatient.contact_num
-            selectedPatient.e_email ? contact_emailadd = selectedPatient.e_email : contact_emailadd = selectedPatient.contact_email
-
-            setFormValues(prevData => ({
-                ...prevData,
-                last_name: selectedPatient.last_name,
-                first_name: selectedPatient.first_name,
-                middle_initial: selectedPatient.middle_initial,
-                birthdate: new Date(selectedPatient.birthdate).toISOString(),
-                sex: selectedPatient.sex,
-                contact_person: contact_name,
-                contact_num: contact_number,
-                contact_email: contact_emailadd,
-                CaseNo: props.id,
-                PatientNo: selectedPatient.PatientNo,
-                DRNo: selectedPatient.DRNo,
-                TSNo: selectedPatient.TSNo
-            }));
-
-            setDisableForms(true)
-
-            console.log("UPDATED FORM VALUES FROM SIMILARITY: ", formValues)
-        }
-    }, [selectedPatientIndex, similarPatients]);
-
+    // submit form
     const handleSubmit = async (e) => {
 
         e.preventDefault()
@@ -201,12 +189,73 @@ function AddCloseContactModal(props) {
             }catch(err){
                 console.log(err)
             }
-            
         }
-        
     }
 
-    // Load reference information for dropdown selection
+    const handleClear = () => {
+        clearForms()
+    } 
+
+    // --------------------------------------------------
+
+
+    // USE EFFECTS ------------------------------------------------------------
+    // similarity checker
+    useEffect(() => {
+        if (formValues.first_name && formValues.last_name && formValues.middle_initial && !props.update) {
+            console.log("Similarity Check Condition Triggered");
+            fetchData().then(({ combinedData }) => {
+              setSimilarPatients(combinedData);
+              setShowSimilar(combinedData.length > 0);
+            });
+        }
+    }, [formValues.first_name, formValues.last_name, formValues.middle_initial])
+
+    // form validation
+    useEffect(() => {
+        if(formInit) validateForm()
+    }, [formValues])
+
+    // set similar patient record to forms
+    useEffect(() => {
+        if (selectedPatientIndex !== null) {
+
+            const index = parseInt(selectedPatientIndex, 10)
+            const selectedPatient = similarPatients[index];
+
+            console.log("SELECTED PATIENT FROM INDEX: ", selectedPatient)
+
+            let contact_name, contact_number, contact_emailadd
+
+            selectedPatient.emergency_name ? contact_name = selectedPatient.emergency_name : contact_name = selectedPatient.contact_person
+            selectedPatient.e_contactno ? contact_number = selectedPatient.e_contactno : contact_number = selectedPatient.contact_num
+            selectedPatient.e_email ? contact_emailadd = selectedPatient.e_email : contact_emailadd = selectedPatient.contact_email
+
+            setFormValues(prevData => ({
+                ...prevData,
+                last_name: selectedPatient.last_name,
+                first_name: selectedPatient.first_name,
+                middle_initial: selectedPatient.middle_initial,
+                birthdate: new Date(selectedPatient.birthdate).toISOString(),
+                sex: selectedPatient.sex,
+                contact_person: contact_name,
+                contact_num: contact_number,
+                contact_email: contact_emailadd,
+                CaseNo: props.id,
+                PatientNo: selectedPatient.PatientNo,
+                DRNo: selectedPatient.DRNo,
+                TSNo: selectedPatient.TSNo
+            }));
+
+            setDisableForms(true)
+            // setShowSimilar(false) -- tbd if we want to hide the button, currently if there are multiple and they have chosen incorrectly, they have to clear forms and type again
+
+            console.log("UPDATED FORM VALUES FROM SIMILARITY: ", formValues)
+        }
+    }, [selectedPatientIndex, similarPatients]);
+
+    
+    // load reference information for dropdown selection
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -221,21 +270,8 @@ function AddCloseContactModal(props) {
         }
         fetchData()
     },[])
-    
-    // TESTING ---------------------------------------------------------------- //
-    useEffect(() => {
-        console.log(diagResult)
-        console.log(treatmentStatus)
-    }, [diagResult, treatmentStatus])
 
-    useEffect(() => {
-        console.log(formValues)
-    }, [formValues])
-
-    const handleClear = () => {
-        clearForms()
-    } 
-
+    // data loading for update feature
     useEffect(() => {
         console.log('props.contact: ', props.contact)
         if (props.update && props.contact) {
@@ -258,6 +294,17 @@ function AddCloseContactModal(props) {
         
     }, [props.update, props.contact])
 
+    // ------------------------------------------------------------
+
+    
+    // default form values
+    
+
+    // TESTING ---------------------------------------------------------------- //
+    useEffect(() => {
+        console.log(formValues)
+    }, [formValues])
+    // -------------------------------------------------------
 
   return (
         <>
@@ -388,17 +435,20 @@ function AddCloseContactModal(props) {
 
             <Row className="mt-5 mb-3 justify-content-center">
                 <Form.Group as={Col} md="15" controlId="contact_person">
-                    <Form.Label>Contact Person</Form.Label>
+                    <Form.Label>Guardian Name</Form.Label>
                     <Form.Control
                         type='text'
-                        placeholder='Contact Name: Leave blank if contact has their own contact details'
+                        placeholder='Please fill if contact is less than 15 years old...'
                         name='contact_person'
                         value={formValues.contact_person}
                         onChange={handleChange}
-                        disabled={disableForms} 
+                        disabled={ disableForms || getAge() } 
+                        isInvalid={!!errors.contact_person}
                     />
+                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                <Form.Control.Feedback type='invalid'>{errors.contact_person}</Form.Control.Feedback>
                 </Form.Group>
-
+                
                 
             </Row>
 
@@ -469,13 +519,13 @@ function AddCloseContactModal(props) {
             </Row>
 
         </Form>
-    </Modal.Body>
-    <Modal.Footer>
-        <button type='button' onClick={handleClear} className="btn btn-secondary">Clear</button>
-        <button type="button" onClick={handleClose} className="btn btn-secondary">Close</button>
-        <button type="submit" onClick={handleSubmit} className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
-    </Modal.Footer>
-</Modal>
+        </Modal.Body>
+        <Modal.Footer>
+            <button type='button' onClick={handleClear} className="btn btn-secondary">Clear</button>
+            <button type="button" onClick={handleClose} className="btn btn-secondary">Close</button>
+            <button type="submit" onClick={handleSubmit} className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+        </Modal.Footer>
+    </Modal>
 
 
     </>

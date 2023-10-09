@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import AdminNavBar from '../admincomponents/AdminNavBar';
 import axios from 'axios';
-import CreateBHCModal from '../admincomponents/CreateBHCModal';
 import { Link, useParams } from 'react-router-dom';
 import AssignBHCModal from '../admincomponents/AssignBHCModal';
 import AssignHIModal from '../admincomponents/AssignHIModal';

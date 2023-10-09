@@ -5,14 +5,15 @@ import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import search from '../assets/search.png';
 import Pagination from 'react-bootstrap/Pagination';
+import CreateHIModal from './CreateHIModal';
 
 
 function AssignBHCModal(props) {
    
-    const[show,setShow] = useState(false)
+    const[show1,setShow1] = useState(false)
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleClose = () => setShow1(false);
+    const handleShow = () => setShow1(true);
 
     const [hiData, setHiData] = useState([]);
 
@@ -113,7 +114,7 @@ const [searchTerm, setSearchTerm] = useState('');
                 <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add a nearby Health Institution
               </button>
 
-        <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='lg'>
+        <Modal show={show1} onHide={handleClose} backdrop={ 'static' } size='lg'>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
         <Modal.Title>Assign a Health Institution</Modal.Title>
     </Modal.Header>
@@ -181,10 +182,19 @@ const [searchTerm, setSearchTerm] = useState('');
     </form>
 </Modal.Body>
 
-    <Modal.Footer >
-        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
-        <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
-    </Modal.Footer>
+<Modal.Footer>
+    <button type="submit" onClick={handleClose} className="btn btn-secondary me-2">
+      Close
+    </button>
+    <button
+      className="btn"
+      onClick={handleSubmit}
+      style={{ color: 'white', backgroundColor: "#0077B6" }}
+    >
+      Save
+    </button>
+</Modal.Footer>
+
 </Modal>
 
 

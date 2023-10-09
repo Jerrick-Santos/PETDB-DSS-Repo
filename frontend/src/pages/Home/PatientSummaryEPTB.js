@@ -17,14 +17,14 @@ import axios from 'axios';
 
 const PatientSummaryEPTB = () => {
 
-
   const [chartData, setChartData] = useState([]); // Assume you have your data here
 
 
   const [bcdResistantTotal, setBcdResistantTotal] = useState(0);
   const [bcdSensitiveTotal, setBcdSensitiveTotal] = useState(0);
   const [clinicalTotal, setClinicalTotal] = useState(0);
-  
+  const [multiTotal, setMultiTotal] = useState(0);
+
   const [bcdResistantJan, setBcdResistantJan] = useState(0);
   const [bcdResistantFeb, setBcdResistantFeb] = useState(0);
   const [bcdResistantMar, setBcdResistantMar] = useState(0);
@@ -64,6 +64,19 @@ const PatientSummaryEPTB = () => {
   const [clinicalNov, setClinicalNov] = useState(0);
   const [clinicalDec, setClinicalDec] = useState(0);
 
+  const [multiJan, setMultiJan] = useState(0);
+  const [multiFeb, setMultiFeb] = useState(0);
+  const [multiMar, setMultiMar] = useState(0);
+  const [multiApr, setMultiApr] = useState(0);
+  const [multiMay, setMultiMay] = useState(0);
+  const [multiJun, setMultiJun] = useState(0);
+  const [multiJul, setMultiJul] = useState(0);
+  const [multiAug, setMultiAug] = useState(0);
+  const [multiSep, setMultiSep] = useState(0);
+  const [multiOct, setMultiOct] = useState(0);
+  const [multiNov, setMultiNov] = useState(0);
+  const [multiDec, setMultiDec] = useState(0);
+
   const [years, setYears] = useState([]);
   const [currentYear, setCurrentYear] = useState(0);
 
@@ -88,7 +101,7 @@ const PatientSummaryEPTB = () => {
         response.data.forEach((data) => {
           if (data.DiagnosisMonth === 1) {
 
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantJan(data.OpenCasesWithEPTB);
               setBcdResistantFeb(data.OpenCasesWithEPTB);
               setBcdResistantMar(data.OpenCasesWithEPTB);
@@ -130,11 +143,25 @@ const PatientSummaryEPTB = () => {
               setClinicalNov(data.OpenCasesWithEPTB);
               setClinicalDec(data.OpenCasesWithEPTB);
               setClinicalTotal(data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiJan(data.OpenCasesWithEPTB);
+              setMultiFeb(data.OpenCasesWithEPTB);
+              setMultiMar(data.OpenCasesWithEPTB);
+              setMultiApr(data.OpenCasesWithEPTB);
+              setMultiMay(data.OpenCasesWithEPTB);
+              setMultiJun(data.OpenCasesWithEPTB);
+              setMultiJul(data.OpenCasesWithEPTB);
+              setMultiAug(data.OpenCasesWithEPTB);
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
           
            
           } else if (data.DiagnosisMonth === 2 ) {
-           if(data.DiagnosisType.includes('Resistant')){
+           if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantFeb((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantMar((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantApr((prev) => prev  + data.OpenCasesWithEPTB);
@@ -173,10 +200,24 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiFeb(data.OpenCasesWithEPTB);
+              setMultiMar(data.OpenCasesWithEPTB);
+              setMultiApr(data.OpenCasesWithEPTB);
+              setMultiMay(data.OpenCasesWithEPTB);
+              setMultiJun(data.OpenCasesWithEPTB);
+              setMultiJul(data.OpenCasesWithEPTB);
+              setMultiAug(data.OpenCasesWithEPTB);
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
           
+          
           } else if (data.DiagnosisMonth === 3 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantMar((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantApr((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantMay((prev) => prev  + data.OpenCasesWithEPTB);
@@ -212,9 +253,22 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiMar(data.OpenCasesWithEPTB);
+              setMultiApr(data.OpenCasesWithEPTB);
+              setMultiMay(data.OpenCasesWithEPTB);
+              setMultiJun(data.OpenCasesWithEPTB);
+              setMultiJul(data.OpenCasesWithEPTB);
+              setMultiAug(data.OpenCasesWithEPTB);
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 4 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantApr((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantMay((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantJun((prev) => prev  + data.OpenCasesWithEPTB);
@@ -247,9 +301,21 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiApr(data.OpenCasesWithEPTB);
+              setMultiMay(data.OpenCasesWithEPTB);
+              setMultiJun(data.OpenCasesWithEPTB);
+              setMultiJul(data.OpenCasesWithEPTB);
+              setMultiAug(data.OpenCasesWithEPTB);
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 5 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantMay((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantJun((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantJul((prev) => prev  + data.OpenCasesWithEPTB);
@@ -279,9 +345,20 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiMay(data.OpenCasesWithEPTB);
+              setMultiJun(data.OpenCasesWithEPTB);
+              setMultiJul(data.OpenCasesWithEPTB);
+              setMultiAug(data.OpenCasesWithEPTB);
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 6 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantJun((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantJul((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantAug((prev) => prev  + data.OpenCasesWithEPTB);
@@ -308,9 +385,19 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiJun(data.OpenCasesWithEPTB);
+              setMultiJul(data.OpenCasesWithEPTB);
+              setMultiAug(data.OpenCasesWithEPTB);
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 7 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantJul((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantAug((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantSep((prev) => prev  + data.OpenCasesWithEPTB);
@@ -334,9 +421,18 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiJul(data.OpenCasesWithEPTB);
+              setMultiAug(data.OpenCasesWithEPTB);
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 8 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantAug((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantSep((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantOct((prev) => prev  + data.OpenCasesWithEPTB);
@@ -357,9 +453,17 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiAug(data.OpenCasesWithEPTB);
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 9 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantSep((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantOct((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantNov((prev) => prev  + data.OpenCasesWithEPTB);
@@ -377,9 +481,16 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiSep(data.OpenCasesWithEPTB);
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 10 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantOct((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantNov((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantDec((prev) => prev  + data.OpenCasesWithEPTB);
@@ -394,9 +505,15 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiOct(data.OpenCasesWithEPTB);
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 11 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantNov((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantDec((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantTotal((prev) => prev  + data.OpenCasesWithEPTB);
@@ -408,9 +525,14 @@ const PatientSummaryEPTB = () => {
               setClinicalNov((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiNov(data.OpenCasesWithEPTB);
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } else if (data.DiagnosisMonth === 12 ) {
-            if(data.DiagnosisType.includes('Resistant')){
+            if(data.DiagnosisType.includes('Bacteriologically Confirmed - Drug Resistant')){
               setBcdResistantDec((prev) => prev  + data.OpenCasesWithEPTB);
               setBcdResistantTotal((prev) => prev  + data.OpenCasesWithEPTB);
             } else if(data.DiagnosisType.includes('Sensitive')){
@@ -419,7 +541,11 @@ const PatientSummaryEPTB = () => {
             } else if(data.DiagnosisType.includes('Clinically')){
               setClinicalDec((prev) => prev  + data.OpenCasesWithEPTB);
               setClinicalTotal((prev) => prev  + data.OpenCasesWithEPTB);
+            } else if(data.DiagnosisType.includes('Bacteriologically Confirmed - Multi Drug Resistant')){
+              setMultiDec(data.OpenCasesWithEPTB);
+              setMultiTotal(data.OpenCasesWithEPTB);
             }
+          
           } 
 
 
@@ -441,6 +567,7 @@ const PatientSummaryEPTB = () => {
       setBcdResistantTotal(0);
       setBcdSensitiveTotal(0);
       setClinicalTotal(0);
+      setMultiTotal(0);
     
       setBcdResistantJan(0);
       setBcdResistantFeb(0);
@@ -480,12 +607,26 @@ const PatientSummaryEPTB = () => {
       setClinicalOct(0);
       setClinicalNov(0);
       setClinicalDec(0);
+
+      setMultiJan(0);
+      setMultiFeb(0);
+      setMultiMar(0);
+      setMultiApr(0);
+      setMultiMay(0);
+      setMultiJun(0);
+      setMultiJul(0);
+      setMultiAug(0);
+      setMultiSep(0);
+      setMultiOct(0);
+      setMultiNov(0);
+      setMultiDec(0);
     }
 
     const data01 = [
+        { name: 'Bacteriologically Confirmed (Multi Drug Resistant)', value: multiTotal},
         { name: 'Bacteriologically Confirmed (Drug Resistant)', value: bcdResistantTotal },
         { name: 'Bacteriologically Confirmed (Drug Sensitive)', value: bcdSensitiveTotal },
-        { name: 'Clinically Diagnosed', value: clinicalTotal},
+        { name: 'Clinically Diagnosed', value: clinicalTotal}
       ];
 
       const data = [
@@ -494,74 +635,87 @@ const PatientSummaryEPTB = () => {
           BCDrugResistant: bcdResistantJan,
           BCDrugSensitive: bcdSensitiveJan,
           ClinicalDiagnosis: clinicalJan,
+          MultiDrugResistant: multiJan
         },
         {
           name: 'FEB',
           BCDrugResistant: bcdResistantFeb,
           BCDrugSensitive: bcdSensitiveFeb,
           ClinicalDiagnosis: clinicalFeb,
+          MultiDrugResistant: multiFeb
         },
         {
           name: 'MAR',
           BCDrugResistant: bcdResistantMar,
           BCDrugSensitive: bcdSensitiveMar,
           ClinicalDiagnosis: clinicalMar,
+          MultiDrugResistant: multiMar
         },
         {
           name: 'APR',
           BCDrugResistant: bcdResistantApr,
           BCDrugSensitive: bcdSensitiveApr,
           ClinicalDiagnosis: clinicalApr,
+          MultiDrugResistant: multiApr
         },
         {
           name: 'MAY',
           BCDrugResistant: bcdResistantMay,
           BCDrugSensitive: bcdSensitiveMay,
           ClinicalDiagnosis: clinicalMay,
+          MultiDrugResistant: multiMay
         },
         {
           name: 'JUN',
           BCDrugResistant: bcdResistantJun,
           BCDrugSensitive: bcdSensitiveJun,
           ClinicalDiagnosis: clinicalJun,
+          MultiDrugResistant: multiJun
         },
         {
           name: 'JUL',
           BCDrugResistant: bcdResistantJul,
           BCDrugSensitive: bcdSensitiveJul,
           ClinicalDiagnosis: clinicalJul,
+          MultiDrugResistant: multiJul
         },
         {
           name: 'AUG',
           BCDrugResistant: bcdResistantAug,
           BCDrugSensitive: bcdSensitiveAug,
           ClinicalDiagnosis: clinicalAug,
+          MultiDrugResistant: multiAug
         },
         {
           name: 'SEP',
           BCDrugResistant: bcdResistantSep,
           BCDrugSensitive: bcdSensitiveSep,
           ClinicalDiagnosis: clinicalSep,
+          MultiDrugResistant: multiSep
         },
         {
           name: 'OCT',
           BCDrugResistant: bcdResistantOct,
           BCDrugSensitive: bcdSensitiveOct,
           ClinicalDiagnosis: clinicalOct,
+          MultiDrugResistant: multiOct
         },
         {
           name: 'NOV',
           BCDrugResistant: bcdResistantNov,
           BCDrugSensitive: bcdSensitiveNov,
           ClinicalDiagnosis: clinicalNov,
+          MultiDrugResistant: multiNov
         },
         {
           name: 'DEC',
           BCDrugResistant: bcdResistantDec,
           BCDrugSensitive: bcdSensitiveDec,
           ClinicalDiagnosis: clinicalDec,
+          MultiDrugResistant: multiDec
         },
       ];
+
 
       const [linesVisibility, setLinesVisibility] = useState({
         BCDrugResistant: true,
@@ -648,8 +802,8 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 </Row>
   <Row className='row g-3 my-2 justify-content-center'>
-    <div className='col-md-3 p-1'>
-      <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>
+    <div className='col-md-2 p-1'>
+      <div className={`p-3 shadow-sm d-flex justify-content-around rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[0].value}</h3>
           <p className='text-light fs-5'>{data01[0].name}</p>
@@ -657,8 +811,8 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>
     </div>
-    <div className='col-md-3 p-1'>
-    <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[1], minHeight: "250px" }}>
+    <div className='col-md-2 p-1'>
+    <div className={`p-3 shadow-sm d-flex justify-content-around rounded summary-card`} style={{ backgroundColor: COLORS1[1], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[1].value}</h3>
           <p className='text-light fs-5'>{data01[1].name}</p>
@@ -666,11 +820,20 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>
     </div>
-    <div className='col-md-3 p-1'>
-      <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[2], minHeight: "250px" }}>
+    <div className='col-md-2 p-1'>
+      <div className={`p-3 shadow-sm d-flex justify-content-around rounded summary-card`} style={{ backgroundColor: COLORS1[2], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[2].value}</h3>
           <p className='text-light fs-5'>{data01[2].name}</p>
+        </div>
+        <i className='bi bi-cart-plus p-3 fs-1'></i>
+      </div>
+    </div>
+    <div className='col-md-2 p-1'>
+      <div className={`p-3 shadow-sm d-flex justify-content-around rounded summary-card`} style={{ backgroundColor: COLORS1[3], minHeight: "250px" }}>
+        <div>
+          <h3 className='text-light fs-1'>{data01[3].value}</h3>
+          <p className='text-light fs-5'>{data01[3].name}</p>
         </div>
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>

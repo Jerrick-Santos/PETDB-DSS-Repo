@@ -13,7 +13,6 @@ import Diagnosis from './pages/Diagnosis';
 import Login from './adminpages/Login';
 import AdminLabTest from './adminpages/AdminLabTest';
 import AdminHI from './adminpages/AdminHI';
-import AdminBHC from './adminpages/AdminBHC';
 import HIInfo from './adminpages/HIInfo';
 import BHCInfo from './adminpages/BHCInfo';
 
@@ -31,7 +30,6 @@ import SignUpBHC from './adminpages/SignUpBHC';
 {/* admin routes */}
 const AdminLabTestwithAccess = withAccessControl(AdminLabTest, ['admin'])
 const AdminHIWithAccess = withAccessControl(AdminHI, ['admin']);
-const AdminBHCWithAccess = withAccessControl(AdminBHC, ['admin']);
 const HIInfoWithAccess = withAccessControl(HIInfo, ['admin']);
 const BHCInfowithAccess = withAccessControl(BHCInfo, ['admin'])
 const UserListwithAccess = withAccessControl(UserList, ['admin'])
@@ -67,7 +65,6 @@ function App() {
                     
                     <Route path="/adminlabtest" element={<AdminLabTestwithAccess/>}/>
                     <Route path="/adminhi" element={<AdminHIWithAccess/>}/>
-                    <Route path="/adminbhc" element={<AdminBHCWithAccess/>}/>
                     <Route path="/hi/:id" element={<HIInfoWithAccess/>}/>
                     <Route path="/bhc/:id" element={<BHCInfowithAccess/>}/>
                     <Route path="/bhw/:id" element={<UserListwithAccess/>}/>
