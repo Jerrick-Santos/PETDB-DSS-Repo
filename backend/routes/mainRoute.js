@@ -285,9 +285,9 @@ module.exports = (db) => {
         const testno = req.params.id;
         const caseid = req.params.caseid;
         db.query(`
-        SELECT dr.DGResultsNo, dr.CaseNo, dr.DGTestNo, dr.TestValue, dr.validity, dr.HINo, h.HIName, dr.issue_date, dr.test_refno
-            FROM PEDTBDSS_new.MD_HI h 
-            JOIN PEDTBDSS_new.TD_DIAGNOSTICRESULTS dr ON dr.HINo = h.HINo 
+        SELECT dr.DGResultsNo, dr.CaseNo, dr.DGTestNo, dr.TestValue, dr.validity, dr.HINo, COALESCE(h.HIName, 'Others') AS HIName, dr.issue_date, dr.test_refno
+FROM PEDTBDSS_new.TD_DIAGNOSTICRESULTS dr
+LEFT JOIN PEDTBDSS_new.MD_HI h ON dr.HINo = h.HINo
         WHERE dr.CaseNo=${caseid} AND dr.DGTestNo=${testno};
     `, (err, results) => {
         if (err) {

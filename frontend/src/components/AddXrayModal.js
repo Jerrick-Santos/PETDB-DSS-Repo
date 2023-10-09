@@ -80,7 +80,7 @@ function AddXrayModal(props) {
 
     const validate = () => {
         let HINoError = '';
-        if (!xrayValues.HINo) {
+        if (xrayValues.HINo==='') {
             HINoError = 'Required';
         }
         setHIError(HINoError);
@@ -127,6 +127,8 @@ function AddXrayModal(props) {
         if(!isValid){
           return;
         }
+
+        
         
         try{
             await axios.post("http://localhost:4000/api/newXrayresults", xrayValues)
@@ -207,21 +209,26 @@ function AddXrayModal(props) {
             <Row className="mb-3 justify-content-center">
                 <Form.Group as={Col} md="12" className='mb-3' controlId='HINo'>
                     <Form.Label><strong>Issued by:</strong></Form.Label>
-                    <Form.Select
+                                            <Form.Select
                         aria-label="HINo"
-                        name='HINo'
+                        name="HINo"
                         value={xrayValues.HINo}
-                        onChange={handleChange}
-                        isInvalid={HINoError}>
-                            <option value="">Select</option>
-              
-                                {hiData.map((hi, index) => (
-                                <>
-                                <option value={hi.HINo}>{hi.HIName}</option>
-                                
-                                    </>
-                                ))}
-                    </Form.Select>
+                        onChange={(e) => {
+                            const selectedValue = e.target.value;
+                            const newHINo = selectedValue === "0" ? null : selectedValue;
+                            handleChange({ target: { name: "HINo", value: newHINo } });
+                        }}
+                        isInvalid={HINoError}
+                        >
+                        <option value="">Select</option>
+                        {hiData.map((hi, index) => (
+                            <option key={hi.HINo} value={hi.HINo}>
+                            {hi.HIName}
+                            </option>
+                        ))}
+                        <option value="0">Others</option>
+                        </Form.Select>
+
                     <Form.Control.Feedback type='invalid'>{HINoError}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" className='mb-3' controlId='issue_date'>
