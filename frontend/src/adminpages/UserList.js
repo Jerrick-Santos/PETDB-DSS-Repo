@@ -2,6 +2,7 @@ import search from "../assets/search.png";
 import "../index.css";
 import React, { useState, useEffect } from "react";
 import { Card, Row, Col } from "react-bootstrap";
+import { Link, useParams } from 'react-router-dom';
 import AdminNavBar from "../admincomponents/AdminNavBar";
 import axios from "axios";
 import Badge from "react-bootstrap/Badge";
@@ -15,6 +16,7 @@ import noresult from "../assets/noresult.png";
 import Spinner from "react-bootstrap/Spinner";
 
 const UserList = () => {
+  const { id } = useParams();
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedSort, setSelectedSort] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +25,7 @@ const UserList = () => {
   const [usersData, setUsersData] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/allusers/1")
+      .get(`http://localhost:4000/api/allusers/${id}`)
       .then((response) => {
         setUsersData(response.data);
         setIsLoading(false);
@@ -403,7 +405,7 @@ const UserList = () => {
 
                   <Row className="mb-4">
                     <Col>
-                      <AddUser onUpdate={() => setUpdate(!update)} />
+                      <AddUser BGYNo={id} onUpdate={() => setUpdate(!update)} />
                     </Col>
 
                     <Col className="d-flex justify-content-end">

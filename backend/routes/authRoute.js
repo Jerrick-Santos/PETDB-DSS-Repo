@@ -52,7 +52,7 @@ module.exports = (db) => {
         const password = req.body.password
         const username = req.body.username 
 
-        const loginQuery = `SELECT * FROM PEDTBDSS_new.MD_USERS WHERE IDNo = ${username} AND pw = '${password}'`
+        const loginQuery = `SELECT * FROM PEDTBDSS_new.MD_USERS WHERE IDNo = '${username}' AND pw = '${password}'`
 
         db.query(loginQuery, (err, results) => {
             if (err) {

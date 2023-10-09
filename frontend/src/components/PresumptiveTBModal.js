@@ -22,8 +22,8 @@ const PresumptiveTBModal = ({ show, onClose, caseid }) => {
   };
 
   return (
-    <Modal show={show} onHide={onClose}>
-      <Modal.Header closeButton>
+    <Modal show={show} onHide={onClose} backdrop={ 'static' }>
+      <Modal.Header>
         <Modal.Title>Presumptive TB Modal</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -39,9 +39,6 @@ const PresumptiveTBModal = ({ show, onClose, caseid }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
-          Close
-        </Button>
         <Button variant="primary" onClick={handleSubmit}>
           Submit
         </Button>

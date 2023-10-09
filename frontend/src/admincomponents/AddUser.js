@@ -16,7 +16,7 @@ function AddUser(props) {
     last_name: "",
     IDNo: "",
     pw: "",
-    BGYNo: 1,
+    BGYNo: props.BGYNo,
     isActive: 1,
     user_type: "BHW",
     passwordChanged: 0,

@@ -25,6 +25,7 @@ const AdminNavBar = () => {
   const [userNum, setUserNum] = useState(null);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
+  const [BGYNo, setBGYNo] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +50,7 @@ const AdminNavBar = () => {
         setUserNum(response.data.userNo);
         setFirstName(response.data.first_name);
         setLastName(response.data.last_name);
+        setBGYNo(response.data.BGYNo);
       } catch (error) {
         console.error('Error:', error);
       }
@@ -82,8 +84,8 @@ const AdminNavBar = () => {
       <Navbar.Brand className="text-light ms-4">PEDIA-TB DSS</Navbar.Brand>
         <Nav className="ms-4">
        
-        <Nav.Link className="text-light" href="/bhc/1">Barangay Health Center</Nav.Link>
-        <Nav.Link className="text-light" href="/bhw/1">Barangay Users</Nav.Link>
+        <Nav.Link className="text-light" href={`/bhc/${BGYNo}`}>Barangay Health Center</Nav.Link>
+        <Nav.Link className="text-light" href={`/bhw/${BGYNo}`}>Barangay Users</Nav.Link>
         <Nav.Link className="text-light" href="/adminhi">Health Institutions</Nav.Link>
           <Nav.Link className="text-light" href="/adminlabtest">Diagnostic Tests</Nav.Link>
           
