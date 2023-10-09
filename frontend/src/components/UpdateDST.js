@@ -4,7 +4,7 @@ import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import edit from '../assets/edit.png'
-
+import Form from 'react-bootstrap/Form';
 
 function UpdateDST(props) {
    
@@ -108,9 +108,9 @@ function UpdateDST(props) {
     const [HINoError, setHIError] = useState('');
     const [dateError, setDateError] = useState('');
     const [testError, setTestError] = useState('');
-    const [d1Error, setD1Error] = useState('');
-    const [d2Error, setD2Error] = useState('');
-    const [d3Error, setD3Error] = useState('');
+    const [drug1Error, setDrug1Error] = useState('');
+    const [drug2Error, setDrug2Error] = useState('');
+    const [drug3Error, setDrug3Error] = useState('');
 
     const validate = () => {
         let HINoError = '';
@@ -120,36 +120,38 @@ function UpdateDST(props) {
         setHIError(HINoError);
 
         let dateError = '';
-        if (!formValues.issue_date) {
-            dateError = 'Required';
+        if (new Date(formValues.issue_date).toLocaleDateString() === new Date().toLocaleDateString()) {
+            dateError = 'Please select a date';
         }
         setDateError(dateError);
 
         let testError = '';
         if (!formValues.test_refno) {
             testError = 'Required';
+        } else if (formValues.test_refno.length > 45) {
+            testError = 'Reference Number should not exceed 45 characters';
         }
         setTestError(testError);
 
-        let d1Error = '';
-        if (!formValues.drug1) {
-            d1Error = 'Required';
+        let drug1Error = '';
+        if (formValues.drug1 === "") {
+            drug1Error = 'Please select an option';
         }
-        setD1Error(d1Error);
+        setDrug1Error(drug1Error);
 
-        let d2Error = '';
-        if (!formValues.drug2) {
-            d2Error = 'Required';
+        let drug2Error = '';
+        if (formValues.drug2 === "") {
+            drug2Error = 'Please select an option';
         }
-        setD2Error(d2Error);
+        setDrug2Error(drug2Error);
 
-        let d3Error = '';
-        if (!formValues.drug3) {
-            d3Error = 'Required';
+        let drug3Error = '';
+        if (formValues.drug3 === "") {
+            drug3Error = 'Please select an option';
         }
-        setD3Error(d3Error);
+        setDrug3Error(drug3Error);
 
-        if (HINoError || dateError || testError || d1Error || d2Error || d3Error ) {
+        if (HINoError || dateError || testError || drug1Error || drug2Error || drug3Error) {
             return false;
           }
 
@@ -228,7 +230,105 @@ function UpdateDST(props) {
         </>             
     ) : (
         <>
-    <form className="mt-4 justify-content-center">
+        <Form noValidate onSubmit={handleSubmit}>
+            <Row className="mb-3 justify-content-center">
+                {/* For HI Number */}
+                <Form.Group as={Col} md="12" className='mb-3' controlId='HINo'>
+                    <Form.Label><strong>Issued by:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="HINo"
+                        name='HINo'
+                        value={formValues.HINo}
+                        onChange={handleChange}
+                        isInvalid={HINoError}>
+                            <option value="">Select</option>
+              
+                                {hiData.map((hi, index) => (
+                                <>
+                                <option value={hi.HINo}>{hi.HIName}</option>
+                                
+                                    </>
+                                ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{HINoError}</Form.Control.Feedback>
+                </Form.Group>
+                {/* For Issue Date */}
+                <Form.Group as={Col} md="12" className='mb-3' controlId='issue_date'>
+                    <Form.Label><strong>Issued on:</strong></Form.Label>
+                    <Form.Control
+                        required
+                        type='date'
+                        name='issue_date'
+                        onChange={handleChange}
+                        value={new Date(formValues.issue_date).toISOString().split('T')[0]}
+                        isInvalid={dateError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
+                </Form.Group>
+                {/* For Reference Number */}
+                <Form.Group as={Col} md="12" className='mb-3' controlId='test_refno'>
+                    <Form.Label><strong>Reference Number:</strong></Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='test_refno'
+                        onChange={handleChange}
+                        value={formValues.test_refno}
+                        isInvalid={testError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{testError}</Form.Control.Feedback>
+                </Form.Group>
+                {/* For Drug 1 */}
+                <Form.Group as={Col} md="12" className='mb-3' controlId='drug1'>
+                    <Form.Label><strong>Drug 1:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="drug1"
+                        name='drug1'
+                        value={formValues.drug1}
+                        onChange={handleChange}
+                        isInvalid={drug1Error}>
+                            <option value="">Select</option>
+                            <option value="R">Resistant</option>
+                            <option value="S">Susceptible</option>
+                            <option value="NA">Indeterminate</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{drug1Error}</Form.Control.Feedback>
+                </Form.Group>
+                {/* For Drug 2 */}
+                <Form.Group as={Col} md="12" className='mb-3' controlId='drug2'>
+                    <Form.Label><strong>Drug 2:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="drug2"
+                        name='drug2'
+                        value={formValues.drug2}
+                        onChange={handleChange}
+                        isInvalid={drug2Error}>
+                            <option value="">Select</option>
+                            <option value="R">Resistant</option>
+                            <option value="S">Susceptible</option>
+                            <option value="NA">Indeterminate</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{drug2Error}</Form.Control.Feedback>
+                </Form.Group>
+                {/* For Drug 3 */}
+                <Form.Group as={Col} md="12" controlId='drug3'>
+                    <Form.Label><strong>Drug 3:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="drug3"
+                        name='drug3'
+                        value={formValues.drug3}
+                        onChange={handleChange}
+                        isInvalid={drug3Error}>
+                            <option value="">Select</option>
+                            <option value="R">Resistant</option>
+                            <option value="S">Susceptible</option>
+                            <option value="NA">Indeterminate</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{drug3Error}</Form.Control.Feedback>
+                </Form.Group>
+            </Row>
+        </Form>
+    {/*<form className="mt-4 justify-content-center">
     <div>
             <label><strong> Upload DST File Attachment:</strong></label>
             <input type="file" className="form-control" />
@@ -301,7 +401,7 @@ function UpdateDST(props) {
                 <p style={{color: 'red'}}>{d3Error}</p>  
             )}
         </div>
-    </form>
+            </form>*/}
     </>
     )}
     </Modal.Body>
