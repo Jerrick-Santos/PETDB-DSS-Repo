@@ -31,6 +31,7 @@ function AddCloseContactModal(props) {
         setSimilarPatients([])
         setErrors({})
         setShowSimilar(false)
+        setFormInit(false)
     }
     
     const [validated, setValidated] = useState(false); // Form Validation
@@ -45,6 +46,7 @@ function AddCloseContactModal(props) {
     const [diagResult, setDiagResult] = useState([]) // Store list of Diagnostic Result from the reference table
     const [treatmentStatus, setTreatmentStatus] = useState([]) // Store list of Treatment Status from the reference table
     const [displayDiagTreatment, setDisplayDiagTreatment] = useState(false) // Enable dropdown buttons for diagnostic result and treatment status
+    const [formInit, setFormInit] = useState(false) // prevent validation checker on load
 
     // Modal Show and Close
     const handleClose = () => {
@@ -101,6 +103,7 @@ function AddCloseContactModal(props) {
         const {name, value} = e.target;
         console.log(name, value);
         setFormValues(prev=>({...prev, [name]: value}));
+        setFormInit(true)
         validateForm()
     }
 
@@ -113,6 +116,10 @@ function AddCloseContactModal(props) {
             });
         }
     }, [formValues.first_name, formValues.last_name, formValues.middle_initial])
+
+    useEffect(() => {
+        if(formInit) validateForm()
+    }, [formValues])
 
     const validateForm = () => {
         const { first_name, last_name, middle_initial, birthdate, sex, contact_relationship, contact_num} = formValues
@@ -127,7 +134,7 @@ function AddCloseContactModal(props) {
         if (!birthdate) newErrors.birthdate = "Please select a date"
         if (sex === "") newErrors.sex = "Please select an option"
         if (!contact_relationship) newErrors.contact_relationship = "Input cannot be empty"
-        if (contact_num.length !== 11 && contact_num.length > 0) newErrors.contact_num = "Contact No. must be 11 digits"
+        if (contact_num.length > 11) newErrors.contact_num = "Contact No. must not exceed 11 digits"
 
         setErrors(newErrors)
 
@@ -223,10 +230,6 @@ function AddCloseContactModal(props) {
     },[])
     
     // TESTING ---------------------------------------------------------------- //
-    useEffect(() => {
-        console.log(diagResult)
-        console.log(treatmentStatus)
-    }, [diagResult, treatmentStatus])
 
     useEffect(() => {
         console.log(formValues)
@@ -236,6 +239,8 @@ function AddCloseContactModal(props) {
         clearForms()
     } 
 
+
+    // data loading for update feature
     useEffect(() => {
         console.log('props.contact: ', props.contact)
         if (props.update && props.contact) {
