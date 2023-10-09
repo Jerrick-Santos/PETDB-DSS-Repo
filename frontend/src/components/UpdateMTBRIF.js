@@ -242,9 +242,13 @@ function UpdateMTBRIF(props) {
                         onChange={handleChange}
                         isInvalid={valueError}>
                             <option value="">Select</option>
-                            <option value="With Signs of TB">With Signs of TB</option>
-                            <option value="No signs">No signs</option>
-                            <option value="Undetermined">Undetermined</option>
+                            <option value="0-NA">MTB not Detected</option>
+                            <option value="MTB-S">MTB Detected/RIF not detected</option>
+                            <option value="MTB-R">MTB Detected/RIF detected</option>
+                            <option value="MTB-NA">MTB Detected Trace/RIF resistance indeterminate 1st collection</option>
+                            <option value="MTB-NA">MTB Detected Trace/RIF resistance indeterminate 2nd collection</option>
+                            <option value="0-NA">Indeterminate/Error 1st collection</option>
+                            <option value="0-NA">Indeterminate/Error 2nd collection</option>
                     </Form.Select>
                     <Form.Control.Feedback type='invalid'>{valueError}</Form.Control.Feedback>
                 </Form.Group>
