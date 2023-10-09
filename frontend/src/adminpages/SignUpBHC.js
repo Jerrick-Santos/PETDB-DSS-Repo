@@ -143,8 +143,14 @@ const SignUpBHC = () => {
         
     
     }, []);
-
+    const [pwValues, setPwValues] = useState({
+        confirmPw: ''
+      });
   
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        setPwValues((prev) => ({ ...prev, [name]: value }));
+      };
     
 
   
@@ -334,13 +340,17 @@ const SignUpBHC = () => {
             </Row>
 
             <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-6">
+                <div className="form-group col-md-4">
                     <label for="inputFirstName">User ID</label>
                     <input type="text" class="form-control"  name="IDNo"  value={formValues.IDNo} onChange={handleChange} placeholder="User ID"/>
                 </div>
-                <div className="form-group col-md-6">
+                <div className="form-group col-md-4">
                     <label for="inputFirstName">Password</label>
                     <input type="password" class="form-control"  name="pw"  value={formValues.pw} onChange={handleChange} placeholder="Password"/>
+                </div>
+                <div className="form-group col-md-4">
+                    <label for="inputFirstName">Confirm Password</label>
+                    <input type="password" class="form-control"  name="pw"  value={pwValues.confirmPw} onChange={handlePasswordChange} placeholder="Password"/>
                 </div>
             </Row>
 
