@@ -16,9 +16,7 @@ const NavBar = () => {
   const [passwordChanged, setPasswordChanged] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -27,6 +25,8 @@ const NavBar = () => {
   const [userNum, setUserNum] = useState(null);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,17 +74,86 @@ const NavBar = () => {
     
   }, []);
 
+ 
+
   const [formValues, setFormValues] = useState({
     pw: ''
   });
+
+  const [pwValues, setPwValues] = useState({
+    oldPw: '',
+    confirmPw: ''
+  });
+
+  const [correctOld, setCorrectOld] = useState(false);
+
+  useEffect(() => {
+
+    if (pwValues.oldPw) {
+      axios.get(`http://localhost:4000/api/checkoldpw/${userNum}/${pwValues.oldPw}`)
+    .then((response) => {
+      if(response.data.length>0){
+        console.log(response.data)
+        setCorrectOld(true)
+      } else{
+        setCorrectOld(false)
+      }
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the request
+      console.error('Error fetching data:', error);
+    });
+    }
+  }, [pwValues.oldPw]);
+
+  const [oldPwError, setOldError] = useState('');
+  const [pwError, setPwError] = useState('');
+  const [confirmPwError, setConfirmError] = useState('');
+
+  const validate = () => {
+    let oldPwError = '';
+    if (!correctOld){
+      oldPwError = 'Incorrect password'
+    }
+    setOldError(oldPwError);
+
+    let pwError = '';
+    if (!formValues.pw) {
+      pwError = 'Required';
+    }
+    setPwError(pwError);
+
+    let confirmError = '';
+    if (pwValues.confirmPw !== formValues.pw) {
+      confirmError = 'Password does not match';
+    }
+    setConfirmError(confirmError);  
+
+    if (oldPwError || pwError || confirmError) {
+      return false;
+    }
+
+    return true;
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPwValues((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const isValid = validate();
+    if(!isValid) {
+        return;
+    }
+    
     try {
       await axios.post(`http://localhost:4000/api/updatepw/${userNum}`, formValues);
     } catch (err) {
@@ -138,6 +207,24 @@ const NavBar = () => {
       <Modal.Body>
         <form className="mt-3 justify-content-center">
           
+          
+
+          <Row className="mb-3 justify-content-center">
+            <div className="form-group col-md-12">
+              <label for="inputOperatingHours">Old Password</label>
+              <input
+                type={showPassword ? "text" : "password"} // Toggle input type
+                className="form-control"
+                name="oldPw"
+                value={pwValues.oldPw}
+                onChange={handlePasswordChange}
+              />
+                {oldPwError && (
+                        <p style={{color: 'red'}}>{oldPwError}</p>  
+                    )}
+            </div>
+          </Row>
+
           <Row className="mb-3 justify-content-center">
             <div className="form-group col-md-12">
               <label for="inputOperatingHours">New Password</label>
@@ -148,23 +235,29 @@ const NavBar = () => {
                 value={formValues.pw}
                 onChange={handleChange}
               />
+                             {pwError && (
+                        <p style={{color: 'red'}}>{pwError}</p>  
+                    )}
             </div>
 
-            {/* Button to toggle password visibility */}
-            <div className="mt-2">
-              <button
-                type="button"
-                className="btn btn-light"
-                onClick={togglePasswordVisibility}
-              >
-                  <img
-            src={view}
-            style={{ height: "20px" }}
-          />
-              </button>
-            </div>
+           
           </Row>
 
+            <Row className="mb-3 justify-content-center">
+            <div className="form-group col-md-12">
+              <label for="inputOperatingHours">Confirm Password</label>
+              <input
+                type={showPassword ? "text" : "password"} // Toggle input type
+                className="form-control"
+                name="confirmPw"
+                value={pwValues.confirmPw}
+                onChange={handlePasswordChange}
+              />
+                {confirmPwError && (
+                        <p style={{color: 'red'}}>{confirmPwError}</p>  
+                    )}
+            </div>
+            </Row>
          
         </form>
       </Modal.Body>
@@ -207,19 +300,21 @@ const NavBar = () => {
               />
             </div>
 
-            {/* Button to toggle password visibility */}
-            <div className="mt-2">
-              <button
-                type="button"
-                className="btn btn-light"
-                onClick={togglePasswordVisibility}
-              >
-                  <img
-            src={view}
-            style={{ height: "20px" }}
-          />
-              </button>
+          
+          </Row>
+          <Row className="mb-3 justify-content-center">
+            <div className="form-group col-md-12">
+              <label for="inputOperatingHours">Confirm Password</label>
+              <input
+                type={showPassword ? "text" : "password"} // Toggle input type
+                className="form-control"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={handleChange}
+              />
             </div>
+
+          
           </Row>
 
          

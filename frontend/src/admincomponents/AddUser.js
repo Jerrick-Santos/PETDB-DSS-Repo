@@ -1,5 +1,5 @@
 import Modal from "react-bootstrap/Modal";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import add from "../assets/add.png";
 import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
 import axios from "axios";
@@ -22,16 +22,43 @@ function AddUser(props) {
     passwordChanged: 0,
   });
 
+
+
   const [IDnoError, setIDError] = useState('');
   const [firstNameError, setFirstError] = useState('');
   const [middleNameError, setMiddleError] = useState('');
   const [lastNameError, setLastError] = useState('');
   const [initialPassError, setPassError] = useState('');
+  const [userExist, setUserExist] = useState(false);
+
+useEffect(() => {
+
+  if (formValues.IDNo) {
+    axios.get(`http://localhost:4000/api/checkuserexist/${formValues.IDNo}`)
+  .then((response) => {
+    if(response.data.length>0){
+      console.log(response.data)
+      setUserExist(true)
+    } else{
+      setUserExist(false)
+    }
+  })
+  .catch((error) => {
+    // Handle any errors that occurred during the request
+    console.error('Error fetching data:', error);
+  });
+  }
+  
+    
+
+}, [formValues.IDNo]);
 
   const validate = () => {
     let IDnoError = '';
     if (!formValues.IDNo) {
       IDnoError = 'Required';
+    } else if (userExist){
+      IDnoError = 'User ID already exists'
     }
     setIDError(IDnoError);
 

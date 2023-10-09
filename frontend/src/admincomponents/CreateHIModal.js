@@ -5,7 +5,7 @@ import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 
 
-function CreateHIModal() {
+function CreateHIModal(props) {
    
     const[show,setShow] = useState(false)
 
@@ -32,6 +32,12 @@ function CreateHIModal() {
 
     const handleRegionChange = (e) => {
         const selectedRegion = e.target.value;
+        setFormValues((prev) => ({
+            ...prev,
+            HIProvince: "",
+            HICity: "",
+            HIBarangay: ""
+          }));
         axios.get(`http://localhost:4000/api/provinces/${selectedRegion}`)
             .then((response) => {
                 setProvinceData(response.data);
@@ -45,6 +51,11 @@ function CreateHIModal() {
 
     const handleProvinceChange = (e) => {
         const selectedProvince = e.target.value;
+        setFormValues((prev) => ({
+            ...prev,
+            HICity: "",
+            HIBarangay: ""
+          }));
         axios.get(`http://localhost:4000/api/cities/${selectedProvince}`)
             .then((response) => {
                 setCityData(response.data);
@@ -58,6 +69,10 @@ function CreateHIModal() {
 
     const handleCityChange = (e) => {
         const selectedCity = e.target.value;
+        setFormValues((prev) => ({
+            ...prev,
+            HIBarangay: ""
+          }));
         axios.get(`http://localhost:4000/api/barangays/${selectedCity}`)
         .then((response) => {
             setBarangayData(response.data);
@@ -216,9 +231,19 @@ function CreateHIModal() {
   return (
         <>
 
-            <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add an HI
-              </button>
+<button
+  className="btn"
+  style={{ color: "white", backgroundColor: "#0077B6" }}
+  type="button"
+  onClick={() => {
+    props.closePrevious(); // Call the closePrevious function
+      handleShow(); // Call the handleShow function after a delay
+  }}
+>
+  <img src={add} className="me-1 mb-1" style={{ height: "20px" }} /> Create a new HI
+</button>
+
+
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='lg'>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
@@ -287,7 +312,7 @@ function CreateHIModal() {
 
                 <div className="form-group col-md-3">
                     <label for="inputCurrRegion">Province</label>
-                    <select className="form-select" name="HIProvince" value={formValues.HIProvince} onChange={(e)=>{
+                    <select className="form-select" name="HIProvince" disabled={formValues.HIRegion === ""} value={formValues.HIProvince} onChange={(e)=>{
                         handleChange(e);
                         handleProvinceChange(e);
                     }}>
@@ -314,7 +339,7 @@ function CreateHIModal() {
            
             <div className="form-group col-md-4">
                     <label for="inputCurrCity">City</label>
-                    <select className="form-select" name="HICity" value={formValues.HICity} onChange={(e)=>{
+                    <select className="form-select" name="HICity" disabled={formValues.HIProvince === ""} value={formValues.HICity} onChange={(e)=>{
                         handleChange(e);
                         handleCityChange(e);
                     }}>
@@ -337,7 +362,7 @@ function CreateHIModal() {
                
             <div class="form-group col-md-4">
                     <label for="inputCurrBarangay">Barangay</label>
-                    <select className="form-select" name="HIBarangay" value={formValues.HIBarangay} onChange={handleChange}>
+                    <select className="form-select" name="HIBarangay" disabled={formValues.HICity === ""} value={formValues.HIBarangay} onChange={handleChange}>
                         <option value="">Select</option>
                     
                     {barangayData.map((hi, index) => (

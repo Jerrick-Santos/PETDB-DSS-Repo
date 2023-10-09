@@ -779,7 +779,7 @@ module.exports = (db) => {
         h.HIName 
         FROM PEDTBDSS_new.MD_HI h
         JOIN PEDTBDSS_new.MD_HIDGTESTS dt ON h.HINo = dt.HINo
-        WHERE dt.DGTestNo = ${id}
+        WHERE dt.DGTestNo = ${id} AND h.isActive = 1
         ORDER BY h.HIName;
        
     `, (err, results) => {
@@ -896,13 +896,17 @@ module.exports = (db) => {
         db.query(`
         SELECT bg.BGYNo,
             bg.BGYName, 
-            CONCAT(bg.BGYUnitNo, ' ', bg.BGYStreet, ' ', bg.BGYBarangay, ' ', bg.BGYCity, ' ', bg.BGYRegion, ' ', bg.BGYProvince, ' ', bg.BGYZipCode) AS address,
+            CONCAT(bg.BGYUnitNo, ' ', bg.BGYStreet, ' ', b.barangay_name , ' ', m.municipality_name , ' ', p.province_name, ' ', r.region_name ,' ', bg.BGYZipCode) AS address,
             bg.BGYOperatingHours,
             bg.BGYContactNumber,
             bg.BGYEmailAddress,
             bg.XCoord,
             bg.YCoord
         FROM PEDTBDSS_new.MD_BARANGAYS bg
+        JOIN PEDTBDSS_new.table_region r ON bg.BGYRegion = r.region_id 
+        JOIN PEDTBDSS_new.table_province p ON bg.BGYProvince= p.province_id 
+        JOIN PEDTBDSS_new.table_municipality m ON  bg.BGYCity= m.municipality_id 
+        JOIN PEDTBDSS_new.table_barangay b ON bg.BGYBarangay = b.barangay_id
         WHERE bg.BGYNo=${id};
        
     `, (err, results) => {
@@ -984,7 +988,7 @@ module.exports = (db) => {
     JOIN PEDTBDSS_new.table_municipality m ON  h.HICity= m.municipality_id 
     JOIN PEDTBDSS_new.table_barangay b ON h.HIBarangay = b.barangay_id
             JOIN   PEDTBDSS_new.MD_BRGYHI bh ON bh.HINo = h.HINo
-            WHERE bh.BGYNO=${id};
+            WHERE bh.BGYNO=${id} AND h.isActive = 1;
        
     `, (err, results) => {
         if (err) {
@@ -1114,7 +1118,7 @@ module.exports = (db) => {
             WHERE HINo NOT IN(SELECT h.HINo
             FROM PEDTBDSS_new.MD_HI h
             JOIN PEDTBDSS_new.MD_BRGYHI bh ON h.HINo = bh.HINo
-            WHERE bh.BGYNo=${id})
+            WHERE bh.BGYNo=${id}) AND h.isActive = 1
             ORDER BY h.HIName ;
     `, (err, results) => {
         if (err) {
@@ -1620,6 +1624,7 @@ router.get('/chartdata/:id', (req, res) => {
     CASE
         WHEN dr.diagnosis LIKE '%Presumptive TB%' THEN 'Presumptive TB'
         WHEN dr.diagnosis LIKE '%Bacteriologically Confirmed - Drug Resistant%' THEN 'Bacteriologically Confirmed - Drug Resistant'
+        WHEN dr.diagnosis LIKE '%Bacteriologically Confirmed - Multi Drug Resistant%' THEN 'Bacteriologically Confirmed - Multi Drug Resistant'
         WHEN dr.diagnosis LIKE '%Bacteriologically Confirmed - Drug Sensitive%' THEN 'Bacteriologically Confirmed - Drug Sensitive'
         WHEN dr.diagnosis LIKE '%Clinically Diagnosed TB%' THEN 'Clinically Diagnosed TB'
         WHEN dr.diagnosis LIKE '%Latent TB%' THEN 'Latent TB'
@@ -2185,6 +2190,65 @@ router.post('/updatetreatments', (req, res) => {
             console.log("Successfully updating into TD_TREATMENTS:", data);
             return res.json(data)
     });
+})
+
+//CHECKING OF REFERENCES FOR USER
+router.get('/checkuserexist/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT userNo 
+    FROM PEDTBDSS_new.MD_USERS
+    WHERE IDNo = ${id};
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+
+//CHECKING OF REFERENCES FOR USER
+router.get('/checkuserexist/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    SELECT userNo 
+    FROM PEDTBDSS_new.MD_USERS
+    WHERE IDNo = ${id};
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
+})
+
+//CHECKING OF REFERENCES FOR USER
+router.get('/checkoldpw/:id/:pw', (req, res) => {
+    const id = req.params.id;
+    const pw = req.params.pw;
+    db.query(`
+    SELECT userNo 
+    FROM PEDTBDSS_new.MD_USERS
+    WHERE userNo="${id}" AND pw = "${pw}" ;
+`, (err, results) => {
+    if (err) {
+        console.log(err)
+    } else {
+        results.forEach(result => {
+            console.log(result.age);
+        });
+        res.send(results)
+    }
+})
 })
 
     return router;
