@@ -13,6 +13,7 @@ import DeleteDiagnosticTest from '../admincomponents/DeleteDiagnosticTest';
 import filter from "../assets/filter.png";
 import sort from "../assets/sort.png";
 import Pagination from "react-bootstrap/Pagination";
+import noresult from "../assets/noresult.png";
 
 const AdminLabTest = () => {
   const [dtData, setDtData] = useState([]);
@@ -291,6 +292,7 @@ const AdminLabTest = () => {
                       </div>
                     </Col>
                   </Row>
+        {filteredData.length > 0 ? (
         <Card className="mt-4 mb-4">
           <Card.Body>
           <table className="table caption-top bg-white rounded mt-2 mb-0">
@@ -360,6 +362,26 @@ const AdminLabTest = () => {
               
           </Card.Body>
         </Card>
+        ) : (
+                    <Card className="mt-4 mb-4 text-center">
+                      <Row className="mt-4 justify-content-center">
+                        <Col>
+                          <img
+                            src={noresult}
+                            alt="No Results"
+                            style={{ width: "150px", height: "150px" }}
+                          />
+                        </Col>
+                      </Row>
+
+                      <Card.Body>
+                        <h1 style={{ fontSize: "20px", color: "#808080" }}>
+                          {" "}
+                          No Records Found{" "}
+                        </h1>
+                      </Card.Body>
+                    </Card>
+                  )}
         <Row className="mb-4">
                     <Col>
   

@@ -419,6 +419,7 @@ const handleAdvanceChange = (e) => {
 
           <Row className="justify-content-center">
             <Col className="justify-content-center" sm="10">
+            {filteredData.length > 0 ? (
               <Card className="mt-3 mb-4">
                 <Card.Body>
                   {/* Showing overall patient records in a table formatting. Hard-coded for frontend. Revise once backend
@@ -476,6 +477,26 @@ const handleAdvanceChange = (e) => {
                   </table>
                 </Card.Body>
               </Card>
+               ) : (
+                <Card className="mt-4 mb-4 text-center">
+                  <Row className="mt-4 justify-content-center">
+                    <Col>
+                      <img
+                        src={noresult}
+                        alt="No Results"
+                        style={{ width: "150px", height: "150px" }}
+                      />
+                    </Col>
+                  </Row>
+
+                  <Card.Body>
+                    <h1 style={{ fontSize: "20px", color: "#808080" }}>
+                      {" "}
+                      No Patients Found{" "}
+                    </h1>
+                  </Card.Body>
+                </Card>
+              )}
             </Col>
             <Pagination className="mt-3 justify-content-center">
               <Pagination.Prev
