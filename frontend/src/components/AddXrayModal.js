@@ -94,6 +94,8 @@ function AddXrayModal(props) {
         let testError = '';
         if (!xrayValues.test_refno) {
             testError = 'Required';
+        } else if (xrayValues.test_refno.length > 45) {
+            testError = 'Reference Number should not exceed 45 characters';
         }
         setTestError(testError);
 
