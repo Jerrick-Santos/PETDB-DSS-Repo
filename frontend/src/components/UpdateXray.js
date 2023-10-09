@@ -4,7 +4,7 @@ import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import edit from '../assets/edit.png'
-
+import Form from 'react-bootstrap/Form';
 
 function UpdateXray(props) {
    
@@ -113,20 +113,22 @@ function UpdateXray(props) {
         setHIError(HINoError);
 
         let dateError = '';
-        if (!formValues.issue_date) {
-            dateError = 'Required';
+        if (new Date(formValues.issue_date).toLocaleDateString() === new Date().toLocaleDateString()) {
+            dateError = 'Please select a date';
         }
         setDateError(dateError);
 
         let testError = '';
         if (!formValues.test_refno) {
             testError = 'Required';
+        } else if (formValues.test_refno.length > 45) {
+            testError = 'Reference Number should not exceed 45 characters';
         }
         setTestError(testError);
 
         let valueError = '';
-        if (!formValues.TestValue) {
-            valueError = 'Required';
+        if (formValues.TestValue === "") {
+            valueError = 'Please select an option';
         }
         setValueError(valueError);
 
@@ -184,7 +186,74 @@ function UpdateXray(props) {
         </>             
     ) : (
         <>
-                <div className="mt-3"> 
+        <Form noValidate onSubmit={handleSubmit}>
+            <Row className="mb-3 justify-content-center">
+                {/* For HI Number */}
+                <Form.Group as={Col} md="12" className='mb-3' controlId='HINo'>
+                    <Form.Label><strong>Issued by:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="HINo"
+                        name='HINo'
+                        value={formValues.HINo}
+                        onChange={handleChange}
+                        isInvalid={HINoError}>
+                            <option value="">Select</option>
+              
+                                {hiData.map((hi, index) => (
+                                <>
+                                <option value={hi.HINo}>{hi.HIName}</option>
+                                
+                                    </>
+                                ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{HINoError}</Form.Control.Feedback>
+                </Form.Group>
+                {/* For Issue Date */}
+                <Form.Group as={Col} md="12" className='mb-3' controlId='issue_date'>
+                    <Form.Label><strong>Issued on:</strong></Form.Label>
+                    <Form.Control
+                        required
+                        type='date'
+                        name='issue_date'
+                        onChange={handleChange}
+                        value={new Date(formValues.issue_date).toISOString().split('T')[0]}
+                        isInvalid={dateError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
+                </Form.Group>
+                {/* For Reference Number */}
+                <Form.Group as={Col} md="12" className='mb-3' controlId='test_refno'>
+                    <Form.Label><strong>Reference Number:</strong></Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='test_refno'
+                        onChange={handleChange}
+                        value={formValues.test_refno}
+                        isInvalid={testError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{testError}</Form.Control.Feedback>
+                </Form.Group>
+                {/* For Test Value */}
+                <Form.Group as={Col} md="12" controlId='TestValue'>
+                    <Form.Label><strong>Xray Results:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="TestValue"
+                        name='TestValue'
+                        value={formValues.TestValue}
+                        onChange={handleChange}
+                        isInvalid={valueError}>
+                            <option value="">Select</option>
+                            <option value="With Signs of TB">With Signs of TB</option>
+                            <option value="No signs">No signs</option>
+                            <option value="Undetermined">Undetermined</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{valueError}</Form.Control.Feedback>
+                </Form.Group>
+            </Row>
+        </Form>
+        
+                {/*<div className="mt-3"> 
                     <label> <strong>Issued by: </strong></label>
                     <select className="form-select" name="HINo" value={formValues.HINo} onChange={handleChange}>
                         <option value="">Select</option>
@@ -227,7 +296,7 @@ function UpdateXray(props) {
                     {valueError && (
                         <p style={{color: 'red'}}>{valueError}</p>  
                     )}
-                </div>
+                </div>*/}
             </>
         )}
     </Modal.Body>
