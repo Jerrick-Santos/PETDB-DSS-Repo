@@ -273,12 +273,15 @@ const endIndex = startIndex + itemsPerPage;
                 </Col>
                 <Col lg="8"> 
                 
-                        {diagnosis.cli_diagnosed === 1 ? "Confirmed" :
-                        diagnosis.baconfirmed === 1 ? "Confirmed" :
-                        diagnosis.presumptive_tb === 1 ? "Presumptive" :
-                        diagnosis.latent_tb === 1 ? "Latent" :
-                        diagnosis.no_tb === 1 ? "NO TB":
-                        "None"} 
+                {( diagnosis.presumptive_tb === 1 ) ? "Presumptive " :
+                ( diagnosis.cli_diagnosed === 1 ) ? "Clinically Diagnosed  " :
+                ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed " :
+                ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === 1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed - Drug Resistant " :
+                ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === 1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed - Drug Sensitive " :
+                ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === 1) ? "Bacteriologically Confirmed - Multi-Drug Resistant " :
+                ( diagnosis.latent_tb === 1 ) ? "Latent  " :
+                ( diagnosis.no_tb === 1 ) ? "NO TB" :
+                        "NONE"}
                 </Col>
               </Row>
 
@@ -287,7 +290,7 @@ const endIndex = startIndex + itemsPerPage;
                   <Badge bg="secondary"> Diagnosis: </Badge> 
                 </Col>
                 <Col lg="8"> 
-                  <strong>
+                  {/* <strong>
                     
                   {(diagnosis.diagnosis.includes("Resistant") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed - Drug Resistant TB" :
                 (diagnosis.diagnosis.includes("Resistant") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed - Drug Resistant TB" :
@@ -301,26 +304,31 @@ const endIndex = startIndex + itemsPerPage;
                 (diagnosis.diagnosis.includes("Bacteriologically") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed" : 
                 diagnosis.diagnosis.includes("Presumptive") ? "Presumptive Tuberculosis" : 
                 diagnosis.diagnosis.includes("Latent") ? "Latent Tuberculosis" : 
-                        "NONE"} </strong>
+                        "NONE"} </strong> */}
+                  <strong>
+                    
+                  { 
+                ( diagnosis.presumptive_tb === 1 ) ? "Presumptive " :
+                ( diagnosis.cli_diagnosed === 1 ) ? "Clinically Diagnosed  " :
+                ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed " :
+                ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === 1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed - Drug Resistant " :
+                ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === 1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed - Drug Sensitive " :
+                ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === 1) ? "Bacteriologically Confirmed - Multi-Drug Resistant " :
+                ( diagnosis.latent_tb === 1 ) ? "Latent  " :
+                ( diagnosis.no_tb === 1 ) ? "NO TB" :
+                        "NONE"}
+                        
+                        {
+                ( diagnosis.no_tb === 1 ) ? "" :
+                ( diagnosis.EPTBpositive === 1 ) ? "EPTB" :
+                        "PTB"}  </strong>
                 </Col>
               </Row>
 
         <Row className="mt-4">
-
-       
-            <Col style={{fontSize:"18px"}}> {(diagnosis.need_eval === 1) ? "The following tests are needed for further evaluation:" :
+            <Col style={{fontSize:"18px"}}> {(diagnosis.need_eval === 1 && !diagnosis.diagnosis.includes("Refer to specialist") ) ? "The following tests are needed for further evaluation:" :
                         "Please Refer to a specialist for further Management"} </Col>
-        </Row>
-
-        <Row className="mt-1">
-            <Col style={{fontSize:"20px"}}>
-            {(diagnosis.need_hiv === 1) ? (
-                <strong>HIV Test</strong>
-                ) : null}
-             
-            
-             </Col>
-        </Row>
+            </Row>
 
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
@@ -373,8 +381,37 @@ const endIndex = startIndex + itemsPerPage;
         </Row>
 
         <Row className="mt-1">
-            <Col style={{fontSize:"18px"}}> Please advice patient and parent to avoid close contact to contain the spread of TB.</Col>
+            <Col style={{fontSize:"18px"}}>
+            {(diagnosis.no_tb === -1 || diagnosis.latent_tb === 1) ? "Please advice patient and parent to avoid close contact to contain the spread of TB." : " "}
+
+               </Col>
         </Row>
+
+        <Row className="mt-1">
+            <Col style={{fontSize:"20px"}}>
+            {(diagnosis.need_hiv === 1) ? (
+                <strong>Advice patient to undergo HIV Test</strong>
+                ) : null}
+             
+            
+             </Col>
+        </Row>
+
+        <Row className="mt-1">
+            <Col style={{ fontSize: "18px" }}>
+                The patient is advised to undergo:
+                {diagnosis.presumptive_tb === 1 ? (
+                    <span style={{ fontWeight: "bold" }}> TB Preventive Treatment (TPT)</span>
+                ) : diagnosis.cli_diagnosed === 1 || diagnosis.baconfirmed === 1 ? (
+                    <span style={{ fontWeight: "bold" }}> TB Treatment</span>
+                ) : diagnosis.has_TBcontact === 1 ? (
+                    <span style={{ fontWeight: "bold" }}> TB Preventive Treatment (TPT)</span>
+                ) : (
+                    " "
+                )}
+            </Col>
+        </Row>
+
 
         
 

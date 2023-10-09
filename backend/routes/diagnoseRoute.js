@@ -787,11 +787,12 @@ module.exports = (db) => {
                                                                             (error8, InsertResult) => {
                                                                                 if (error8) {
                                                                                     console.log("EEEOOOOOOOR")
-                                                                                    res.status(500).json({ error: "Did Not Add Data" });
+                                                                                    res.status(500).json(error8);
                                                                                     return;
                                                                                 }
                                                                                 else{
-                                                                                    
+                                                                                    console.log("INSERT RESULT: ")
+                                                                                    console.log(InsertResult)
                                                                                     res.status(200).json(InsertResult)
                                                                                 }
                                                                             })
