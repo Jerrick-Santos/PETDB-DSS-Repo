@@ -1115,7 +1115,7 @@ const AddPatient = () => {
                             type='text'
                             name='g_contactno'
                             onChange={handleChange}
-                            placeholder="09xx-xxx-xxxx"
+                            placeholder="09xx xxx xxxx"
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1152,7 +1152,7 @@ const AddPatient = () => {
                             type='text'
                             name='m_contactno'
                             onChange={handleChange}
-                            placeholder="09xx-xxx-xxxx"
+                            placeholder="09xx xxx xxxx"
                         />
                     </div>
                     <div class="form-group col-md-3">
@@ -1190,7 +1190,7 @@ const AddPatient = () => {
                             type='text'
                             name='f_contactno'
                             onChange={handleChange}
-                            placeholder="09xx-xxx-xxxx"
+                            placeholder="09xx xxx xxxx"
                         />
                     </div>
                     <div class="form-group col-md-3">
@@ -1239,7 +1239,7 @@ const AddPatient = () => {
                             name='e_contactno'
                             onChange={handleChange}
                             value={patient.e_contactno}
-                            placeholder="09xx-xxx-xxxx"
+                            placeholder="09xx xxx xxxx"
                         />
                     </div>
                     <div class="form-group col-md-2">

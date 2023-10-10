@@ -122,27 +122,27 @@ function UpdateAssessment(props) {
     const validate = () => {
       let bodyweightError = '';
       if (!bodyWeight) {
-        bodyweightError = 'Body Weight is required';
+        bodyweightError = 'Required field';
       }
       setBodyWeightError(bodyweightError);
 
       let heightError = '';
       if (!height) {
-        heightError = 'Height is required';
+        heightError = 'Required field';
       }
       setHeightError(heightError);
 
       let bodyTempError = '';
       if (!formValues.ass_temp) {
-        bodyTempError = 'Body Temperature is required';
+        bodyTempError = 'Required field';
       } else if (isNaN(formValues.ass_temp)) {
-        bodyTempError = 'Body Temperature must be a valid number';
+        bodyTempError = 'Must be a valid number';
       }
       setTempError(bodyTempError);
 
       let bloodPressError = '';
       if (!formValues.ass_bp) {
-        bloodPressError = 'Blood Pressure is required';
+        bloodPressError = 'Required field';
       }
       setBPError(bloodPressError);
 

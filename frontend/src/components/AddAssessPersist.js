@@ -16,6 +16,9 @@ function AddAssessPersist(props) {
     const [height, setHeight] = useState(0);
     const [bmi, setBMI] = useState(null);
 
+    const [coughWeeksDisabled, setCoughWeeksDisabled] = useState(true);
+    const [coughPersistDisabled, setCoughPersistDisabled] = useState(true);
+
     const calculateBMI = () => {
       if (bodyWeight && height) {
         const heightInMeters = height / 100; // Convert height to meters
@@ -99,25 +102,27 @@ function AddAssessPersist(props) {
     const validate = () => {
       let bodyweightError = '';
       if (!bodyWeight) {
-        bodyweightError = 'Body Weight is required';
+        bodyweightError = 'Required field';
       }
       setBodyWeightError(bodyweightError);
 
       let heightError = '';
       if (!height) {
-        heightError = 'Height is required';
+        heightError = 'Required field';
       }
       setHeightError(heightError);
 
       let bodyTempError = '';
       if (!assessFormValues.ass_temp) {
-        bodyTempError = 'Body Temperature is required';
+        bodyTempError = 'Required field';
+      } else if (isNaN(assessFormValues.ass_temp)) {
+        bodyTempError = 'Must be a valid number';
       }
       setTempError(bodyTempError);
 
       let bloodPressError = '';
       if (!assessFormValues.ass_bp) {
-        bloodPressError = 'Blood Pressure is required';
+        bloodPressError = 'Required field';
       }
       setBPError(bloodPressError);
 
@@ -145,6 +150,11 @@ function AddAssessPersist(props) {
             ...assessFormValues,
             ass_height: newValue  
           });
+        } else if (name === 'cough') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setCoughWeeksDisabled(!checked);
+          setCoughPersistDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
         } else {
           setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
         }
@@ -154,17 +164,8 @@ function AddAssessPersist(props) {
         }
     }
 
-    const resetValidation = () => {
-      setBodyWeightError('');
-      setHeightError('');
-      setTempError('');
-      setBPError('');
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault()
-
-        resetValidation();
 
         const isValid = validate();
         if(!isValid){
@@ -261,7 +262,9 @@ function AddAssessPersist(props) {
                         value={assessFormValues.ass_body_weight}
                         onChange={handleChange}
                         placeholder='in kilograms'
+                        isInvalid={bodyweightError}
                       />
+                      <Form.Control.Feedback type='invalid'>{bodyweightError}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -279,7 +282,9 @@ function AddAssessPersist(props) {
                           value={assessFormValues.ass_height}
                           onChange={handleChange}
                           placeholder='in centimeters'
+                          isInvalid={heightError}
                         />
+                        <Form.Control.Feedback type='invalid'>{heightError}</Form.Control.Feedback>
                       </Form.Group>
                   </Col>
                 </Row>
@@ -315,9 +320,11 @@ function AddAssessPersist(props) {
                           value={assessFormValues.ass_temp}
                           onChange={handleChange}
                           placeholder='in Celsius'
+                          isInvalid={bodyTempError}
                         />
-                      </Form.Group>
-                  </Col>
+                        <Form.Control.Feedback type='invalid'>{bodyTempError}</Form.Control.Feedback>
+                      </Form.Group>                  
+                    </Col>
                 </Row>
                 <hr />
                 { /* Blood Pressure */ }
@@ -333,7 +340,9 @@ function AddAssessPersist(props) {
                           value={assessFormValues.ass_bp}
                           onChange={handleChange}
                           placeholder='systolic/diastolic'
+                          isInvalid={bloodPressError}
                         />
+                        <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback>
                       </Form.Group>
                   </Col>
                 </Row>
@@ -372,10 +381,10 @@ function AddAssessPersist(props) {
                     <input type="checkbox" name='cough' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='c_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='c_weeks' onChange={handleChange} disabled={coughWeeksDisabled}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='c_persist' onChange={handleChange}/>
+                    <input type="checkbox" name='c_persist' onChange={handleChange} disabled={coughPersistDisabled}/>
                   </Col>
                 </Row>
                 <hr/>
