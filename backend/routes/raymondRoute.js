@@ -29,6 +29,31 @@ module.exports = (db) => {
         return dist;
     }
 
+    function getAge(in_) {
+        const currDate = new Date()
+        const birthdate = new Date(in_)
+        let age = currDate.getFullYear() - birthdate.getFullYear()
+
+        if (
+            currDate.getMonth() < birthdate.getMonth() ||
+            (currDate.getMonth() === birthdate.getMonth() &&
+                currDate.getDate() < birthdate.getDate())
+        ) {
+            age--;
+        }
+
+        return age
+    }
+
+    function nextTest(date, month) {
+        if(!date){
+            return null
+        }
+        let d = new Date(date)
+        d.setMonth(date.getMonth() + month).toLocaleString();
+        return d;
+    }
+
 
     router.get('/getContacts/:CaseNo', (req, res) => {
 
@@ -397,6 +422,107 @@ module.exports = (db) => {
                 res.status(200).json({message: 'successful updating of close contact information'})
             }
         })
+    })
+
+    router.get('/testGetNewContacts/:CaseNo', async (req, res) => {
+
+        const case_id = req.params.CaseNo;
+
+        // get all contacts in a patients case
+        const get_contacts_query = `
+            SELECT 
+                ct.last_name,
+                ct.first_name,
+                ct.middle_initial,
+                ct.birthdate,
+                ct.sex,
+                ct.contact_person,
+                ct.contact_num,
+                ct.contact_email,
+                ct.contact_relationship,
+                ct.date_added,
+                ct.PatientNo,
+                ct.ContactNo,
+                dr.DRDescription,
+                ts.TSDescription,
+                ct.DRNo,
+                ct.TSNo,
+                ct.ContactNo
+            FROM PEDTBDSS_new.MD_CONTACTTRACING ct
+            JOIN PEDTBDSS_new.MD_CTRACECASE ctc ON ct.ContactNo = ctc.ContactNo
+            JOIN PEDTBDSS_new.TD_PTCASE ptc ON ctc.CaseNo = ptc.CaseNo
+            LEFT JOIN PEDTBDSS_new.REF_DIAGNOSISRESULTS dr ON dr.DRNo = ct.DRNo
+            LEFT JOIN PEDTBDSS_new.REF_TREATMENTSTATUS ts ON ts.TSNo = ct.TSNo
+            WHERE ptc.CaseNo = ?;`;
+
+        // get latest ha and xray test of a patient case
+        const get_latest_test_query = 
+            `SELECT
+            td.PatientNo,
+            tpc.CaseNo,
+            ha.ha_start,
+            dr.issue_date,
+            ha.ha_count,
+            dr.xray_count
+            FROM (
+                SELECT PatientNo, MAX(start_date) AS max_start_date
+                FROM PEDTBDSS_new.TD_PTCASE
+                WHERE PatientNo IN (?)
+                GROUP BY PatientNo
+            ) AS td
+            JOIN PEDTBDSS_new.TD_PTCASE AS tpc ON td.PatientNo = tpc.PatientNo AND td.max_start_date = tpc.start_date
+            LEFT JOIN (
+                SELECT pc.CaseNo, MAX(ha.assessment_date) AS ha_start, COUNT(*) AS ha_count
+                FROM PEDTBDSS_new.TD_PTCASE pc
+                JOIN PEDTBDSS_new.TD_HEALTHASSESSMENT ha ON pc.CaseNo = ha.CaseNo
+                GROUP BY pc.CaseNo
+            ) AS ha ON tpc.CaseNo = ha.CaseNo
+            LEFT JOIN (
+                SELECT CaseNo, MAX(issue_date) AS issue_date, COUNT(*) AS xray_count
+                FROM PEDTBDSS_new.TD_DIAGNOSTICRESULTS
+                WHERE DGTestNo = 1
+                GROUP BY CaseNo
+            ) AS dr ON tpc.CaseNo = dr.CaseNo;`
+
+        try {
+            var cc_result = await queryPromise(get_contacts_query,[case_id])
+            console.log('load contact query: ', cc_result)
+
+            cc_result.map(x => {
+                x.age = getAge(x.birthdate)
+            })
+            
+            if (cc_result && cc_result.length>0) {
+                const patientNos = cc_result.filter(item => item.PatientNo !== null).map(item => item.PatientNo);
+
+                // get latest ha and xray test
+                if (patientNos.length>0) {
+                    var latest_test_result = await queryPromise(get_latest_test_query, [patientNos])
+
+                    // add next date for ha and xray
+                    // if test count already 2 or more, OR patient has not received test, return null
+                    latest_test_result.map(x => {
+                        x.ha_count >= 2 ? x.next_ha = null : x.next_ha = nextTest(x.ha_start, 6)
+                        x.xray_count >= 2 ? x.next_xray = null : x.next_xray = nextTest(x.xray_count,12)
+                        
+                    })
+    
+                    // merge close contact and test result
+                    cc_result.forEach((cc) => {
+                        const match = latest_test_result.find((test) => test.PatientNo === cc.PatientNo)
+                        if(match){
+                            cc.ha_count = match.ha_count
+                            cc.xray_count = match.xray_count
+                            cc.next_ha = match.next_ha
+                            cc.next_xray = match.next_xray
+                        }
+                    })
+                }
+            }
+            res.send(cc_result)
+        } catch (error) {
+            console.log(error)
+        }
     })
 
     return router;

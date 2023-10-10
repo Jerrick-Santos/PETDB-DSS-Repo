@@ -29,136 +29,20 @@ const CloseContacts = () => {
   const [latestCase, setLatestCase] = useState([]);
   const [caseData, setCaseData] = useState([])
 
-  // Helper Functions
-  function addMonths(date, months) {
-    var d = date.getDate();
-    date.setMonth(date.getMonth() + months);
-    if (date.getDate() !== d) {
-      date.setDate(0);
-    }
-    return date;
-  }
 
-  function getAge(birthdate) {
-    const today = new Date();
-    const birthDate = new Date(birthdate);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
-
-  // Load list of close contact
   useEffect(() => {
     async function fetchData() {
-
-      var res = await axios.get(`http://localhost:4000/api/getContacts/${caseNum}`)
-      console.log(res);
-
-      setCloseContactListData(res.data.map(contact => ({
-        ...contact,
-        next_ha: null,
-        days_until_ha: null,
-        next_xray: null,
-        days_until_xray: null,
-        status_ha: null,
-        status_xray: null
-      })));
-      
-      var update = {}
-
-      await Promise.all(res.data.map(async x => {
-        if (x.PatientNo != null) {
-          // find the latest case of the patient
-          const latest_case = await axios.get(`http://localhost:4000/api/getCaseByPatient/${x.PatientNo}`)
-
-          // find the latest and number of ha
-          if (latest_case.data.length > 0) {
-            const ha_start_dates = await axios.get(`http://localhost:4000/api/getHealthAssessmentDate/${latest_case.data[0].CaseNo}`)
-            const xray_start_dates = await axios.get(`http://localhost:4000/api/getXrayDate/${latest_case.data[0].CaseNo}`)
-
-            // TESTING
-            console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${x.PatientNo}]`, ha_start_dates.data)
-            console.log(`[CaseNo: ${latest_case.data[0].CaseNo}] [PatientNo: ${x.PatientNo}]`, xray_start_dates.data)
-
-            
-            let next_ha, days_until_ha, next_xray, days_until_xray
-            // setting HA data
-            if (ha_start_dates.data.length > 0) {
-              next_ha = addMonths(new Date(ha_start_dates.data[0].ha_start), 6).toLocaleDateString().replaceAll("/", "-")
-              console.log("DATE UNTIL NEXT HA:", next_ha)
-            }
-            else {
-              next_ha = addMonths(new Date(latest_case.data[0].start_date), 6).toLocaleDateString().replaceAll("/", "-")
-              console.log("[NO HA YET] DATE UNTIL NEXT HA:", next_ha)
-            }
-
-            // setting XRAY data
-            if (xray_start_dates.data.length > 0){
-              next_xray = addMonths(new Date(xray_start_dates.data[0].issue_date), 12).toLocaleDateString().replaceAll("/", "-")
-              console.log("DATE UNTIL NEXT XRAY:", next_xray)
-            }
-            else {
-              next_xray = addMonths(new Date(latest_case.data[0].start_date), 12).toLocaleDateString().replaceAll("/", "-")
-              console.log("[NO XRAY YET] DATE UNTIL NEXT XRAY:", next_xray)
-            }
-
-            days_until_ha = Math.floor((new Date(next_ha) - new Date())/ (1000 * 60 * 60 * 24))
-            days_until_xray = Math.floor((new Date(next_xray) - new Date())/ (1000 * 60 * 60 * 24))
-            
-            console.log("DAYS TILL NEXT HA/XRAY: ", days_until_ha, "/", days_until_xray)
-
-            let status_ha, status_xray
-
-            if (ha_start_dates.data.length === 0 || ha_start_dates.data.length === null) { status_ha = 0 } else { 
-              status_ha = ha_start_dates.data.length;
-            }
-
-            if (xray_start_dates.data.length === 0 || xray_start_dates.data.length === null) { status_xray = 0 } else {
-              status_xray = xray_start_dates.data.length;
-            }
-
-            const updatedProps = {
-              next_xray: next_xray,
-              days_until_xray: days_until_xray,
-              next_ha: next_ha,
-              days_until_ha: days_until_ha,
-              status_ha: status_ha,
-              status_xray: status_xray
-            };
-        
-            update = {...x, ...updatedProps}
-
-            console.log("UPDATED INFORMATION: ", update)
-
-            setCloseContactListData(prevData =>
-              prevData.map(contact => {
-                if (update.PatientNo === contact.PatientNo) {
-                  return { ...update };
-                } else {
-                  return contact;
-                }
-              })
-              
-            );
-            
-          }
-        }
-      }));
-      console.log(res);
-      setIsLoading(false);
+      if (caseNum) { // Check if caseNum exists or meets certain criteria
+        var res = await axios.get(`http://localhost:4000/api/testGetNewContacts/${caseNum}`);
+        console.log('updated cc loading: ', res.data);
+        setCloseContactListData(res.data);
+        setIsLoading(false)
+      }
     }
     fetchData()
-    
+
   }, [caseNum])
 
-  useEffect(() => {
-    console.log("Updated closeContactListData:", closeContactListData);
-  }, [closeContactListData]);
-
-  // Check backend if case is latest
   useEffect(() => {
     let latest_case
     console.log(caseNum)
@@ -296,7 +180,7 @@ const CloseContacts = () => {
       {/* Personal Information of the Patient */}
       {closeContactListData.length > 0 ? (
       <table className="table caption-top bg-white rounded mt-4 ms-4 me-5" style={{width:"95%"}}>
-        <caption className=' fs-4' style={{ color:'#0077B6'}}>Close Contacts</caption>
+      <caption className=' fs-4' style={{ color:'#0077B6'}}>Close Contacts</caption>
                 <thead>
                     <tr>
                         <th scope="col">Patient</th>
@@ -328,7 +212,7 @@ const CloseContacts = () => {
                         )}
                       </td>
                       <td>{contact.last_name+", "+contact.first_name+" "+contact.middle_initial}</td>
-                      <td>{getAge(contact.birthdate)}</td>
+                      <td>{contact.age}</td>
                       <td>{contact.sex === "M" ? "Male": "Female"}</td>
                       <td>{contact.contact_relationship}</td>
 
@@ -368,10 +252,10 @@ const CloseContacts = () => {
                           <td> <Badge bg='danger'> NO RECORD </Badge> </td>
                         ) : (
                           <>
-                            {contact.status_ha === 2 ? (
+                            {contact.ha_count === 2 ? (
                               <td> <Badge bg='success'> COMPLETE </Badge> </td>
                               ) : (
-                                <td> <Badge bg='secondary'> { contact.next_ha } </Badge> </td>
+                                <td> {contact.next_ha ? (<td> <Badge bg='secondary'> { new Date(contact.next_ha).toLocaleDateString().replaceAll("/", "-") } </Badge> </td>) : (<td> <Badge bg='danger'> NO RECORD </Badge> </td>)} </td>
                               )
                             }
                           </>
@@ -382,10 +266,10 @@ const CloseContacts = () => {
                           <td><Badge bg='danger'> NO RECORD </Badge></td>
                         ) : (
                           <>
-                            {contact.status_xray === 2 ? (
+                            {contact.xray_count === 2 ? (
                               <td> <Badge bg='success'> COMPLETE </Badge> </td>
                               ) : (
-                                <td> <Badge bg='secondary'> { contact.next_xray } </Badge> </td>
+                                <td> {contact.next_xray ? (<td> <Badge bg='secondary'> { new Date(contact.next_xray).toLocaleDateString().replaceAll("/", "-") } </Badge> </td>) : (<td> <Badge bg='danger'> NO RECORD </Badge> </td>)} </td>
                               )
                             }
                           </>
