@@ -264,21 +264,38 @@ module.exports = (db) => {
         /** ROUTER GOAL: get barangay and health institution information associated to the logged user */
         const userid = req.user.userNo
 
+        // load barangay data
         const user_query = `SELECT b.BGYNo, b.XCoord, b.YCoord, b.BGYName FROM PEDTBDSS_new.MD_USERS u JOIN PEDTBDSS_new.MD_BARANGAYS b ON u.BGYNo = b.BGYNo WHERE userNo = ?;`
-        const hi_query = `SELECT * 
+
+        // load health institution data associated to user's barangay -- old
+        // const hi_query = `SELECT * 
+        //                 FROM PEDTBDSS_new.MD_BRGYHI bhi
+        //                 JOIN PEDTBDSS_new.MD_HI hi ON bhi.HINo = hi.HINo
+        //                 JOIN PEDTBDSS_new.MD_HIDGTESTS hidg ON bhi.HINo = hidg.HINo
+        //                 WHERE bhi.BGYNo = ?
+        //                 AND hi.isActive = 1
+        //                 AND hidg.DGTestNo = ${req.params.test};`
+
+        // load health institution data associated to user's barangay -- new
+        const hi_query = `SELECT hi.HIName, hi.XCoord, hi.YCoord, hi.HIOperatingHours, hi.HIContactNumber, hi.HIEmailAddress, hi.HIUnitNo, hi.HIStreet,
+		                hi.HIBarangay, hi.HIContactPerson, hidg.AcceptingVoucher, hidg.Price, tb.barangay_name, tr.region_description, tp.province_name, tm.municipality_name
                         FROM PEDTBDSS_new.MD_BRGYHI bhi
                         JOIN PEDTBDSS_new.MD_HI hi ON bhi.HINo = hi.HINo
                         JOIN PEDTBDSS_new.MD_HIDGTESTS hidg ON bhi.HINo = hidg.HINo
-                        WHERE bhi.BGYNo = 1
+                        JOIN table_barangay tb ON tb.barangay_id = hi.HIBarangay
+                        JOIN table_region tr ON tr.region_id = hi.HIRegion
+                        JOIN table_province tp ON tp.province_id = hi.HIProvince
+                        JOIN table_municipality tm ON tm.municipality_id = hi.HICity
+                        WHERE bhi.BGYNo = ?
                         AND hi.isActive = 1
-                        AND hidg.DGTestNo = ${req.params.test};`
+                        AND hidg.DGTestNo = ?;`
 
         try {
             let res1, res2
             res1 = await queryPromise(user_query, [userid])
             console.log("QUERY 1: ", res1)
             if (res1 && res1.length > 0) {
-                res2 = await queryPromise(hi_query, [res1[0].BGYNo])
+                res2 = await queryPromise(hi_query, [res1[0].BGYNo, req.params.test])
                 console.log("QUERY 2: ", res2)
             }
 
