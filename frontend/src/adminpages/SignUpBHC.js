@@ -136,7 +136,7 @@ const SignUpBHC = () => {
         } else if (formValues.BGYContactNumber.length > 12) {
             contactError = 'Must be a valid contact number';
         } else if (isNaN(formValues.BGYContactNumber)) {
-            contactError = 'Must be a valid number';
+            contactError = 'Must be a contact valid number';
         } else if (!/^\d+$/.test(formValues.BGYContactNumber)) {
             contactError = 'Should not have letters';
         }
