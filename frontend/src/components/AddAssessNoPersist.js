@@ -84,25 +84,27 @@ function AddAssessNoPersist(props) {
     const validate = () => {
       let bodyweightError = '';
       if (!bodyWeight) {
-        bodyweightError = 'Body Weight is required';
+        bodyweightError = 'Required field';
       }
       setBodyWeightError(bodyweightError);
 
       let heightError = '';
       if (!height) {
-        heightError = 'Height is required';
+        heightError = 'Required field';
       }
       setHeightError(heightError);
 
       let bodyTempError = '';
       if (!assessFormValues.ass_temp) {
-        bodyTempError = 'Body Temperature is required';
+        bodyTempError = 'Required field';
+      } else if (isNaN(assessFormValues.ass_temp)) {
+        bodyTempError = 'Must be a valid number';
       }
       setTempError(bodyTempError);
 
       let bloodPressError = '';
       if (!assessFormValues.ass_bp) {
-        bloodPressError = 'Blood Pressure is required';
+        bloodPressError = 'Required field';
       }
       setBPError(bloodPressError);
 
@@ -236,7 +238,9 @@ function AddAssessNoPersist(props) {
                         value={assessFormValues.ass_body_weight}
                         onChange={handleChange}
                         placeholder='in kilograms'
+                        isInvalid={bodyweightError}
                       />
+                      <Form.Control.Feedback type='invalid'>{bodyweightError}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -254,7 +258,9 @@ function AddAssessNoPersist(props) {
                           value={assessFormValues.ass_height}
                           onChange={handleChange}
                           placeholder='in centimeters'
+                          isInvalid={heightError}
                         />
+                        <Form.Control.Feedback type='invalid'>{heightError}</Form.Control.Feedback>
                       </Form.Group>
                   </Col>
                 </Row>
@@ -290,7 +296,9 @@ function AddAssessNoPersist(props) {
                           value={assessFormValues.ass_temp}
                           onChange={handleChange}
                           placeholder='in Celsius'
+                          isInvalid={bodyTempError}
                         />
+                        <Form.Control.Feedback type='invalid'>{bodyTempError}</Form.Control.Feedback>
                       </Form.Group>
                   </Col>
                 </Row>
@@ -308,7 +316,9 @@ function AddAssessNoPersist(props) {
                           value={assessFormValues.ass_bp}
                           onChange={handleChange}
                           placeholder='systolic/diastolic'
+                          isInvalid={bloodPressError}
                         />
+                        <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback>
                       </Form.Group>
                   </Col>
                 </Row>
