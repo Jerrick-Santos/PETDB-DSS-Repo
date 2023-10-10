@@ -177,6 +177,15 @@ const SimilarCases = () => {
      <hr/>
     
      <Row>
+     <Col sm="7">
+         <Card.Text className="text-muted "> Bacteriologically Confirmed - Multi Drug Resistant</Card.Text>
+       </Col>
+       <Col sm="5">
+         <Card.Text> <strong>{parseFloat(casesData.bd_multires).toFixed(2)}% </strong></Card.Text>
+       </Col>
+     </Row>
+     <hr/> 
+     <Row>
        <Col sm="7">
          <Card.Text className="text-muted "> Bacteriologically Confirmed - Drug Resistant</Card.Text>
        </Col>
@@ -214,6 +223,39 @@ const SimilarCases = () => {
    
      
    </Card.Body>
+
+   <Card.Body>
+   <Row>
+       <Col sm="7">
+         <Card.Text> <strong>PTB/EPTB </strong></Card.Text>
+       </Col>
+       <Col sm="5">
+         <Card.Text> <strong>Percentage Likelihood </strong></Card.Text>
+       </Col>
+     </Row>
+     <hr/>
+    
+     <Row>
+     <Col sm="7">
+         <Card.Text className="text-muted "> Pulmonary Tuberculosis (PTB)</Card.Text>
+       </Col>
+       <Col sm="5">
+         <Card.Text> <strong>{parseFloat(casesData.ptb).toFixed(2)}% </strong></Card.Text>
+       </Col>
+     </Row>
+     <hr/> 
+     <Row>
+       <Col sm="7">
+         <Card.Text className="text-muted "> Extrapulmonary Tuberculosis (PTB)</Card.Text>
+       </Col>
+       <Col sm="5">
+         <Card.Text> <strong>{parseFloat(casesData.eptb).toFixed(2)}% </strong></Card.Text>
+       </Col>
+     </Row>
+     <hr/> 
+     
+   </Card.Body>
+   
  </Card>
  ) : (
                     <Card className="mb-4 text-center">

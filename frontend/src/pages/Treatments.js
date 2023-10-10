@@ -18,7 +18,7 @@ import Pagination from "react-bootstrap/Pagination";
 import test from "../assets/test.png";
 import diagnose from "../assets/diagnose.png";
 import similar from "../assets/similar.png";
-
+import Badge from "react-bootstrap/Badge";
 const Treatments = () => {
   const { id } = useParams();
   var caseNum = id;
@@ -48,7 +48,18 @@ const Treatments = () => {
       .catch((err) => {
         console.error(err);
       });
+
+    axios
+      .get(`http://localhost:4000/api/getAllResDrugs/${caseNum}`)
+      .then((res) => {
+        console.log(res);
+        setResistantData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, [caseNum]);
+
   ///PAGINATION LOGIC
   // Add these state variables
   const [activePage, setActivePage] = useState(1); // Active page number
@@ -431,12 +442,98 @@ const Treatments = () => {
                             {resistantData.map((data, index) => (
                               <>
                                 <tr key={index}>
-                                  <td>1</td>
-                                  <td>1</td>
-                                  <td>1</td>
-                                  <td>1</td>
-                                  <td>1</td>
-                                  <td>1</td>
+                                <td>
+                                    {new Date(
+                                      data.issue_date,
+                                    ).toLocaleDateString()}
+                                  </td>
+                                  <td>
+                                        {data.rif === "S" ? (
+                                     <Badge style={{ fontSize: 14 }} bg="success">
+                                        {" "}
+                                        Susceptible{" "}
+                                      </Badge>
+                                    ) : data.rif === "R" ? (
+                                      <Badge style={{ fontSize: 14 }} bg="danger">
+                                        {" "}
+                                        Resistant{" "}
+                                      </Badge> 
+                                    ) :                  
+                                    <Badge style={{ fontSize: 14 }} bg="secondary">
+                                    {" "}
+                                    NA{" "}
+                                  </Badge>}
+                                  </td>
+                                  <td>
+                                        {data.H_isoniazid === "S" ? (
+                                     <Badge style={{ fontSize: 14 }} bg="success">
+                                        {" "}
+                                        Susceptible{" "}
+                                      </Badge>
+                                    ) : data.H_isoniazid === "R" ? (
+                                      <Badge style={{ fontSize: 14 }} bg="danger">
+                                        {" "}
+                                        Resistant{" "}
+                                      </Badge> 
+                                    ) :                  
+                                    <Badge style={{ fontSize: 14 }} bg="secondary">
+                                    {" "}
+                                    NA{" "}
+                                  </Badge>}
+                                  </td>
+                                  <td>
+                                        {data.ETO_ethionamide === "S" ? (
+                                     <Badge style={{ fontSize: 14 }} bg="success">
+                                        {" "}
+                                        Susceptible{" "}
+                                      </Badge>
+                                    ) : data.ETO_ethionamide === "R" ? (
+                                      <Badge style={{ fontSize: 14 }} bg="danger">
+                                        {" "}
+                                        Resistant{" "}
+                                      </Badge> 
+                                    ) :                  
+                                    <Badge style={{ fontSize: 14 }} bg="secondary">
+                                    {" "}
+                                    NA{" "}
+                                  </Badge>}
+                                  </td>
+                                  <td>
+                                        {data.FQ_fluoro === "S" ? (
+                                     <Badge style={{ fontSize: 14 }} bg="success">
+                                        {" "}
+                                        Susceptible{" "}
+                                      </Badge>
+                                    ) : data.FQ_fluoro === "R" ? (
+                                      <Badge style={{ fontSize: 14 }} bg="danger">
+                                        {" "}
+                                        Resistant{" "}
+                                      </Badge> 
+                                    ) :                  
+                                    <Badge style={{ fontSize: 14 }} bg="secondary">
+                                    {" "}
+                                    NA{" "}
+                                  </Badge>}
+                                  </td>
+
+                                  <td>
+                                        {data.AMK_amikacin === "S" ? (
+                                     <Badge style={{ fontSize: 14 }} bg="success">
+                                        {" "}
+                                        Susceptible{" "}
+                                      </Badge>
+                                    ) : data.AMK_amikacin === "R" ? (
+                                      <Badge style={{ fontSize: 14 }} bg="danger">
+                                        {" "}
+                                        Resistant{" "}
+                                      </Badge> 
+                                    ) :                  
+                                    <Badge style={{ fontSize: 14 }} bg="secondary">
+                                    {" "}
+                                    NA{" "}
+                                  </Badge>}
+                                  </td>
+
                                 </tr>
                               </>
                             ))}

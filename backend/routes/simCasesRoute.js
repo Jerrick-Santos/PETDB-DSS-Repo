@@ -492,7 +492,7 @@ module.exports = (db) => {
 
                             db.query(`
                             SELECT 
-                            t4.diagnosis, t4.EPTBpositive
+                            t1.CaseNo, t4.diagnosis, t4.EPTBpositive
                             FROM (SELECT d.CaseNo, MAX(d.DGNo) AS latest_diagnosis, MAX(ha.AssessNo) AS latest_healthassess
                             FROM PEDTBDSS_new.TD_PTDIAGNOSIS d 
                             JOIN  PEDTBDSS_new.TD_HEALTHASSESSMENT ha ON d.CaseNo = ha.CaseNo
@@ -672,6 +672,7 @@ module.exports = (db) => {
                                 AND (
                                     t4.diagnosis IN ('Bacteriologically Confirmed - Drug Sensitive',
                                                      'Bacteriologically Confirmed - Drug Resistant',
+                                                     'Bacteriologically Confirmed - Multi Drug Resistant',
                                                      'NO TB',
                                                      'Clinically Diagnosed TB')
                                 )
@@ -700,6 +701,7 @@ module.exports = (db) => {
                                 const mapping = {
                                     "Bacteriologically Confirmed - Drug Resistant": "bd_res",
                                     "Bacteriologically Confirmed - Drug Sensitive": "bd_nonres",
+                                    "Bacteriologically Confirmed - Multi Drug Resistant": "bd_multires",
                                     "Clinically Diagnosed TB": "clinical_diag",
                                     "NO TB": "no_tb"
                                 };
@@ -713,6 +715,7 @@ module.exports = (db) => {
                                 const resultObject = {
                                     bd_res: null,
                                     bd_nonres: null,
+                                    bd_multires: null,
                                     clinical_diag: null,
                                     no_tb: null,
                                     ptb: null,
