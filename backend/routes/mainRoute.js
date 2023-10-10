@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
+const SALT_ROUNDS = 10
 
 module.exports = (db) => {
     // Define your route handlers using the db connection
@@ -1934,14 +1936,17 @@ WHERE u.userNo = ${id}
 })
 
 
-router.post('/newuser', (req, res) => {
+router.post('/newuser', async (req, res) => {
     const q = "INSERT INTO MD_USERS (`first_name`, `middle_name`, `last_name`, `IDNo`, `pw`, `BGYNo`, `isActive`, `user_type`, `passwordChanged`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    
+    const hashedPassword = await bcrypt.hash(req.body.pw, SALT_ROUNDS);
+    
     const values = [
         req.body.first_name,
         req.body.middle_name,
         req.body.last_name,
         req.body.IDNo,
-        req.body.pw,
+        hashedPassword,
         req.body.BGYNo,
         req.body.isActive,
         req.body.user_type,
@@ -2288,16 +2293,17 @@ router.get('/searchdt/:search', (req, res) => {
 })
 })
 
-router.post('/updatepw/:id', (req, res) => {
+router.post('/updatepw/:id', async (req, res) => {
     const id = req.params.id;
     const values = [
         req.body.pw
     ]
+    const hashedPassword = await bcrypt.hash(req.body.pw, SALT_ROUNDS);
 
     db.query(`UPDATE 	MD_USERS
                 SET		pw = ?, passwordChanged=1
                 WHERE	UserNo = ${id};
-            `, values, (err, data) => {
+            `, hashedPassword, (err, data) => {
         if(err) {
             console.log("Error updating into  MD_USERS:", err);
             return res.json(err)
@@ -2371,24 +2377,61 @@ router.get('/checkuserexist/:id', (req, res) => {
 })
 
 //CHECKING OF REFERENCES FOR USER
+// router.get('/checkoldpw/:id/:pw', (req, res) => {
+//     const id = req.params.id;
+//     const pw = req.params.pw;
+//     db.query(`
+//     SELECT userNo 
+//     FROM PEDTBDSS_new.MD_USERS
+//     WHERE userNo="${id}" AND pw = "${pw}" ;
+// `, (err, results) => {
+//     if (err) {
+//         console.log(err)
+//     } else {
+//         results.forEach(result => {
+//             console.log(result.age);
+//         });
+//         res.send(results)
+//     }
+// })
+// })
+
 router.get('/checkoldpw/:id/:pw', (req, res) => {
     const id = req.params.id;
-    const pw = req.params.pw;
-    db.query(`
-    SELECT userNo 
-    FROM PEDTBDSS_new.MD_USERS
-    WHERE userNo="${id}" AND pw = "${pw}" ;
-`, (err, results) => {
-    if (err) {
-        console.log(err)
-    } else {
-        results.forEach(result => {
-            console.log(result.age);
-        });
-        res.send(results)
-    }
-})
-})
+    const plaintextPassword = req.params.pw;
+  
+    // Retrieve the hashed password from the database based on the provided id
+    db.query(
+      `SELECT pw FROM PEDTBDSS_new.MD_USERS WHERE userNo = ?`,
+      [id],
+      async (err, results) => {
+        if (err) {
+          console.log(err);
+          res.status(500).json("Error checking old password");
+        } else {
+          if (results.length === 0) {
+            res.status(500).json("User not found");
+          } else {
+            const hashedPassword = results[0].pw;
+  
+            try {
+              // Use bcrypt to compare the entered plaintext password with the hashed password
+              const passwordMatch = await bcrypt.compare(plaintextPassword, hashedPassword);
+  
+              if (passwordMatch) {
+                res.json({ success: true, message: "Password matches the old password" });
+              } else {
+                res.status(500).json("Password does not match the old password");
+              }
+            } catch (error) {
+              console.error('Error during password comparison:', error);
+              res.status(500).json("Error checking old password");
+            }
+          }
+        }
+      }
+    );
+  });
 
 router.get('/checkpresumptivereg/:id', (req, res) => {
     const id = req.params.id;
@@ -2465,6 +2508,44 @@ router.get('/checklatentreg/:id', (req, res) => {
         }
     });
 });
+
+// Route to encrypt existing plaintext passwords
+router.post('/encrypt-passwords', async (req, res) => {
+    try {
+      // Retrieve existing user records with plaintext passwords
+      db.query('SELECT IDNo, pw FROM PEDTBDSS_new.MD_USERS;', async (err, results) => {
+        if (err) {
+          console.error('Error retrieving users:', err);
+          res.status(500).json({ error: 'An error occurred while retrieving users.' });
+          return;
+        }
+  
+        // Iterate through each user and hash their plaintext password
+        for (const user of results) {
+          const IDNo = user.IDNo;
+          const plaintextPassword = user.pw;
+  
+          // Hash the plaintext password using bcrypt
+          const hashedPassword = await bcrypt.hash(plaintextPassword, 10); // Use 10 salt rounds
+  
+          // Update the user's password in the database with the hashed password
+          db.query('UPDATE PEDTBDSS_new.MD_USERS SET pw = ? WHERE IDNo = ?', [hashedPassword, IDNo], (updateErr, updateResult) => {
+            if (updateErr) {
+              console.error('Error updating password:', updateErr);
+            }
+          });
+        }
+  
+        res.status(200).json({ message: 'Passwords encrypted successfully.' });
+      });
+    } catch (error) {
+      console.error('Error encrypting passwords:', error);
+      res.status(500).json({ error: 'An error occurred while encrypting passwords.' });
+    }
+  });
+  
+
+
 // router.get('/checkpresumptivereg/:id', (req, res) => {
 //     const id = req.params.id;
 

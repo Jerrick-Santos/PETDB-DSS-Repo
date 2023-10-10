@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('./authFunc');
+const SALT_ROUNDS = 10
 // Enter routes here
 
 
@@ -214,14 +215,14 @@ const values = [
         ];
 
         // Retrieve the PatientNo for the inserted patient
-        db.query(insertBHCQuery, BHCValues, (err, result) => {
+        db.query(insertBHCQuery, BHCValues, async (err, result) => {
             if (err) {
                 return res.status(500).json(err);
             }
         
             // Retrieve the last inserted ID
             const bhcNo = result.insertId;
-        
+            const hashedPassword = await bcrypt.hash(req.body.pw, SALT_ROUNDS);
             // Now you can insert data into TD_PTCASE using patientNo
             const insertUserQuery = "INSERT INTO MD_USERS (`first_name`, `middle_name`, `last_name`, `IDNo`, `pw`, `BGYNo`, `isActive`, `user_type`, `passwordChanged`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
             const userValues = [
@@ -229,7 +230,7 @@ const values = [
                 req.body.middle_name,
                 req.body.last_name,
                 req.body.IDNo,
-                req.body.pw,
+                hashedPassword,
                 bhcNo,
                 req.body.isActive,
                 req.body.user_type,

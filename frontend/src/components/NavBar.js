@@ -92,6 +92,7 @@ const NavBar = () => {
     if (pwValues.oldPw) {
       axios.get(`http://localhost:4000/api/checkoldpw/${userNum}/${pwValues.oldPw}`)
     .then((response) => {
+      console.log(response.data)
       if(response.data.length>0){
         console.log(response.data)
         setCorrectOld(true)
