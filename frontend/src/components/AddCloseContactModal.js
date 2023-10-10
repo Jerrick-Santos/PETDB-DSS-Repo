@@ -306,6 +306,9 @@ function AddCloseContactModal(props) {
     }, [formValues])
     // -------------------------------------------------------
 
+
+  
+
   return (
         <>
             {props.update ? (
@@ -327,203 +330,212 @@ function AddCloseContactModal(props) {
             <Modal.Title>{props.update ? 'Update Close Contact Record' : 'Add a Close Contact'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-    
-        {/** NEW FORM FOR VALIDATION */}
-        <Form noValidate validated={validated} onSubmit={handleSubmit} className="mt-3 justify-content-center">
+        
+        {props.contact && props.contact.PatientNo ? (<p>Cannot edit an existing patient record</p>) : (<>
 
-            <Row className="mb-3 justify-content-center">
-                <Form.Group as={Col} md="4" controlId="first_name">
-                    <Form.Label>First Name</Form.Label>
-                    <Form.Control
-                        required
-                        type='text' 
-                        placeholder='First Name'
-                        name='first_name'
-                        onChange={handleChange}
-                        value={formValues.first_name}
-                        isInvalid={!!errors.first_name}
-                        disabled={disableForms}
-                    />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    <Form.Control.Feedback type='invalid'>{errors.first_name}</Form.Control.Feedback>
-                </Form.Group>
+            {/** NEW FORM FOR VALIDATION */}
+            <Form noValidate validated={validated} onSubmit={handleSubmit} className="mt-3 justify-content-center">
 
-                <Form.Group as={Col} md="2" controlId="middle_initial">
-                    <Form.Label>Middle Name</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Middle Name'
-                        name='middle_initial'
-                        onChange={handleChange}
-                        value={formValues.middle_initial}
-                        isInvalid={!!errors.middle_initial}
-                        disabled={disableForms} 
-                    />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    <Form.Control.Feedback type='invalid'>{errors.middle_initial}</Form.Control.Feedback>
-                </Form.Group>
-
-                <Form.Group as={Col} md="6" controlId="last_name">
-                    <Form.Label>Last Name</Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        placeholder='Last Name'
-                        name='last_name'
-                        onChange={handleChange}
-                        value={formValues.last_name}
-                        isInvalid={!!errors.last_name}
-                        disabled={disableForms} 
-                    />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    <Form.Control.Feedback type='invalid'>{errors.last_name}</Form.Control.Feedback>
-                </Form.Group>
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-                <Form.Group as={Col} md="4" controlId="birthdate">
-                    <Form.Label>Birthdate</Form.Label>
+                <Row className="mb-3 justify-content-center">
+                    <Form.Group as={Col} md="4" controlId="first_name">
+                        <Form.Label>First Name</Form.Label>
                         <Form.Control
                             required
-                            type='date'
-                            placeholder='Birthdate'
-                            name='birthdate'
+                            type='text' 
+                            placeholder='First Name'
+                            name='first_name'
                             onChange={handleChange}
-                            value={formValues.birthdate ? new Date(formValues.birthdate).toISOString().split('T')[0] : ''}
-                            isInvalid={!!errors.birthdate}
+                            value={formValues.first_name}
+                            isInvalid={!!errors.first_name}
                             disabled={disableForms}
                         />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    <Form.Control.Feedback type='invalid'>{errors.birthdate}</Form.Control.Feedback>
-                </Form.Group>
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{errors.first_name}</Form.Control.Feedback>
+                    </Form.Group>
 
-                <Form.Group as={Col} md="2" controlId="sex">
-                    <Form.Label>Sex</Form.Label>
-                    <Form.Select aria-label="Sex" onChange={handleChange} name='sex' isInvalid={!!errors.sex} value={formValues.sex} disabled={disableForms}>
-                        <option value="">Select</option>
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                    </Form.Select>
-                    <Form.Control.Feedback type='invalid'>{errors.sex}</Form.Control.Feedback>
-                </Form.Group>
+                    <Form.Group as={Col} md="2" controlId="middle_initial">
+                        <Form.Label>Middle Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            placeholder='Middle Name'
+                            name='middle_initial'
+                            onChange={handleChange}
+                            value={formValues.middle_initial}
+                            isInvalid={!!errors.middle_initial}
+                            disabled={disableForms} 
+                        />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{errors.middle_initial}</Form.Control.Feedback>
+                    </Form.Group>
 
-                <Form.Group as={Col} md="6" controlId="contact_relationship">
-                    <Form.Label>Relationship to Patient</Form.Label>
-                    <Form.Control
-                        // required
-                        type='text'
-                        placeholder='Relationship to Patient'
-                        name='contact_relationship'
-                        onChange={handleChange}
-                        isInvalid={!!errors.contact_relationship}
-                        value={formValues.contact_relationship}
-                        
-                    />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    <Form.Control.Feedback type='invalid'>{errors.contact_relationship}</Form.Control.Feedback>
-                </Form.Group>
+                    <Form.Group as={Col} md="6" controlId="last_name">
+                        <Form.Label>Last Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            placeholder='Last Name'
+                            name='last_name'
+                            onChange={handleChange}
+                            value={formValues.last_name}
+                            isInvalid={!!errors.last_name}
+                            disabled={disableForms} 
+                        />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{errors.last_name}</Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
 
-                
+                <Row className="mb-3 justify-content-center">
+                    <Form.Group as={Col} md="4" controlId="birthdate">
+                        <Form.Label>Birthdate</Form.Label>
+                            <Form.Control
+                                required
+                                type='date'
+                                placeholder='Birthdate'
+                                name='birthdate'
+                                onChange={handleChange}
+                                value={formValues.birthdate ? new Date(formValues.birthdate).toISOString().split('T')[0] : ''}
+                                isInvalid={!!errors.birthdate}
+                                disabled={disableForms}
+                            />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{errors.birthdate}</Form.Control.Feedback>
+                    </Form.Group>
 
-            </Row>
+                    <Form.Group as={Col} md="2" controlId="sex">
+                        <Form.Label>Sex</Form.Label>
+                        <Form.Select aria-label="Sex" onChange={handleChange} name='sex' isInvalid={!!errors.sex} value={formValues.sex} disabled={disableForms}>
+                            <option value="">Select</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{errors.sex}</Form.Control.Feedback>
+                    </Form.Group>
 
-            <Row>
-                {/** MODAL FOR VIEWING SIMILAR PATIENTS */}
-                <ViewSimilarPatientModal visible={showSimilar} patients={similarPatients} setSelectedPatientIndex={setSelectedPatientIndex}/>
-            </Row>
+                    <Form.Group as={Col} md="6" controlId="contact_relationship">
+                        <Form.Label>Relationship to Patient</Form.Label>
+                        <Form.Control
+                            // required
+                            type='text'
+                            placeholder='Relationship to Patient'
+                            name='contact_relationship'
+                            onChange={handleChange}
+                            isInvalid={!!errors.contact_relationship}
+                            value={formValues.contact_relationship}
+                            
+                        />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{errors.contact_relationship}</Form.Control.Feedback>
+                    </Form.Group>
 
-            <Row className="mt-5 mb-3 justify-content-center">
-                <Form.Group as={Col} md="15" controlId="contact_person">
-                    <Form.Label>Guardian Name</Form.Label>
-                    <Form.Control
-                        type='text'
-                        placeholder='Please fill if contact is less than 15 years old...'
-                        name='contact_person'
-                        value={formValues.contact_person}
-                        onChange={handleChange}
-                        disabled={ disableForms || getAge() } 
-                        isInvalid={!!errors.contact_person}
-                    />
-                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                <Form.Control.Feedback type='invalid'>{errors.contact_person}</Form.Control.Feedback>
-                </Form.Group>
-                
-                
-            </Row>
+                    
 
-            <Row className="mt-5 mb-3 justify-content-center">
-                <Form.Group as={Col} md="6" controlId="contact_num">
-                    <Form.Label>Contact No.</Form.Label>
-                    <Form.Control
-                        type='number'
-                        placeholder='e.g. 09xx-xxx-xxxx'
-                        name='contact_num'
-                        value={formValues.contact_num}
-                        onChange={handleChange}
-                        isInvalid={!!errors.contact_num}
-                        disabled={disableForms}
-                    />
-                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    <Form.Control.Feedback type='invalid'>{errors.contact_num}</Form.Control.Feedback>
-                </Form.Group>
+                </Row>
 
-                <Form.Group as={Col} md="6" controlId="contact_email">
-                    <Form.Label>Contact Email</Form.Label>
-                    <Form.Control
-                        type='email'
-                        placeholder='sample@email.com'
-                        name='contact_email'
-                        value={formValues.contact_email}
-                        onChange={handleChange} 
-                        disabled={disableForms}
-                    />
-                </Form.Group>
-            </Row>
+                <Row>
+                    {/** MODAL FOR VIEWING SIMILAR PATIENTS */}
+                    <ViewSimilarPatientModal visible={showSimilar} patients={similarPatients} setSelectedPatientIndex={setSelectedPatientIndex}/>
+                </Row>
 
-            {/** TO CONSIDER CLOSE CONTACTS THAT ALREADY HAVE AN ACTIVE CASE */}
-            <Row className="mt-5 mb-3 justify-content-center">
+                <Row className="mt-5 mb-3 justify-content-center">
+                    <Form.Group as={Col} md="15" controlId="contact_person">
+                        <Form.Label>Guardian Name</Form.Label>
+                        <Form.Control
+                            type='text'
+                            placeholder='Please fill if contact is less than 15 years old...'
+                            name='contact_person'
+                            value={formValues.contact_person}
+                            onChange={handleChange}
+                            disabled={ disableForms || getAge() } 
+                            isInvalid={!!errors.contact_person}
+                        />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{errors.contact_person}</Form.Control.Feedback>
+                    </Form.Group>
+                    
+                    
+                </Row>
 
-                <Col>
-                    <strong> Does the close contact have a history with TB or is currently in an active TB case?</strong>
-                </Col>
-                <Col>
-                    <Form.Check type='checkbox' name='showTBHistory' onChange={handleEnableDropdown} disabled={disableForms} checked={!disableForms} />
-                </Col>
-            </Row>
+                <Row className="mt-5 mb-3 justify-content-center">
+                    <Form.Group as={Col} md="6" controlId="contact_num">
+                        <Form.Label>Contact No.</Form.Label>
+                        <Form.Control
+                            type='number'
+                            placeholder='e.g. 09xx-xxx-xxxx'
+                            name='contact_num'
+                            value={formValues.contact_num}
+                            onChange={handleChange}
+                            isInvalid={!!errors.contact_num || !!errors.contact_person}
+                            disabled={disableForms}
+                        />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{errors.contact_num && `${errors.contact_num} \n`}{errors.contact_person}</Form.Control.Feedback>
+                    </Form.Group>
 
-            <Row>
-                <Form.Group as={Col} md="6" controlId="sex">
-                    <Form.Label>TB Diagnostic Result</Form.Label>
-                    <Form.Select aria-label="Diagnostic Result" onChange={handleChange} name='DRNo' value={formValues.DRNo ? formValues.DRNo : ''} disabled={!displayDiagTreatment}>
-                        <option>Select</option>
-                        {diagResult.length > 0 && diagResult && (
-                            diagResult.map((diag, index) => { return (
-                                <option key={index} value={diag.DRNo}>{diag.DRDescription}</option>
-                            )})
-                        )}
-                    </Form.Select>
-                </Form.Group>
+                    <Form.Group as={Col} md="6" controlId="contact_email">
+                        <Form.Label>Contact Email</Form.Label>
+                        <Form.Control
+                            type='email'
+                            placeholder='sample@email.com'
+                            name='contact_email'
+                            value={formValues.contact_email}
+                            onChange={handleChange} 
+                            disabled={disableForms}
+                            isInvalid={!!errors.contact_person}
+                        />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{errors.contact_person}</Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
 
-                <Form.Group as={Col} md="6" controlId="sex">
-                    <Form.Label>TB Treatment Status</Form.Label>
-                    <Form.Select aria-label="Treatment Status" onChange={handleChange} name='TSNo' value={formValues.TSNo ? formValues.TSNo : ''} disabled={!displayDiagTreatment}>
-                        <option>Select</option>
-                        {treatmentStatus.length > 0 && treatmentStatus && (
-                            treatmentStatus.map((treat, index) => { return (
-                                <option key={index} value={treat.TSNo}>{treat.TSDescription}</option>
-                            )})
-                        )}
-                    </Form.Select>
-                </Form.Group>                   
-            </Row>
+                {/** TO CONSIDER CLOSE CONTACTS THAT ALREADY HAVE AN ACTIVE CASE */}
+                <Row className="mt-5 mb-3 justify-content-center">
 
-        </Form>
+                    <Col>
+                        <strong> Does the close contact have a history with TB or is currently in an active TB case?</strong>
+                    </Col>
+                    <Col>
+                        <Form.Check type='checkbox' name='showTBHistory' onChange={handleEnableDropdown} disabled={disableForms} checked={!disableForms} />
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Form.Group as={Col} md="6" controlId="sex">
+                        <Form.Label>TB Diagnostic Result</Form.Label>
+                        <Form.Select aria-label="Diagnostic Result" onChange={handleChange} name='DRNo' value={formValues.DRNo ? formValues.DRNo : ''} disabled={!displayDiagTreatment}>
+                            <option>Select</option>
+                            {diagResult.length > 0 && diagResult && (
+                                diagResult.map((diag, index) => { return (
+                                    <option key={index} value={diag.DRNo}>{diag.DRDescription}</option>
+                                )})
+                            )}
+                        </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group as={Col} md="6" controlId="sex">
+                        <Form.Label>TB Treatment Status</Form.Label>
+                        <Form.Select aria-label="Treatment Status" onChange={handleChange} name='TSNo' value={formValues.TSNo ? formValues.TSNo : ''} disabled={!displayDiagTreatment}>
+                            <option>Select</option>
+                            {treatmentStatus.length > 0 && treatmentStatus && (
+                                treatmentStatus.map((treat, index) => { return (
+                                    <option key={index} value={treat.TSNo}>{treat.TSDescription}</option>
+                                )})
+                            )}
+                        </Form.Select>
+                    </Form.Group>                   
+                </Row>
+
+            </Form>
+        </>)}
         </Modal.Body>
         <Modal.Footer>
-            <button type='button' onClick={handleClear} className="btn btn-secondary">Clear</button>
+            
             <button type="button" onClick={handleClose} className="btn btn-secondary">Close</button>
-            <button type="submit" onClick={handleSubmit} className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+            {props.contact && props.contact.PatientNo ? null : (<>
+                <button type='button' onClick={handleClear} className="btn btn-secondary">Clear</button>
+                <button type="submit" onClick={handleSubmit} className="btn" style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+            </>)}
         </Modal.Footer>
     </Modal>
 
