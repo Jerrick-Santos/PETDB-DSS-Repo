@@ -21,6 +21,26 @@ function UpdateHIModal(props) {
 
     useEffect(() => {
 
+        
+        setFormValues((prev) => ({
+            ...prev,
+            HIName: props.HIName,
+            HIOperatingHours:props.HIOperatingHours,
+            HIContactNumber:props.HIContactNumber,
+            HIEmailAddress:props.HIEmailAddress,
+            HIUnitNo:props.HIUnitNo,
+            HIStreet:props.HIStreet,
+            HIRegion:props.HIRegion,
+            HIProvince:props.HIProvince,
+            HICity:props.HICity,
+            HIBarangay:props.HIBarangay,
+            HIZipCode:props.HIZipCode,
+            XCoord:props.XCoord,
+            YCoord:props.YCoord,
+            HIContactPerson: props.HIContactPerson,
+            HINo: props.HINo
+          }));
+
         axios.get(`http://localhost:4000/api/allregions`)
           .then((response) => {
             setRegionData(response.data)
@@ -53,9 +73,8 @@ function UpdateHIModal(props) {
             .catch((error) => {
                 console.error('Error fetching barangays:', error);
             });
-        
-    
-    }, []);
+
+    }, [props]);
 
     const [provinceData, setProvinceData] = useState([]);
 
@@ -117,7 +136,6 @@ function UpdateHIModal(props) {
         });
     }
 
-
     const [formValues, setFormValues] = useState({
         HIName: props.HIName,
         HIOperatingHours:props.HIOperatingHours,
@@ -136,6 +154,7 @@ function UpdateHIModal(props) {
         HINo: props.HINo
     });
 
+   
     const [HINameError, setHINameError] = useState('');
     const [operatingHoursError, setOHError] = useState('');
     const [unitError, setUnitError] = useState('');

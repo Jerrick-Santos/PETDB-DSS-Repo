@@ -42,7 +42,7 @@ function UpdateUser(props) {
       console.error('Error fetching data:', error);
     });
     }
-    
+  
       
   
   }, [formValues.IDNo]);

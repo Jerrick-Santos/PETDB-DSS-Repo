@@ -2331,22 +2331,23 @@ router.post('/updatetreatments', (req, res) => {
 })
 
 //CHECKING OF REFERENCES FOR USER
-router.get('/checkuserexist/:id', (req, res) => {
-    const id = req.params.id;
-    db.query(`
-    SELECT userNo 
-    FROM PEDTBDSS_new.MD_USERS
-    WHERE IDNo = ${id};
-`, (err, results) => {
-    if (err) {
-        console.log(err)
-    } else {
-        results.forEach(result => {
-            console.log(result.age);
-        });
-        res.send(results)
-    }
-})
+
+router.post('/checkuserexist', (req, res) => {
+    const values = [
+        req.body.IDNo,
+    ]
+
+    db.query(`SELECT userNo 
+                    FROM PEDTBDSS_new.MD_USERS
+                    WHERE IDNo = ?;
+        `, values, (err, data) => {
+            if (err) {
+                console.log("Error", err);
+                return res.json(err)
+            }
+            console.log("Successful", data);
+            return res.json(data)
+    });
 })
 
 
@@ -2356,7 +2357,7 @@ router.get('/checkuserexist/:id', (req, res) => {
     db.query(`
     SELECT userNo 
     FROM PEDTBDSS_new.MD_USERS
-    WHERE IDNo = ${id};
+    WHERE IDNo = '${id}';
 `, (err, results) => {
     if (err) {
         console.log(err)
