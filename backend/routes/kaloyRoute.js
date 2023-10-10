@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('./authFunc');
+const bcrypt = require('bcrypt');
 const SALT_ROUNDS = 10
 // Enter routes here
 
