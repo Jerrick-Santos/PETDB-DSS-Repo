@@ -209,24 +209,24 @@ function AddXrayModal(props) {
             <Row className="mb-3 justify-content-center">
                 <Form.Group as={Col} md="12" className='mb-3' controlId='HINo'>
                     <Form.Label><strong>Issued by:</strong></Form.Label>
-                                            <Form.Select
-                        aria-label="HINo"
-                        name="HINo"
-                        value={xrayValues.HINo}
-                        onChange={(e) => {
-                            const selectedValue = e.target.value;
-                            const newHINo = selectedValue === "0" ? null : selectedValue;
-                            handleChange({ target: { name: "HINo", value: newHINo } });
-                        }}
-                        isInvalid={HINoError}
-                        >
-                        <option value="">Select</option>
-                        {hiData.map((hi, index) => (
-                            <option key={hi.HINo} value={hi.HINo}>
-                            {hi.HIName}
-                            </option>
-                        ))}
-                        <option value="0">Others</option>
+                        <Form.Select
+                            aria-label="HINo"
+                            name="HINo"
+                            value={xrayValues.HINo}
+                            onChange={(e) => {
+                                const selectedValue = e.target.value;
+                                const newHINo = selectedValue === "0" ? null : selectedValue;
+                                handleChange({ target: { name: "HINo", value: newHINo } });
+                            }}
+                            isInvalid={HINoError}
+                            >
+                            <option value="">Select</option>
+                            {hiData.map((hi, index) => (
+                                <option key={hi.HINo} value={hi.HINo}>
+                                {hi.HIName}
+                                </option>
+                            ))}
+                            <option value="0">Others</option>
                         </Form.Select>
 
                     <Form.Control.Feedback type='invalid'>{HINoError}</Form.Control.Feedback>

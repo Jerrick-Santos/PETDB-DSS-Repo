@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import add from '../assets/add.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
+import Form from 'react-bootstrap/Form';
 
 function CreateDiagnosticTest() {
    
@@ -25,13 +26,17 @@ function CreateDiagnosticTest() {
     const validate = () => {
         let testNameError = '';
         if (!formValues.DGTestName) {
-            testNameError = 'Required';
+            testNameError = 'Required field';
         }
         setTestNameError(testNameError);
 
         let validityError = '';
         if (!formValues.DGValidityMonths) {
-            validityError = 'Required';
+            validityError = 'Required field';
+        } else if (isNaN(formValues.DGValidityMonths)) {
+            validityError = 'Must be a valid number';
+        } else if (!/^\d+$/.test(formValues.DGValidityMonths)) {
+            validityError = 'Should not have letters';
         }
         setValidError(validityError);
     
@@ -74,7 +79,37 @@ function CreateDiagnosticTest() {
         <Modal.Title>Create a Diagnostic Test</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-    <form className="mt-3 justify-content-center">
+        <Form className="mt-3 justify-content-center" noValidate onSubmit={handleSubmit}>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-8">
+                    <Form.Label for="inputDiagnosticName">Diagnostic Test Name</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='DGTestName'
+                        onChange={handleChange}
+                        value={formValues.DGTestName}
+                        placeholder="Test Name"
+                        isInvalid={testNameError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{testNameError}</Form.Control.Feedback>
+                </div>
+                <div className="form-group col-md-4">
+                    <Form.Label for="inputValidity">Validity</Form.Label>
+                    <Form.Control
+                        required
+                        type='number'
+                        name='DGValidityMonths'
+                        onChange={handleChange}
+                        value={formValues.DGValidityMonths}
+                        placeholder="Months"
+                        isInvalid={validityError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{validityError}</Form.Control.Feedback>
+                </div>
+            </Row>
+        </Form>
+    {/*<form className="mt-3 justify-content-center">
             <Row className="mb-3 justify-content-center">
                 <div className="form-group col-md-8">
                     <label for="inputFirstName">Diagnostic Test Name</label>
@@ -95,7 +130,7 @@ function CreateDiagnosticTest() {
            
           
             
-            </form>
+                    </form>*/}
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>

@@ -39,6 +39,12 @@ function DeleteHIModal(props) {
                 // Handle any errors that occurred during the request
                 console.error('Error fetching data:', error);
             });
+
+            setFormValues((prev) => ({
+              ...prev,
+              isActive: !props.isActive
+            }));
+  
     }, [props.HINo]); // Adding props.HINo as dependency
 
     const handleDelete = async e => {
@@ -54,7 +60,7 @@ function DeleteHIModal(props) {
 
     const [formValues, setFormValues] = useState({
 
-        isActive: !props.isActive
+        isActive: false
     });
 
     const handleStatusUpdate = async e => {

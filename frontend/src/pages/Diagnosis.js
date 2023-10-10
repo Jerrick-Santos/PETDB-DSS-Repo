@@ -374,7 +374,7 @@ const endIndex = startIndex + itemsPerPage;
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
             {(diagnosis.need_xray === 1) ? (
-                <MapRecom test={1} test_name={'X-ray'}/>
+                <ViewMapRecomModal test={1} test_name={'X-ray'}/>
                 ) : null}
              
            
@@ -385,7 +385,7 @@ const endIndex = startIndex + itemsPerPage;
             <Col style={{fontSize:"20px"}}>
             
               {(diagnosis.need_mtb === 1) ? (
-                <MapRecom test={2} test_name={'MTB'}/>
+                <ViewMapRecomModal test={2} test_name={'MTB'}/>
                 ) : null}
               
             
@@ -397,7 +397,7 @@ const endIndex = startIndex + itemsPerPage;
             <Col style={{fontSize:"20px"}}>
             
               {(diagnosis.need_tst === 1) ? (
-                <MapRecom test={3} test_name={'TST'}/>
+                <ViewMapRecomModal test={3} test_name={'TST'}/>
                 ) : null}
             
              </Col>
@@ -406,7 +406,7 @@ const endIndex = startIndex + itemsPerPage;
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
               {(diagnosis.need_igra === 1) ? (
-                <MapRecom test={7} test_name={'IGRA'}/>
+                <ViewMapRecomModal test={7} test_name={'IGRA'}/>
                 ) : null}
           
              </Col>
@@ -415,7 +415,7 @@ const endIndex = startIndex + itemsPerPage;
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
               {(diagnosis.need_dst === 1) ? (
-                <MapRecom test={9} test_name={'DST'}/>
+                <ViewMapRecomModal test={9} test_name={'DST'}/>
                 ) : null}
           
              </Col>
