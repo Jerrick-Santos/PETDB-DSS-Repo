@@ -557,7 +557,7 @@ const SignUpBHC = () => {
                             name='BGYContactNumber'
                             value={formValues.BGYContactNumber}
                             onChange={handleChange}
-                            placeholder="e.g. 09xx-xxx-xxxx"
+                            placeholder="e.g. 09xx xxx xxxx"
                             isInvalid={contactError}
                         />
                         <Form.Control.Feedback type='invalid'>{contactError}</Form.Control.Feedback>
