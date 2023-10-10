@@ -119,55 +119,55 @@ function CreateHIModal(props) {
     const validate = () => {
       let HINameError = '';
       if (!formValues.HIName) {
-        HINameError = 'Required';
+        HINameError = 'Required field';
       }
       setHINameError(HINameError);
   
       let operatingHoursError = '';
       if (!formValues.HIOperatingHours) {
-        operatingHoursError = 'Required';
+        operatingHoursError = 'Required field';
       }
       setOHError(operatingHoursError);
   
       let unitError = '';
       if (!formValues.HIUnitNo) {
-        unitError = 'Required';
+        unitError = 'Required field';
       }
       setUnitError(unitError); 
   
       let streetError = '';
       if (!formValues.HIStreet) {
-        streetError = 'Required';
+        streetError = 'Required field';
       }
       setStreetError(streetError); 
   
       let regionError = '';
       if (!formValues.HIRegion) {
-        regionError = 'Required';
+        regionError = 'Required field';
       }
       setRegionError(regionError); 
 
       let provinceError = '';
       if (!formValues.HIProvince) {
-        provinceError = 'Required';
+        provinceError = 'Required field';
       }
       setProvinceError(provinceError); 
 
       let cityError = '';
       if (!formValues.HICity) {
-        cityError = 'Required';
+        cityError = 'Required field';
       }
       setCityError(cityError);
 
       let barangayError = '';
       if (!formValues.HIBarangay) {
-        barangayError = 'Required';
+        barangayError = 'Required field';
       }
       setBarangayError(barangayError);
 
       let zipError = '';
       if (!formValues.HIZipCode) {
-        zipError = 'Required';
+        zipError = 'Required field';
       } else if (isNaN(formValues.HIZipCode)) {
         zipError = 'Must be a valid number';
       } else if (!/^\d+$/.test(formValues.HIZipCode)) {
@@ -177,25 +177,25 @@ function CreateHIModal(props) {
 
       let xCoordError = '';
       if (!formValues.XCoord) {
-        xCoordError = 'Required';
+        xCoordError = 'Required field';
       }
       setXCError(xCoordError);
 
       let yCoordError = '';
       if (!formValues.YCoord) {
-        yCoordError = 'Required';
+        yCoordError = 'Required field';
       }
       setYCError(yCoordError);
 
       let contactError = '';
       if (!formValues.HIContactPerson) {
-        contactError = 'Required';
+        contactError = 'Required field';
       }
       setContactError(contactError);
 
       let contactNoError = '';
       if (!formValues.HIContactNumber) {
-        contactNoError = 'Required';
+        contactNoError = 'Required field';
       } else if (formValues.HIContactNumber.length > 11) {
         contactNoError = 'Must be a valid contact number';
       } else if (formValues.HIContactNumber.length < 11) {
@@ -209,7 +209,7 @@ function CreateHIModal(props) {
 
       let emailError = '';
       if (!formValues.HIEmailAddress) {
-        emailError = 'Required';
+        emailError = 'Required field';
       }
       setEmailError(emailError);
   
