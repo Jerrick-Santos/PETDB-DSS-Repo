@@ -137,6 +137,27 @@ const NavBar = () => {
     return true;
   }
 
+  const validateNew = () => {
+
+    let pwError = '';
+    if (!formValues.pw) {
+      pwError = 'Required';
+    }
+    setPwError(pwError);
+
+    let confirmError = '';
+    if (pwValues.confirmPw !== formValues.pw) {
+      confirmError = 'Password does not match';
+    }
+    setConfirmError(confirmError);  
+
+    if (pwError || confirmError) {
+      return false;
+    }
+
+    return true;
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
@@ -151,6 +172,22 @@ const NavBar = () => {
     e.preventDefault();
 
     const isValid = validate();
+    if(!isValid) {
+        return;
+    }
+    
+    try {
+      await axios.post(`http://localhost:4000/api/updatepw/${userNum}`, formValues);
+    } catch (err) {
+      console.log(err);
+    }
+    window.location.reload();
+  };
+
+  const handleSubmitNew = async (e) => {
+    e.preventDefault();
+
+    const isValid = validateNew();
     if(!isValid) {
         return;
     }
@@ -309,22 +346,22 @@ const NavBar = () => {
               <input
                 type={showPassword ? "text" : "password"} // Toggle input type
                 className="form-control"
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={handleChange}
+                name="confirmPw"
+                value={pwValues.confirmPw}
+                onChange={handlePasswordChange}
               />
+                {confirmPwError && (
+                        <p style={{color: 'red'}}>{confirmPwError}</p>  
+                    )}
             </div>
-
-          
-          </Row>
-
+            </Row>
          
         </form>
       </Modal.Body>
       <Modal.Footer>
       <button
           className="btn"
-          onClick={handleSubmit}
+          onClick={handleSubmitNew}
           style={{ color: "white", backgroundColor: "#0077B6" }}
         >
           Change
