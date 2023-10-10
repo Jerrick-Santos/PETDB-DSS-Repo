@@ -11,6 +11,7 @@ import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import Form from 'react-bootstrap/Form';
 
 const AddPatient = () => {
 
@@ -257,8 +258,8 @@ const AddPatient = () => {
         e_birthdate: new Date().toISOString().split('T')[0],
         e_contactno: "N/A",
         e_email: "N/A",
-        userNo: userNum
-
+        userNo: userNum,
+        case_refno: '',
     });
 
     const handleAutoFill = () => {
@@ -336,53 +337,78 @@ const AddPatient = () => {
     const [currCityError, setCurrCityError] = useState('');
     const [currBarangayError, setCurrBarangayError] = useState('');
     const [currZipError, setCurrZipError] = useState('');
+    const [caserefError, setCaseRefError] = useState('');
 
     const validate = () => {
         let firstNameError = '';
         if (!patient.first_name) {
-            firstNameError = 'First name is required';
+            firstNameError = 'Required field';
+        } else if (!isNaN(patient.first_name)) {
+            firstNameError = 'Should not be a number';
+        } else if (!/^[a-zA-Z]+$/.test(patient.first_name)) {
+            firstNameError = 'Should not have numbers';
         }
         setFirstNameError(firstNameError);
 
         let middleNameError = '';
         if (!patient.middle_initial) {
-            middleNameError = 'Middle name is required';
+            middleNameError = 'Required field';
+        } else if (!isNaN(patient.middle_initial)) {
+            middleNameError = 'Should not be a number';
+        } else if (!/^[a-zA-Z]+$/.test(patient.middle_initial)) {
+            middleNameError = 'Should not have numbers';
         }
         setMiddleNameError(middleNameError);
 
         let lastNameError = '';
         if (!patient.last_name) {
-            lastNameError = 'Last name is required';
+            lastNameError = 'Required field';
+        } else if (!isNaN(patient.last_name)) {
+            lastNameError = 'Should not be a number';
+        } else if (!/^[a-zA-Z]+$/.test(patient.last_name)) {
+            lastNameError = 'Should not have numbers';
         }
         setLastNameError(lastNameError);        
 
         let birthdateError = '';
         if (!patient.birthdate) {
-            birthdateError = 'Birthdate is required';
+            birthdateError = 'Please select your birthdate';
         }
         setBirthdateError(birthdateError);
 
         let sexError = '';
         if (!patient.sex) {
-            sexError = 'Sex is required';
+            sexError = 'Please select your sex';
         }
         setSexError(sexError);
 
         let nationalityError = '';
         if (!patient.nationality) {
-            nationalityError = 'Nationality is required';
+            nationalityError = 'Required field';
+        } else if (!isNaN(patient.nationality)) {
+            nationalityError = 'Should not be a number';
+        } else if (!/^[a-zA-Z]+$/.test(patient.nationality)) {
+            nationalityError = 'Should not have numbers';
         }
         setNationalityError(nationalityError);
 
         let bodyWeightError = '';
         if (!patient.initial_bodyweight) {
-            bodyWeightError = 'Body Weight is required';
+            bodyWeightError = 'Required field';
+        } else if (isNaN(patient.initial_bodyweight)) {
+            bodyWeightError = 'Must be a valid number';
+        } else if (!/^\d+$/.test(patient.initial_bodyweight)) {
+            bodyWeightError = 'Should not have letters';
         }
         setBodyWeightError(bodyWeightError);
     
         let heightError = '';
         if (!patient.initial_height) {
-            heightError = 'Height is required';
+            heightError = 'Required field';
+        } else if (isNaN(patient.initial_height)) {
+            heightError = 'Must be a valid number';
+        } else if (!/^\d+$/.test(patient.initial_height)) {
+            heightError = 'Should not have letters';
         }
         setHeightError(heightError);
 
@@ -426,6 +452,10 @@ const AddPatient = () => {
         let permZipError = '';
         if (!patient.per_zipcode) {
             permZipError = 'Required';
+        } else if (isNaN(patient.per_zipcode)) {
+            permZipError = 'Must be a valid number';
+        } else if (!/^\d+$/.test(patient.per_zipcode)) {
+            permZipError = 'Should not have letters';
         }
         setPermZipError(permZipError);
 
@@ -469,10 +499,20 @@ const AddPatient = () => {
         let currZipError = '';
         if (!patient.curr_zipcode) {
             currZipError = 'Required';
+        } else if (isNaN(patient.curr_zipcode)) {
+            currZipError = 'Must be a valid number';
+        } else if (!/^\d+$/.test(patient.curr_zipcode)) {
+            currZipError = 'Should not have letters';
         }
         setCurrZipError(currZipError);
 
-        if (firstNameError || middleNameError || lastNameError || birthdateError || sexError || nationalityError || bodyWeightError || heightError || permHouseError || permStreetError || permRegionError || permProvinceError || permCityError || permBarangayError || permZipError || currHouseError || currStreetError || currRegionError || currProvinceError || currCityError || currBarangayError || currZipError) {
+        let caserefError = '';
+        if (!patient.case_refno) {
+            caserefError = 'Required field';
+        }
+        setCaseRefError(caserefError);
+
+        if (firstNameError || middleNameError || lastNameError || birthdateError || sexError || nationalityError || bodyWeightError || heightError || permHouseError || permStreetError || permRegionError || permProvinceError || permCityError || permBarangayError || permZipError || currHouseError || currStreetError || currRegionError || currProvinceError || currCityError || currBarangayError || currZipError || caserefError) {
             return false;
         }
 
@@ -522,7 +562,7 @@ const AddPatient = () => {
         setPatient(updatedPatient);
     };
 
-    const handleClick = async e => {
+    const handleSubmit = async e => {
         e.preventDefault()
 
         const token = localStorage.getItem('token');
@@ -627,7 +667,619 @@ const AddPatient = () => {
         <Col lg="11" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       
              {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
-      <form className="mt-4 justify-content-center">
+            <Form className="mt-4 justify-content-center" noValidate onSubmit={handleSubmit}>
+                {/* Header */}
+                <Row className="mb-2 justify-content-center">
+                    <div className="form-group col-md-11">
+                        <p style={{fontSize:"25px"}}> <strong> New Patient Information  </strong> </p>
+                    </div>
+                </Row>
+                {/* Patient Full Name */}
+                <Row className="mb-3 justify-content-center">
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputFirstName">First Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='first_name'
+                            onChange={handleChange}
+                            value={patient.first_name}
+                            placeholder="First Name"
+                            isInvalid={firstNameError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{firstNameError}</Form.Control.Feedback>
+                    </div>
+                    <div className="form-group col-md-3">
+                        <Form.Label for="inputMI">Middle Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='middle_initial'
+                            onChange={handleChange}
+                            value={patient.middle_initial}
+                            placeholder="Middle Name"
+                            isInvalid={middleNameError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{middleNameError}</Form.Control.Feedback>
+                    </div>
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputLastName">Last Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='last_name'
+                            onChange={handleChange}
+                            value={patient.last_name}
+                            placeholder="Last Name"
+                            isInvalid={lastNameError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{lastNameError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                {/* Other Patient Information */}
+                <Row className="mb-5 justify-content-center">
+                    <div className="form-group col-md-2">
+                        <Form.Label for="inputBirthdate">Birthdate</Form.Label>
+                        <Form.Control
+                            required
+                            type='date'
+                            name='birthdate'
+                            onChange={handleChange}
+                            value={patient.birthdate}
+                            isInvalid={birthdateError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{birthdateError}</Form.Control.Feedback>
+                    </div>
+                    
+                    <div className="form-group col-md-2">
+                        <Form.Label for="inputSex">Sex</Form.Label>
+                        <Form.Select
+                            aria-label="sex"
+                            name='sex'
+                            value={patient.sex}
+                            onChange={handleChange}
+                            isInvalid={sexError}>
+                                <option selected>Select</option>
+                                <option value="M" >Male</option>
+                                <option value="F" >Female</option>
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{sexError}</Form.Control.Feedback>
+                    </div>
+
+                    <div className="form-group col-md-1">
+                        <Form.Label for="inputAge">Age</Form.Label>
+                        <input type="number" class="form-control" id="inputAge"  name='age' value={calculatedAge !== null ? calculatedAge : ''} readOnly placeholder="Age"/> {/**calculatedAge !== null ? calculatedAge : '' */}
+                    </div>
+
+                    <div className="form-group col-md-2">
+                        <Form.Label for="inputNationality">Nationality</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='nationality'
+                            onChange={handleChange}
+                            placeholder="Nationality"
+                            isInvalid={nationalityError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{nationalityError}</Form.Control.Feedback>
+                    </div>
+                    
+                    <div className="form-group col-md-2">
+                        <Form.Label for="inputWeight">Body Weight</Form.Label>
+                        <Form.Control
+                            required
+                            type='number'
+                            name='initial_bodyweight'
+                            onChange={handleChange}
+                            value={patient.initial_bodyweight}
+                            placeholder="Weight (kg)"
+                            isInvalid={bodyWeightError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{bodyWeightError}</Form.Control.Feedback>
+                    </div>
+                    
+                    <div className="form-group col-md-2">
+                        <Form.Label for="inputHeight">Height</Form.Label>
+                        <Form.Control
+                            required
+                            type='number'
+                            name='initial_height'
+                            onChange={handleChange}
+                            value={patient.initial_height}
+                            placeholder="Height (cm)"
+                            isInvalid={heightError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{heightError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                <hr/>
+
+                {/* Address */}
+                <Row className="mb-2 justify-content-center">
+                    <div className="form-group col-md-11">
+                        <p style={{fontSize:"25px"}}> <strong> Permanent Address  </strong> </p>
+                    </div>
+                </Row>
+                <Row className="mb-5 justify-content-center">
+                    <div class="form-group col-md-1">
+                        <Form.Label for="inputPermHouseNo">House #</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='per_houseno'
+                            onChange={handleChange}
+                            placeholder="House No."
+                            isInvalid={permHouseError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{permHouseError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <Form.Label for="inputPermStreet">Street</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='per_street'
+                            onChange={handleChange}
+                            placeholder="Street"
+                            isInvalid={permStreetError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{permStreetError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputPermRegion">Region</Form.Label>
+                        <Form.Select
+                            aria-label="per_region"
+                            name="per_region"
+                            value={patient.per_region}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleRegionChange(e);
+                            }}
+                            isInvalid={permRegionError}
+                        >
+                            <option value="">Select</option>
+                            {regionData.map((hi, index) => (
+                                <>
+                                    <option value={hi.region_id}>{hi.region_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{permRegionError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputPermProvince">Province</Form.Label>
+                        <Form.Select
+                            aria-label="per_province"
+                            name="per_province"
+                            disabled={patient.per_region === ""}
+                            value={patient.per_province}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleProvinceChange(e);
+                            }}
+                            isInvalid={permProvinceError}
+                        >
+                            <option value="">Select</option>
+                            {provinceData.map((hi, index) => (
+                                <>
+                                    <option value={hi.province_id}>{hi.province_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{permProvinceError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputPermCity">City</Form.Label>
+                        <Form.Select
+                            aria-label="per_city"
+                            name="per_city"
+                            disabled={patient.per_province === ""}
+                            value={patient.per_city}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleCityChange(e);
+                            }}
+                            isInvalid={permCityError}
+                        >
+                            <option value="">Select</option>
+                            {cityData.map((hi, index) => (
+                                <>
+                                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{permCityError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputPermBarangay">Barangay</Form.Label>
+                        <Form.Select
+                            aria-label="per_barangay"
+                            name="per_barangay"
+                            disabled={patient.per_city === ""}
+                            value={patient.per_barangay}
+                            onChange={handleChange}
+                            isInvalid={permBarangayError}
+                        >
+                            <option value="">Select</option>
+                            {barangayData.map((hi, index) => (
+                                <>
+                                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{permBarangayError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <Form.Label for="inputPermZip">Zip Code</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='per_zipcode'
+                            onChange={handleChange}
+                            placeholder="Zip"
+                            isInvalid={permZipError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{permZipError}</Form.Control.Feedback>
+                    </div>                    
+                </Row>
+                <Row className="mb-2 justify-content-center">
+                    <div className="form-group col-md-11">
+                        <p> <strong style={{fontSize:"25px"}}> Current Address&nbsp;  </strong> <label>
+                            <input
+                                type="checkbox"
+                                checked={isAutoFillActive}
+                                onChange={handleAutoFill}
+                            />
+                            &nbsp;Same as Permanent Address
+                        </label></p>
+                    </div>
+                </Row>
+                <Row className="mb-5 justify-content-center">
+                    <div class="form-group col-md-1">
+                        <Form.Label for="inputCurrHouseNo">House #</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='curr_houseno'
+                            value={isAutoFillActive ? patient.per_houseno : patient.curr_houseno}
+                            onChange={handleChange}
+                            placeholder="House No."
+                            disabled={isCurrentAddressDisabled}
+                            isInvalid={currHouseError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{currHouseError}</Form.Control.Feedback>
+                    </div>
+                    
+                    <div class="form-group col-md-1">
+                        <Form.Label for="inputCurrStreet">Street</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='curr_street'
+                            value={isAutoFillActive ? patient.per_street : patient.curr_street}
+                            onChange={handleChange}
+                            placeholder="Street"
+                            disabled={isCurrentAddressDisabled}
+                            isInvalid={currStreetError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{currStreetError}</Form.Control.Feedback>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputCurrRegion">Region</Form.Label>
+                        <Form.Select
+                            aria-label="curr_region"
+                            name="curr_region"
+                            value={patient.curr_region}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleCurrRegionChange(e);
+                            }}
+                            disabled={isCurrentAddressDisabled}
+                            isInvalid={currRegionError}
+                        >
+                            <option value="">Select</option>
+                            {currRegionData.map((hi, index) => (
+                                <>
+                                    <option value={hi.region_id}>{hi.region_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{currRegionError}</Form.Control.Feedback>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputCurrProvince">Province</Form.Label>
+                        <Form.Select
+                            aria-label="curr_province"
+                            name="curr_province"
+                            disabled={isCurrentAddressDisabled || patient.curr_region === ""}
+                            value={patient.curr_province}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleCurrProvinceChange(e);
+                            }}
+                            isInvalid={currProvinceError}
+                        >
+                            <option value="">Select</option>
+                            {currProvinceData.map((hi, index) => (
+                                <>
+                                    <option value={hi.province_id}>{hi.province_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{currProvinceError}</Form.Control.Feedback>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputCurrCity">City</Form.Label>
+                        <Form.Select
+                            aria-label="curr_city"
+                            name="curr_city"
+                            disabled={isCurrentAddressDisabled || patient.curr_province === ""}
+                            value={patient.curr_city}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleCurrCityChange(e);
+                            }}
+                            isInvalid={currCityError}
+                        >
+                            <option value="">Select</option>
+                            {currCityData.map((hi, index) => (
+                                <>
+                                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{currCityError}</Form.Control.Feedback>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputCurrBarangay">Barangay</Form.Label>
+                        <Form.Select
+                            aria-label="curr_barangay"
+                            name="curr_barangay"
+                            disabled={isCurrentAddressDisabled || patient.curr_city === ""}
+                            value={patient.curr_barangay}
+                            onChange={handleChange}
+                            isInvalid={currBarangayError}
+                        >
+                            <option value="">Select</option>
+                            {currBarangayData.map((hi, index) => (
+                                <>
+                                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{currBarangayError}</Form.Control.Feedback>
+                    </div> 
+
+                    <div class="form-group col-md-1">
+                        <Form.Label for="inputCurrZip">Zip Code</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='curr_zipcode'
+                            value= {isAutoFillActive ? patient.per_zipcode : patient.curr_zipcode}
+                            onChange={handleChange}
+                            placeholder="Zip"
+                            disabled={isCurrentAddressDisabled}
+                            isInvalid={currZipError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{currZipError}</Form.Control.Feedback>
+                    </div> 
+                </Row>
+                <hr/>
+
+                {/* Contact Information */}
+                <Row className="mb-2 justify-content-center">
+                    <div className="form-group col-md-11">
+                        <p style={{fontSize:"25px"}}> <strong> Contacts  </strong> </p>
+                    </div>
+                </Row>
+                <Row className="mt-2 mb-3 justify-content-center">
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputGuardianName">Name of Guardian</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='guardian_name'
+                            onChange={handleChange}
+                            placeholder="Name"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputGuardianRelationship">Relationship</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='g_relationship'
+                            onChange={handleChange}
+                            placeholder="Relationship"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputGuardianBirth">Birthdate</Form.Label>
+                        <Form.Control
+                            type='date'
+                            name='g_birthdate'
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputGuardianContact">Contact #</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='g_contactno'
+                            onChange={handleChange}
+                            placeholder="09xx-xxx-xxxx"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputGuardianEmail">Email</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='g_email'
+                            onChange={handleChange}
+                            placeholder="sample@sample.com"
+                        />
+                    </div>
+                </Row>
+                <Row className="mt-2 mb-3 justify-content-center">
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputMotherName">Name of Mother</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='mother_name'
+                            onChange={handleChange}
+                            placeholder="Name"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputMotherBirth">Birthdate</Form.Label>
+                        <Form.Control
+                            type='date'
+                            name='m_birthdate'
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputMotherContact">Contact #</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='m_contactno'
+                            onChange={handleChange}
+                            placeholder="09xx-xxx-xxxx"
+                        />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputMotherEmail">Email</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='m_email'
+                            onChange={handleChange}
+                            placeholder="sample@sample.com"
+                        />
+                    </div>
+                </Row>
+
+                <Row className="mt-2 mb-3 justify-content-center">
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputFatherName">Name of Father</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='father_name'
+                            onChange={handleChange}
+                            placeholder="Name"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputFatherBirth">Birthdate</Form.Label>
+                        <Form.Control
+                            type='date'
+                            name='f_birthdate'
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputFatherContact">Contact #</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='f_contactno'
+                            onChange={handleChange}
+                            placeholder="09xx-xxx-xxxx"
+                        />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputFatherEmail">Email</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='f_email'
+                            onChange={handleChange}
+                            placeholder="sample@sample.com"
+                        />
+                    </div>
+                </Row>
+
+                <Row className="mt-2 mb-5 justify-content-center">
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputEmergencyName">Emergency Contact Name</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='emergency_name'
+                            onChange={handleChange}
+                            value={patient.emergency_name}
+                            placeholder="Name"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputEmergencyRelationship">Relationship</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='e_relationship'
+                            onChange={handleChange}
+                            placeholder="Relationship"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputEmergencyBirth">Birthdate</Form.Label>
+                        <Form.Control
+                            type='date'
+                            name='e_birthdate'
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputEmergencyContact">Contact #</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='e_contactno'
+                            onChange={handleChange}
+                            value={patient.e_contactno}
+                            placeholder="09xx-xxx-xxxx"
+                        />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <Form.Label for="inputEmergencyEmail">Email</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='e_email'
+                            onChange={handleChange}
+                            value={patient.e_email}
+                            placeholder="sample@sample.com"
+                        />
+                    </div>
+                </Row>
+                <hr/>
+
+                {/* Initial Case Reference */}
+                <Row className="mb-2 justify-content-center">
+                    <div className="form-group col-md-11">
+                        <p style={{fontSize:"25px"}}> <strong> Initial Case Reference  </strong> </p>
+                    </div>
+                </Row>
+
+                <Row className="mt-2 mb-3 justify-content-center">
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputCaseRefno">Initial Case Reference Number</Form.Label>
+                        <Form.Control
+                            type='text'
+                            name='case_refno'
+                            onChange={handleChange}
+                            placeholder="Case Reference Number"
+                            isInvalid={caserefError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{caserefError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+
+                {/* Save Button */}
+                <div className="d-flex justify-content-center mt-5 mb-4" >
+                    <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleSubmit}>
+                        Save Information
+                    </button>
+                </div>
+            </Form>
+
+      {/*<form className="mt-4 justify-content-center">
             <Row className="mb-2 justify-content-center">
                  <div className="form-group col-md-11">
                     <p style={{fontSize:"25px"}}> <strong> New Patient Information  </strong> </p>
@@ -683,7 +1335,7 @@ const AddPatient = () => {
 
                 <div className="form-group col-md-1">
                     <label for="inputAge">Age</label>
-                    <input type="number" class="form-control" id="inputAge"  name='age' value={calculatedAge !== null ? calculatedAge : ''} readOnly placeholder="Age"/> {/**calculatedAge !== null ? calculatedAge : '' */}
+                    <input type="number" class="form-control" id="inputAge"  name='age' value={calculatedAge !== null ? calculatedAge : ''} readOnly placeholder="Age"/>
                 </div>
 
                 <div className="form-group col-md-2">
@@ -1059,15 +1711,18 @@ const AddPatient = () => {
                 <div class="form-group col-md-3">
                     <label for="inputCaseRefno">Initial Case Reference No.</label>
                     <input type="text" class="form-control" id="inputCaseRefno" name='case_refno' onChange={handleChange} placeholder="Case Ref No."/>
+                    {caserefError && (
+                        <p style={{color: 'red'}}>{caserefError}</p>  
+                    )}
                 </div>
             </Row>
   
             <div className="d-flex justify-content-center mt-5 mb-4" >
-              <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleClick}>
+              <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleSubmit}>
                 Save Information
               </button>
           </div>
-            </form>
+                    </form>*/}
 
             <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
                 <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}} closeButton>
