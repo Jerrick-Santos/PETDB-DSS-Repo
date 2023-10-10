@@ -438,7 +438,7 @@ const LaboratoryTest = () => {
                                         OUTDATED{" "}
                                       </Badge>
                                     ) : null}</td>
-                                    <td>         <UpdateMTBRIF DGResultsNo={mtb.DGResultsNo} HINo={mtb.HINo} issue_date={mtb.issue_date} test_refno={mtb.test_refno} TestValue={mtb.TestValue} validity={mtb.validity}/>
+                                    <td>         <UpdateMTBRIF caseNum={caseNum} DGResultsNo={mtb.DGResultsNo} HINo={mtb.HINo} issue_date={mtb.issue_date} test_refno={mtb.test_refno} TestValue={mtb.TestValue} validity={mtb.validity}/>
 
 <DeleteTest DGResultsNo={mtb.DGResultsNo}/> </td>
                                 </tr>
@@ -800,7 +800,7 @@ const LaboratoryTest = () => {
                                         OUTDATED{" "}
                                       </Badge>
                                     ) : null}</td>
-                                    <td> <UpdateDST DGResultsNo={dst.DGResultsNo} HINo={dst.HINo} issue_date={dst.issue_date} test_refno={dst.test_refno} TestValue={dst.TestValue} validity={dst.validity}/>
+                                    <td> <UpdateDST caseNum={caseNum} DGResultsNo={dst.DGResultsNo} HINo={dst.HINo} issue_date={dst.issue_date} test_refno={dst.test_refno} TestValue={dst.TestValue} validity={dst.validity}/>
                                         <DeleteTest DGResultsNo={dst.DGResultsNo}/></td>
                                 </tr>
                
