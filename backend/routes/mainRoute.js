@@ -1362,6 +1362,26 @@ router.post('/updatetests', (req, res) => {
     });
 })
 
+
+router.get('/getAllResDrugs/:id', (req, res) => {
+    const id = req.params.id;
+    const getAllResistantDrugs = `SELECT ds.issue_date, dr.rif, dr.H_isoniazid, dr.ETO_ethionamide, dr.FQ_fluoro, dr.AMK_amikacin
+    FROM PEDTBDSS_new.TD_DRUGRESISTANCE dr
+    JOIN PEDTBDSS_new.TD_DIAGNOSTICRESULTS ds ON dr.DGResultsNo = ds.DGResultsNo
+    WHERE dr.CaseNo = ${id}
+    ORDER BY dr.DGResultsNo DESC; `
+
+        db.query(getAllResistantDrugs, (err, results) => {
+        if (err) {
+            console.log(err)
+            console.log("ERROR")
+        } else {
+            res.send(results)
+            console.log("Get All res drugs success")
+        }
+    });
+})
+
 router.post('/updateDST', (req, res) => {
     const latestDrugResistance = `SELECT * FROM PEDTBDSS_new.TD_DRUGRESISTANCE ds WHERE CaseNo = ${req.body.CaseNo} ORDER BY DGResultsNo DESC LIMIT 1;`
     const TestValue = DSTinterpreter(req.body.izo, req.body.eto, req.body.fq, req.body.amk)
