@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import add from "../assets/add.png";
 import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
 import axios from "axios";
+import Form from 'react-bootstrap/Form';
 
 function AddUser(props) {
   const [show, setShow] = useState(false);
@@ -56,7 +57,7 @@ useEffect(() => {
   const validate = () => {
     let IDnoError = '';
     if (!formValues.IDNo) {
-      IDnoError = 'Required';
+      IDnoError = 'Required field';
     } else if (userExist){
       IDnoError = 'User ID already exists'
     }
@@ -64,25 +65,25 @@ useEffect(() => {
 
     let firstNameError = '';
     if (!formValues.first_name) {
-      firstNameError = 'Required';
+      firstNameError = 'Required field';
     }
     setFirstError(firstNameError);
 
     let middleNameError = '';
     if (!formValues.middle_name) {
-      middleNameError = 'Required';
+      middleNameError = 'Required field';
     }
     setMiddleError(middleNameError); 
 
     let lastNameError = '';
     if (!formValues.last_name) {
-      lastNameError = 'Required';
+      lastNameError = 'Required field';
     }
     setLastError(lastNameError); 
 
     let initialPassError = '';
     if (!formValues.pw) {
-      initialPassError = 'Required';
+      initialPassError = 'Required field';
     }
     setPassError(initialPassError); 
 
@@ -131,7 +132,85 @@ useEffect(() => {
           <Modal.Title>Add a User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form className="mt-3 justify-content-center">
+          <Form className="mt-3 justify-content-center" noValidate onSubmit={handleSubmit}>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>User ID</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='IDNo'
+                    onChange={handleChange}
+                    value={formValues.IDNo}
+                    placeholder="User ID"
+                    isInvalid={IDnoError}
+                />
+                <Form.Control.Feedback type='invalid'>{IDnoError}</Form.Control.Feedback>
+              </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='first_name'
+                    onChange={handleChange}
+                    value={formValues.first_name}
+                    placeholder="First Name"
+                    isInvalid={firstNameError}
+                />
+                <Form.Control.Feedback type='invalid'>{firstNameError}</Form.Control.Feedback>
+              </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>Middle Name</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='middle_name'
+                    onChange={handleChange}
+                    value={formValues.middle_name}
+                    placeholder="Middle Name"
+                    isInvalid={middleNameError}
+                />
+                <Form.Control.Feedback type='invalid'>{middleNameError}</Form.Control.Feedback>
+              </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='last_name'
+                    onChange={handleChange}
+                    value={formValues.last_name}
+                    placeholder="Last Name"
+                    isInvalid={lastNameError}
+                />
+                <Form.Control.Feedback type='invalid'>{lastNameError}</Form.Control.Feedback>
+              </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>Initial Password</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='pw'
+                    onChange={handleChange}
+                    value={formValues.pw}
+                    placeholder="Password"
+                    isInvalid={initialPassError}
+                />
+                <Form.Control.Feedback type='invalid'>{initialPassError}</Form.Control.Feedback>
+              </div>
+            </Row>
+          </Form>
+
+          {/*<form className="mt-3 justify-content-center">
             <Row className="mb-3 justify-content-center">
               <div className="form-group col-md-12">
                 <label for="inputFirstName">User ID</label>
@@ -211,7 +290,7 @@ useEffect(() => {
                     )}
               </div>
             </Row>
-          </form>
+                    </form>*/}
         </Modal.Body>
         <Modal.Footer>
           <button
