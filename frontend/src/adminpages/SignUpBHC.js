@@ -39,6 +39,31 @@ const SignUpBHC = () => {
         user_type: "admin",
         passwordChanged: 1,
     });
+    const [userExist, setUserExist] = useState(false);
+
+    useEffect(() => {
+        if (formValues.IDNo !== '') {
+          axios.post(`http://localhost:4000/api/checkuserexist`, formValues)
+            .then((response) => {
+              if (response.status === 200) {
+                if (response.data.length > 0) {
+                  console.log(response.data);
+                  setUserExist(true);
+                } else {
+                  setUserExist(false);
+                }
+              } else {
+                // Handle non-200 status codes here if needed
+                console.error('Non-200 status code:', response.status);
+              }
+            })
+            .catch((error) => {
+              // Handle any errors that occurred during the request
+              console.error('Error fetching data:', error);
+            });
+        }
+      }, [formValues.IDNo]);
+      
 
     const [bgynameError, setBGYNameError] = useState('');
     const [hoursError, setHoursError] = useState('');
@@ -58,6 +83,7 @@ const SignUpBHC = () => {
     const [lastError, setLastError] = useState('');
     const [idError, setIDError] = useState('');
     const [passError, setPassError] = useState('');
+    const [pwConfirmationError, setPwConfirmationError] = useState('');
 
     const validate = () => {
         let bgynameError = '';
@@ -169,7 +195,9 @@ const SignUpBHC = () => {
         let idError = '';
         if (!formValues.IDNo) {
             idError = 'Required field';
-        }
+        } else if (userExist){
+            idError = 'User ID already exists'
+          }
         setIDError(idError);
 
         let passError = '';
@@ -177,8 +205,14 @@ const SignUpBHC = () => {
             passError = 'Required field';
         }
         setPassError(passError);
+
+        let pwConfirmationError = '';
+        if (pwValues.confirmPw !== formValues.pw) {
+            pwConfirmationError = 'Password does not match';
+        }
+        setPwConfirmationError(pwConfirmationError);
   
-        if (bgynameError || hoursError || unitError || streetError || regionError || provinceError || cityError || barangayError || zipError || xcoordError || ycoordError || contactError || emailError || firstnameError || middleError || lastError || idError || passError) {
+        if (bgynameError || hoursError || unitError || streetError || regionError || provinceError || cityError || barangayError || zipError || xcoordError || ycoordError || contactError || emailError || firstnameError || middleError || lastError || idError || passError || pwConfirmationError) {
           return false;
         }
   
@@ -189,6 +223,7 @@ const SignUpBHC = () => {
         const {name, value} = e.target;
         setFormValues(prev=>({...prev, [name]: value}));
     }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -615,7 +650,17 @@ const SignUpBHC = () => {
                     </div>
                     <div className="form-group col-md-4">
                         <Form.Label for="inputConfirmPass">Confirm Password</Form.Label>
-                        <input type="password" class="form-control"  name="pw"  value={pwValues.confirmPw} onChange={handlePasswordChange} placeholder="Password"/>
+                        <Form.Control
+                            required
+                            type='password'
+                            name='confirmPw'
+                            value={pwValues.confirmPw}
+                            onChange={handlePasswordChange}
+                            placeholder="Password"
+                            isInvalid={pwConfirmationError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{pwConfirmationError}</Form.Control.Feedback>
+                        
                     </div>
                 </Row>
                 <div className="d-flex justify-content-center mt-5 mb-4" >

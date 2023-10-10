@@ -32,27 +32,29 @@ function AddUser(props) {
   const [initialPassError, setPassError] = useState('');
   const [userExist, setUserExist] = useState(false);
 
-useEffect(() => {
-
-  if (formValues.IDNo) {
-    axios.get(`http://localhost:4000/api/checkuserexist/${formValues.IDNo}`)
-  .then((response) => {
-    if(response.data.length>0){
-      console.log(response.data)
-      setUserExist(true)
-    } else{
-      setUserExist(false)
+  useEffect(() => {
+    if (formValues.IDNo !== '') {
+      axios.post(`http://localhost:4000/api/checkuserexist`, formValues)
+        .then((response) => {
+          if (response.status === 200) {
+            if (response.data.length > 0) {
+              console.log(response.data);
+              setUserExist(true);
+            } else {
+              setUserExist(false);
+            }
+          } else {
+            // Handle non-200 status codes here if needed
+            console.error('Non-200 status code:', response.status);
+          }
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetching data:', error);
+        });
     }
-  })
-  .catch((error) => {
-    // Handle any errors that occurred during the request
-    console.error('Error fetching data:', error);
-  });
-  }
-  
-    
+  }, [formValues.IDNo]);
 
-}, [formValues.IDNo]);
 
   const validate = () => {
     let IDnoError = '';
