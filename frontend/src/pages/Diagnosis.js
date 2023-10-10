@@ -39,7 +39,8 @@ const Diagnosis = () => {
   const [isPageLoading, setIsPageLoading] = useState(true); 
   const [patientData, setPatientData] = useState([]);
   const [reload, setReload] = useState(false);
-
+  const [presumptiveResult, setPresumptiveResult] = useState(null);
+  const [latentResult, setLatentResult] = useState(null);
       // Add these state variables
 const [activePage, setActivePage] = useState(1); // Active page number
 const itemsPerPage = 1; // Number of items per page
@@ -141,6 +142,36 @@ const endIndex = startIndex + itemsPerPage;
     })
   }, [caseNum])
 
+  useEffect(() => {
+    // Make a GET request to your API endpoint
+    axios.get(`http://localhost:4000/api/checkpresumptivereg/${caseNum}`)
+      .then((response) => {
+        // Handle the successful response here
+        const data = response.data;
+        setPresumptiveResult(data.value); // Assuming the response is an object with a "value" key
+      })
+      .catch((error) => {
+        // Handle any errors here
+        console.error('Error:', error);
+      });
+  }, [caseNum]);
+
+  useEffect(() => {
+    // Make a GET request to your API endpoint
+    axios.get(`http://localhost:4000/api/checklatentreg/${caseNum}`)
+      .then((response) => {
+        // Handle the successful response here
+        const data = response.data;
+        setLatentResult(data.value); // Assuming the response is an object with a "value" key
+      })
+      .catch((error) => {
+        // Handle any errors here
+        console.error('Error:', error);
+      });
+  }, [caseNum]);
+
+
+
   var caseNum = id
 
   return (
@@ -192,7 +223,9 @@ const endIndex = startIndex + itemsPerPage;
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-
+ 
+     
+  
       {isPageLoading ? (
                 <div
                   className="text-center"
@@ -227,26 +260,49 @@ const endIndex = startIndex + itemsPerPage;
 
             {caseData.case_status === "O" ? (
             <Col lg="11" className="d-flex justify-content-center">
-              <button
-                className="btn mt-4 mb-4"
-                style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
-                type="button"
-                onClick={handleButtonClick}
-                disabled={isLoading || patientData.case_status === 'C'}
-              >
-                {isLoading ? (
-                  <>
-                <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                  <span >{" "}Diagnosing...</span>
-                  </> ) : 
-                "Diagnose TB Status"}
-              </button>
+               {/* Conditionally render the button */}
+               {presumptiveResult === 1 ? (
+                <button
+                  className="btn"
+                  style={{ color: "white", backgroundColor: '#E40B0B', minWidth: '300px' }}
+                  type="button"
+                  onClick={() => setShowPresumptiveModal(true)}
+                >
+                  Input Presumptive TB Reference Number
+                </button>
+              ) : latentResult === 1 ? (
+                <button
+                  className="btn"
+                  style={{ color: "white", backgroundColor: '#E40B0B', minWidth: '300px' }}
+                  type="button"
+                  onClick={() => setShowLatentModal(true)}
+                >
+                  Input Latent TB Reference Number
+                </button>
+              ) : (
+                <button
+                  className="btn mt-4 mb-4"
+                  style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
+                  type="button"
+                  onClick={handleButtonClick}
+                  disabled={isLoading || patientData.case_status === 'C'}
+                >
+                  {isLoading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      <span>{" "}Diagnosing...</span>
+                    </>
+                  ) : 
+                  "Diagnose TB Status"}
+                </button>
+              )}
+
               
             </Col>
              ):null}

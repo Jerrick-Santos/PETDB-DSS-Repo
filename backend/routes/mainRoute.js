@@ -2331,22 +2331,23 @@ router.post('/updatetreatments', (req, res) => {
 })
 
 //CHECKING OF REFERENCES FOR USER
-router.get('/checkuserexist/:id', (req, res) => {
-    const id = req.params.id;
-    db.query(`
-    SELECT userNo 
-    FROM PEDTBDSS_new.MD_USERS
-    WHERE IDNo = ${id};
-`, (err, results) => {
-    if (err) {
-        console.log(err)
-    } else {
-        results.forEach(result => {
-            console.log(result.age);
-        });
-        res.send(results)
-    }
-})
+
+router.post('/checkuserexist', (req, res) => {
+    const values = [
+        req.body.IDNo,
+    ]
+
+    db.query(`SELECT userNo 
+                    FROM PEDTBDSS_new.MD_USERS
+                    WHERE IDNo = ?;
+        `, values, (err, data) => {
+            if (err) {
+                console.log("Error", err);
+                return res.json(err)
+            }
+            console.log("Successful", data);
+            return res.json(data)
+    });
 })
 
 
@@ -2356,7 +2357,7 @@ router.get('/checkuserexist/:id', (req, res) => {
     db.query(`
     SELECT userNo 
     FROM PEDTBDSS_new.MD_USERS
-    WHERE IDNo = ${id};
+    WHERE IDNo = '${id}';
 `, (err, results) => {
     if (err) {
         console.log(err)
@@ -2389,5 +2390,124 @@ router.get('/checkoldpw/:id/:pw', (req, res) => {
 })
 })
 
+router.get('/checkpresumptivereg/:id', (req, res) => {
+    const id = req.params.id;
+
+    const checkPresumptive = `SELECT * 
+    FROM PEDTBDSS_new.TD_PTDIAGNOSIS pd
+    JOIN PEDTBDSS_new.MD_DIAGNOSISRULES d ON pd.RuleNo = d.RuleNo
+    WHERE d.presumptive_tb = 1 AND pd.CaseNo = ${id};`
+
+    const checkInsideMasterList = `SELECT * FROM PEDTBDSS_new.ML_PRESUMPTIVE
+    WHERE CaseNo = ${id};`
+
+    db.query(checkPresumptive, (err, results) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ error: 'Error checking presumptive' });
+        } else {
+            console.log(results)
+            if (results.length > 0) {
+                db.query(checkInsideMasterList, (err1, presumptiveResults) => {
+                    if (err1) {
+                        console.log(err1);
+                        res.status(500).json({ error: 'Error checking inside master list' });
+                    } else {
+                        console.log(presumptiveResults)
+                        if (presumptiveResults.length > 0) {
+                            res.json({ value: 0 }); 
+                        } else {
+                            res.json({ value: 1 }); 
+                        }
+                    }
+                });
+            } else {
+                res.json({ value: 0 }); 
+            }
+        }
+    });
+});
+
+router.get('/checklatentreg/:id', (req, res) => {
+    const id = req.params.id;
+
+    const checkPresumptive = `SELECT * 
+    FROM PEDTBDSS_new.TD_PTDIAGNOSIS pd
+    JOIN PEDTBDSS_new.MD_DIAGNOSISRULES d ON pd.RuleNo = d.RuleNo
+    WHERE d.latent_tb = 1 AND pd.CaseNo = ${id};`
+
+    const checkInsideMasterList = `SELECT * FROM PEDTBDSS_new.ML_LATENT
+    WHERE CaseNo = ${id};`
+
+    db.query(checkPresumptive, (err, results) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ error: 'Error checking latent' });
+        } else {
+            console.log(results)
+            if (results.length > 0) {
+                db.query(checkInsideMasterList, (err1, latentResults) => {
+                    if (err1) {
+                        console.log(err1);
+                        res.status(500).json({ error: 'Error checking inside master list' });
+                    } else {
+                        console.log(latentResults)
+                        if (latentResults.length > 0) {
+                            res.json({ value: 0 }); 
+                        } else {
+                            res.json({ value: 1 }); 
+                        }
+                    }
+                });
+            } else {
+                res.json({ value: 0 }); 
+            }
+        }
+    });
+});
+// router.get('/checkpresumptivereg/:id', (req, res) => {
+//     const id = req.params.id;
+
+//     const checkPresumptive = `SELECT * 
+//     FROM PEDTBDSS_new.TD_PTDIAGNOSIS pd
+//     JOIN PEDTBDSS_new.MD_DIAGNOSISRULES d ON pd.RuleNo = d.RuleNo
+//     WHERE d.latent_tb = 1 AND pd.CaseNo = ${id};`
+
+//     const checkInsideMasterList = `SELECT * FROM PEDTBDSS_new.ML_PRESUMPTIVE
+//     WHERE CaseNo = ${id};`
+
+//     db.query(checkPresumptive, (err, results) => {
+//     if (err) {
+//         console.log(err)
+//     } else {
+
+//             if(results.length > 0){
+//                 db.query(checkInsideMasterList, (err1, presumptiveResults) => {
+//                     if(err1){
+//                         console.log(err1)
+//                     }
+//                     else{
+//                         if(presumptiveResults.length > 0){
+//                             // SENF 1 TO CLIENT
+//                         }
+//                         else{
+//                             // SEND 0 TO CLIENT
+//                         }
+//                     }
+                    
+//                 })
+
+//             }
+//             else{
+//                 //SEND 0 TO CLIENT
+//             }
+
+//         //res.send(results)
+//     }
+// })
+// })
+                      
     return router;
 };
+
+

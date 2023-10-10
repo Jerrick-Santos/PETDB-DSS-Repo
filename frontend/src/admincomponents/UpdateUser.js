@@ -4,6 +4,7 @@ import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import edit from "../assets/edit.png";
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
 
 function UpdateUser(props) {
   const [show, setShow] = useState(false);
@@ -26,31 +27,31 @@ function UpdateUser(props) {
   const [userExist, setUserExist] = useState(false);
 
   useEffect(() => {
-
-    if (formValues.IDNo) {
-      axios.get(`http://localhost:4000/api/checkuserexist/${formValues.IDNo}`)
-    .then((response) => {
-      if(response.data.length>0 && response.data[0]!==props.userNo){
-        console.log(response.data)
-        setUserExist(true)
-      } else{
-        setUserExist(false)
-      }
-    })
-    .catch((error) => {
-      // Handle any errors that occurred during the request
-      console.error('Error fetching data:', error);
-    });
+    if (formValues.IDNo !== '') {
+      axios.post(`http://localhost:4000/api/checkuserexist`, formValues)
+        .then((response) => {
+          if (response.status === 200) {
+            if ((response.data.length > 0) && (response.data[0].userNo !== props.userNo)) {
+              setUserExist(true);
+            } else {
+              setUserExist(false);
+            }
+          } else {
+            // Handle non-200 status codes here if needed
+            console.error('Non-200 status code:', response.status);
+          }
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetching data:', error);
+        });
     }
-    
-      
-  
   }, [formValues.IDNo]);
 
   const validate = () => {
     let IDnoError = '';
     if (!formValues.IDNo) {
-      IDnoError = 'Required';
+      IDnoError = 'Required field';
     } else if (userExist){
       IDnoError = 'User ID already exists'
     }
@@ -58,19 +59,19 @@ function UpdateUser(props) {
 
     let firstNameError = '';
     if (!formValues.first_name) {
-      firstNameError = 'Required';
+      firstNameError = 'Required field';
     }
     setFirstError(firstNameError);
 
     let middleNameError = '';
     if (!formValues.middle_name) {
-      middleNameError = 'Required';
+      middleNameError = 'Required field';
     }
     setMiddleError(middleNameError); 
 
     let lastNameError = '';
     if (!formValues.last_name) {
-      lastNameError = 'Required';
+      lastNameError = 'Required field';
     }
     setLastError(lastNameError); 
 
@@ -117,7 +118,70 @@ function UpdateUser(props) {
           <Modal.Title>Edit User Information</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form className="mt-3 justify-content-center">
+          <Form className="mt-3 justify-content-center" noValidate onSubmit={handleSubmit}>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>User ID</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='IDNo'
+                    onChange={handleChange}
+                    value={formValues.IDNo}
+                    placeholder="User ID"
+                    isInvalid={IDnoError}
+                />
+                <Form.Control.Feedback type='invalid'>{IDnoError}</Form.Control.Feedback>
+              </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='first_name'
+                    onChange={handleChange}
+                    value={formValues.first_name}
+                    placeholder="First Name"
+                    isInvalid={firstNameError}
+                />
+                <Form.Control.Feedback type='invalid'>{firstNameError}</Form.Control.Feedback>
+              </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>Middle Name</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='middle_name'
+                    onChange={handleChange}
+                    value={formValues.middle_name}
+                    placeholder="Middle Name"
+                    isInvalid={middleNameError}
+                />
+                <Form.Control.Feedback type='invalid'>{middleNameError}</Form.Control.Feedback>
+              </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control
+                    required
+                    type='text'
+                    name='last_name'
+                    onChange={handleChange}
+                    value={formValues.last_name}
+                    placeholder="Last Name"
+                    isInvalid={lastNameError}
+                />
+                <Form.Control.Feedback type='invalid'>{lastNameError}</Form.Control.Feedback>
+              </div>
+            </Row>
+          </Form>
+
+          {/*<form className="mt-3 justify-content-center">
             <Row className="mb-3 justify-content-center">
               <div className="form-group col-md-12">
                 <label for="inputFirstName">User ID</label>
@@ -181,7 +245,7 @@ function UpdateUser(props) {
                     )}
               </div>
             </Row>
-          </form>
+                    </form>*/}
         </Modal.Body>
         <Modal.Footer>
           <button
