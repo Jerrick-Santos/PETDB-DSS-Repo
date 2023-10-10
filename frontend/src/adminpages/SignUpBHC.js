@@ -159,12 +159,14 @@ const SignUpBHC = () => {
         let contactError = '';
         if (!formValues.BGYContactNumber) {
             contactError = 'Required field';
-        } else if (formValues.BGYContactNumber.length > 12) {
+        } else if (formValues.BGYContactNumber.length > 11) {
+            contactError = 'Must be a valid contact number';
+        } else if (formValues.BGYContactNumber.length < 11) {
             contactError = 'Must be a valid contact number';
         } else if (isNaN(formValues.BGYContactNumber)) {
-            contactError = 'Must be a contact valid number';
+            contactError = 'Must be a valid contact number';
         } else if (!/^\d+$/.test(formValues.BGYContactNumber)) {
-            contactError = 'Should not have letters';
+            contactError = 'Must be a valid contact number';
         }
         setContactError(contactError);
 
