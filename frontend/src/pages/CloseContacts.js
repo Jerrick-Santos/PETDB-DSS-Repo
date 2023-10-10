@@ -296,8 +296,8 @@ const CloseContacts = () => {
       {/* Personal Information of the Patient */}
       {closeContactListData.length > 0 ? (
       <table className="table caption-top bg-white rounded mt-4 ms-4 me-5" style={{width:"95%"}}>
-    <caption className=' fs-4' style={{ color:'#0077B6'}}>Close Contacts</caption>
-    <thead>
+        <caption className=' fs-4' style={{ color:'#0077B6'}}>Close Contacts</caption>
+                <thead>
                     <tr>
                         <th scope="col">Patient</th>
                         <th scope="col">Full Name</th>
