@@ -12,6 +12,7 @@ import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
+import { Alert } from 'react-bootstrap';
 
 const AddPatient = () => {
 
@@ -33,6 +34,7 @@ const AddPatient = () => {
 
     const [isAutoFillActive, setIsAutoFillActive] = useState(false);
     const [isCurrentAddressDisabled, setIsCurrentAddressDisabled] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
     const [calculatedAge, setCalculatedAge] = useState(null);
     let age = null;
 
@@ -513,9 +515,11 @@ const AddPatient = () => {
         setCaseRefError(caserefError);
 
         if (firstNameError || middleNameError || lastNameError || birthdateError || sexError || nationalityError || bodyWeightError || heightError || permHouseError || permStreetError || permRegionError || permProvinceError || permCityError || permBarangayError || permZipError || currHouseError || currStreetError || currRegionError || currProvinceError || currCityError || currBarangayError || currZipError || caserefError) {
+            setShowAlert(true);
             return false;
         }
 
+        setShowAlert(false);
         return true;
     }
 
@@ -665,7 +669,8 @@ const AddPatient = () => {
       {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
       <Row className="mt-5 justify-content-center" >
         <Col lg="11" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-      
+        <Modal.Body>
+            
              {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
             <Form className="mt-4 justify-content-center" noValidate onSubmit={handleSubmit}>
                 {/* Header */}
@@ -1257,7 +1262,7 @@ const AddPatient = () => {
                     </div>
                 </Row>
 
-                <Row className="mt-2 mb-3 justify-content-center">
+                <Row className="mt-2 mb-5 justify-content-center">
                     <div class="form-group col-md-3">
                         <Form.Label for="inputCaseRefno">Initial Case Reference Number</Form.Label>
                         <Form.Control
@@ -1271,14 +1276,21 @@ const AddPatient = () => {
                     </div>
                 </Row>
 
+                {showAlert && (
+                    <div className="d-flex justify-content-center align-items-center">
+                        <Alert className="d-flex justify-content-center alert-warning alert-dismissible fade show" variant="danger" style={{width:'40%'}} align="center">
+                            Please fill in all the&nbsp;<strong>required fields</strong>&nbsp;before submitting the form.
+                        </Alert>
+                    </div>
+                )}
                 {/* Save Button */}
-                <div className="d-flex justify-content-center mt-5 mb-4" >
+                <div className="d-flex justify-content-center mt-2 mb-4" align="center">
                     <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleSubmit}>
                         Save Information
                     </button>
                 </div>
             </Form>
-
+        </Modal.Body>                            
       {/*<form className="mt-4 justify-content-center">
             <Row className="mb-2 justify-content-center">
                  <div className="form-group col-md-11">
