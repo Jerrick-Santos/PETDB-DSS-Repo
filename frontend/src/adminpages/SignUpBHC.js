@@ -11,6 +11,7 @@ import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import Form from 'react-bootstrap/Form';
 
 const SignUpBHC = () => {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -39,6 +40,150 @@ const SignUpBHC = () => {
         passwordChanged: 1,
     });
 
+    const [bgynameError, setBGYNameError] = useState('');
+    const [hoursError, setHoursError] = useState('');
+    const [unitError, setUnitError] = useState('');
+    const [streetError, setStreetError] = useState('');
+    const [regionError, setRegionError] = useState('');
+    const [provinceError, setProvinceError] = useState('');
+    const [cityError, setCityError] = useState('');
+    const [barangayError, setBarangayError] = useState('');
+    const [zipError, setZipError] = useState('');
+    const [xcoordError, setXError] = useState('');
+    const [ycoordError, setYError] = useState('');
+    const [contactError, setContactError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [firstnameError, setFirstError] = useState('');
+    const [middleError, setMiddleError] = useState('');
+    const [lastError, setLastError] = useState('');
+    const [idError, setIDError] = useState('');
+    const [passError, setPassError] = useState('');
+
+    const validate = () => {
+        let bgynameError = '';
+        if (!formValues.BGYName) {
+            bgynameError = 'Required field';
+        }
+        setBGYNameError(bgynameError);
+  
+        let hoursError = '';
+        if (!formValues.BGYOperatingHours) {
+            hoursError = 'Required field';
+        }
+        setHoursError(hoursError);
+  
+        let unitError = '';
+        if (!formValues.BGYUnitNo) {
+            unitError = 'Required field';
+        }
+        setUnitError(unitError);
+  
+        let streetError = '';
+        if (!formValues.BGYStreet) {
+            streetError = 'Required field';
+        }
+        setStreetError(streetError);
+
+        let regionError = '';
+        if (!formValues.BGYRegion) {
+            regionError = 'Required field';
+        }
+        setRegionError(regionError);
+
+        let provinceError = '';
+        if (!formValues.BGYProvince) {
+            provinceError = 'Required field';
+        }
+        setProvinceError(provinceError);
+
+        let cityError = '';
+        if (!formValues.BGYCity) {
+            cityError = 'Required field';
+        }
+        setCityError(cityError);
+
+        let barangayError = '';
+        if (!formValues.BGYBarangay) {
+            barangayError = 'Required field';
+        }
+        setBarangayError(barangayError);
+
+        let zipError = '';
+        if (!formValues.BGYZipCode) {
+            zipError = 'Required field';
+        } else if (isNaN(formValues.BGYZipCode)) {
+            zipError = 'Must be a valid number';
+        } else if (!/^\d+$/.test(formValues.BGYZipCode)) {
+            zipError = 'Should not have letters';
+        }
+        setZipError(zipError);
+
+        let xcoordError = '';
+        if (!formValues.XCoord) {
+            xcoordError = 'Required field';
+        }
+        setXError(xcoordError);
+
+        let ycoordError = '';
+        if (!formValues.YCoord) {
+            ycoordError = 'Required field';
+        }
+        setYError(ycoordError);
+
+        let contactError = '';
+        if (!formValues.BGYContactNumber) {
+            contactError = 'Required field';
+        } else if (formValues.BGYContactNumber.length > 12) {
+            contactError = 'Must be a valid contact number';
+        } else if (isNaN(formValues.BGYContactNumber)) {
+            contactError = 'Must be a valid number';
+        } else if (!/^\d+$/.test(formValues.BGYContactNumber)) {
+            contactError = 'Should not have letters';
+        }
+        setContactError(contactError);
+
+        let emailError = '';
+        if (!formValues.BGYEmailAddress) {
+            emailError = 'Required field';
+        }
+        setEmailError(emailError);
+
+        let firstnameError = '';
+        if (!formValues.first_name) {
+            firstnameError = 'Required field';
+        }
+        setFirstError(firstnameError);
+
+        let middleError = '';
+        if (!formValues.middle_name) {
+            middleError = 'Required field';
+        }
+        setMiddleError(middleError);
+
+        let lastError = '';
+        if (!formValues.last_name) {
+            lastError = 'Required field';
+        }
+        setLastError(lastError);
+
+        let idError = '';
+        if (!formValues.IDNo) {
+            idError = 'Required field';
+        }
+        setIDError(idError);
+
+        let passError = '';
+        if (!formValues.pw) {
+            passError = 'Required field';
+        }
+        setPassError(passError);
+  
+        if (bgynameError || hoursError || unitError || streetError || regionError || provinceError || cityError || barangayError || zipError || xcoordError || ycoordError || contactError || emailError || firstnameError || middleError || lastError || idError || passError) {
+          return false;
+        }
+  
+        return true;
+      }
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -47,6 +192,10 @@ const SignUpBHC = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        const isValid = validate();
+        if(!isValid){
+          return;
+        }
         try{
             await axios.post("http://localhost:4000/api/newbhc", formValues)
             setShowSuccessModal(true);
@@ -171,7 +320,314 @@ const SignUpBHC = () => {
         <Col lg="9" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
       
              {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
-             <form className="mt-3 justify-content-center">
+            <Form className="mt-3 justify-content-center" noValidate onSubmit={handleSubmit}>
+                <Row className="mb-2 justify-content-center">
+                    <div className="form-group col-md-12">
+                        <p style={{fontSize:"25px"}}> <strong> Barangay Health Center Details  </strong> </p>
+                    </div>
+                </Row>
+                <Row className="mb-3 justify-content-center">
+                    <div className="form-group col-md-12">
+                        <Form.Label for="inputFirstName">BHC Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='BGYName'
+                            onChange={handleChange}
+                            value={formValues.BGYName}
+                            isInvalid={bgynameError}
+                            placeholder="BHC Name"
+                        />
+                        <Form.Control.Feedback type='invalid'>{bgynameError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                <Row className="mb-3 justify-content-center">
+                    <div className="form-group col-md-12">
+                        <Form.Label for="inputOperatingHours">Operating Hours</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='BGYOperatingHours'
+                            onChange={handleChange}
+                            value={formValues.BGYOperatingHours}
+                            isInvalid={hoursError}
+                            placeholder="Operating Hours"
+                        />
+                        <Form.Control.Feedback type='invalid'>{hoursError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                <Row className="mb-3 justify-content-center">
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputHouseNo">Unit No.</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='BGYUnitNo'
+                            onChange={handleChange}
+                            value={formValues.BGYUnitNo}
+                            isInvalid={unitError}
+                            placeholder="House No."
+                        />
+                        <Form.Control.Feedback type='invalid'>{unitError}</Form.Control.Feedback>
+                    </div>
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputStreet">Street</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='BGYStreet'
+                            onChange={handleChange}
+                            value={formValues.BGYStreet}
+                            isInvalid={streetError}
+                            placeholder="Street"
+                        />
+                        <Form.Control.Feedback type='invalid'>{streetError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <Form.Label for="inputRegion">Region</Form.Label>
+                        <Form.Select
+                            aria-label="BGYRegion"
+                            name="BGYRegion"
+                            value={formValues.BGYRegion}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleRegionChange(e);
+                            }}
+                            isInvalid={regionError}
+                        >
+                            <option value="">Select</option>
+                            {regionData.map((hi, index) => (
+                                <>
+                                    <option value={hi.region_id}>{hi.region_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{regionError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                <Row className="mb-3 justify-content-center">
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputProvince">Province</Form.Label>
+                        <Form.Select
+                            aria-label="BGYProvince"
+                            name="BGYProvince"
+                            value={formValues.BGYProvince}
+                            disabled={formValues.BGYRegion === ""}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleProvinceChange(e);
+                            }}
+                            isInvalid={provinceError}
+                        >
+                            <option value="">Select</option>
+                            {provinceData.map((hi, index) => (
+                                <>
+                                    <option value={hi.province_id}>{hi.province_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{provinceError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputCity">City</Form.Label>
+                        <Form.Select
+                            aria-label="BGYCity"
+                            name="BGYCity"
+                            disabled={formValues.BGYProvince === ""}
+                            value={formValues.BGYCity}
+                            onChange={(e)=>{
+                                handleChange(e);
+                                handleCityChange(e);
+                            }}
+                            isInvalid={cityError}
+                        >
+                            <option value="">Select</option>
+                            {cityData.map((hi, index) => (
+                                <>
+                                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{cityError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <Form.Label for="inputBarangay">Barangay</Form.Label>
+                        <Form.Select
+                            aria-label="BGYBarangay"
+                            name="BGYBarangay"
+                            disabled={formValues.BGYCity === ""}
+                            value={formValues.BGYBarangay}
+                            onChange={handleChange}
+                            isInvalid={barangayError}
+                        >
+                            <option value="">Select</option>
+                            {barangayData.map((hi, index) => (
+                                <>
+                                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
+                                </>
+                            ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{barangayError}</Form.Control.Feedback>
+                    </div> 
+                    <div className="form-group col-md-3">
+                        <Form.Label for="inputZip">Zip Code</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='BGYZipCode'
+                            value={formValues.BGYZipCode}
+                            onChange={handleChange}
+                            placeholder="Zip"
+                            isInvalid={zipError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{zipError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                <Row className="mb-3 justify-content-center">
+                    <div className="form-group col-md-6">
+                        <Form.Label for="inputX">X Coordinate</Form.Label>
+                        <Form.Control
+                            required
+                            type='number'
+                            name='XCoord'
+                            value={formValues.XCoord}
+                            onChange={handleChange}
+                            placeholder="Coordinate"
+                            isInvalid={xcoordError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{xcoordError}</Form.Control.Feedback>
+                    </div>
+                    <div className="form-group col-md-6">
+                        <Form.Label for="inputY">Y Coordinate</Form.Label>
+                        <Form.Control
+                            required
+                            type='number'
+                            name='YCoord'
+                            value={formValues.YCoord}
+                            onChange={handleChange}
+                            placeholder="Coordinate"
+                            isInvalid={ycoordError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{ycoordError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                <Row className="mb-3 justify-content-center">
+                    <div class="form-group col-md-6">
+                        <Form.Label for="inputContactNumber">Contact #</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='BGYContactNumber'
+                            value={formValues.BGYContactNumber}
+                            onChange={handleChange}
+                            placeholder="e.g. 09xx-xxx-xxxx"
+                            isInvalid={contactError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{contactError}</Form.Control.Feedback>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <Form.Label for="inputContactEmail">Email Address</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='BGYEmailAddress'
+                            value={formValues.BGYEmailAddress}
+                            onChange={handleChange}
+                            placeholder="e.g. sample@sample.com"
+                            isInvalid={emailError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{emailError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                <hr/>
+                <Row className="mb-2 justify-content-center">
+                    <div className="form-group col-md-12">
+                        <p style={{fontSize:"25px"}}> <strong> Administrator Account Details  </strong> </p>
+                    </div>
+                </Row>
+                <Row className="mb-3 justify-content-center">
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputFirstName">First Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='first_name'
+                            value={formValues.first_name}
+                            onChange={handleChange}
+                            placeholder="First Name"
+                            isInvalid={firstnameError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{firstnameError}</Form.Control.Feedback>
+                    </div>
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputMiddleName">Middle Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='middle_name'
+                            value={formValues.middle_name}
+                            onChange={handleChange}
+                            placeholder="Middle Name"
+                            isInvalid={middleError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{middleError}</Form.Control.Feedback>
+                    </div>
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputLastName">Last Name</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='last_name'
+                            value={formValues.last_name}
+                            onChange={handleChange}
+                            placeholder="Last Name"
+                            isInvalid={lastError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{lastError}</Form.Control.Feedback>
+                    </div>
+                </Row>
+                <Row className="mb-3 justify-content-center">
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputID">User ID</Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='IDNo'
+                            value={formValues.IDNo}
+                            onChange={handleChange}
+                            placeholder="User ID"
+                            isInvalid={idError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{idError}</Form.Control.Feedback>
+                    </div>
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputPass">Password</Form.Label>
+                        <Form.Control
+                            required
+                            type='password'
+                            name='pw'
+                            value={formValues.pw}
+                            onChange={handleChange}
+                            placeholder="Password"
+                            isInvalid={passError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{passError}</Form.Control.Feedback>
+                    </div>
+                    <div className="form-group col-md-4">
+                        <Form.Label for="inputConfirmPass">Confirm Password</Form.Label>
+                        <input type="password" class="form-control"  name="pw"  value={pwValues.confirmPw} onChange={handlePasswordChange} placeholder="Password"/>
+                    </div>
+                </Row>
+                <div className="d-flex justify-content-center mt-5 mb-4" >
+                    <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleSubmit}>
+                        Create Barangay Health Center
+                    </button>
+                </div>
+            </Form>
+
+
+
+             {/*<form className="mt-3 justify-content-center">
              <Row className="mb-2 justify-content-center">
                  <div className="form-group col-md-12">
                     <p style={{fontSize:"25px"}}> <strong> Barangay Health Center Details  </strong> </p>
@@ -360,7 +816,7 @@ const SignUpBHC = () => {
               </button>
           </div>
             
-            </form>
+                    </form>*/}
 
            
 
