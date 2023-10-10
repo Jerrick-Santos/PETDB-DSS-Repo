@@ -543,7 +543,8 @@ LEFT JOIN PEDTBDSS_new.MD_HI h ON dr.HINo = h.HINo
     }
 
     router.post('/newMTBresults', (req, res) => {
-        const insertDrugResistance = "INSERT INTO TD_DRUGRESISTANCE (`CaseNo`, `rif`, `drug1`, `drug2`, `drug3`, `DGResultsNo`) VALUES (?, ?, ?, ?, ?, ?)";
+        const insertDrugResistance = "INSERT INTO TD_DRUGRESISTANCE (`CaseNo`, `rif`, `H_isoniazid`, `ETO_ethionamide`, `FQ_fluoro`, `AMK_amikacin`, `DGResultsNo`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        const latestDrugResistance = `SELECT * FROM PEDTBDSS_new.TD_DRUGRESISTANCE ds WHERE CaseNo = ${req.body.CaseNo} ORDER BY DGResultsNo DESC LIMIT 1;`
         const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         const testresultsValues = [
             req.body.CaseNo,
@@ -569,25 +570,59 @@ LEFT JOIN PEDTBDSS_new.MD_HI h ON dr.HINo = h.HINo
             const RIFresult = interpretRIF(req.body.TestValue);
     
             if (RIFresult === "R" || RIFresult === "S") {
-                db.query(insertDrugResistance, [req.body.CaseNo, RIFresult, "NA", "NA", "NA", DGResultsNo], (err1, result1) => {
-                    if (err1) {
-                        console.log("Error inserting into TD_DRUGRESISTANCE:", err1);
-                        return res.json(err1);
+
+                db.query(latestDrugResistance, (err2, dr_result) => {
+
+
+                    if (err2) {
+                        console.log("Error Querying Lastest Drug Resistance:", err2);
+                        return res.json(err2);
                     }
-    
-                    console.log("Successfully inserted into TD_DRUGRESISTANCE:", result1);
-    
-                    return res.json(result); // Return the result of the first query
+
+                    const drugObject = {
+                        izo: null, 
+                        eto: null, 
+                        fq: null, 
+                        amk: null, 
+                    }
+
+                    if(dr_result.length < 1){
+                        drugObject.izo = "NA"
+                        drugObject.eto = "NA"
+                        drugObject.fq = "NA"
+                        drugObject.amk = "NA"
+                    }
+                    else{
+                        drugObject.izo = dr_result[0].H_isoniazid
+                        drugObject.eto = dr_result[0].ETO_ethionamide
+                        drugObject.fq = dr_result[0].FQ_fluoro
+                        drugObject.amk = dr_result[0].AMK_amikacin
+                    }
+
+                    console.log(dr_result)
+                    console.log(drugObject)
+
+                    db.query(insertDrugResistance, [req.body.CaseNo, RIFresult, drugObject.izo, drugObject.eto, drugObject.fq, drugObject.amk, DGResultsNo], (err1, result1) => {
+                        if (err1) {
+                            console.log("Error inserting into TD_DRUGRESISTANCE:", err1);
+                            return res.json(err1);
+                        }
+        
+                        console.log("Successfully inserted into TD_DRUGRESISTANCE:", result1);
+        
+                        return res.json(result); // Return the result of the first query
+                    });
                 });
+
             } else {
                 return res.json(result); // Return the result of the first query
             }
         });
     });
 
-    function DSTinterpreter(drug1, drug2, drug3){
+    function DSTinterpreter(drug1, drug2, drug3, drug4){
         let R_count = 0 
-        const drugResults = [drug1, drug2, drug3]
+        const drugResults = [drug1, drug2, drug3, drug4]
 
         for (let i = 0; i < drugResults.length; i++) {
                 if(drugResults[i] === "R"){
@@ -607,9 +642,10 @@ LEFT JOIN PEDTBDSS_new.MD_HI h ON dr.HINo = h.HINo
     }
 
     router.post('/newDSTresults', (req, res) => {
-        const insertDrugResistance = "INSERT INTO TD_DRUGRESISTANCE (`CaseNo`, `rif`, `drug1`, `drug2`, `drug3`, `DGResultsNo`) VALUES (?, ?, ?, ?, ?, ?)";
+        const insertDrugResistance = "INSERT INTO TD_DRUGRESISTANCE (`CaseNo`, `rif`, `H_isoniazid`, `ETO_ethionamide`, `FQ_fluoro`, `AMK_amikacin`, `DGResultsNo`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        const latestDrugResistance = `SELECT * FROM PEDTBDSS_new.TD_DRUGRESISTANCE ds WHERE CaseNo = ${req.body.CaseNo} ORDER BY DGResultsNo DESC LIMIT 1;`
         const testresultsQuery = "INSERT INTO TD_DIAGNOSTICRESULTS (`CaseNo`, `DGTestNo`, `TestValue`, `validity`, `HINo`, `issue_date`, `test_refno`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        const testValue = DSTinterpreter(req.body.drug1, req.body.drug2, req.body.drug3)
+        const testValue = DSTinterpreter(req.body.izo, req.body.eto, req.body.fq, req.body.amk)
         
         const testresultsValues = [
             req.body.CaseNo,
@@ -632,18 +668,40 @@ LEFT JOIN PEDTBDSS_new.MD_HI h ON dr.HINo = h.HINo
             // Get the auto-incremented primary key (DGResultsNo)
             const DGResultsNo = result.insertId;
     
-    
-                db.query(insertDrugResistance, [req.body.CaseNo, "NA", req.body.drug1, req.body.drug2, req.body.drug3, DGResultsNo], (err1, result1) => {
-                    if (err1) {
-                        console.log("Error inserting into TD_DRUGRESISTANCE:", err1);
-                        return res.json(err1);
-                    }
-    
-                    console.log("Successfully inserted into TD_DRUGRESISTANCE:", result1);
-    
-                    return res.json(result); // Return the result of the first query
-                });
 
+                db.query(latestDrugResistance, (err2, dr_result) => {
+
+
+                    if (err2) {
+                        console.log("Error Querying Lastest Drug Resistance:", err2);
+                        return res.json(err2);
+                    }
+
+                    let rif_result
+                    if(dr_result.length < 1){
+                        rif_result = "NA"
+                    }
+                    else{
+                        rif_result = dr_result[0].rif
+                    }
+
+                    const rif = rif_result
+
+                    console.log(dr_result)
+                    console.log("THIS IS RIF")
+                    console.log(rif_result)
+                
+                    db.query(insertDrugResistance, [req.body.CaseNo, rif, req.body.izo, req.body.eto, req.body.fq, req.body.amk, DGResultsNo], (err1, result1) => {
+                        if (err1) {
+                            console.log("Error inserting into TD_DRUGRESISTANCE:", err1);
+                            return res.json(err1);
+                        }
+        
+                        console.log("Successfully inserted into TD_DRUGRESISTANCE:", result1);
+        
+                        return res.json(result); // Return the result of the first query
+                    });
+                });
         });
     }); 
 
@@ -1305,7 +1363,8 @@ router.post('/updatetests', (req, res) => {
 })
 
 router.post('/updateDST', (req, res) => {
-    const TestValue = DSTinterpreter(req.body.drug1, req.body.drug2, req.body.drug3)
+    const latestDrugResistance = `SELECT * FROM PEDTBDSS_new.TD_DRUGRESISTANCE ds WHERE CaseNo = ${req.body.CaseNo} ORDER BY DGResultsNo DESC LIMIT 1;`
+    const TestValue = DSTinterpreter(req.body.izo, req.body.eto, req.body.fq, req.body.amk)
     console.log(TestValue)
     const testresultsValues = [
         req.body.HINo,
@@ -1326,9 +1385,31 @@ router.post('/updateDST', (req, res) => {
 
         console.log("Successfully updating TD_DIAGNOSTICRESULTS:", result);
 
+        db.query(latestDrugResistance, (err2, dr_result) => {
+
+
+            if (err2) {
+                console.log("Error Querying Lastest Drug Resistance:", err2);
+                return res.json(err2);
+            }
+
+            let rif_result
+            if(dr_result.length < 1){
+                rif_result = "NA"
+            }
+            else{
+                rif_result = dr_result[0].rif
+            }
+
+            const rif = rif_result
+
+            console.log(dr_result)
+            console.log("THIS IS RIF")
+            console.log(rif_result)
+
             db.query(`UPDATE    TD_DRUGRESISTANCE
-                        SET     rif = ?, drug1 = ?, drug2 = ?, drug3 = ?
-                        WHERE   DGResultsNo = ?`, ["NA", req.body.drug1, req.body.drug2, req.body.drug3, req.body.DGResultsNo], (err1, result1) => {
+                        SET     rif = ?, H_isoniazid = ?, ETO_ethionamide = ?, FQ_fluoro = ?, AMK_amikacin = ?
+                        WHERE   DGResultsNo = ?`, [rif, req.body.izo, req.body.eto, req.body.fq, req.body.amk, req.body.DGResultsNo], (err1, result1) => {
                 if (err1) {
                     console.log("Error updating TD_DRUGRESISTANCE:", err1);
                     return res.json(err1);
@@ -1339,14 +1420,17 @@ router.post('/updateDST', (req, res) => {
                 return res.json(result); // Return the result of the first query
             });
 
+        });
+
     });
 })
 
 router.post('/updateMTB', (req, res) => {
+    const latestDrugResistance = `SELECT * FROM PEDTBDSS_new.TD_DRUGRESISTANCE ds WHERE CaseNo = ${req.body.CaseNo} ORDER BY DGResultsNo DESC LIMIT 1;`
     const testresultsValues = [
         req.body.HINo,
         req.body.issue_date,
-        req.body.test_refno,
+        req.body.test_refno, 
         req.body.TestValue,
         req.body.validity,
         req.body.DGResultsNo,
@@ -1365,18 +1449,52 @@ router.post('/updateMTB', (req, res) => {
         const RIFresult = interpretRIF(req.body.TestValue);
 
         if (RIFresult === "R" || RIFresult === "S") {
-            db.query(`UPDATE    TD_DRUGRESISTANCE
-                        SET     rif = ?, drug1 = ?, drug2 = ?, drug3 = ?
-                        WHERE   DGResultsNo = ?`, [RIFresult, "NA", "NA", "NA", req.body.DGResultsNo], (err1, result1) => {
-                if (err1) {
-                    console.log("Error updating TD_DRUGRESISTANCE:", err1);
-                    return res.json(err1);
+
+            db.query(latestDrugResistance, (err2, dr_result) => {
+
+                if (err2) {
+                    console.log("Error Querying Lastest Drug Resistance:", err2);
+                    return res.json(err2);
                 }
 
-                console.log("Successfully updating TD_DRUGRESISTANCE:", result1);
+                const drugObject = {
+                    izo: null, 
+                    eto: null, 
+                    fq: null, 
+                    amk: null, 
+                }
 
-                return res.json(result); // Return the result of the first query
+                if(dr_result.length < 1){
+                    drugObject.izo = "NA"
+                    drugObject.eto = "NA"
+                    drugObject.fq = "NA"
+                    drugObject.amk = "NA"
+                }
+                else{
+                    drugObject.izo = dr_result[0].H_isoniazid
+                    drugObject.eto = dr_result[0].ETO_ethionamide
+                    drugObject.fq = dr_result[0].FQ_fluoro
+                    drugObject.amk = dr_result[0].AMK_amikacin
+                }
+
+                console.log(dr_result)
+                console.log(drugObject)
+
+
+                db.query(`UPDATE    TD_DRUGRESISTANCE
+                            SET     rif = ?, H_isoniazid = ?, ETO_ethionamide = ?, FQ_fluoro = ?, AMK_amikacin = ?
+                            WHERE   DGResultsNo = ?`, [RIFresult, drugObject.izo, drugObject.eto, drugObject.fq, drugObject.amk, req.body.DGResultsNo], (err1, result1) => {
+                    if (err1) {
+                        console.log("Error updating TD_DRUGRESISTANCE:", err1);
+                        return res.json(err1);
+                    }
+
+                    console.log("Successfully updating TD_DRUGRESISTANCE:", result1);
+
+                    return res.json(result); // Return the result of the first query
+                });
             });
+
         } else {
             return res.json(result); // Return the result of the first query
         }

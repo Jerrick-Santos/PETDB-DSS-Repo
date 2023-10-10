@@ -80,13 +80,15 @@ function UpdateDST(props) {
     
 
     const [formValues, setFormValues] = useState({
+        CaseNo: props.caseNum,
         DGResultsNo: props.DGResultsNo,
         HINo: props.HINo,
         issue_date: props.issue_date,
         test_refno: props.test_refno,
-        drug1: '',
-        drug2: '',
-        drug3: '',
+        izo: '',
+        eto: '',
+        fq: '',
+        amk: '',
         validity: props.validity,
     });
 
@@ -98,19 +100,21 @@ function UpdateDST(props) {
             // Update formValues with drug values
             setFormValues((prev) => ({
                 ...prev,
-                drug1: firstDrugData.drug1,
-                drug2: firstDrugData.drug2,
-                drug3: firstDrugData.drug3,
+                izo: firstDrugData.H_isoniazid,
+                eto: firstDrugData.ETO_ethionamide,
+                fq: firstDrugData.FQ_fluoro,
+                amk: firstDrugData.AMK_amikacin
             }));
         }
     }, [drugs]);
 
-    const [HINoError, setHIError] = useState('');
+   const [HINoError, setHIError] = useState('');
     const [dateError, setDateError] = useState('');
     const [testError, setTestError] = useState('');
     const [drug1Error, setDrug1Error] = useState('');
     const [drug2Error, setDrug2Error] = useState('');
     const [drug3Error, setDrug3Error] = useState('');
+    const [drug4Error, setDrug4Error] = useState('');
 
     const validate = () => {
         let HINoError = '';
@@ -134,30 +138,35 @@ function UpdateDST(props) {
         setTestError(testError);
 
         let drug1Error = '';
-        if (formValues.drug1 === "") {
+        if (formValues.izo === "") {
             drug1Error = 'Please select an option';
         }
         setDrug1Error(drug1Error);
 
         let drug2Error = '';
-        if (formValues.drug2 === "") {
+        if (formValues.eto === "") {
             drug2Error = 'Please select an option';
         }
         setDrug2Error(drug2Error);
 
         let drug3Error = '';
-        if (formValues.drug3 === "") {
+        if (formValues.fq === "") {
             drug3Error = 'Please select an option';
         }
         setDrug3Error(drug3Error);
 
-        if (HINoError || dateError || testError || drug1Error || drug2Error || drug3Error) {
+        let drug4Error = '';
+        if (formValues.amk === "") {
+            drug4Error = 'Please select an option';
+        }
+        setDrug4Error(drug4Error);
+
+        if (HINoError || dateError || testError || drug1Error || drug2Error || drug3Error || drug4Error) {
             return false;
           }
 
         return true;
     }
-
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormValues((prev)=>({...prev, [name]: value}));
@@ -283,12 +292,12 @@ function UpdateDST(props) {
                     <Form.Control.Feedback type='invalid'>{testError}</Form.Control.Feedback>
                 </Form.Group>
                 {/* For Drug 1 */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='drug1'>
-                    <Form.Label><strong>Drug 1:</strong></Form.Label>
+                <Form.Group as={Col} md="12" className='mb-3' controlId='izo'>
+                    <Form.Label><strong>Isoniazid:</strong></Form.Label>
                     <Form.Select
-                        aria-label="drug1"
-                        name='drug1'
-                        value={formValues.drug1}
+                        aria-label="izo"
+                        name='izo'
+                        value={formValues.izo}
                         onChange={handleChange}
                         isInvalid={drug1Error}>
                             <option value="">Select</option>
@@ -299,12 +308,12 @@ function UpdateDST(props) {
                     <Form.Control.Feedback type='invalid'>{drug1Error}</Form.Control.Feedback>
                 </Form.Group>
                 {/* For Drug 2 */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='drug2'>
-                    <Form.Label><strong>Drug 2:</strong></Form.Label>
+                <Form.Group as={Col} md="12" className='mb-3' controlId='eto'>
+                    <Form.Label><strong>Ethionamide:</strong></Form.Label>
                     <Form.Select
-                        aria-label="drug2"
-                        name='drug2'
-                        value={formValues.drug2}
+                        aria-label="eto"
+                        name='eto'
+                        value={formValues.eto}
                         onChange={handleChange}
                         isInvalid={drug2Error}>
                             <option value="">Select</option>
@@ -315,12 +324,12 @@ function UpdateDST(props) {
                     <Form.Control.Feedback type='invalid'>{drug2Error}</Form.Control.Feedback>
                 </Form.Group>
                 {/* For Drug 3 */}
-                <Form.Group as={Col} md="12" controlId='drug3'>
-                    <Form.Label><strong>Drug 3:</strong></Form.Label>
+                <Form.Group as={Col} md="12" controlId='fq'>
+                    <Form.Label><strong>Fluoroquinolones:</strong></Form.Label>
                     <Form.Select
-                        aria-label="drug3"
-                        name='drug3'
-                        value={formValues.drug3}
+                        aria-label="fq"
+                        name='fq'
+                        value={formValues.fq}
                         onChange={handleChange}
                         isInvalid={drug3Error}>
                             <option value="">Select</option>
@@ -329,6 +338,21 @@ function UpdateDST(props) {
                             <option value="NA">Indeterminate</option>
                     </Form.Select>
                     <Form.Control.Feedback type='invalid'>{drug3Error}</Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="12" controlId='amk'>
+                    <Form.Label><strong>Amikacin:</strong></Form.Label>
+                    <Form.Select
+                        aria-label="amk"
+                        name='amk'
+                        value={formValues.amk}
+                        onChange={handleChange}
+                        isInvalid={drug4Error}>
+                            <option value="">Select</option>
+                            <option value="R">Resistant</option>
+                            <option value="S">Susceptible</option>
+                            <option value="NA">Indeterminate</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{drug4Error}</Form.Control.Feedback>
                 </Form.Group>
             </Row>
         </Form>

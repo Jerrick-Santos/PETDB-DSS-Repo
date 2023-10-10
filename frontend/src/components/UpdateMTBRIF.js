@@ -64,6 +64,7 @@ function UpdateMTBRIF(props) {
 
 
     const [formValues, setFormValues] = useState({
+        CaseNo: props.caseNum,
         DGResultsNo: props.DGResultsNo,
         HINo: props.HINo,
         issue_date: props.issue_date,
