@@ -39,7 +39,8 @@ const Diagnosis = () => {
   const [isPageLoading, setIsPageLoading] = useState(true); 
   const [patientData, setPatientData] = useState([]);
   const [reload, setReload] = useState(false);
-
+  const [presumptiveResult, setPresumptiveResult] = useState(null);
+  const [latentResult, setLatentResult] = useState(null);
       // Add these state variables
 const [activePage, setActivePage] = useState(1); // Active page number
 const itemsPerPage = 1; // Number of items per page
@@ -141,6 +142,36 @@ const endIndex = startIndex + itemsPerPage;
     })
   }, [caseNum])
 
+  useEffect(() => {
+    // Make a GET request to your API endpoint
+    axios.get(`http://localhost:4000/api/checkpresumptivereg/${caseNum}`)
+      .then((response) => {
+        // Handle the successful response here
+        const data = response.data;
+        setPresumptiveResult(data.value); // Assuming the response is an object with a "value" key
+      })
+      .catch((error) => {
+        // Handle any errors here
+        console.error('Error:', error);
+      });
+  }, [caseNum]);
+
+  useEffect(() => {
+    // Make a GET request to your API endpoint
+    axios.get(`http://localhost:4000/api/checklatentreg/${caseNum}`)
+      .then((response) => {
+        // Handle the successful response here
+        const data = response.data;
+        setLatentResult(data.value); // Assuming the response is an object with a "value" key
+      })
+      .catch((error) => {
+        // Handle any errors here
+        console.error('Error:', error);
+      });
+  }, [caseNum]);
+
+
+
   var caseNum = id
 
   return (
@@ -192,7 +223,17 @@ const endIndex = startIndex + itemsPerPage;
     {/* Content of the page, enclosed within a rounded table appearing like a folder via UI*/}
     <Row className="justify-content-center" >
       <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
-
+      <div>
+      {/* Conditionally render the button */}
+      {presumptiveResult === 1 && (
+        <button className="btn mt-4 mb-4" style={{ color: "white", backgroundColor: '#2B2D31', minWidth: '100px' }}
+        type="button" onClick={() => setShowPresumptiveModal(true)}>Input Presumptive TB Reference Number</button>
+      )}
+      {latentResult === 1 && (
+        <button className="btn mt-4 mb-4" style={{ color: "white", backgroundColor: '#2B2D31', minWidth: '100px' }}
+        type="button" onClick={() => setShowLatentModal(true)}>Input Latent TB Reference Number</button>
+      )}
+    </div>
       {isPageLoading ? (
                 <div
                   className="text-center"
