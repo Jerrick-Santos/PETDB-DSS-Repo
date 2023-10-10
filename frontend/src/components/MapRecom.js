@@ -22,35 +22,9 @@ function MapRecom(props) {
       }
     }, [mapRef])
 
-    // Loading coordinate data
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.error('Token not found in local storage.');
-            return;
-        }
-
-        // Define headers with the JWT token
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-        axios.get(`http://localhost:4000/api/loadLocations/${props.test}`, { headers })
-            .then(res => {
-                const { res1, res2 } = res.data
-                setLocations(res2)
-                setCenter(res1)
-                setMapLoaded(true)
-                console.log("reached")
-            })
-            .catch(err => {
-                console.error(err);
-            })
-    }, [props.test])
-
-
-    const [center, setCenter] = useState({});
+    // const [center, setCenter] = useState({});
     const ZOOM_LEVEL = 15;
-    const [locations, setLocations] = useState([])
+    // const [locations, setLocations] = useState([])
     const [mapLoaded, setMapLoaded] = useState(false)
     
 
@@ -68,16 +42,17 @@ function MapRecom(props) {
   return (
         <>
 
-        <p className="clickable" onClick={handleShow} style={{color:"black", fontSize:"18px"}} ><strong><u>{props.test_name} Test</u></strong></p> 
+        {/* <p className="clickable" onClick={handleShow} style={{color:"black", fontSize:"20px"}}><strong><i>Show Map</i></strong></p>  */}
+        <p className="clickable" onClick={handleShow} style={{color:"black", fontSize:"18px"}} ><strong><u>Show Map (Requires an Internet Connection)</u></strong></p> 
 
-        <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="lg">
+        <Modal show={show} onHide={handleClose} backdrop={ 'static' } size="xl">
             <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
                 <Modal.Title> {props.test_name} Testing Recommendation </Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
 
-                {locations && locations.map((hi, index) => {
+                {props.locations && props.locations.map((hi, index) => {
                     if (hi.isClosest) {
                         return (
                             <>
@@ -102,8 +77,8 @@ function MapRecom(props) {
                 <Row className="mt-4">
                     {/* <img src={map} style={{width:"100%" , opacity:"1"}}/> */}
 
-                    {mapLoaded && center && (
-                        <MapContainer center={[center.XCoord, center.YCoord]} zoom={ZOOM_LEVEL} scrollWheelZoom={false}>
+                    {props.center && (
+                        <MapContainer center={[props.center.XCoord, props.center.YCoord]} zoom={ZOOM_LEVEL} scrollWheelZoom={false}>
                             
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -111,7 +86,7 @@ function MapRecom(props) {
                                 
                             />
 
-                            {locations.length > 0 && locations.map((hi, index) => {
+                            {props.locations.length > 0 && props.locations.map((hi, index) => {
                                 return (
                                     
                                     <React.Fragment key={index}>
@@ -127,7 +102,7 @@ function MapRecom(props) {
                                         {/* Conditional rendering of a Polyline component if current location is the closest */}
                                         {hi.isClosest && (
                                             <Polyline
-                                                positions={[[center.XCoord, center.YCoord], [hi.XCoord, hi.YCoord]]} // Replace with your polyline coordinates
+                                                positions={[[props.center.XCoord, props.center.YCoord], [hi.XCoord, hi.YCoord]]} // Replace with your polyline coordinates
                                                 color="red" // Customize polyline color
                                             />
                                         )}
@@ -138,9 +113,9 @@ function MapRecom(props) {
                                 )
                             })}
 
-                            <Marker opacity={1} position={[center.XCoord, center.YCoord]} color={'red'} icon={customPin}>
+                            <Marker opacity={1} position={[props.center.XCoord, props.center.YCoord]} color={'red'} icon={customPin}>
                                 <Popup>
-                                    <strong>{center.BGYName}</strong>
+                                    <strong>{props.center.BGYName}</strong>
                                 </Popup>
                             </Marker>
 

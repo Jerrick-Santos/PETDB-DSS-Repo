@@ -5,6 +5,8 @@ import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import edit from '../assets/edit.png'
 import Spinner from "react-bootstrap/Spinner";
+import Form from 'react-bootstrap/Form';
+
 function UpdateHIModal(props) {
    
     const[show,setShow] = useState(false)
@@ -173,85 +175,97 @@ function UpdateHIModal(props) {
     const validate = () => {
       let HINameError = '';
       if (!formValues.HIName) {
-        HINameError = 'Required';
+        HINameError = 'Required field';
       }
       setHINameError(HINameError);
   
       let operatingHoursError = '';
       if (!formValues.HIOperatingHours) {
-        operatingHoursError = 'Required';
+        operatingHoursError = 'Required field';
       }
       setOHError(operatingHoursError);
   
       let unitError = '';
       if (!formValues.HIUnitNo) {
-        unitError = 'Required';
+        unitError = 'Required field';
       }
       setUnitError(unitError); 
   
       let streetError = '';
       if (!formValues.HIStreet) {
-        streetError = 'Required';
+        streetError = 'Required field';
       }
       setStreetError(streetError); 
   
       let regionError = '';
       if (!formValues.HIRegion) {
-        regionError = 'Required';
+        regionError = 'Required field';
       }
       setRegionError(regionError); 
 
       let provinceError = '';
       if (!formValues.HIProvince) {
-        provinceError = 'Required';
+        provinceError = 'Required field';
       }
       setProvinceError(provinceError); 
 
       let cityError = '';
       if (!formValues.HICity) {
-        cityError = 'Required';
+        cityError = 'Required field';
       }
       setCityError(cityError);
 
       let barangayError = '';
       if (!formValues.HIBarangay) {
-        barangayError = 'Required';
+        barangayError = 'Required field';
       }
       setBarangayError(barangayError);
 
       let zipError = '';
       if (!formValues.HIZipCode) {
-        zipError = 'Required';
+        zipError = 'Required field';
+      } else if (isNaN(formValues.HIZipCode)) {
+        zipError = 'Must be a valid number';
+      } else if (!/^\d+$/.test(formValues.HIZipCode)) {
+        zipError = 'Should not have letters';
       }
       setZipError(zipError);
 
       let xCoordError = '';
       if (!formValues.XCoord) {
-        xCoordError = 'Required';
+        xCoordError = 'Required field';
       }
       setXCError(xCoordError);
 
       let yCoordError = '';
       if (!formValues.YCoord) {
-        yCoordError = 'Required';
+        yCoordError = 'Required field';
       }
       setYCError(yCoordError);
 
       let contactError = '';
       if (!formValues.HIContactPerson) {
-        contactError = 'Required';
+        contactError = 'Required field';
       }
       setContactError(contactError);
 
       let contactNoError = '';
       if (!formValues.HIContactNumber) {
-        contactNoError = 'Required';
+        contactNoError = 'Required field';
+      } else if (formValues.HIContactNumber.length > 11) {
+        contactNoError = 'Must be a valid contact number';
+      } else if (formValues.HIContactNumber.length < 11) {
+        contactNoError = 'Must be a valid contact number';
+      } else if (isNaN(formValues.HIContactNumber)) {
+        contactNoError = 'Must be a valid contact number';
+      } else if (!/^\d+$/.test(formValues.HIContactNumber)) {
+        contactNoError = 'Must be a valid contact number';
       }
       setContactNoError(contactNoError);
 
       let emailError = '';
       if (!formValues.HIEmailAddress) {
-        emailError = 'Required';
+        emailError = 'Required field';
       }
       setEmailError(emailError);
   
@@ -325,7 +339,237 @@ function UpdateHIModal(props) {
                 </div>
               ) : (
                 <>
-    <form className="mt-3 justify-content-center">
+        <Form className="mt-3 justify-content-center" noValidate onSubmit={handleSubmit}>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-12">
+                    <Form.Label>Health Institution Name</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='HIName'
+                        onChange={handleChange}
+                        value={formValues.HIName}
+                        placeholder="HI Name"
+                        isInvalid={HINameError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{HINameError}</Form.Control.Feedback>
+                </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-12">
+                    <Form.Label>Operating Hours</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='HIOperatingHours'
+                        onChange={handleChange}
+                        value={formValues.HIOperatingHours}
+                        placeholder="Operating Hours"
+                        isInvalid={operatingHoursError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{operatingHoursError}</Form.Control.Feedback>
+                </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-3">
+                    <Form.Label>Unit No.</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='HIUnitNo'
+                        value={formValues.HIUnitNo}
+                        onChange={handleChange}
+                        placeholder="House No."
+                        isInvalid={unitError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{unitError}</Form.Control.Feedback>
+                </div>
+                <div className="form-group col-md-3">
+                    <Form.Label>Street</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='HIStreet'
+                        value={formValues.HIStreet}
+                        onChange={handleChange}
+                        placeholder="Street"
+                        isInvalid={streetError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{streetError}</Form.Control.Feedback>
+                </div>
+                <div className="form-group col-md-3">
+                    <Form.Label>Region</Form.Label>
+                    <Form.Select
+                        aria-label="HIRegion"
+                        name="HIRegion"
+                        value={formValues.HIRegion}
+                        onChange={(e)=>{
+                            handleChange(e);
+                            handleRegionChange(e);
+                        }}
+                        isInvalid={regionError}
+                    >
+                        <option value="">Select</option>
+                        {regionData.map((hi, index) => (
+                            <>
+                                <option value={hi.region_id}>{hi.region_name}</option>
+                            </>
+                        ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{regionError}</Form.Control.Feedback>
+                </div>
+                <div className="form-group col-md-3">
+                    <Form.Label>Province</Form.Label>
+                    <Form.Select
+                        aria-label="HIProvince"
+                        name="HIProvince"
+                        disabled={formValues.HIRegion === ""}
+                        value={formValues.HIProvince}
+                        onChange={(e)=>{
+                            handleChange(e);
+                            handleProvinceChange(e);
+                        }}
+                        isInvalid={provinceError}
+                    >
+                        <option value="">Select</option>
+                        {provinceData.map((hi, index) => (
+                            <>
+                                <option value={hi.province_id}>{hi.province_name}</option>
+                            </>
+                        ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{provinceError}</Form.Control.Feedback>
+                </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-4">
+                    <Form.Label>City</Form.Label>
+                    <Form.Select
+                        aria-label="HICity"
+                        name="HICity"
+                        disabled={formValues.HIProvince === ""}
+                        value={formValues.HICity}
+                        onChange={(e)=>{
+                            handleChange(e);
+                            handleCityChange(e);
+                        }}
+                        isInvalid={cityError}
+                    >
+                        <option value="">Select</option>
+                        {cityData.map((hi, index) => (
+                            <>
+                                <option value={hi.municipality_id}>{hi.municipality_name}</option>
+                            </>
+                        ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{cityError}</Form.Control.Feedback>
+                </div> 
+                <div class="form-group col-md-4">
+                    <Form.Label>Barangay</Form.Label>
+                    <Form.Select
+                        aria-label="HIBarangay"
+                        name="HIBarangay"
+                        disabled={formValues.HICity === ""}
+                        value={formValues.HIBarangay}
+                        onChange={handleChange}
+                        isInvalid={barangayError}
+                    >
+                        <option value="">Select</option>
+                        {barangayData.map((hi, index) => (
+                            <>
+                                <option value={hi.barangay_id}>{hi.barangay_name}</option>
+                            </>
+                        ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type='invalid'>{barangayError}</Form.Control.Feedback>
+                </div>
+                <div className="form-group col-md-4">
+                    <Form.Label>Zip Code</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='HIZipCode'
+                        value={formValues.HIZipCode}
+                        onChange={handleChange}
+                        placeholder="Zip"
+                        isInvalid={zipError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{zipError}</Form.Control.Feedback>
+                </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-6">
+                    <Form.Label>X Coordinate</Form.Label>
+                    <Form.Control
+                        required
+                        type='number'
+                        name='XCoord'
+                        value={formValues.XCoord}
+                        onChange={handleChange}
+                        placeholder="Coordinate"
+                        isInvalid={xCoordError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{xCoordError}</Form.Control.Feedback>
+                </div>
+                <div className="form-group col-md-6">
+                    <Form.Label>Y Coordinate</Form.Label>
+                    <Form.Control
+                        required
+                        type='number'
+                        name='YCoord'
+                        value={formValues.YCoord}
+                        onChange={handleChange}
+                        placeholder="Coordinate"
+                        isInvalid={yCoordError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{yCoordError}</Form.Control.Feedback>
+                </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+                <div className="form-group col-md-12">
+                    <Form.Label>Contact Person</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='HIContactPerson'
+                        value={formValues.HIContactPerson}
+                        onChange={handleChange}
+                        placeholder="Name"
+                        isInvalid={contactError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{contactError}</Form.Control.Feedback>
+                </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+                <div class="form-group col-md-6">
+                    <Form.Label>Contact Number</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='HIContactNumber'
+                        value={formValues.HIContactNumber}
+                        onChange={handleChange}
+                        placeholder="e.g. 09xx-xxx-xxxx"
+                        isInvalid={contactNoError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{contactNoError}</Form.Control.Feedback>
+                </div>
+                <div class="form-group col-md-6">
+                    <Form.Label>Email Address</Form.Label>
+                    <Form.Control
+                        required
+                        type='text'
+                        name='HIEmailAddress'
+                        value={formValues.HIEmailAddress}
+                        onChange={handleChange}
+                        placeholder="e.g. sample@sample.com"
+                        isInvalid={emailError}
+                    />
+                    <Form.Control.Feedback type='invalid'>{emailError}</Form.Control.Feedback>
+                </div>
+            </Row>
+        </Form>
+    {/*<form className="mt-3 justify-content-center">
             <Row className="mb-3 justify-content-center">
                 <div className="form-group col-md-12">
                     <label for="inputFirstName">Health Institution Name</label>
@@ -521,7 +765,7 @@ function UpdateHIModal(props) {
           
 
             
-            </form>
+                    </form>*/}
             </>
               )}
     </Modal.Body>
