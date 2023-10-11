@@ -620,25 +620,27 @@ const AddPatient = () => {
 
     // trigger autofill when accessed with parameter -- close contact convert
     useEffect(() => {
-        console.log(id)
-        axios.get(`http://localhost:4000/api/getOneContact/${id}`)
-        .then(res => {
-          console.log(res);
-          setPatient( prev => ({
-            ...prev,
-            ...res.data[0],
-            emergency_name: res.data[0].contact_person,
-            e_contactno: res.data[0].contact_num,
-            e_email: res.data[0].contact_email,
-            birthdate: new Date(res.data[0].birthdate).toISOString().split('T')[0],
-            age: getAge(new Date(res.data[0].birthdate).toISOString().split('T')[0]),
-            id
-          }));
-        })
-        .catch(err => {
-          console.error(err);
-        })
-    }, [id ? id : null ])
+        if (id) {
+            console.log(id)
+            axios.get(`http://localhost:4000/api/getOneContact/${id}`)
+            .then(res => {
+              console.log(res);
+              setPatient( prev => ({
+                ...prev,
+                ...res.data[0],
+                emergency_name: res.data[0].contact_person,
+                e_contactno: res.data[0].contact_num,
+                e_email: res.data[0].contact_email,
+                birthdate: new Date(res.data[0].birthdate).toISOString().split('T')[0],
+                age: getAge(new Date(res.data[0].birthdate).toISOString().split('T')[0]),
+                id
+              }));
+            })
+            .catch(err => {
+              console.error(err);
+            })
+        }
+    }, [id])
 
     // check parameter
     useEffect(() => {
