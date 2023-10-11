@@ -100,7 +100,7 @@ function UpdateTreatment(props) {
                 style={{ height: "20px" }}
                  />
 
-        <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='lg'>
+        <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
         <Modal.Title>Update Treatment</Modal.Title>
     </Modal.Header>
@@ -206,7 +206,7 @@ function UpdateTreatment(props) {
   </form>*/}
     </Modal.Body>
     <Modal.Footer >
-        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Add</button>
+        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Update</button>
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>

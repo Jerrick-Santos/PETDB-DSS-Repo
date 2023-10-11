@@ -1719,6 +1719,24 @@ router.delete('/deletetests/:id', (req, res) => {
     );
 });
 
+router.delete('/deletetreatment/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    DELETE FROM TD_TREATMENTS
+    WHERE TreatmentID = ${id};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
 router.delete('/deleteassess/:id', (req, res) => {
     const id = req.params.id;
     db.query(`
