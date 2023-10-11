@@ -153,8 +153,8 @@ const AdminNavBar = () => {
         <Nav className="ms-4">
        
         <Nav.Link className="text-light" href={`/bhc/${BGYNo}`}>Barangay Health Center</Nav.Link>
-        <Nav.Link className="text-light" href={`/bhw/${BGYNo}`}>Barangay Users</Nav.Link>
         <Nav.Link className="text-light" href="/adminhi">Health Institutions</Nav.Link>
+        <Nav.Link className="text-light" href={`/bhw/${BGYNo}`}>Barangay Users</Nav.Link>
           <Nav.Link className="text-light" href="/adminlabtest">Diagnostic Tests</Nav.Link>
           
           </Nav>
