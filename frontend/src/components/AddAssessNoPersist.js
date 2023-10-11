@@ -16,6 +16,14 @@ function AddAssessNoPersist(props) {
     const [height, setHeight] = useState(0);
     const [bmi, setBMI] = useState(null);
 
+    const [coughWeeksDisabled, setCoughWeeksDisabled] = useState(true);
+    const [feverWeeksDisabled, setFeverWeeksDisabled] = useState(true);
+    const [nsWeeksDisabled, setNSWeeksDisabled] = useState(true);
+    const [wlWeeksDisabled, setWLWeeksDisabled] = useState(true);
+    const [fatWeeksDisabled, setFatWeeksDisabled] = useState(true);
+    const [rpWeeksDisabled, setRPWeeksDisabled] = useState(true);
+    const [decWeeksDisabled, setDecWeeksDisabled] = useState(true);
+    const [newWeeksDisabled, setNEWWeeksDisabled] = useState(true);
 
       useEffect(() => {
 
@@ -124,6 +132,38 @@ function AddAssessNoPersist(props) {
           setBodyWeight(newValue);
         } else if (name === 'ass_height') {
           setHeight(newValue);
+        } else if (name === 'cough') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setCoughWeeksDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'fever') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setFeverWeeksDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'night_sweats') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setNSWeeksDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'weight_loss') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setWLWeeksDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'fatigue') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setFatWeeksDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'red_playfulness') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setRPWeeksDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'dec_acts') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setDecWeeksDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'not_eating_well') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setNEWWeeksDisabled(!checked);
+          setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
         } else {
           setAssessFormValues((prev) => ({ ...prev, [name]: newValue }));
         }
@@ -354,7 +394,7 @@ function AddAssessNoPersist(props) {
                     <input type="checkbox" name='cough' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='c_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='c_weeks' onChange={handleChange} disabled={coughWeeksDisabled}/>
                   </Col>
                 </Row>
                 <hr/>
@@ -367,7 +407,7 @@ function AddAssessNoPersist(props) {
                     <input type="checkbox" name='fever' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='fe_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='fe_weeks' onChange={handleChange} disabled={feverWeeksDisabled}/>
                   </Col>
                 </Row>
                 <hr/>
@@ -380,7 +420,7 @@ function AddAssessNoPersist(props) {
                     <input type="checkbox" name='night_sweats' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='ns_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='ns_weeks' onChange={handleChange} disabled={nsWeeksDisabled}/>
                   </Col>
                 </Row>
                 <hr/>
@@ -393,7 +433,7 @@ function AddAssessNoPersist(props) {
                     <input type="checkbox" name='weight_loss' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='wl_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='wl_weeks' onChange={handleChange} disabled={wlWeeksDisabled}/>
                   </Col>
                 </Row>
               </Card.Body>
@@ -428,7 +468,7 @@ function AddAssessNoPersist(props) {
                     <input type="checkbox" name='fatigue' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='fat_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='fat_weeks' onChange={handleChange} disabled={fatWeeksDisabled}/>
                   </Col>
                 </Row>
                 <hr/>
@@ -441,7 +481,7 @@ function AddAssessNoPersist(props) {
                     <input type="checkbox" name='red_playfulness' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='rp_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='rp_weeks' onChange={handleChange} disabled={rpWeeksDisabled}/>
                   </Col>
                 </Row>
                 <hr/>
@@ -454,7 +494,7 @@ function AddAssessNoPersist(props) {
                     <input type="checkbox" name='dec_acts' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='da_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='da_weeks' onChange={handleChange} disabled={decWeeksDisabled}/>
                   </Col>
                 </Row>
                 <hr/>
@@ -467,7 +507,7 @@ function AddAssessNoPersist(props) {
                     <input type="checkbox" name='not_eating_well' onChange={handleChange}/>
                   </Col>
                   <Col sm="3">
-                    <input type="checkbox" name='new_weeks' onChange={handleChange}/>
+                    <input type="checkbox" name='new_weeks' onChange={handleChange} disabled={newWeeksDisabled}/>
                   </Col>
                 </Row>
               </Card.Body>
