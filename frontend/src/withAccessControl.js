@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import lock from './assets/lock.png';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import Spinner from "react-bootstrap/Spinner";
 // Define your access denied component
 const AccessDenied = () => (
 
@@ -77,7 +78,28 @@ const withAccessControl = (WrappedComponent, allowedUserTypes) => {
       <Navbar.Brand className="text-light ms-4">PEDIA-TB DSS</Navbar.Brand>
       
       
-    </Navbar></>;
+    </Navbar>
+    
+    <div
+                  className="text-center"
+                  style={{ marginTop: "10vh", marginBottom: "10vh" }}
+                >
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    style={{ width: "5rem", height: "5rem" }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold",
+                      marginTop: "1rem",
+                      color: "#0077B6",
+                    }}
+                  >
+                    Loading...
+                  </p>
+                </div></>;
     }
 
     // Render the WrappedComponent if the user has the correct user type

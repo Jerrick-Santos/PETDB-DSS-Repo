@@ -164,6 +164,7 @@ const SimilarCases = () => {
      <Col lg="11">
 
      {hasAssessment ? (
+      <div>
    <Card className="mb-4">
    <Card.Body>
    <Row>
@@ -223,6 +224,9 @@ const SimilarCases = () => {
    
      
    </Card.Body>
+   </Card>
+
+   <Card className="mb-4">
 
    <Card.Body>
    <Row>
@@ -252,11 +256,12 @@ const SimilarCases = () => {
          <Card.Text> <strong>{parseFloat(casesData.eptb).toFixed(2)}% </strong></Card.Text>
        </Col>
      </Row>
-     <hr/> 
+  
      
    </Card.Body>
    
  </Card>
+ </div>
  ) : (
                     <Card className="mb-4 text-center">
                       <Row className="mt-4 justify-content-center">
