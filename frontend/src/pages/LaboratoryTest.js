@@ -17,6 +17,7 @@ import AddDSTModal from '../components/AddDSTModal';
 import CaseHeader from '../components/CaseHeader'
 import Pagination from 'react-bootstrap/Pagination';
 import DeleteTest from '../components/DeleteTest';
+import DeleteDST from '../components/DeleteDST';
 import UpdateIGRA from '../components/UpdateIGRA';
 import UpdateTST from '../components/UpdateTST';
 import UpdateMTBRIF from '../components/UpdateMTBRIF';
@@ -801,7 +802,7 @@ const LaboratoryTest = () => {
                                       </Badge>
                                     ) : null}</td>
                                     <td> <UpdateDST caseNum={caseNum} DGResultsNo={dst.DGResultsNo} HINo={dst.HINo} issue_date={dst.issue_date} test_refno={dst.test_refno} TestValue={dst.TestValue} validity={dst.validity}/>
-                                        <DeleteTest DGResultsNo={dst.DGResultsNo}/></td>
+                                        <DeleteDST DGResultsNo={dst.DGResultsNo}/></td>
                                 </tr>
                
                    </>

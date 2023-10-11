@@ -1680,11 +1680,50 @@ router.get('/checktestsref/:id', (req, res) => {
 })
 })
 
+router.delete('/deletetestDST/:id', (req, res) => {
+    const id = req.params.id;
+    
+    db.query('DELETE FROM TD_DRUGRESISTANCE WHERE DGResultsNo = ?', [id], (err, drugResResults) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('An error occurred while deleting drug resistance records.');
+        } else {
+            // After successfully deleting from TD_DRUGRESISTANCE, proceed to delete from TD_DIAGNOSTICRESULTS
+            db.query('DELETE FROM TD_DIAGNOSTICRESULTS WHERE DGResultsNo = ?', [id], (err, diagResResults) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send('An error occurred while deleting diagnostic results records.');
+                } else {
+                    res.send(diagResResults);
+                }
+            });
+        }
+    });
+});
+
 router.delete('/deletetests/:id', (req, res) => {
     const id = req.params.id;
     db.query(`
     DELETE FROM TD_DIAGNOSTICRESULTS
     WHERE DGResultsNo = ${id};
+`,
+        [id],
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('An error occurred.');
+            } else {
+                res.send(results);
+            }
+        }
+    );
+});
+
+router.delete('/deletetreatment/:id', (req, res) => {
+    const id = req.params.id;
+    db.query(`
+    DELETE FROM TD_TREATMENTS
+    WHERE TreatmentID = ${id};
 `,
         [id],
         (err, results) => {
