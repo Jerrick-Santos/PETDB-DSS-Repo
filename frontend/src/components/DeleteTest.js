@@ -70,16 +70,16 @@ function DeleteTest(props) {
 
             <Modal show={show} onHide={handleClose} backdrop={'static'} size="md">
                 <Modal.Header style={{ color: 'white', backgroundColor: "#0077B6" }}>
-                    <Modal.Title>Delete Health Institution</Modal.Title>
+                    <Modal.Title>Delete Test Result</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {isReferenced ? (
                         <>
-                        This test is currently being referenced in other records.   <br/>  <br/>
+                        This test result is currently being referenced in other records.   <br/>  <br/>
                         </>
                     ) : (
                         <>
-                        Are you certain you want to delete this test?  <br/>  <br/>
+                        Are you certain you want to delete this test result?  <br/>  <br/>
                         You can no longer undo this action.
                         </>
                     )}
