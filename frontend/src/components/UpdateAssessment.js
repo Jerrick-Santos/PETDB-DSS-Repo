@@ -23,6 +23,24 @@ function UpdateAssessment(props) {
     const [height, setHeight] = useState(0);
     const [bmi, setBMI] = useState(null);
 
+    const [coughWeeksDisabled, setCoughWeeksDisabled] = useState(false);
+    const [feverWeeksDisabled, setFeverWeeksDisabled] = useState(false);
+    const [nsWeeksDisabled, setNSWeeksDisabled] = useState(false);
+    const [wlWeeksDisabled, setWLWeeksDisabled] = useState(false);
+    const [fatWeeksDisabled, setFatWeeksDisabled] = useState(false);
+    const [rpWeeksDisabled, setRPWeeksDisabled] = useState(false);
+    const [decWeeksDisabled, setDecWeeksDisabled] = useState(false);
+    const [newWeeksDisabled, setNEWWeeksDisabled] = useState(false);
+
+    const [coughPersistDisabled, setCoughPersistDisabled] = useState(false);
+    const [feverPersistDisabled, setFeverPersistDisabled] = useState(false);
+    const [nsPersistDisabled, setNSPersistDisabled] = useState(false);
+    const [wlPersistDisabled, setWLPersistDisabled] = useState(false);
+    const [fatPersistDisabled, setFatPersistDisabled] = useState(false);
+    const [rpPersistDisabled, setRPPersistDisabled] = useState(false);
+    const [decPersistDisabled, setDecPersistDisabled] = useState(false);
+    const [newPersistDisabled, setNEWPersistDisabled] = useState(false);
+
     const calculateBMI = () => {
       if (bodyWeight && height) {
         const heightInMeters = height / 100; // Convert height to meters
@@ -169,6 +187,46 @@ function UpdateAssessment(props) {
             ...formValues,
             ass_height: newValue  
           });
+        } else if (name === 'cough') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setCoughWeeksDisabled(!checked);
+          setCoughPersistDisabled(!checked);
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'fever') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setFeverWeeksDisabled(!checked);
+          setFeverPersistDisabled(!checked);
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'night_sweats') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setNSWeeksDisabled(!checked);
+          setNSPersistDisabled(!checked);
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'weight_loss') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setWLWeeksDisabled(!checked);
+          setWLPersistDisabled(!checked);
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'fatigue') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setFatWeeksDisabled(!checked);
+          setFatPersistDisabled(!checked);
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'red_playfulness') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setRPWeeksDisabled(!checked);
+          setRPPersistDisabled(!checked);
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'dec_acts') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setDecWeeksDisabled(!checked);
+          setDecPersistDisabled(!checked);
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
+        } else if (name === 'not_eating_well') {
+          // Enable or disable 'c_weeks' and 'c_persist' based on the 'cough' checkbox
+          setNEWWeeksDisabled(!checked);
+          setNEWPersistDisabled(!checked);
+          setFormValues((prev) => ({ ...prev, [name]: newValue }));
         } else {
           setFormValues((prev) => ({ ...prev, [name]: newValue }));
         }
@@ -403,10 +461,10 @@ function UpdateAssessment(props) {
                       <input type="checkbox" name='cough' value={formValues.cough} onChange={handleChange} checked={formValues.cough ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='c_weeks' value={formValues.c_weeks} onChange={handleChange} checked={formValues.c_weeks ? true : false}/>
+                      <input type="checkbox" name='c_weeks' value={formValues.c_weeks} onChange={handleChange} disabled={coughWeeksDisabled} checked={formValues.c_weeks ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='c_persist' value={formValues.c_persist} onChange={handleChange} checked={formValues.c_persist ? true : false}/>
+                      <input type="checkbox" name='c_persist' value={formValues.c_persist} onChange={handleChange} disabled={coughPersistDisabled} checked={formValues.c_persist ? true : false}/>
                     </Col>
                   </Row>
                   <hr/>
@@ -419,10 +477,10 @@ function UpdateAssessment(props) {
                       <input type="checkbox" name='fever' value={formValues.fever} onChange={handleChange} checked={formValues.fever ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='fe_weeks' value={formValues.fe_weeks} onChange={handleChange} checked={formValues.fe_weeks ? true : false}/>
+                      <input type="checkbox" name='fe_weeks' value={formValues.fe_weeks} onChange={handleChange} disabled={feverWeeksDisabled} checked={formValues.fe_weeks ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='fe_persist' value={formValues.fe_persist} onChange={handleChange} checked={formValues.fe_persist ? true : false}/>
+                      <input type="checkbox" name='fe_persist' value={formValues.fe_persist} onChange={handleChange} disabled={feverPersistDisabled} checked={formValues.fe_persist ? true : false}/>
                     </Col>
                   </Row>
                   <hr/>
@@ -435,10 +493,10 @@ function UpdateAssessment(props) {
                       <input type="checkbox" name='night_sweats' value={formValues.night_sweats} onChange={handleChange} checked={formValues.night_sweats ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='ns_weeks' value={formValues.ns_weeks} onChange={handleChange} checked={formValues.ns_weeks ? true : false}/>
+                      <input type="checkbox" name='ns_weeks' value={formValues.ns_weeks} onChange={handleChange} disabled={nsWeeksDisabled} checked={formValues.ns_weeks ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='ns_persist' value={formValues.ns_persist} onChange={handleChange} checked={formValues.ns_persist ? true : false}/>
+                      <input type="checkbox" name='ns_persist' value={formValues.ns_persist} onChange={handleChange} disabled={nsPersistDisabled} checked={formValues.ns_persist ? true : false}/>
                     </Col>
                   </Row>
                   <hr/>
@@ -451,10 +509,10 @@ function UpdateAssessment(props) {
                       <input type="checkbox" name='weight_loss' value={formValues.weight_loss} onChange={handleChange} checked={formValues.weight_loss ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='wl_weeks' value={formValues.wl_weeks} onChange={handleChange} checked={formValues.wl_weeks ? true : false}/>
+                      <input type="checkbox" name='wl_weeks' value={formValues.wl_weeks} onChange={handleChange} disabled={wlWeeksDisabled} checked={formValues.wl_weeks ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='wl_persist' value={formValues.wl_persist} onChange={handleChange} checked={formValues.wl_persist ? true : false}/>
+                      <input type="checkbox" name='wl_persist' value={formValues.wl_persist} onChange={handleChange} disabled={wlPersistDisabled} checked={formValues.wl_persist ? true : false}/>
                     </Col>
                   </Row>
                 </Card.Body>
@@ -492,10 +550,10 @@ function UpdateAssessment(props) {
                       <input type="checkbox" name='fatigue' value={formValues.fatigue} onChange={handleChange} checked={formValues.fatigue ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='fat_weeks' value={formValues.fat_weeks} onChange={handleChange} checked={formValues.fat_weeks ? true : false}/>
+                      <input type="checkbox" name='fat_weeks' value={formValues.fat_weeks} onChange={handleChange} disabled={fatWeeksDisabled} checked={formValues.fat_weeks ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='fat_persist' value={formValues.fat_persist} onChange={handleChange} checked={formValues.fat_persist ? true : false}/>
+                      <input type="checkbox" name='fat_persist' value={formValues.fat_persist} onChange={handleChange} disabled={fatPersistDisabled} checked={formValues.fat_persist ? true : false}/>
                     </Col>
                   </Row>
                   <hr/>
@@ -508,10 +566,10 @@ function UpdateAssessment(props) {
                       <input type="checkbox" name='red_playfulness' value={formValues.red_playfulness} onChange={handleChange} checked={formValues.red_playfulness ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='rp_weeks' value={formValues.rp_weeks} onChange={handleChange} checked={formValues.rp_weeks ? true : false}/>
+                      <input type="checkbox" name='rp_weeks' value={formValues.rp_weeks} onChange={handleChange} disabled={rpWeeksDisabled} checked={formValues.rp_weeks ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='rp_persist' value={formValues.rp_persist} onChange={handleChange} checked={formValues.rp_persist ? true : false}/>
+                      <input type="checkbox" name='rp_persist' value={formValues.rp_persist} onChange={handleChange} disabled={rpPersistDisabled} checked={formValues.rp_persist ? true : false}/>
                     </Col>
                   </Row>
                   <hr/>
@@ -524,10 +582,10 @@ function UpdateAssessment(props) {
                       <input type="checkbox" name='dec_acts' value={formValues.dec_acts} onChange={handleChange} checked={formValues.dec_acts ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='da_weeks' value={formValues.da_weeks} onChange={handleChange} checked={formValues.da_weeks ? true : false}/>
+                      <input type="checkbox" name='da_weeks' value={formValues.da_weeks} onChange={handleChange} disabled={decWeeksDisabled} checked={formValues.da_weeks ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='da_persist' value={formValues.da_persist} onChange={handleChange} checked={formValues.da_persist ? true : false}/>
+                      <input type="checkbox" name='da_persist' value={formValues.da_persist} onChange={handleChange} disabled={decPersistDisabled} checked={formValues.da_persist ? true : false}/>
                     </Col>
                   </Row>
                   <hr/>
@@ -540,10 +598,10 @@ function UpdateAssessment(props) {
                       <input type="checkbox" name='not_eating_well' value={formValues.not_eating_well} onChange={handleChange} checked={formValues.not_eating_well ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='new_weeks' value={formValues.new_weeks} onChange={handleChange} checked={formValues.new_weeks ? true : false}/>
+                      <input type="checkbox" name='new_weeks' value={formValues.new_weeks} onChange={handleChange} disabled={newWeeksDisabled} checked={formValues.new_weeks ? true : false}/>
                     </Col>
                     <Col sm="3">
-                      <input type="checkbox" name='new_persist' value={formValues.new_persist} onChange={handleChange} checked={formValues.new_persist ? true : false}/>
+                      <input type="checkbox" name='new_persist' value={formValues.new_persist} onChange={handleChange} disabled={newPersistDisabled} checked={formValues.new_persist ? true : false}/>
                     </Col>
                   </Row>
                 </Card.Body>
