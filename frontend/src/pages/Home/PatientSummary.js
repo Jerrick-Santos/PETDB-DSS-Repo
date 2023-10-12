@@ -952,56 +952,49 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   <div className='container-fluid justify-content-center'>
  
   <div className='row g-3 my-2 justify-content-center'>
-
   <Row className="mb-3 mt-4 justify-content-center">
-    
-            
-            <Col md="2" className="me-4">
-                  
-                  <div
-            className="mt-3 input-group"
-            style={{
-              maxWidth: '290px',
-              display: 'flex',
-              backgroundColor: '#0077B6',
-              borderRadius: '6px', // Adding borderRadius for rounding the outer div
-              overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: '#0077B6',
-                width: '30px',
-                height: '100%',
-              }}
-            >
-              <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
-            </div>
-            <select
-              className="form-select"
-              onChange={(e) => {
-                resetAllVariables(); // Call the resetAllVariables function before updating currentYear
-                setCurrentYear(e.target.value);
-              }}
-            >
-
-              {years.map((data, index) => (
+  <Col md="2" className="me-4">
+    <div
+      className="mt-3 input-group"
+      style={{
+        maxWidth: '290px',
+        display: 'flex',
+        backgroundColor: '#0077B6',
+        borderRadius: '6px',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: '#0077B6',
+          width: '30px',
+          height: '100%',
+        }}
+      >
+        <img className="ms-1 mt-2" src={filter} style={{ height: '20px' }} alt="" />
+      </div>
+      <select
+        className="form-select"
+        onChange={(e) => {
+          resetAllVariables();
+          setCurrentYear(e.target.value);
+        }}
+      >
+         {years.map((data, index) => (
                 <>
                     <option value={data.DiagnosisYear}>{data.DiagnosisYear}</option>
 
                     </>
                   ))}
-              
-          
-              {/* Add more cities as needed */}
-            </select>
-          </div>
+      </select>
+    </div>
+  </Col>
+  <Col md="8" className="mt-3 d-flex justify-content-end">
+   
+  </Col>
+</Row>
 
-            </Col>
-            <Col md="8">
-            </Col>
-
-    </Row>
+ 
     <Row className="mb-3 mt-4 justify-content-center">
     <div className='col-md-2 p-1'>
       <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>

@@ -2,6 +2,7 @@ import React from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import PatientSummary from './pages/Home/PatientSummary';
 import PatientInfo from './pages/PatientInfo'
+import ReportGen from './pages/Report'
 import Assessment from './pages/Assessment';
 import CloseContacts from './pages/CloseContacts'
 import Treatments from './pages/Treatments'
@@ -51,6 +52,7 @@ const SimilarCasesWithAccess = withAccessControl(SimilarCases, ['BHW']);
 const AddPatientWithAccess = withAccessControl(AddPatient, ['BHW']);
 const ViewPatientWithAccess = withAccessControl(ViewPatient, ['BHW']);
 const CaseWithAccess = withAccessControl(Case, ['BHW']);
+const ReportGenWithAccess = withAccessControl(ReportGen, ['BHW']);
 
 
 function App() {
@@ -79,6 +81,7 @@ function App() {
 
 
                     <Route path="/patient/:id" element={<PatientInfoWithAccess/>}/>
+                    <Route path="/report" element={<ReportGenWithAccess/>}/>
                     <Route path="/closecontacts/:id" element={<CloseContactsWithAccess/>}/>
                     <Route path="/assessment/:id" element={<AssessmentWithAccess/>}/>
                     <Route path="/labtest/:id" element={<LaboratoryTestWithAccess/>}/>
