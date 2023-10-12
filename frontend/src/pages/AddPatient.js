@@ -36,12 +36,13 @@ const AddPatient = () => {
     const [isCurrentAddressDisabled, setIsCurrentAddressDisabled] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [calculatedAge, setCalculatedAge] = useState(null);
+    const [showContactsAlert, setShowContactAlert] = useState(null)
     let age = null;
 
     const [showConsentModal, setShowConsentModal] = useState(true);
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [userNum, setUserNum] = useState(null);
+    const [userNum, setUserNum] = useState(null);
     const handleCloseConsentModal = () => {
         setShowConsentModal(false);
     };
@@ -340,8 +341,22 @@ const AddPatient = () => {
     const [currBarangayError, setCurrBarangayError] = useState('');
     const [currZipError, setCurrZipError] = useState('');
     const [caserefError, setCaseRefError] = useState('');
+    const [contactError, setContactError] = useState('');
 
     const validate = () => {
+
+        let contactError = ''
+        let contactCond = (patient.mother_name ==='N/A' || patient.mother_name === '')  && (patient.father_name ==='N/A' || patient.father_name === '' ) && (patient.emergency_name ==='N/A' || patient.father_name ==='') && (patient.guardian_name ==='N/A' || patient.father_name ==='') && 
+          (patient.m_email ==='N/A'|| patient.m_email ==='' || patient.m_contactno ==='N/A' || patient.m_contactno ==='' || patient.m_birthdate === new Date() || 
+          patient.f_email ==='N/A' || patient.f_email ==='' ||patient.f_contactno ==='N/A'  || patient.f_contactno ==='' ||  patient.f_birthdate === new Date() ||
+          patient.e_email ==='N/A' || patient.e_email ==='' || patient.e.contactno ==='N/A' || patient.e.contactno ==='' || patient.e_birthdate === new Date() || patient.e_relationship ==='N/A' || patient.e_relationship ==='' ||
+          patient.g_email ==='N/A' || patient.g_email ==='' ||patient.g_contactno ==='N/A'  || patient.g_contactno ==='' || patient.g_birthdate === new Date() || patient.g_relationship ==='N/A' || patient.g_relationship ==='')
+        if (contactCond) {
+                contactError = 'Please fill at least one contact person'
+            }
+        console.log(contactCond)
+        setContactError(contactError)
+
         let firstNameError = '';
         if (!patient.first_name) {
             firstNameError = 'Required field';
@@ -514,11 +529,16 @@ const AddPatient = () => {
         }
         setCaseRefError(caserefError);
 
+        contactError ? setShowContactAlert(true) : setShowContactAlert(false)
+
         if (firstNameError || middleNameError || lastNameError || birthdateError || sexError || nationalityError || bodyWeightError || heightError || permHouseError || permStreetError || permRegionError || permProvinceError || permCityError || permBarangayError || permZipError || currHouseError || currStreetError || currRegionError || currProvinceError || currCityError || currBarangayError || currZipError || caserefError) {
             setShowAlert(true);
+            if (contactError) {
+            }
             return false;
         }
 
+        
         setShowAlert(false);
         return true;
     }
@@ -581,6 +601,7 @@ const AddPatient = () => {
         };
 
         const isValid = validate();
+        console.log(showContactsAlert, contactError)
         if(!isValid) {
             return;
         }
@@ -597,27 +618,29 @@ const AddPatient = () => {
         }
     }
 
-    // trigger autofill when accessed with parameter
+    // trigger autofill when accessed with parameter -- close contact convert
     useEffect(() => {
-        console.log(id)
-        axios.get(`http://localhost:4000/api/getOneContact/${id}`)
-        .then(res => {
-          console.log(res);
-          setPatient( prev => ({
-            ...prev,
-            ...res.data[0],
-            emergency_name: res.data[0].contact_person,
-            e_contactno: res.data[0].contact_num,
-            e_email: res.data[0].contact_email,
-            birthdate: new Date(res.data[0].birthdate).toISOString().split('T')[0],
-            age: getAge(new Date(res.data[0].birthdate).toISOString().split('T')[0]),
-            id
-          }));
-        })
-        .catch(err => {
-          console.error(err);
-        })
-    }, [id ? id : null ])
+        if (id) {
+            console.log(id)
+            axios.get(`http://localhost:4000/api/getOneContact/${id}`)
+            .then(res => {
+              console.log(res);
+              setPatient( prev => ({
+                ...prev,
+                ...res.data[0],
+                emergency_name: res.data[0].contact_person,
+                e_contactno: res.data[0].contact_num,
+                e_email: res.data[0].contact_email,
+                birthdate: new Date(res.data[0].birthdate).toISOString().split('T')[0],
+                age: getAge(new Date(res.data[0].birthdate).toISOString().split('T')[0]),
+                id
+              }));
+            })
+            .catch(err => {
+              console.error(err);
+            })
+        }
+    }, [id])
 
     // check parameter
     useEffect(() => {
@@ -1090,6 +1113,7 @@ const AddPatient = () => {
                             name='guardian_name'
                             onChange={handleChange}
                             placeholder="Name"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1099,6 +1123,7 @@ const AddPatient = () => {
                             name='g_relationship'
                             onChange={handleChange}
                             placeholder="Relationship"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1107,6 +1132,7 @@ const AddPatient = () => {
                             type='date'
                             name='g_birthdate'
                             onChange={handleChange}
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1116,6 +1142,7 @@ const AddPatient = () => {
                             name='g_contactno'
                             onChange={handleChange}
                             placeholder="09xx xxx xxxx"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1125,6 +1152,7 @@ const AddPatient = () => {
                             name='g_email'
                             onChange={handleChange}
                             placeholder="sample@sample.com"
+                            isInvalid={contactError}
                         />
                     </div>
                 </Row>
@@ -1136,6 +1164,7 @@ const AddPatient = () => {
                             name='mother_name'
                             onChange={handleChange}
                             placeholder="Name"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1144,6 +1173,7 @@ const AddPatient = () => {
                             type='date'
                             name='m_birthdate'
                             onChange={handleChange}
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-3">
@@ -1153,6 +1183,7 @@ const AddPatient = () => {
                             name='m_contactno'
                             onChange={handleChange}
                             placeholder="09xx xxx xxxx"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-3">
@@ -1162,6 +1193,7 @@ const AddPatient = () => {
                             name='m_email'
                             onChange={handleChange}
                             placeholder="sample@sample.com"
+                            isInvalid={contactError}
                         />
                     </div>
                 </Row>
@@ -1174,6 +1206,7 @@ const AddPatient = () => {
                             name='father_name'
                             onChange={handleChange}
                             placeholder="Name"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1182,6 +1215,7 @@ const AddPatient = () => {
                             type='date'
                             name='f_birthdate'
                             onChange={handleChange}
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-3">
@@ -1191,6 +1225,7 @@ const AddPatient = () => {
                             name='f_contactno'
                             onChange={handleChange}
                             placeholder="09xx xxx xxxx"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-3">
@@ -1199,6 +1234,7 @@ const AddPatient = () => {
                             type='text'
                             name='f_email'
                             onChange={handleChange}
+                            isInvalid={contactError}
                             placeholder="sample@sample.com"
                         />
                     </div>
@@ -1211,8 +1247,9 @@ const AddPatient = () => {
                             type='text'
                             name='emergency_name'
                             onChange={handleChange}
-                            value={patient.emergency_name}
+                            value={patient.emergency_name === "N/A" ? '' : patient.emergency_name}
                             placeholder="Name"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1222,6 +1259,7 @@ const AddPatient = () => {
                             name='e_relationship'
                             onChange={handleChange}
                             placeholder="Relationship"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1230,6 +1268,7 @@ const AddPatient = () => {
                             type='date'
                             name='e_birthdate'
                             onChange={handleChange}
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1238,8 +1277,9 @@ const AddPatient = () => {
                             type='text'
                             name='e_contactno'
                             onChange={handleChange}
-                            value={patient.e_contactno}
+                            value={patient.e_contactno === "N/A" ? '' : patient.e_contactno}
                             placeholder="09xx xxx xxxx"
+                            isInvalid={contactError}
                         />
                     </div>
                     <div class="form-group col-md-2">
@@ -1248,8 +1288,9 @@ const AddPatient = () => {
                             type='text'
                             name='e_email'
                             onChange={handleChange}
-                            value={patient.e_email}
+                            value={patient.e_email === "N/A" ? '' : patient.e_email}
                             placeholder="sample@sample.com"
+                            isInvalid={contactError}
                         />
                     </div>
                 </Row>
@@ -1283,6 +1324,15 @@ const AddPatient = () => {
                         </Alert>
                     </div>
                 )}
+
+                {showContactsAlert && (
+                    <div className="d-flex justify-content-center align-items-center">
+                        <Alert className="d-flex justify-content-center alert-warning alert-dismissible fade show" variant="danger" style={{width:'50%'}} align="center">
+                            Please fill in at least&nbsp;<strong>one contact person</strong>&nbsp;before submitting the form.
+                        </Alert>
+                    </div>
+                )}
+
                 {/* Save Button */}
                 <div className="d-flex justify-content-center mt-2 mb-4" align="center">
                     <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleSubmit}>

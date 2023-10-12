@@ -44,7 +44,7 @@ function DeleteTest(props) {
     const handleDelete = async e => {
         e.preventDefault()
         try{
-            await axios.delete(`http://localhost:4000/api/deletetests/${props.DGResultsNo}`)
+            await axios.delete(`http://localhost:4000/api/deletetestDST/${props.DGResultsNo}`)
             window.location.reload()
         }catch(err){
             console.log(err)
