@@ -83,7 +83,7 @@ function UpdateDST(props) {
         CaseNo: props.caseNum,
         DGResultsNo: props.DGResultsNo,
         HINo: props.HINo,
-        issue_date: props.issue_date,
+        issue_date: new Date(props.issue_date).toISOString().split('T')[0],
         test_refno: props.test_refno,
         izo: '',
         eto: '',
@@ -91,6 +91,10 @@ function UpdateDST(props) {
         amk: '',
         validity: props.validity,
     });
+
+    useEffect(() => {
+        console.log(formValues)
+    },[])
 
     useEffect(() => {
         // Check if there are drugs in the array
@@ -273,7 +277,7 @@ function UpdateDST(props) {
                         type='date'
                         name='issue_date'
                         onChange={handleChange}
-                        value={new Date(formValues.issue_date).toISOString().split('T')[0]}
+                        value={formValues.issue_date}
                         isInvalid={dateError}
                     />
                     <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
@@ -356,80 +360,6 @@ function UpdateDST(props) {
                 </Form.Group>
             </Row>
         </Form>
-    {/*<form className="mt-4 justify-content-center">
-    <div>
-            <label><strong> Upload DST File Attachment:</strong></label>
-            <input type="file" className="form-control" />
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Issued by: </strong></label>
-            <select className="form-select" name="HINo" value={formValues.HINo} onChange={handleChange}>
-                <option value="">Select</option>
-              
-              {hiData.map((hi, index) => (
-              <>
-               <option value={hi.HINo}>{hi.HIName}</option>
-              
-                   </>
-                    ))}
- 
-
-            </select>
-            {HINoError && (
-                <p style={{color: 'red'}}>{HINoError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Issued on:</strong></label>
-            <input type="date" className="form-control" name='issue_date' value={formValues.issue_date} onChange={handleChange}/>
-            {dateError && (
-                <p style={{color: 'red'}}>{dateError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Reference Number:</strong></label>
-            <input type="text" className="form-control" name='test_refno' value={formValues.test_refno} onChange={handleChange}/>
-            {testError && (
-                <p style={{color: 'red'}}>{testError}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Drug 1: </strong></label>
-            <select className="form-select" name='drug1' value={formValues.drug1} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="R">Resistant</option>
-                <option value="S">Susceptible</option>
-                <option value="NA">Indeterminate</option>
-            </select>
-            {d1Error && (
-                <p style={{color: 'red'}}>{d1Error}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Drug 2: </strong></label>
-            <select className="form-select" name='drug2' value={formValues.drug2} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="R">Resistant</option>
-                <option value="S">Susceptible</option>
-                <option value="NA">Indeterminate</option>
-            </select>
-            {d2Error && (
-                <p style={{color: 'red'}}>{d2Error}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Drug 3: </strong></label>
-            <select className="form-select" name='drug3' value={formValues.drug3} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="R">Resistant</option>
-                <option value="S">Susceptible</option>
-                <option value="NA">Indeterminate</option>
-            </select>
-            {d3Error && (
-                <p style={{color: 'red'}}>{d3Error}</p>  
-            )}
-        </div>
-            </form>*/}
     </>
     )}
     </Modal.Body>

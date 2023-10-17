@@ -66,7 +66,7 @@ function UpdateIGRA(props) {
     const [formValues, setFormValues] = useState({
         DGResultsNo: props.DGResultsNo,
         HINo: props.HINo,
-        issue_date: props.issue_date,
+        issue_date: new Date(props.issue_date).toISOString().split('T')[0],
         test_refno: props.test_refno,
         TestValue: props.TestValue,
         validity: props.validity,
@@ -217,7 +217,7 @@ function UpdateIGRA(props) {
                         type='date'
                         name='issue_date'
                         onChange={handleChange}
-                        value={new Date(formValues.issue_date).toISOString().split('T')[0]}
+                        value={formValues.issue_date}
                         isInvalid={dateError}
                     />
                     <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
