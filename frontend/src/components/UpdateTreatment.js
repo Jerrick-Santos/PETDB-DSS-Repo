@@ -18,8 +18,8 @@ function UpdateTreatment(props) {
         Medicine: props.Medicine,
         Dosage: props.Dosage,
         Frequency: props.Frequency,
-        StartDate: props.StartDate,
-        EndDate: props.EndDate
+        StartDate: new Date(props.StartDate).toISOString().split('T')[0],
+        EndDate: new Date(props.EndDate).toISOString().split('T')[0]
     });
 
     const [medError, setMedError] = useState('');
@@ -54,13 +54,13 @@ function UpdateTreatment(props) {
         setFreqError(freqError);
 
         let startdateError = '';
-        if (new Date(formValues.StartDate).toLocaleDateString() === new Date().toLocaleDateString()) {
+        if (new Date(formValues.StartDate).toLocaleDateString() === null) {
             startdateError = 'Please select a date';
         }
         setStartDateError(startdateError);
 
         let enddateError = '';
-        if (new Date(formValues.EndDate).toLocaleDateString() === new Date().toLocaleDateString()) {
+        if (new Date(formValues.EndDate).toLocaleDateString() === null) {
             enddateError = 'Please select a date';
         }
         setEndDateError(enddateError);
@@ -154,7 +154,7 @@ function UpdateTreatment(props) {
                         type='date'
                         name='StartDate'
                         onChange={handleChange}
-                        value={new Date(formValues.StartDate).toISOString().split('T')[0]}
+                        value={formValues.StartDate}
                         isInvalid={startdateError}
                     />
                     <Form.Control.Feedback type='invalid'>{startdateError}</Form.Control.Feedback>
@@ -167,7 +167,7 @@ function UpdateTreatment(props) {
                         type='date'
                         name='EndDate'
                         onChange={handleChange}
-                        value={new Date(formValues.EndDate).toISOString().split('T')[0]}
+                        value={formValues.EndDate}
                         isInvalid={enddateError}
                     />
                     <Form.Control.Feedback type='invalid'>{enddateError}</Form.Control.Feedback>

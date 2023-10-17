@@ -23,8 +23,8 @@ function AddTreatmentModal(props) {
         Medicine:'',
         Dosage:'',
         Frequency:'',
-        StartDate: new Date().toISOString().split('T')[0],
-        EndDate: new Date().toISOString().split('T')[0]
+        StartDate: null,
+        EndDate: null
     });
 
     const [medError, setMedError] = useState('');
@@ -59,13 +59,13 @@ function AddTreatmentModal(props) {
         setFreqError(freqError);
 
         let startdateError = '';
-        if (new Date(formValues.StartDate).toLocaleDateString() === new Date().toLocaleDateString()) {
+        if (new Date(formValues.StartDate).toLocaleDateString() === null) {
             startdateError = 'Please select a date';
         }
         setStartDateError(startdateError);
 
         let enddateError = '';
-        if (new Date(formValues.EndDate).toLocaleDateString() === new Date().toLocaleDateString()) {
+        if (new Date(formValues.EndDate).toLocaleDateString() === null) {
             enddateError = 'Please select a date';
         }
         setEndDateError(enddateError);
@@ -156,7 +156,6 @@ function AddTreatmentModal(props) {
                         type='date'
                         name='StartDate'
                         onChange={handleChange}
-                        value={new Date(formValues.StartDate).toISOString().split('T')[0]}
                         isInvalid={startdateError}
                     />
                     <Form.Control.Feedback type='invalid'>{startdateError}</Form.Control.Feedback>
@@ -169,47 +168,12 @@ function AddTreatmentModal(props) {
                         type='date'
                         name='EndDate'
                         onChange={handleChange}
-                        value={new Date(formValues.EndDate).toISOString().split('T')[0]}
                         isInvalid={enddateError}
                     />
                     <Form.Control.Feedback type='invalid'>{enddateError}</Form.Control.Feedback>
                 </Form.Group>
             </Row>
         </Form>
-    {/*<form className="mt-3 justify-content-center">
-            <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-7">
-                    <label for="inputFirstName">Medicine Name</label>
-                    <input type="text" class="form-control" name="Medicine" value={formValues.Medicine} onChange={handleChange} placeholder="medicine name"/>
-                </div>
-                <div className="form-group col-md-5">
-                    <label for="inputFirstName">Dosage</label>
-                    <input type="text" class="form-control" name="Dosage" value={formValues.Dosage} onChange={handleChange} placeholder="dosage of medicine"/>
-                </div>
-            </Row>
-            <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-12">
-                    <label for="inputFirstName">Frequency</label>
-                    <input type="text" class="form-control" name="Frequency" value={formValues.Frequency} onChange={handleChange} placeholder="frequency of intake"/>
-                </div>
-            </Row>
-            <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-12">
-                    <label for="inputFirstName">Date Started</label>
-                    <input type="date" class="form-control" name="StartDate" value={formValues.StartDate} onChange={handleChange} />
-                </div>
-            </Row>
-            <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-12">
-                    <label for="inputFirstName">Date Ended</label>
-                    <input type="date" class="form-control" name="EndDate" value={formValues.EndDate} onChange={handleChange} />
-                </div>
-            </Row>
-
-           
-          
-            
-  </form>*/}
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
