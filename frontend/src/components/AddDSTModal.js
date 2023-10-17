@@ -219,7 +219,7 @@ function AddDSTModal(props) {
                         type='date'
                         name='issue_date'
                         onChange={handleChange}
-                        value={new Date(dstValues.issue_date).toISOString().split('T')[0]}
+                        value={dstValues.issue_date}
                         isInvalid={dateError}
                     />
                     <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
@@ -302,79 +302,6 @@ function AddDSTModal(props) {
                 </Form.Group>
             </Row>
         </Form>
-
-    {/*<div>
-            <label><strong> Upload DST File Attachment:</strong></label>
-            <input type="file" className="form-control" />
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Issued by: </strong></label>
-            <select className="form-select" name="HINo" value={dstValues.HINo} onChange={handleChange}>
-                <option value="">Select</option>
-              
-              {hiData.map((hi, index) => (
-              <>
-               <option value={hi.HINo}>{hi.HIName}</option>
-              
-                   </>
-                    ))}
- 
-
-            </select>
-            {HINoError && (
-                <p style={{color: 'red'}}>{HINoError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Issued on:</strong></label>
-            <input type="date" className="form-control" name='issue_date' value={dstValues.issue_date} onChange={handleChange}/>
-            {dateError && (
-                <p style={{color: 'red'}}>{dateError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Reference Number:</strong></label>
-            <input type="text" className="form-control" name='test_refno' value={dstValues.test_refno} onChange={handleChange}/>
-            {testError && (
-                <p style={{color: 'red'}}>{testError}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Drug 1: </strong></label>
-            <select className="form-select" name='drug1' value={dstValues.drug1} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="R">Resistant</option>
-                <option value="S">Susceptible</option>
-                <option value="NA">Indeterminate</option>
-            </select>
-            {valueError && (
-                <p style={{color: 'red'}}>{valueError}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Drug 2: </strong></label>
-            <select className="form-select" name='drug2' value={dstValues.drug2} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="R">Resistant</option>
-                <option value="S">Susceptible</option>
-                <option value="NA">Indeterminate</option>
-            </select>
-            {drug2Error && (
-                <p style={{color: 'red'}}>{drug2Error}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Drug 3: </strong></label>
-            <select className="form-select" name='drug3' value={dstValues.drug3} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="R">Resistant</option>
-                <option value="S">Susceptible</option>
-                <option value="NA">Indeterminate</option>
-            </select>
-            {drug3Error && (
-                <p style={{color: 'red'}}>{drug3Error}</p>  
-            )}
-            </div>*/}
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>

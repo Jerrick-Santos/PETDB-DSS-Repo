@@ -186,7 +186,7 @@ function AddTSTModal(props) {
                         type='date'
                         name='issue_date'
                         onChange={handleChange}
-                        value={new Date(tstValues.issue_date).toISOString().split('T')[0]}
+                        value={tstValues.issue_date}
                         isInvalid={dateError}
                     />
                     <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
@@ -222,56 +222,6 @@ function AddTSTModal(props) {
                 </Form.Group>
             </Row>
         </Form>
-    {/*<form className="mt-4 justify-content-center">
-        <div>
-            <label><strong> Upload TST Test File Attachment:</strong></label>
-            <input type="file" className="form-control" />
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Issued by: </strong></label>
-            <select className="form-select" name="HINo" value={tstValues.HINo} onChange={handleChange}>
-                <option value="">Select</option>
-              
-              {hiData.map((hi, index) => (
-              <>
-               <option value={hi.HINo}>{hi.HIName}</option>
-              
-                   </>
-                    ))}
- 
-
-            </select>
-            {HINoError && (
-                <p style={{color: 'red'}}>{HINoError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Issued on:</strong></label>
-            <input type="date" className="form-control" name='issue_date' value={tstValues.issue_date} onChange={handleChange}/>
-            {dateError && (
-                <p style={{color: 'red'}}>{dateError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Reference Number:</strong></label>
-            <input type="text" className="form-control" name='test_refno' value={tstValues.test_refno} onChange={handleChange}/>
-            {testError && (
-                <p style={{color: 'red'}}>{testError}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>TST Test Results: </strong></label>
-            <select className="form-select" name='TestValue' value={tstValues.TestValue} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="&gt;10 MM">&gt;10 MM</option>
-                <option value="&lt;10 MM">&lt;10 MM</option>
-                <option value="10">10</option>
-            </select>
-            {valueError && (
-                <p style={{color: 'red'}}>{valueError}</p>  
-            )}
-        </div>
-            </form>*/}
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>

@@ -190,7 +190,7 @@ function AddMTBRIFModal(props) {
                         type='date'
                         name='issue_date'
                         onChange={handleChange}
-                        value={new Date(mtbValues.issue_date).toISOString().split('T')[0]}
+                        value={mtbValues.issue_date}
                         isInvalid={dateError}
                     />
                     <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
@@ -230,58 +230,6 @@ function AddMTBRIFModal(props) {
                 </Form.Group>
             </Row>
         </Form>
-        {/*<div>
-            <label><strong> Upload MTB/RIF File Attachment:</strong></label>
-            <input type="file" className="form-control" />
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Issued by: </strong></label>
-            <select className="form-select" name="HINo" value={mtbValues.HINo} onChange={handleChange}>
-                <option value="">Select</option>
-              
-              {hiData.map((hi, index) => (
-              <>
-               <option value={hi.HINo}>{hi.HIName}</option>
-              
-                   </>
-                    ))}
- 
-
-            </select>
-            {HINoError && (
-                <p style={{color: 'red'}}>{HINoError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Issued on:</strong></label>
-            <input type="date" className="form-control" name='issue_date' value={mtbValues.issue_date} onChange={handleChange}/>
-            {dateError && (
-                <p style={{color: 'red'}}>{dateError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Reference Number:</strong></label>
-            <input type="text" className="form-control" name='test_refno' value={mtbValues.test_refno} onChange={handleChange}/>
-            {testError && (
-                <p style={{color: 'red'}}>{testError}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>MTB/RIF Results: </strong></label>
-            <select className="form-select" name='TestValue' value={mtbValues.TestValue} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="0-NA">MTB not Detected</option>
-                <option value="MTB-S">MTB Detected/RIF not detected</option>
-                <option value="MTB-R">MTB Detected/RIF detected</option>
-                <option value="MTB-NA">MTB Detected Trace/RIF resistance indeterminate 1st collection</option>
-                <option value="MTB-NA">MTB Detected Trace/RIF resistance indeterminate 2nd collection</option>
-                <option value="0-NA">Indeterminate/Error 1st collection</option>
-                <option value="0-NA">Indeterminate/Error 2nd collection</option>
-            </select>
-            {valueError && (
-                <p style={{color: 'red'}}>{valueError}</p>  
-            )}
-            </div>*/}
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>

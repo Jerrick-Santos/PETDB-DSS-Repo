@@ -161,50 +161,6 @@ function AddXrayModal(props) {
         <Modal.Title>  Add Xray Results  </Modal.Title>
     </Modal.Header>
     <Modal.Body>
-        {/*<div className="mt-3"> 
-            <label> <strong>Issued by: </strong></label>
-            <select className="form-select" name="HINo" value={xrayValues.HINo} onChange={handleChange}>
-                <option value="">Select</option>
-              
-              {hiData.map((hi, index) => (
-              <>
-               <option value={hi.HINo}>{hi.HIName}</option>
-              
-                   </>
-                    ))}
- 
-
-            </select>
-            {HINoError && (
-                <p style={{color: 'red'}}>{HINoError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Issued on:</strong></label>
-            <input type="date" className="form-control" name='issue_date' value={xrayValues.issue_date} onChange={handleChange}/>
-            {dateError && (
-                <p style={{color: 'red'}}>{dateError}</p>  
-            )}
-        </div>
-        <div className="mt-3">
-            <label><strong>Reference Number:</strong></label>
-            <input type="text" className="form-control" name='test_refno' value={xrayValues.test_refno} onChange={handleChange}/>
-            {testError && (
-                <p style={{color: 'red'}}>{testError}</p>  
-            )}
-        </div>
-        <div className="mt-3"> 
-            <label> <strong>Xray Results: </strong></label>
-            <select className="form-select" name='TestValue' value={xrayValues.TestValue} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="With Signs of TB">With Signs of TB</option>
-                <option value="No signs">No signs</option>
-                <option value="Undetermined">Undetermined</option>
-            </select>
-            {valueError && (
-                <p style={{color: 'red'}}>{valueError}</p>  
-            )}
-            </div>*/}
         <Form noValidate onSubmit={handleSubmit}>
             <Row className="mb-3 justify-content-center">
                 <Form.Group as={Col} md="12" className='mb-3' controlId='HINo'>
@@ -238,7 +194,7 @@ function AddXrayModal(props) {
                         type='date'
                         name='issue_date'
                         onChange={handleChange}
-                        value={new Date(xrayValues.issue_date).toISOString().split('T')[0]}
+                        value={xrayValues.issue_date}
                         isInvalid={dateError}
                     />
                     <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>

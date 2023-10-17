@@ -1,6 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useRef, useEffect} from 'react';
-import { Row, Col  } from 'react-bootstrap';
+import { Row, Col, Accordion, Badge  } from 'react-bootstrap';
 import axios from 'axios';
 import MapRecom from './MapRecom';
 
@@ -56,16 +56,17 @@ function ViewMapRecomModal(props) {
                 <Modal.Title>  Health Institute Recommendations </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Row>
+                
+                    <Col><p>** - Recommended health institution by distance</p></Col>
                     <table className="table caption-top bg-white rounded mt-4 ms-4 me-5" style={{width:"95%"}}>
                         <caption className=' fs-4' style={{ color:'#0077B6'}}>Nearby Health Institutions for {props.test_name} Test</caption>
+                        
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">Operating Hours</th>
-                                <th scope="col">Contact Person</th>
-                                <th scope="col">Contact Number</th>
-                                <th scope="col">Email Address</th>
+                                <th scope="col">Address</th>
+                                <th scope="col">Contact Information</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">Accepts Vouchers?</th>
                                 {/** address format: Unit x,  */}
@@ -74,18 +75,46 @@ function ViewMapRecomModal(props) {
                         <tbody>
                         {locations.map((hi, index) => (
                             <tr key={index}>
-                                <td>{hi.HIName}</td>
+                                <td>{index == 0 ? `** ${hi.HIName}` : hi.HIName}</td>
                                 <td>{hi.HIOperatingHours}</td>
-                                <td>{hi.HIContactPerson}</td>
-                                <td>{hi.HIContactNumber}</td>
-                                <td>{hi.HIEmailAddress}</td>
+                                <td>{`Unit ${hi.HIUnitNo}, ${hi.HIStreet}, ${hi.municipality_name}, ${hi.province_name}`}</td>
+
+                                {hi.HIContactPerson || hi.HIContactNumber || hi.HIEmailAddress ? (
+                                    <Accordion defaultActiveKey="0">
+                                    <Accordion.Item>
+                                        <Accordion.Header>Contact Details</Accordion.Header>
+                                        <Accordion.Body>
+                                            {hi.HIContactPerson ? (
+                                            <Row>
+                                                <Badge bg='secondary'>Name</Badge> {hi.HIContactPerson}
+                                            </Row>
+                                            ) : null}
+
+                                            {hi.HIContactNumber ? (
+                                            <Row>
+                                                <Badge bg='secondary'>Number</Badge> {hi.HIContactNumber}
+                                            </Row>
+                                            ) : null}
+
+                                            {hi.HIEmailAddress ? (
+                                            <Row>
+                                                <Badge bg='secondary'>Email</Badge> {hi.HIEmailAddress}
+                                            </Row>
+                                            ) : null}
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                    </Accordion>
+                                ) : ( 
+                                    "No Information Available"
+                                )}
+
                                 <td>{hi.Price}</td>
                                 <td>{hi.AcceptingVoucher == 1 ? 'Yes' : 'No'}</td>
                             </tr>
                         ))}
                         </tbody>
                     </table>
-                </Row>
+                
 
             </Modal.Body>
             <Modal.Footer >
