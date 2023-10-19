@@ -54,12 +54,6 @@ function AddTSTModal(props) {
         }
         setHIError(HINoError);
 
-        let dateError = '';
-        if (new Date(tstValues.issue_date).toLocaleDateString() === new Date().toLocaleDateString()) {
-            dateError = 'Please select a date';
-        }
-        setDateError(dateError);
-
         let testError = '';
         if (!tstValues.test_refno) {
             testError = 'Required';
@@ -74,7 +68,7 @@ function AddTSTModal(props) {
         }
         setValueError(valueError);
 
-        if (HINoError || dateError || testError || valueError) {
+        if (HINoError || testError || valueError) {
             return false;
           }
 
@@ -206,7 +200,7 @@ function AddTSTModal(props) {
                 </Form.Group>
                 {/* For Test Value */}
                 <Form.Group as={Col} md="12" controlId='TestValue'>
-                    <Form.Label><strong>Xray Results:</strong></Form.Label>
+                    <Form.Label><strong>Results:</strong></Form.Label>
                     <Form.Select
                         aria-label="TestValue"
                         name='TestValue'

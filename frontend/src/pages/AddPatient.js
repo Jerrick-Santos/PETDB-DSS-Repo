@@ -531,10 +531,8 @@ const AddPatient = () => {
 
         contactError ? setShowContactAlert(true) : setShowContactAlert(false)
 
-        if (firstNameError || middleNameError || lastNameError || birthdateError || sexError || nationalityError || bodyWeightError || heightError || permHouseError || permStreetError || permRegionError || permProvinceError || permCityError || permBarangayError || permZipError || currHouseError || currStreetError || currRegionError || currProvinceError || currCityError || currBarangayError || currZipError || caserefError) {
+        if (firstNameError || middleNameError || lastNameError || birthdateError || sexError || nationalityError || bodyWeightError || heightError || permHouseError || permStreetError || permRegionError || permProvinceError || permCityError || permBarangayError || permZipError || currHouseError || currStreetError || currRegionError || currProvinceError || currCityError || currBarangayError || currZipError || caserefError || contactError) {
             setShowAlert(true);
-            if (contactError) {
-            }
             return false;
         }
 

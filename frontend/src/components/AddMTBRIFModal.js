@@ -85,12 +85,6 @@ function AddMTBRIFModal(props) {
         }
         setHIError(HINoError);
 
-        let dateError = '';
-        if (new Date(mtbValues.issue_date).toLocaleDateString() === new Date().toLocaleDateString()) {
-            dateError = 'Please select a date';
-        }
-        setDateError(dateError);
-
         let testError = '';
         if (!mtbValues.test_refno) {
             testError = 'Required';
@@ -105,7 +99,7 @@ function AddMTBRIFModal(props) {
         }
         setValueError(valueError);
 
-        if (HINoError || dateError || testError || valueError) {
+        if (HINoError || testError || valueError) {
             return false;
           }
 
@@ -210,7 +204,7 @@ function AddMTBRIFModal(props) {
                 </Form.Group>
                 {/* For Test Value */}
                 <Form.Group as={Col} md="12" controlId='TestValue'>
-                    <Form.Label><strong>Xray Results:</strong></Form.Label>
+                    <Form.Label><strong>Results:</strong></Form.Label>
                     <Form.Select
                         aria-label="TestValue"
                         name='TestValue'

@@ -54,12 +54,6 @@ function AddIGRAModal(props) {
         }
         setHIError(HINoError);
 
-        let dateError = '';
-        if (new Date(igraValues.issue_date).toLocaleDateString() === new Date().toLocaleDateString()) {
-            dateError = 'Please select a date';
-        }
-        setDateError(dateError);
-
         let testError = '';
         if (!igraValues.test_refno) {
             testError = 'Required';
@@ -74,7 +68,7 @@ function AddIGRAModal(props) {
         }
         setValueError(valueError);
 
-        if (HINoError || dateError || testError || valueError) {
+        if (HINoError || testError || valueError) {
             return false;
           }
 
@@ -202,7 +196,7 @@ function AddIGRAModal(props) {
                     <Form.Control.Feedback type='invalid'>{testError}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="12" controlId='TestValue'>
-                    <Form.Label><strong>Xray Results:</strong></Form.Label>
+                    <Form.Label><strong>Results:</strong></Form.Label>
                     <Form.Select
                         aria-label="TestValue"
                         name='TestValue'

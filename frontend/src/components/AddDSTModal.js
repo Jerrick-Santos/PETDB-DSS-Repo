@@ -64,12 +64,6 @@ function AddDSTModal(props) {
         }
         setHIError(HINoError);
 
-        let dateError = '';
-        if (new Date(dstValues.issue_date).toLocaleDateString() === new Date().toLocaleDateString()) {
-            dateError = 'Please select a date';
-        }
-        setDateError(dateError);
-
         let testError = '';
         if (!dstValues.test_refno) {
             testError = 'Required';
@@ -102,7 +96,7 @@ function AddDSTModal(props) {
         }
         setDrug4Error(drug4Error);
 
-        if (HINoError || dateError || testError || drug1Error || drug2Error || drug3Error || drug4Error) {
+        if (HINoError || testError || drug1Error || drug2Error || drug3Error || drug4Error) {
             return false;
           }
 
