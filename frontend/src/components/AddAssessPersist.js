@@ -380,7 +380,7 @@ function AddAssessPersist(props) {
                 { /* Blood Pressure */ }
                 <Row>
                   <Col sm="8">
-                    <Form.Label className="text-muted">Body Pressure</Form.Label>
+                    <Form.Label className="text-muted">Blood Pressure</Form.Label>
                   </Col>
                   <Col sm="4">
                       <Form.Group as={Col} md="12">

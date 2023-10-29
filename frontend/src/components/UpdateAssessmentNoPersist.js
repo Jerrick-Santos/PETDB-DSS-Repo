@@ -235,7 +235,7 @@ function UpdateAssessmentNoPersist(props) {
               ass_height: height,
               ass_bmi: bmi,
             };
-            await axios.post("http://localhost:4000/api/updateassessnopersist", formValues)
+            await axios.post("http://localhost:4000/api/updateassessnopersist", updatedAssessFormValues)
             window.location.reload()
         }catch(err){
             console.log(err)
@@ -385,7 +385,7 @@ function UpdateAssessmentNoPersist(props) {
                   { /* Blood Pressure */ }
                   <Row>
                     <Col sm="8">
-                      <Form.Label className="text-muted">Body Pressure</Form.Label>
+                      <Form.Label className="text-muted">Blood Pressure</Form.Label>
                     </Col>
                     <Col sm="4">
                         <Form.Group as={Col} md="12">
