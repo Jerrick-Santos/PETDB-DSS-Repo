@@ -245,8 +245,8 @@ const CloseContacts = () => {
                         "No Information Available"
                       )}
 
-                      <td>{contact.DRDescription ? contact.DRDescription : 'none'}</td>
-                      <td>{contact.TSDescription ? contact.TSDescription : 'none'}</td>
+                      <td>{contact.DRDescription ? contact.DRDescription : 'None'}</td>
+                      <td>{contact.TSDescription ? contact.TSDescription : 'None'}</td>
 
                       {contact.PatientNo === null ? (
                           <td> <Badge bg='danger'> NO RECORD </Badge> </td>
