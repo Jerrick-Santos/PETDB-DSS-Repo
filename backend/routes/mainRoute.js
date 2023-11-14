@@ -1905,14 +1905,15 @@ router.get('/chartyear', (req, res) => {
   
 
 router.post('/addtreatment', (req, res) => {
-    const q = "INSERT INTO TD_TREATMENTS(`CaseNo`, `Medicine`, `Dosage`, `Frequency`, `StartDate`, `EndDate`) VALUES (?, ?, ?, ?, ?, ?)"
+    const q = "INSERT INTO TD_TREATMENTS(`CaseNo`, `Medicine`, `Dosage`, `Frequency`, `StartDate`, `EndDate`, `isCurrent`) VALUES (?, ?, ?, ?, ?, ?, ?)"
     const values = [
         req.body.CaseNo,
         req.body.Medicine,
         req.body.Dosage,
         req.body.Frequency,
         req.body.StartDate,
-        req.body.EndDate
+        req.body.EndDate,
+        req.body.isCurrent
     ]
 
     db.query(q, values, (err, data) => {

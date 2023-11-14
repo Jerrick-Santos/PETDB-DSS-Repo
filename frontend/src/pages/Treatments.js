@@ -289,7 +289,7 @@ const Treatments = () => {
               <Row className="mt-5 justify-content-center">
                 {/* Laboratory Tests of the Patient*/}
                 <Col lg="9">
-                  <p style={{ fontSize: "25px" }}> Treatment History </p>
+                  <p style={{ fontSize: "25px" }}> Treatments </p>
                   {treatmentsData.length > 0 ? (
                     <Card className="mb-4">
                       <Card.Body>
@@ -301,6 +301,7 @@ const Treatments = () => {
                               <th scope="col">Frequency</th>
                               <th scope="col">Date Started</th>
                               <th scope="col">Date Ended</th>
+                              <th scope="col">Current Treatment</th>
                               <th scope="col"></th>
                             </tr>
                           </thead>
@@ -321,6 +322,9 @@ const Treatments = () => {
                                     {new Date(
                                       data.EndDate,
                                     ).toLocaleDateString()}
+                                  </td>
+                                  <td>
+                                    {data.isCurrent === 1 ? 'YES' : 'NO'}
                                   </td>
                                   <td>
                                     <UpdateTreatment

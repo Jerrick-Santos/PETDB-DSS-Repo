@@ -24,7 +24,8 @@ function AddTreatmentModal(props) {
         Dosage:'',
         Frequency:'',
         StartDate: null,
-        EndDate: null
+        EndDate: null,
+        isCurrent: 0
     });
 
     const [medError, setMedError] = useState('');
@@ -78,8 +79,9 @@ function AddTreatmentModal(props) {
     }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormValues(prev=>({...prev, [name]: value}));
+        const {name, value, type, checked} = e.target;
+        const newValue = type === 'checkbox' ? (checked ? 1 : 0) : value;
+        setFormValues(prev=>({...prev, [name]: newValue}));
     }
 
     const handleSubmit = async (e) => {
@@ -172,6 +174,7 @@ function AddTreatmentModal(props) {
                     />
                     <Form.Control.Feedback type='invalid'>{enddateError}</Form.Control.Feedback>
                 </Form.Group>
+                <Form.Label><strong>Currently being used?&nbsp;&nbsp;&nbsp;</strong><input type="checkbox" name='isCurrent' onChange={handleChange}/></Form.Label>
             </Row>
         </Form>
     </Modal.Body>
