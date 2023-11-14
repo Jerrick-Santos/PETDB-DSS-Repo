@@ -261,25 +261,7 @@ const endIndex = startIndex + itemsPerPage;
             {caseData.case_status === "O" ? (
             <Col lg="11" className="d-flex justify-content-center">
                {/* Conditionally render the button */}
-               {presumptiveResult === 1 ? (
-                <button
-                  className="btn"
-                  style={{ color: "white", backgroundColor: '#E40B0B', minWidth: '300px' }}
-                  type="button"
-                  onClick={() => setShowPresumptiveModal(true)}
-                >
-                  Input Presumptive TB Reference Number
-                </button>
-              ) : latentResult === 1 ? (
-                <button
-                  className="btn"
-                  style={{ color: "white", backgroundColor: '#E40B0B', minWidth: '300px' }}
-                  type="button"
-                  onClick={() => setShowLatentModal(true)}
-                >
-                  Input Latent TB Reference Number
-                </button>
-              ) : (
+               
                 <button
                   className="btn mt-4 mb-4"
                   style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
@@ -301,7 +283,7 @@ const endIndex = startIndex + itemsPerPage;
                   ) : 
                   "Diagnose TB Status"}
                 </button>
-              )}
+              
 
               
             </Col>
@@ -526,22 +508,7 @@ const endIndex = startIndex + itemsPerPage;
     </Col>
   </Row>
 
-    {showPresumptiveModal && (
-        <PresumptiveTBModal
-          show={showPresumptiveModal}
-          onClose={() => setShowPresumptiveModal(false)}
-          caseid={id}
-        />
-      )}
-
-
-    {showLatentModal && (
-          <LatentTBModal
-            show={showLatentModal}
-            onClose={() => setShowLatentModal(false)}
-            caseid={id}
-          />
-        )}
+   
 
   </div>
   
