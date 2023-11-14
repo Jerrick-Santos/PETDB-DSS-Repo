@@ -174,7 +174,7 @@ function AddTreatmentModal(props) {
                     />
                     <Form.Control.Feedback type='invalid'>{enddateError}</Form.Control.Feedback>
                 </Form.Group>
-                <Form.Label><strong>Currently being used?&nbsp;&nbsp;&nbsp;</strong><input type="checkbox" name='isCurrent' onChange={handleChange}/></Form.Label>
+                <Form.Label><strong>Current treatment?&nbsp;&nbsp;&nbsp;</strong><input type="checkbox" name='isCurrent' onChange={handleChange}/></Form.Label>
             </Row>
         </Form>
     </Modal.Body>
