@@ -87,7 +87,7 @@ function AddAssessNoPersist(props) {
     const [bodyweightError, setBodyWeightError] = useState('');
     const [heightError, setHeightError] = useState('');
     const [bodyTempError, setTempError] = useState('');
-    const [bloodPressError, setBPError] = useState('');
+    //const [bloodPressError, setBPError] = useState('');
 
     const validate = () => {
       let bodyweightError = '';
@@ -110,13 +110,13 @@ function AddAssessNoPersist(props) {
       }
       setTempError(bodyTempError);
 
-      let bloodPressError = '';
-      if (!assessFormValues.ass_bp) {
-        bloodPressError = 'Required field';
-      }
-      setBPError(bloodPressError);
+      // let bloodPressError = '';
+      // if (!assessFormValues.ass_bp) {
+      //   bloodPressError = 'Required field';
+      // }
+      // setBPError(bloodPressError);
 
-      if (bodyweightError || heightError || bodyTempError || bloodPressError) {
+      if (bodyweightError || heightError || bodyTempError) {
         return false;
       }
 
@@ -175,7 +175,7 @@ function AddAssessNoPersist(props) {
       setBodyWeightError('');
       setHeightError('');
       setTempError('');
-      setBPError('');
+      //setBPError('');
     }
 
     const handleSubmit = async (e) => {
@@ -342,9 +342,9 @@ function AddAssessNoPersist(props) {
                       </Form.Group>
                   </Col>
                 </Row>
-                <hr />
+                {/* <hr /> */}
                 { /* Blood Pressure */ }
-                <Row>
+                {/* <Row>
                   <Col sm="8">
                     <Form.Label className="text-muted">Blood Pressure</Form.Label>
                   </Col>
@@ -361,7 +361,7 @@ function AddAssessNoPersist(props) {
                         <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback>
                       </Form.Group>
                   </Col>
-                </Row>
+                </Row> */}
               </Card.Body>
             </Card>
           </Col>
