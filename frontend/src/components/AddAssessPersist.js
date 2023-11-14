@@ -112,7 +112,7 @@ function AddAssessPersist(props) {
     const [bodyweightError, setBodyWeightError] = useState('');
     const [heightError, setHeightError] = useState('');
     const [bodyTempError, setTempError] = useState('');
-    const [bloodPressError, setBPError] = useState('');
+    //const [bloodPressError, setBPError] = useState('');
 
     const validate = () => {
       let bodyweightError = '';
@@ -135,13 +135,13 @@ function AddAssessPersist(props) {
       }
       setTempError(bodyTempError);
 
-      let bloodPressError = '';
-      if (!assessFormValues.ass_bp) {
-        bloodPressError = 'Required field';
-      }
-      setBPError(bloodPressError);
+      // let bloodPressError = '';
+      // if (!assessFormValues.ass_bp) {
+      //   bloodPressError = 'Required field';
+      // }
+      // setBPError(bloodPressError);
 
-      if (bodyweightError || heightError || bodyTempError || bloodPressError) {
+      if (bodyweightError || heightError || bodyTempError) {
         return false;
       }
 
@@ -376,11 +376,11 @@ function AddAssessPersist(props) {
                       </Form.Group>                  
                     </Col>
                 </Row>
-                <hr />
+                {/* <hr /> */}
                 { /* Blood Pressure */ }
-                <Row>
+                {/* <Row>
                   <Col sm="8">
-                    <Form.Label className="text-muted">Body Pressure</Form.Label>
+                    <Form.Label className="text-muted">Blood Pressure</Form.Label>
                   </Col>
                   <Col sm="4">
                       <Form.Group as={Col} md="12">
@@ -395,7 +395,7 @@ function AddAssessPersist(props) {
                         <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback>
                       </Form.Group>
                   </Col>
-                </Row>
+                </Row> */}
               </Card.Body>
             </Card>
           </Col>

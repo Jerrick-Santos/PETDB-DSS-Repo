@@ -112,7 +112,6 @@ function AddCloseContactModal(props) {
    
     const [diagResult, setDiagResult] = useState([]) // Store list of Diagnostic Result from the reference table
     const [treatmentStatus, setTreatmentStatus] = useState([]) // Store list of Treatment Status from the reference table
-    const [displayDiagTreatment, setDisplayDiagTreatment] = useState(false) // Enable dropdown buttons for diagnostic result and treatment status
     const [formInit, setFormInit] = useState(false) // prevent validation checker on load
     const [formValues, setFormValues] = useState({ // defualt form values
         last_name: '',
@@ -138,16 +137,6 @@ function AddCloseContactModal(props) {
         clearForms()
     }
     const handleShow = () => setShow(true);
-
-    // enable dropdown for tb history
-    const handleEnableDropdown = () => {
-        setDisplayDiagTreatment(!displayDiagTreatment);
-        setFormValues((prevData) => ({ // reset DRNo and TSNo to null in case of user misinput
-          ...prevData,
-          DRNo: null,
-          TSNo: null,
-        }));
-    };
     
     // change state variable for form values
     const handleChange = (e) => {
@@ -493,17 +482,14 @@ function AddCloseContactModal(props) {
                 <Row className="mt-5 mb-3 justify-content-center">
 
                     <Col>
-                        <strong> Does the close contact have a history with TB or is currently in an active TB case?</strong>
-                    </Col>
-                    <Col>
-                        <Form.Check type='checkbox' name='showTBHistory' onChange={handleEnableDropdown} disabled={disableForms} checked={!disableForms} />
+                        <strong> For close contacts with a history or an ongoing TB case... </strong>
                     </Col>
                 </Row>
 
                 <Row>
                     <Form.Group as={Col} md="6" controlId="sex">
                         <Form.Label>TB Diagnostic Result</Form.Label>
-                        <Form.Select aria-label="Diagnostic Result" onChange={handleChange} name='DRNo' value={formValues.DRNo ? formValues.DRNo : ''} disabled={!displayDiagTreatment}>
+                        <Form.Select aria-label="Diagnostic Result" onChange={handleChange} name='DRNo' value={formValues.DRNo ? formValues.DRNo : ''} disabled={disableForms}>
                             <option>Select</option>
                             {diagResult.length > 0 && diagResult && (
                                 diagResult.map((diag, index) => { return (
@@ -515,8 +501,8 @@ function AddCloseContactModal(props) {
 
                     <Form.Group as={Col} md="6" controlId="sex">
                         <Form.Label>TB Treatment Status</Form.Label>
-                        <Form.Select aria-label="Treatment Status" onChange={handleChange} name='TSNo' value={formValues.TSNo ? formValues.TSNo : ''} disabled={!displayDiagTreatment}>
-                            <option>Select</option>
+                        <Form.Select aria-label="Treatment Status" onChange={handleChange} name='TSNo' value={formValues.TSNo ? formValues.TSNo : ''} disabled={disableForms}>
+                            <option value="">Select</option>
                             {treatmentStatus.length > 0 && treatmentStatus && (
                                 treatmentStatus.map((treat, index) => { return (
                                     <option key={index} value={treat.TSNo}>{treat.TSDescription}</option>

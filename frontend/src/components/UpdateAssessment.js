@@ -86,7 +86,7 @@ function UpdateAssessment(props) {
       AssessNo: props.AssessNo,
       ass_bmi: props.ass_bmi,
       ass_temp: props.ass_temp,
-      ass_bp: props.ass_bp,
+      ass_bp: null,
       cough: props.cough,
       c_weeks: props.c_weeks,
       c_persist: props.c_persist,
@@ -158,13 +158,13 @@ function UpdateAssessment(props) {
       }
       setTempError(bodyTempError);
 
-      let bloodPressError = '';
-      if (!formValues.ass_bp) {
-        bloodPressError = 'Required field';
-      }
-      setBPError(bloodPressError);
+      // let bloodPressError = '';
+      // if (!formValues.ass_bp) {
+      //   bloodPressError = 'Required field';
+      // }
+      // setBPError(bloodPressError);
 
-      if (bodyweightError || heightError || bodyTempError || bloodPressError) {
+      if (bodyweightError || heightError || bodyTempError) {
         return false;
       }
 
@@ -240,7 +240,7 @@ function UpdateAssessment(props) {
       setBodyWeightError('');
       setHeightError('');
       setTempError('');
-      setBPError('');
+      //setBPError('');
     }
 
     const handleSubmit = async (e) => {
@@ -406,11 +406,11 @@ function UpdateAssessment(props) {
                         </Form.Group>
                     </Col>
                   </Row>
-                  <hr />
+                  {/* <hr /> */}
                   { /* Blood Pressure */ }
-                  <Row>
+                  {/* <Row>
                     <Col sm="8">
-                      <Form.Label className="text-muted">Body Pressure</Form.Label>
+                      <Form.Label className="text-muted">Blood Pressure</Form.Label>
                     </Col>
                     <Col sm="4">
                         <Form.Group as={Col} md="12">
@@ -425,7 +425,7 @@ function UpdateAssessment(props) {
                           <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback>
                         </Form.Group>
                     </Col>
-                  </Row>
+                  </Row> */}
                 </Card.Body>
               </Card>
             </Col>

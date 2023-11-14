@@ -24,25 +24,7 @@ const CaseHeader = (props) => {
                 <Row>
                     <Col><Badge bg="secondary">Patient Name: </Badge> <Link to={`/patient/${props.PatientNo}`}><u style={{ color:'black'}}>{props.patient_name} </u></Link></Col>
                 </Row>
-                {props.PRESref !== null ? (
-                <Row>
-                  <Col><Badge bg="secondary">Presumptive ID:</Badge> 
-                  <>{" "}
-               {props.PRESref}
-               </>
-                  </Col>
-                </Row>
-                ):null}
-
-                {props.LATENTref !== null ? (
-                <Row>
-                  <Col><Badge bg="secondary">Latent ID:</Badge> 
-                  <>{" "}
-               {props.LATENTref}
-               </>
-                  </Col>
-                </Row>
-                ):null}
+                
 
 
                 <Row>

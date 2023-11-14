@@ -154,9 +154,7 @@ useEffect(() => {
    
           <thead>
             <tr>
-            <th scope="col">Case Reference Number</th>
-            <th scope="col">Presumptive ID</th>
-            <th scope="col">Latent ID</th>
+            <th scope="col">Screening Number</th>
             <th scope="col">Start Date</th>
             <th scope="col">End Date</th>
             <th scope="col">Status</th>
@@ -166,8 +164,6 @@ useEffect(() => {
             {caseData.map((singleCase, index) => (
               <tr key={index}>
                 <td><Link to={`/closecontacts/${singleCase.CaseNo}`}><u style={{ color:'black'}}>{singleCase.case_refno} </u></Link></td>
-                <td>{singleCase.PRESref !== null ? <> {singleCase.PRESref } </>:singleCase.PRESref === null ? "---": null}</td>
-                <td>{singleCase.LATENTref !== null ? <> {singleCase.LATENTref } </>:singleCase.LATENTref === null ? "---": null}</td>
                 <td>{new Date(singleCase.formatStartDate).toLocaleDateString().replaceAll("/", "-")}</td>
                 <td>{singleCase.end_date === null ? "---" : new Date(singleCase.end_date).toLocaleDateString().replaceAll("/", "-")}</td>
                 <td>{singleCase.SRDescription === "Died" ? (
