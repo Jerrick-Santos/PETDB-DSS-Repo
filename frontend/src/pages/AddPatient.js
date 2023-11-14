@@ -543,6 +543,9 @@ const AddPatient = () => {
 
     function getAge(value) {
         const selectedBirthdate = new Date(value);
+        if (selectedBirthdate.getFullYear().toString().length < 4){
+            return;
+        }
         const currentDate = new Date();
         age = currentDate.getFullYear() - selectedBirthdate.getFullYear();
 
@@ -629,8 +632,8 @@ const AddPatient = () => {
                 emergency_name: res.data[0].contact_person,
                 e_contactno: res.data[0].contact_num,
                 e_email: res.data[0].contact_email,
-                birthdate: new Date(res.data[0].birthdate).toISOString().split('T')[0],
-                age: getAge(new Date(res.data[0].birthdate).toISOString().split('T')[0]),
+                //birthdate: new Date(res.data[0].birthdate).toISOString().split('T')[0],
+                //age: getAge(new Date(res.data[0].birthdate).toISOString().split('T')[0]),
                 id
               }));
             })
