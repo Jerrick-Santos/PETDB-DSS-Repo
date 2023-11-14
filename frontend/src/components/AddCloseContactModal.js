@@ -112,7 +112,6 @@ function AddCloseContactModal(props) {
    
     const [diagResult, setDiagResult] = useState([]) // Store list of Diagnostic Result from the reference table
     const [treatmentStatus, setTreatmentStatus] = useState([]) // Store list of Treatment Status from the reference table
-    const [displayDiagTreatment, setDisplayDiagTreatment] = useState(false) // Enable dropdown buttons for diagnostic result and treatment status
     const [formInit, setFormInit] = useState(false) // prevent validation checker on load
     const [formValues, setFormValues] = useState({ // defualt form values
         last_name: '',
@@ -138,16 +137,6 @@ function AddCloseContactModal(props) {
         clearForms()
     }
     const handleShow = () => setShow(true);
-
-    // enable dropdown for tb history
-    const handleEnableDropdown = () => {
-        setDisplayDiagTreatment(!displayDiagTreatment);
-        setFormValues((prevData) => ({ // reset DRNo and TSNo to null in case of user misinput
-          ...prevData,
-          DRNo: null,
-          TSNo: null,
-        }));
-    };
     
     // change state variable for form values
     const handleChange = (e) => {
