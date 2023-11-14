@@ -370,6 +370,8 @@ const endIndex = startIndex + itemsPerPage;
                 ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === 1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed - Drug Resistant " :
                 ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === 1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed - Drug Sensitive " :
                 ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === 1) ? "Bacteriologically Confirmed - Multi-Drug Resistant " :
+                ( diagnosis.cli_diagnosed === 1  && diagnosis.drug_res === 1 && diagnosis.drug_sens === -1) ? "Clinically Diagnosed - Drug Resistant " :
+                ( diagnosis.cli_diagnosed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === 1) ? "Clinically Diagnosed - Drug Sensitive " :
                 ( diagnosis.latent_tb === 1 ) ? "Latent  " :
                 ( diagnosis.no_tb === 1 ) ? "NO TB" :
                         "NONE"}
