@@ -227,7 +227,7 @@ const AddPatient = () => {
         birthdate: "",
         initial_bodyweight: null,
         initial_height: null,
-        nationality: "",
+        nationality: "Filipino",
         per_houseno:"",
         per_street: "",
         per_region: "",
@@ -789,6 +789,7 @@ const AddPatient = () => {
                             onChange={handleChange}
                             placeholder="Nationality"
                             isInvalid={nationalityError}
+                            value={patient.nationality}
                         />
                         <Form.Control.Feedback type='invalid'>{nationalityError}</Form.Control.Feedback>
                     </div>
@@ -1306,12 +1307,12 @@ const AddPatient = () => {
 
                 <Row className="mt-2 mb-5 justify-content-center">
                     <div class="form-group col-md-3">
-                        <Form.Label for="inputCaseRefno">Initial Case Reference Number</Form.Label>
+                        <Form.Label for="inputCaseRefno">Screening and TB/TPT No.</Form.Label>
                         <Form.Control
                             type='text'
                             name='case_refno'
                             onChange={handleChange}
-                            placeholder="Case Reference Number"
+                            //placeholder="Case Reference Number"
                             isInvalid={caserefError}
                         />
                         <Form.Control.Feedback type='invalid'>{caserefError}</Form.Control.Feedback>
