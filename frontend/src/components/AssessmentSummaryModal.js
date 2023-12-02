@@ -69,7 +69,7 @@ function AssessmentSummaryModal(props) {
                         <th>Body Weight</th>
                         <th>Body Mass Index (BMI)</th>
                         <th>Temperature</th>
-                        {/* <th>Blood Pressure</th> */}
+                        <th>Blood Pressure</th>
                         
                     </tr>
                     <tr>
@@ -77,7 +77,7 @@ function AssessmentSummaryModal(props) {
                         <td>{props.ass_body_weight} kg</td>
                         <td>{props.ass_bmi}</td>
                         <td>{props.ass_temp} C</td>
-                        {/* <td>{props.ass_bp}</td> */}
+                        <td>{props.ass_bp}</td>
                     </tr>
                     
                     

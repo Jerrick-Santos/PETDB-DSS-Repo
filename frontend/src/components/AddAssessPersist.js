@@ -376,9 +376,9 @@ function AddAssessPersist(props) {
                       </Form.Group>                  
                     </Col>
                 </Row>
-                {/* <hr /> */}
+                <hr />
                 { /* Blood Pressure */ }
-                {/* <Row>
+                <Row>
                   <Col sm="8">
                     <Form.Label className="text-muted">Blood Pressure</Form.Label>
                   </Col>
@@ -390,12 +390,12 @@ function AddAssessPersist(props) {
                           value={assessFormValues.ass_bp}
                           onChange={handleChange}
                           placeholder='systolic/diastolic'
-                          isInvalid={bloodPressError}
+                          //isInvalid={bloodPressError}
                         />
-                        <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback>
+                        {/* <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback> */}
                       </Form.Group>
                   </Col>
-                </Row> */}
+                </Row>
               </Card.Body>
             </Card>
           </Col>

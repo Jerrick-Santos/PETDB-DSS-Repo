@@ -86,7 +86,7 @@ function UpdateAssessment(props) {
       AssessNo: props.AssessNo,
       ass_bmi: props.ass_bmi,
       ass_temp: props.ass_temp,
-      ass_bp: null,
+      ass_bp: props.ass_bp,
       cough: props.cough,
       c_weeks: props.c_weeks,
       c_persist: props.c_persist,
@@ -406,9 +406,9 @@ function UpdateAssessment(props) {
                         </Form.Group>
                     </Col>
                   </Row>
-                  {/* <hr /> */}
+                  <hr />
                   { /* Blood Pressure */ }
-                  {/* <Row>
+                  <Row>
                     <Col sm="8">
                       <Form.Label className="text-muted">Blood Pressure</Form.Label>
                     </Col>
@@ -420,12 +420,12 @@ function UpdateAssessment(props) {
                             value={formValues.ass_bp}
                             onChange={handleChange}
                             placeholder='systolic/diastolic'
-                            isInvalid={bloodPressError}
+                            //isInvalid={bloodPressError}
                           />
-                          <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback>
+                          {/* <Form.Control.Feedback type='invalid'>{bloodPressError}</Form.Control.Feedback> */}
                         </Form.Group>
                     </Col>
-                  </Row> */}
+                  </Row>
                 </Card.Body>
               </Card>
             </Col>
