@@ -347,7 +347,7 @@ const endIndex = startIndex + itemsPerPage;
                     
                   { 
                 ( diagnosis.presumptive_tb === 1 ) ? "Presumptive " :
-                ( diagnosis.cli_diagnosed === 1 ) ? "Clinically Diagnosed  " :
+                ( diagnosis.cli_diagnosed === 1 && diagnosis.drug_res === -1 && diagnosis.drug_sens === -1) ? "Clinically Diagnosed  " :
                 ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed " :
                 ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === 1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed - Drug Resistant " :
                 ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === 1 && diagnosis.multi_res === -1) ? "Bacteriologically Confirmed - Drug Sensitive " :
@@ -360,7 +360,7 @@ const endIndex = startIndex + itemsPerPage;
                         
                         {
                 ( diagnosis.no_tb === 1 ) ? "" :
-                ( diagnosis.EPTBpositive === 1 ) ? "EPTB" :
+                ( diagnosis.EPTBpositive === 1 ) ? "PTB with EPTB Signs" :
                         "PTB"}  </strong>
                 </Col>
               </Row>
@@ -446,9 +446,11 @@ const endIndex = startIndex + itemsPerPage;
                     <span style={{ fontWeight: "bold" }}> TB Treatment</span>
                 ) : diagnosis.has_TBcontact === 1 ? (
                     <span style={{ fontWeight: "bold" }}> TB Preventive Treatment (TPT)</span>
-                ) : (
-                    " "
-                )}
+                ) : diagnosis.no_tb === 1 ? (
+                  <span style={{ fontWeight: "bold" }}> No Treatment Necessary (TPT)</span>
+                  )
+
+                  : (" ")}
             </Col>
         </Row>
 
