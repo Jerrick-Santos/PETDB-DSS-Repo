@@ -447,7 +447,7 @@ const endIndex = startIndex + itemsPerPage;
                 ) : diagnosis.has_TBcontact === 1 ? (
                     <span style={{ fontWeight: "bold" }}> TB Preventive Treatment (TPT)</span>
                 ) : diagnosis.no_tb === 1 ? (
-                  <span style={{ fontWeight: "bold" }}> No Treatment Necessary (TPT)</span>
+                  <span style={{ fontWeight: "bold" }}> No Treatment Necessary </span>
                   )
 
                   : (" ")}
