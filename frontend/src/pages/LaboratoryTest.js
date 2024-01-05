@@ -29,9 +29,10 @@ import Spinner from "react-bootstrap/Spinner";
 import test from "../assets/test.png";
 import diagnose from "../assets/diagnose.png";
 import similar from "../assets/similar.png";
+import { useNavigate } from 'react-router-dom';
 
 const LaboratoryTest = () => {
-
+  const navigate = useNavigate();
   {/*caseNum is the current case number you're accessing close contacts from, use this for your axios queries*/}
   const { id } = useParams();
   var caseNum = id
@@ -104,6 +105,23 @@ const LaboratoryTest = () => {
     })
   }, [testAdded])
 
+
+ 
+  const handleButtonClick = async () => {
+    // Navigate to another page
+    navigate(`/diagnosis/${caseNum}`);
+
+    // Wait for a certain duration before simulating a button click
+    setTimeout(() => {
+      // Get the button element by its ID or class
+      const button = document.getElementById('diagnosis-button');
+      // Simulate a click event on the button
+      if (button) {
+        button.click();
+      }
+    }, 100); // Adjust the duration as needed
+  };
+
   // Add these state variables
   const [activePage1, setActivePage1] = useState(1);
   const [activePage2, setActivePage2] = useState(1);
@@ -148,7 +166,7 @@ const LaboratoryTest = () => {
 
   
   const isTabActive = (tabName) => activeTab === tabName;
-  return (
+  return (  
     <div>
     <NavBar/>
 
@@ -221,16 +239,49 @@ const LaboratoryTest = () => {
                 </div>
               ) : (
                 <>
+   
    <CaseHeader caseNo={caseNum} case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
                   start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
                   PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
      
-
+    <Row className="justify-content-center">
+    <Col xs={12} sm={6} md={3}>
+      <Button
+        className="btn mt-4 mb-4"
+        style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
+        type="button"
+        onClick={handleButtonClick}
+        // disabled={isLoading || patientData.case_status === 'C'}
+      >
+        {isLoading ? (
+          <>
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+            <span>{" "}Diagnosing...</span>
+          </>
+        ) : 
+        "Diagnose TB Status"}
+      </Button>
+    </Col>
+  </Row>    
+        
     <hr />
+
+
 
     {/* Pagination */}
     <Row className="mb-3">
+
+
+
       <Col className="text-center">
+
+
         <ButtonGroup>
           <Button
             variant={isTabActive('xray') ? 'primary' : 'light'}
@@ -847,6 +898,8 @@ const LaboratoryTest = () => {
                                null
                               )}
                       </Col>
+                                
+                      
               
                   
                   <Col className="d-flex justify-content-end">
@@ -864,6 +917,9 @@ const LaboratoryTest = () => {
                   </Col>
                 </Row>
       </Col>
+
+
+
      
       </Row>
      

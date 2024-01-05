@@ -1,7 +1,7 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, ButtonGroup, Button } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
 import add from '../assets/add.png';
@@ -21,9 +21,10 @@ import Spinner from "react-bootstrap/Spinner";
 import test from "../assets/test.png";
 import diagnose from "../assets/diagnose.png";
 import similar from "../assets/similar.png";
+import { useNavigate } from 'react-router-dom';
 
 const Assessment = () => {
-
+  const navigate = useNavigate();
   const { id } = useParams();
   var caseNum = id
   const [isLoading, setIsLoading] = useState(true);
@@ -92,6 +93,20 @@ const Assessment = () => {
       fetchData(); // Call the fetchData function when the component mounts
     }, []);
 
+    const handleButtonClick = async () => {
+      // Navigate to another page
+      navigate(`/diagnosis/${caseNum}`);
+  
+      // Wait for a certain duration before simulating a button click
+      setTimeout(() => {
+        // Get the button element by its ID or class
+        const button = document.getElementById('diagnosis-button');
+        // Simulate a click event on the button
+        if (button) {
+          button.click();
+        }
+      }, 100); // Adjust the duration as needed
+    };
 
  ///PAGINATION LOGIC
   // Add these state variables
@@ -221,6 +236,32 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
       
 
       <hr/>
+      <Row className="justify-content-center">
+    <Col xs={12} sm={6} md={3}>
+      <Button
+        className="btn mt-4 mb-4"
+        style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
+        type="button"
+        onClick={handleButtonClick}
+        // disabled={isLoading || patientData.case_status === 'C'}
+      >
+        {isLoading ? (
+          <>
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+            <span>{" "}Diagnosing...</span>
+          </>
+        ) : 
+        "Diagnose TB Status"}
+      </Button>
+    </Col>
+  </Row>    
+
       <Row className="mb-5 mt-2 justify-content-center">
       <Col lg="8">
       <p> <strong> Assessment Record </strong> </p>

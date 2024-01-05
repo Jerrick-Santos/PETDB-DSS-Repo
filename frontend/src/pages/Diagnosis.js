@@ -24,6 +24,7 @@ import Spinner from "react-bootstrap/Spinner";
 import test from "../assets/test.png";
 import diagnose from "../assets/diagnose.png";
 import similar from "../assets/similar.png";
+import DiagnosisFeedbackModal from '../components/DiagnosisFeedbackModal';
 
 const Diagnosis = () => {
 
@@ -268,6 +269,7 @@ const endIndex = startIndex + itemsPerPage;
                   type="button"
                   onClick={handleButtonClick}
                   disabled={isLoading || patientData.case_status === 'C'}
+                  id='diagnosis-button'
                 >
                   {isLoading ? (
                     <>
@@ -328,21 +330,6 @@ const endIndex = startIndex + itemsPerPage;
                   <Badge bg="secondary"> Diagnosis: </Badge> 
                 </Col>
                 <Col lg="8"> 
-                  {/* <strong>
-                    
-                  {(diagnosis.diagnosis.includes("Resistant") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed - Drug Resistant TB" :
-                (diagnosis.diagnosis.includes("Resistant") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed - Drug Resistant TB" :
-                (diagnosis.diagnosis.includes("Sensitive") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed - Drug Sensitive TB" :
-                (diagnosis.diagnosis.includes("Sensitive") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed - Drug Sensitive TB" :
-                (diagnosis.diagnosis.includes("Clinical") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Clinically Diagnosed TB" :
-                (diagnosis.diagnosis.includes("Clinical") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Clinically Diagnosed TB" :  
-                (diagnosis.diagnosis.includes("Multi") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed - Multi Drug Resistant TB" :
-                (diagnosis.diagnosis.includes("Multi") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed - Multi Drug Resistant TB" :  
-                (diagnosis.diagnosis.includes("Bacteriologically") && diagnosis.EPTBpositive === 1 ) ? "ExtraPulmonary Bacteriologically Confirmed" :
-                (diagnosis.diagnosis.includes("Bacteriologically") && diagnosis.EPTBpositive === -1 ) ? "Pulmonary Bacteriologically Confirmed" : 
-                diagnosis.diagnosis.includes("Presumptive") ? "Presumptive Tuberculosis" : 
-                diagnosis.diagnosis.includes("Latent") ? "Latent Tuberculosis" : 
-                        "NONE"} </strong> */}
                   <strong>
                     
                   { 
@@ -387,7 +374,7 @@ const endIndex = startIndex + itemsPerPage;
                 <ViewMapRecomModal test={2} test_name={'MTB'}/>
                 ) : null}
               
-            
+
             
              </Col>
         </Row>
@@ -455,7 +442,7 @@ const endIndex = startIndex + itemsPerPage;
         </Row>
 
 
-        
+        <DiagnosisFeedbackModal caseNum={id} ruleNo={diagnosis.RuleNo}/>
 
                    </>
                     ))}

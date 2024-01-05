@@ -17,18 +17,32 @@ app.use(cors({
 
 let dbPool;
 
+// function createDBPool() {
+//     dbPool = mysql.createPool({
+//         user: 'PEDTBDSSADMIN',
+//         port: 19459,
+//         host: 'mysql-117137-0.cloudclusters.net',
+//         password: 'pedtbdss6676!',
+//         database: 'PEDTBDSS_new',
+//         connectionLimit: 10, // Adjust as needed
+//         waitForConnections: true,
+//         queueLimit: 0,
+//     });
+// }
+
 function createDBPool() {
     dbPool = mysql.createPool({
-        user: 'PEDTBDSSADMIN',
-        port: 19459,
-        host: 'mysql-117137-0.cloudclusters.net',
-        password: 'pedtbdss6676!',
-        database: 'PEDTBDSS_new',
+        user: 'root',
+        port: 3310,
+        host: 'localhost',
+        database: 'pedtbdss_new',
+        password: '12345',
         connectionLimit: 10, // Adjust as needed
         waitForConnections: true,
         queueLimit: 0,
     });
 }
+
 
 function handleDisconnect() {
     createDBPool();

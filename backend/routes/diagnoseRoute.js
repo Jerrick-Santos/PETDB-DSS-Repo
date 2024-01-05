@@ -309,6 +309,93 @@ module.exports = (db) => {
             }
         });
     })
+
+    // GET LAB TESTS TAKEN BY PATIENT WITHIN A CASE
+
+    router.get('/getlabtestsbycase/:caseid', (req, res) => {
+        const caseid = req.params.caseid
+        const getLabtestByCase = `SELECT * FROM PEDTBDSS_new.TD_DIAGNOSTICRESULTS t1
+        JOIN PEDTBDSS_new.MD_DGTESTS t2 ON t1.DGTestNo = t2.DGTestNo
+        WHERE CaseNo = ${caseid};	`
+
+        db.query(getLabtestByCase, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(results)
+            }
+        });
+    })
+
+    // GET HEALTH ASSESSMENTS TAKEN BY PATIENT WITHIN A CASE
+
+    router.get('/gethealthassessments/:caseid', (req, res) => {
+        const caseid = req.params.caseid
+        const getLabtestByCase = `SELECT * FROM PEDTBDSS_new.TD_HEALTHASSESSMENT
+        WHERE CaseNo = ${caseid};	`
+
+        db.query(getLabtestByCase, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(results)
+            }
+        });
+    })
+    //ADD FEEDBACK
+    router.post('/addfeedback/:caseid', (req, res) => {
+        const caseid = req.params.caseid
+        const { ruleno, recodiagnosis, AssessNo, hafeedback, labtestfeedback } = req.body;
+        const assessNoQuery = `SELECT AssessNo FROM PEDTBDSS_new.TD_HEALTHASSESSMENT WHERE CaseNo = ${caseid}`;
+
+                    // STEP 2: Add to TD_DIAGNOSISFEEDBACK
+                    db.query(`INSERT INTO PEDTBDSS_new.TD_DIAGNOSISFEEDBACK(Ruleno, reco_diagnosis, AssessNo, ha_feedback, CaseNo) 
+                    VALUES (?, ?, ?, ?, ?)`, 
+                    [ruleno, recodiagnosis, AssessNo, hafeedback, caseid], 
+                    (error8, InsertResult) => {
+                        if (error8) {
+                            res.status(500).json(error8);
+                            return;
+                        }
+                        else{
+
+                            //STEP 3: Store insert_id as a variable
+                            const feedback_id = InsertResult.insertId;
+                            console.log("Successfully added to TD_DIAGNOSISFEEDBACK with ID:", feedback_id);
+                            console.log(labtestfeedback)
+
+                            //STEP 4: Add LabTest feedback if any 
+                            console.log("OBJECT LENGTH: ", Object.keys(labtestfeedback).length)
+                            if (labtestfeedback && Object.keys(labtestfeedback).length > 0) {
+                                const labFeedbackEntries = Object.entries(labtestfeedback);
+
+                                const values = labFeedbackEntries.map(([key, value]) => [feedback_id, key, value]);
+                                console.log("MYVALUES", values)
+                                db.query(
+                                    `INSERT INTO PEDTBDSS_new.TD_LABTESTFEEDBACK (feedback_id, labtest_remarks, DGResultsNo) VALUES ?`,
+                                    [values],
+                                    (errorLab, labInsertResult) => {
+                                        if (errorLab) {
+                                            console.log(errorLab)
+                                            res.status(500).json({ error: "Error inserting LabTest feedback" });
+                                            return;
+                                        } else {
+                                            console.log("LabTest feedback inserted successfully");
+                                            res.status(200).json({ message:" LabTest feedback inserted successfully" });
+                                            return;
+                                        }
+                                    }
+                                );
+                            } else {
+                                res.status(200).json({ message: "Successfully Added Feedback without Labtests" });
+                                return;
+                            }
+
+                        }
+                    })
+    });
+    
+
     router.post('/diagnose/:caseid', authenticateToken, (req, res) => {
         let ruleNo;
 
@@ -768,6 +855,7 @@ module.exports = (db) => {
     
                                                                     if(prevRule === RuleNo && prevRule != null){
                                                                         res.status(200).json({sameCase: 1})
+                                                                        console.log("No Change")
                                                                         return;
                                                                     
                                                                     }
