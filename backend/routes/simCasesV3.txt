@@ -1,0 +1,24 @@
+Simillar Cases Engine v3 
+
+PREREQUISITES: 
+- Patient must have lab tests 
+
+A. CHECK IF CASE HAS 
+1. Set Object Variables 
+    - diagnosis_likelihood = {diagnosis: likelihood}
+    - reference = [info] //e.g., [has_cough, has_fever, ... xray, mtb_rif]
+    - case_info = {} 
+    - compare_info = [{}]
+2. GET ALL diagnosis types and store it to diagnosis_likelihood with {diagnosis: 0}
+3. GET the latest CASE of the patient -> latest Health Assessements and Lab Tests 
+    - Store in case_info 
+4. GET all latest CASES of all PATIENTS -> latest Health Assessements, Lab Tests, and diagnosis 
+    - Store in compare_info 
+5. FOR EACH diagnosis type present in compare_info:
+    a. initialize temp_likelihood_values = []
+    b. matched = 0
+    c. IF the element value of case_info MATCHES compare_info[i]: (e.g., case_info.has_cough == compare_info.has_cough)
+            matched += 1 
+    d. At the end of comparing case_info and compare_info[i]: temp_likelihood_values.append(matched / len(reference.elements))
+    e. diagnosis_likelihood = diagnosis: temp_likelihood_values.ave()
+6. RETURN diagnosis_likelihood object
