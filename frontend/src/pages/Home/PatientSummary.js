@@ -997,6 +997,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
  
     <Row className="mb-3 mt-4 justify-content-center">
     <div className='col-md-2 p-1'>
+      <Link to={`/home/0/${currentYear}`}>
       <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[0].value}</h3>
@@ -1004,15 +1005,18 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
         </div>
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>
+      </Link>
     </div>
     <div className='col-md-2 p-1'>
-    <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[1], minHeight: "250px" }}>
+      <Link to={`/home/1/${currentYear}`}>
+      <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[1], minHeight: "250px" }}>
         <div>
           <h3 className='text-light fs-1'>{data01[1].value}</h3>
           <p className='text-light fs-5'>{data01[1].name}</p>
         </div>
         <i className='bi bi-cart-plus p-3 fs-1'></i>
       </div>
+      </Link>
     </div>
     <div className='col-md-2 p-1'>
       <Link to={"/home1"}>
