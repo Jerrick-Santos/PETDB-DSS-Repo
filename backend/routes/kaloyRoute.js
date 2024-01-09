@@ -10,7 +10,47 @@ const SALT_ROUNDS = 10
 module.exports = (db) => {
 
     // Attach the 'db' connection to all route handlers before returning the router
-
+    function findFirstInstance(arr) {
+        let returnObj = {
+          presumptve_tb: null,
+          latent_tb: null,
+          confirmed_tb: null,
+          no_tb: null,
+        };
+      
+        for (let i = 0; i < arr.length; i++) {
+          if (returnObj.presumptve_tb === null && arr[i].presumptive_tb === 1) {
+            returnObj.presumptve_tb = arr[i].DGDate;
+          }
+      
+          if (returnObj.latent_tb === null && arr[i].latent_tb === 1) {
+            returnObj.latent_tb = arr[i].DGDate;
+          }
+      
+          if (
+            returnObj.confirmed_tb === null &&
+            (arr[i].cli_diagnosed === 1 || arr[i].baconfirmed === 1)
+          ) {
+            returnObj.confirmed_tb = arr[i].DGDate;
+          }
+      
+          if (returnObj.no_tb === null && arr[i].no_tb === 1) {
+            returnObj.no_tb = arr[i].DGDate;
+          }
+      
+          // Break the loop if all first instances are found
+          if (
+            returnObj.presumptve_tb !== null &&
+            returnObj.latent_tb !== null &&
+            returnObj.confirmed_tb !== null &&
+            returnObj.no_tb !== null
+          ) {
+            break;
+          }
+        }
+      
+        return returnObj;
+      }
     
     router.get('/getttimelineinfo/:caseid', (req, res) => {
         const caseid = req.params.caseid
@@ -40,8 +80,8 @@ module.exports = (db) => {
                         console.log(err2)
                     } else {
                         const responseObj = {
-                            healthAssessment: results,
-                            diagnosisList: results2
+                            healthAssessment: results[0].assessment_date,
+                            ...findFirstInstance(results2)
                         };
                         res.send(responseObj)
                     }

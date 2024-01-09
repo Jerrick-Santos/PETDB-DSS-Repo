@@ -81,6 +81,17 @@ module.exports = (db) => {
                                 },
                                 process.env.ACCESS_TOKEN_SECRET
                               );
+
+                            const refreshToken = jwt.sign({
+                                ayoooooooo: "test",
+                            }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+                     
+                            // Assigning refresh token in http-only cookie 
+                            res.cookie('jwt', refreshToken, {
+                                httpOnly: false,
+                                sameSite: 'None', secure: true,
+                                maxAge: 24 * 60 * 60 * 1000
+                            });
                   
                               res.json({ accessToken, user_type, BGYNo });
                             } else {
