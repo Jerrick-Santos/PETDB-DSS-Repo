@@ -525,6 +525,47 @@ module.exports = (db) => {
         }
     })
 
+    router.get('/getPatientDrilldown/:status/:year', async (req, res) => {
+        const status = parseInt(req.params.status, 10);
+
+        if (isNaN(status) || ![0,1].includes(status)) { return res.status(400).json({ error: 'Invalid parameter: status must be a number between 0 and 4.' }); }
+
+
+        const base_query = `SELECT patientlist.PatientNo, patientlist.completename, patientlist.CaseNo,  DATEDIFF(CURDATE(), latestdiagnosis.DGDate) AS dayssincelastdiag, patientlist.case_refno
+        FROM ( 
+            SELECT pi.PatientNo, CONCAT(pi.last_name, ", ", pi.first_name, " ", pi.middle_initial) AS completename, pc.CaseNo, pc.case_refno
+            FROM td_ptinformation pi
+            JOIN td_ptcase pc ON pi.PatientNo = pc.PatientNo
+            WHERE pc.case_status <> "C"
+        ) AS patientlist
+        JOIN ( 
+            SELECT *
+            FROM (
+                SELECT pd.CaseNo, pd.DGNo, pd.RuleNo, ROW_NUMBER() OVER (PARTITION BY pd.CaseNo ORDER BY pd.DGNo DESC, pd.DGDate DESC ) AS rn, YEAR(pd.DGDate) as yeardiag, pd.DGDate
+                FROM td_ptdiagnosis pd
+            ) AS t
+            WHERE t.rn = 1
+        ) AS latestdiagnosis ON patientlist.CaseNo = latestdiagnosis.CaseNo
+        JOIN md_diagnosisrules dr ON latestdiagnosis.RuleNo = dr.RuleNo
+        WHERE yeardiag = ?
+        AND `
+
+        let withstatuscond_query, q1;
+        status === 0 ? q1 = base_query.concat(" presumptive_tb = 1") : q1 = base_query.concat(" latent_tb = 1") 
+        withstatuscond_query = q1.concat(" ORDER BY dayssincelastdiag DESC ")
+
+        db.query(withstatuscond_query, [parseInt(req.params.year, 10)], (err, results) => {
+            if (err) {
+                console.error(err); 
+                return res.status(400).json({message: 'Query Failed'})
+            }
+            else {
+                console.log(results)
+                res.send(results)
+            }
+        })
+    })
+
     return router;
 
     

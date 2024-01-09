@@ -352,10 +352,15 @@ const endIndex = startIndex + itemsPerPage;
                 </Col>
               </Row>
 
-        <Row className="mt-4">
-            <Col style={{fontSize:"18px"}}> {(diagnosis.need_eval === 1 && !diagnosis.diagnosis.includes("Refer to specialist") ) ? "The following tests are needed for further evaluation:" :
-                        "Please Refer to a specialist for further Management"} </Col>
-            </Row>
+              {
+                ( diagnosis.no_tb === 1 ) ? "" : 
+                <Row className="mt-4">
+                <Col style={{fontSize:"18px"}}> {(diagnosis.need_eval === 1 && !diagnosis.diagnosis.includes("Refer to specialist") ) ? "The following tests are needed for further evaluation:" :
+                            "Please Refer to a specialist for further Management"} </Col>
+                </Row>
+              }
+
+
 
         <Row className="mt-1">
             <Col style={{fontSize:"20px"}}>
@@ -441,8 +446,12 @@ const endIndex = startIndex + itemsPerPage;
             </Col>
         </Row>
 
-
-        <DiagnosisFeedbackModal caseNum={id} ruleNo={diagnosis.RuleNo}/>
+        <Row className="mt-3">
+          <Col>
+              <DiagnosisFeedbackModal caseNum={id} ruleNo={diagnosis.RuleNo}/>
+          </Col>
+        </Row>
+        
 
                    </>
                     ))}

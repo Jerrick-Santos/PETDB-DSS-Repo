@@ -20,6 +20,7 @@ import BHCInfo from './adminpages/BHCInfo';
 import PatientSummaryPTB from './pages/Home/PatientSummaryPTB';
 import PatientSummaryEPTB from './pages/Home/PatientSummaryEPTB';
 import PatientSummaryClosed from './pages/Home/PatientSummaryClosed';
+import ViewPatientDrilldown from './pages/ViewPatientDrilldown';
 import SimilarCases from './pages/SimilarCases';
 import UserList from './adminpages/UserList';
 import TestRoute from './pages/TestRoute';
@@ -40,6 +41,7 @@ const PatientSummaryWithAccess = withAccessControl(PatientSummary, ['BHW']);
 const PatientSummaryPTBWithAccess = withAccessControl(PatientSummaryPTB, ['BHW']);
 const PatientSummaryEPTBWithAccess = withAccessControl(PatientSummaryEPTB, ['BHW']);
 const PatientSummaryClosedWithAccess = withAccessControl(PatientSummaryClosed, ['BHW']);
+const PatientSummaryDrilldownWithAccess = withAccessControl(ViewPatientDrilldown, ['BHW'])
 
 const PatientInfoWithAccess = withAccessControl(PatientInfo, ['BHW']);
 const CloseContactsWithAccess = withAccessControl(CloseContacts, ['BHW']);
@@ -51,6 +53,7 @@ const SimilarCasesWithAccess = withAccessControl(SimilarCases, ['BHW']);
 const AddPatientWithAccess = withAccessControl(AddPatient, ['BHW']);
 const ViewPatientWithAccess = withAccessControl(ViewPatient, ['BHW']);
 const CaseWithAccess = withAccessControl(Case, ['BHW']);
+
 
 function App() {
   return (
@@ -74,6 +77,7 @@ function App() {
                     <Route path="/home1" element={<PatientSummaryPTBWithAccess/>}/>
                     <Route path="/home2" element={<PatientSummaryEPTBWithAccess/>}/>
                     <Route path="/home3" element={<PatientSummaryClosedWithAccess/>}/>
+                    <Route path='/home/:status/:year' element={<PatientSummaryDrilldownWithAccess/>}/>
 
 
 

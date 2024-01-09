@@ -315,6 +315,16 @@ module.exports = (db) => {
 
         // Initialize an array to store the results
         const comparisonResults = [];
+                                        // Initialize the object with null values
+        const resultObject = {
+        bd_res: 0,
+        bd_nonres: 0,   
+        bd_multires: 0,
+        clinical_diag: 0,
+        no_tb: 0,
+        ptb: 0,
+        eptb: 0
+        };
         
         // Execute queries
         db.query(assessmentQuery, (error1, assessmentResults) => {
@@ -489,6 +499,15 @@ module.exports = (db) => {
                             console.log("igra value: " + PARAMETERS.igra)
 
                             console.log(PARAMETERS)
+
+                            if (PARAMETERS.xray == 0 && 
+                                (PARAMETERS.MTB_positive == 0 && 
+                                PARAMETERS.RIF_resistant == 0) &&
+                                PARAMETERS.tst == 0 &&
+                                PARAMETERS.igra == 0){
+                                res.send(resultObject)
+                                return;
+                            }
 
                             db.query(`
                             SELECT 
@@ -711,16 +730,7 @@ module.exports = (db) => {
                                     "-1": "ptb"
                                 };
 
-                                // Initialize the object with null values
-                                const resultObject = {
-                                    bd_res: null,
-                                    bd_nonres: null,
-                                    bd_multires: null,
-                                    clinical_diag: null,
-                                    no_tb: null,
-                                    ptb: null,
-                                    eptb: null
-                                };
+
 
 
                                 // Step 1: Count the occurrences
