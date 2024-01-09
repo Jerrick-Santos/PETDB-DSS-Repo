@@ -72,12 +72,12 @@ module.exports = (db) => {
                               tokenContent.user_type = user_type;
                               tokenContent.BGYNo = BGYNo;
                   
-                              const oneDayInSeconds = 60 * 60; // 1 day in seconds
+                              const oneDayInSeconds = 24 * 60 * 60;
                   
                               const accessToken = jwt.sign(
                                 {
                                   ...tokenContent,
-                                  exp: Math.floor(Date.now() / 1000) + oneDayInSeconds, // Expiry in seconds (1 day)
+                                  exp: Math.floor(Date.now() / 1000) + oneDayInSeconds, 
                                 },
                                 process.env.ACCESS_TOKEN_SECRET
                               );

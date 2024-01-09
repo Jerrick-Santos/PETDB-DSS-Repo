@@ -5,7 +5,7 @@ require('dotenv').config();
 
 // Middleware function to authenticate a JWT token
 function authenticateToken(req, res, next) {
-    console.log("IN AUTH TEST")
+
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -14,6 +14,7 @@ function authenticateToken(req, res, next) {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if(err) return res.sendStatus(403)
         req.user = user
+        console.log("VERIFIED USER")
         next()
     })
 

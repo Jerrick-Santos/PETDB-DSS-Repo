@@ -8,7 +8,48 @@ const SALT_ROUNDS = 10
 
 // Export the router with the attached 'db' connection
 module.exports = (db) => {
+
     // Attach the 'db' connection to all route handlers before returning the router
+
+    
+    router.get('/getttimelineinfo/:caseid', (req, res) => {
+        const caseid = req.params.caseid
+
+        const getFirstHealthAssessment = `SELECT assessment_date
+        FROM pedtbdss_new.td_healthassessment
+        WHERE CaseNo = ${caseid}
+        LIMIT 1;`
+
+        const getDiagnosisByCase = `SELECT * 
+        FROM pedtbdss_new.td_ptdiagnosis t1 
+        JOIN pedtbdss_new.md_diagnosisrules t2 ON t1.RuleNo = t2.RuleNo
+        WHERE CaseNo = ${caseid};	`
+
+        db.query(getFirstHealthAssessment, (err, results) => {
+            if (err) {
+                res.status(500).json(err);
+                console.log(err)
+            }
+            else if (!results){ //if no results found
+                res.status(500).json({message: "No Health Assessments Found"});
+            } else {
+
+                db.query(getDiagnosisByCase, (err2, results2) => {
+                    if (err2) {
+                        res.status(500).json(err2);
+                        console.log(err2)
+                    } else {
+                        const responseObj = {
+                            healthAssessment: results,
+                            diagnosisList: results2
+                        };
+                        res.send(responseObj)
+                    }
+                });
+            }
+        });
+    })
+
     router.post('/newpatient', authenticateToken, async (req, res) => {
 
         const userid = req.user.userNo
