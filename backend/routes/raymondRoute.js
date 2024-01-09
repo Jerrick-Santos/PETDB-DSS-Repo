@@ -550,8 +550,9 @@ module.exports = (db) => {
         WHERE yeardiag = ?
         AND `
 
-        let withstatuscond_query;
-        status === 0 ? withstatuscond_query = base_query.concat(" presumptive_tb = 1") : withstatuscond_query = base_query.concat(" latent_tb = 1") 
+        let withstatuscond_query, q1;
+        status === 0 ? q1 = base_query.concat(" presumptive_tb = 1") : q1 = base_query.concat(" latent_tb = 1") 
+        withstatuscond_query = q1.concat(" ORDER BY dayssincelastdiag DESC ")
 
         db.query(withstatuscond_query, [parseInt(req.params.year, 10)], (err, results) => {
             if (err) {
