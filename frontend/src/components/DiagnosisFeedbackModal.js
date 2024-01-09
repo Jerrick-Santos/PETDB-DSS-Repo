@@ -166,6 +166,9 @@ function DiagnosisFeedbackModel(props) {
           console.log(err);
         }
 
+
+        setFeedbackForm({ ruleno: props.ruleNo, recodiagnosis: '', AssessNo: '',  hafeedback: ''})
+        setLabtestFeedbackForm([{ DGResultsNo: '', labtestRemarks: '' }])
         handleClose();
     }
 
@@ -270,15 +273,22 @@ function DiagnosisFeedbackModel(props) {
             </Card>
           </Col>
         </Row>
+
+        <Col className="d-flex justify-content-center">
+
+            <button
+            className="btn"
+            style={{ color: 'white', backgroundColor: '#0077B6' }}
+            type="button"
+            onClick={addNewField}
+          >
+            Add Lab Test
+          </button>
+
+
+              
+            </Col>
         
-        <button
-        className="btn"
-        style={{ color: 'white', backgroundColor: '#0077B6' }}
-        type="button"
-        onClick={addNewField}
-      >
-        Add Lab Test
-      </button>
 
       {/* Lab Test Feedback Section */}
       {labtestfeedbackForm.map((field, index) => (
@@ -288,8 +298,8 @@ function DiagnosisFeedbackModel(props) {
               <Card.Body>
 
                                 {/* Delete Button */}
-                  <Row>
-                  <Col sm="12">
+                  <Row className="mb-2">
+                  <Col sm="12" className="d-flex justify-content-end">
                   <button  className="btn"
                   style={{ color: 'white', backgroundColor: '#E81123' }}
               type="button"onClick={() => deleteField(index)}>
@@ -303,7 +313,7 @@ function DiagnosisFeedbackModel(props) {
                 {/* Dropdown */}
                 <Row>
                   <Col sm="8">
-                    <Form.Label className="text-muted">Dropdown</Form.Label>
+                    <Form.Label className="text-muted">Lab Test*</Form.Label>
                   </Col>
                   <Col sm="4">
                     <Form.Group as={Col} md="12">
