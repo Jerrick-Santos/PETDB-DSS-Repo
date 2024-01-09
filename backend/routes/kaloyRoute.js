@@ -12,38 +12,38 @@ module.exports = (db) => {
     // Attach the 'db' connection to all route handlers before returning the router
     function findFirstInstance(arr) {
         let returnObj = {
-          presumptve_tb: null,
-          latent_tb: null,
-          confirmed_tb: null,
-          no_tb: null,
+          presumptve_tb: 0,
+          latent_tb: 0,
+          confirmed_tb: 0,
+          no_tb: 0,
         };
       
         for (let i = 0; i < arr.length; i++) {
-          if (returnObj.presumptve_tb === null && arr[i].presumptive_tb === 1) {
+          if (returnObj.presumptve_tb === 0 && arr[i].presumptive_tb === 1) {
             returnObj.presumptve_tb = arr[i].DGDate;
           }
       
-          if (returnObj.latent_tb === null && arr[i].latent_tb === 1) {
+          if (returnObj.latent_tb === 0 && arr[i].latent_tb === 1) {
             returnObj.latent_tb = arr[i].DGDate;
           }
       
           if (
-            returnObj.confirmed_tb === null &&
+            returnObj.confirmed_tb === 0 &&
             (arr[i].cli_diagnosed === 1 || arr[i].baconfirmed === 1)
           ) {
             returnObj.confirmed_tb = arr[i].DGDate;
           }
       
-          if (returnObj.no_tb === null && arr[i].no_tb === 1) {
+          if (returnObj.no_tb === 0 && arr[i].no_tb === 1) {
             returnObj.no_tb = arr[i].DGDate;
           }
       
           // Break the loop if all first instances are found
           if (
-            returnObj.presumptve_tb !== null &&
-            returnObj.latent_tb !== null &&
-            returnObj.confirmed_tb !== null &&
-            returnObj.no_tb !== null
+            returnObj.presumptve_tb !== 0 &&
+            returnObj.latent_tb !== 0 &&
+            returnObj.confirmed_tb !== 0 &&
+            returnObj.no_tb !== 0
           ) {
             break;
           }
@@ -71,7 +71,14 @@ module.exports = (db) => {
                 console.log(err)
             }
             else if (!results){ //if no results found
-                res.status(500).json({message: "No Health Assessments Found"});
+                const noHAObj = {
+                    healthAssessment: 0,
+                    presumptve_tb: 0,
+                    latent_tb: 0,
+                    confirmed_tb: 0,
+                    no_tb: 0
+                }
+                res.send(noHAObj);
             } else {
 
                 db.query(getDiagnosisByCase, (err2, results2) => {
