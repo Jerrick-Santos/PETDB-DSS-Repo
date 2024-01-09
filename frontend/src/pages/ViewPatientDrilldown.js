@@ -191,11 +191,21 @@ const handleAdvanceChange = (e) => {
     }
   });
 
-  if (selectedSort === "1") {
+  if (selectedSort === "0") {
     filteredData.sort((a, b) => {
       // Compare two items for sorting in descending order (Z-A)
-      const nameA = a.fullname; // Replace 'propertyToSort' with the actual property name you want to sort by
-      const nameB = b.fullname; // Replace 'propertyToSort' with the actual property name you want to sort by
+      const nameA = a.completename; // Replace 'propertyToSort' with the actual property name you want to sort by
+      const nameB = b.completename; // Replace 'propertyToSort' with the actual property name you want to sort by
+
+      // Use localeCompare to perform a case-insensitive comparison
+      return nameA.localeCompare(nameB);
+    });
+  }
+  else if (selectedSort === "1") {
+    filteredData.sort((a, b) => {
+      // Compare two items for sorting in descending order (Z-A)
+      const nameA = a.completename; // Replace 'propertyToSort' with the actual property name you want to sort by
+      const nameB = b.completename; // Replace 'propertyToSort' with the actual property name you want to sort by
 
       // Use localeCompare to perform a case-insensitive comparison
       return nameB.localeCompare(nameA);
@@ -203,33 +213,33 @@ const handleAdvanceChange = (e) => {
   } else if (selectedSort === "2") {
     filteredData.sort((a, b) => {
       // Compare two items for sorting in descending order (Z-A)
-      const nameA = a.case_refno; // Replace 'propertyToSort' with the actual property name you want to sort by
-      const nameB = b.case_refno; // Replace 'propertyToSort' with the actual property name you want to sort by
+      const nameA = a.CaseNo; // Replace 'propertyToSort' with the actual property name you want to sort by
+      const nameB = b.CaseNo; // Replace 'propertyToSort' with the actual property name you want to sort by
 
       // Use localeCompare to perform a case-insensitive comparison
-      return nameA.localeCompare(nameB);
+      return nameA - nameB;
     });
   } else if (selectedSort === "3") {
     filteredData.sort((a, b) => {
       // Compare two items for sorting in descending order (Z-A)
-      const nameA = a.case_refno; // Replace 'propertyToSort' with the actual property name you want to sort by
-      const nameB = b.case_refno; // Replace 'propertyToSort' with the actual property name you want to sort by
+      const nameA = a.CaseNo; // Replace 'propertyToSort' with the actual property name you want to sort by
+      const nameB = b.CaseNo; // Replace 'propertyToSort' with the actual property name you want to sort by
 
       // Use localeCompare to perform a case-insensitive comparison
-      return nameB.localeCompare(nameA);
+      return nameB - nameA;
     });
   } else if (selectedSort === "4") {
     filteredData.sort((a, b) => {
       // Compare two items for sorting in ascending order (oldest to newest)
-      const dateA = new Date(a.admission_date);
-      const dateB = new Date(b.admission_date);
+      const dateA = new Date(a.dayssincelastdiag);
+      const dateB = new Date(b.dayssincelastdiag);
       return dateA - dateB;
     });
   } else if (selectedSort === "5") {
     filteredData.sort((a, b) => {
       // Compare two items for sorting in descending order (newest to oldest)
-      const dateA = new Date(a.admission_date);
-      const dateB = new Date(b.admission_date);
+      const dateA = new Date(a.dayssincelastdiag);
+      const dateB = new Date(b.dayssincelastdiag);
       return dateB - dateA;
     });
   }
@@ -389,12 +399,12 @@ const handleAdvanceChange = (e) => {
                       value={selectedSort}
                       onChange={(e) => setSelectedSort(e.target.value)}
                     >
-                      <option value="">Sort by Name (A-Z)</option>
+                      <option value="0">Sort by Name (A-Z)</option>
                       <option value="1">Sort by Name (Z-A)</option>
-                      <option value="2">Sort by Case (A-Z)</option>
-                      <option value="3">Sort by Case (Z-A)</option>
-                      <option value="4">Sort by Date Added (A-Z)</option>
-                      <option value="5">Sort by Date Added (Z-A)</option>
+                      <option value="2">Sort by Case (Oldest to Latest)</option>
+                      <option value="3">Sort by Case (Latest to Oldest)</option>
+                      <option value="4">Sort by Days Since Last Diagnosis (Ascending)</option>
+                      <option value="5">Sort by Date Since Last Diagnosis (Decsending)</option>
                     </select>
                   </div>
                 </Col>
