@@ -244,7 +244,7 @@ const LaboratoryTest = () => {
                   start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
                   PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
      
-    <Row className="justify-content-center">
+    <Row className="text-center justify-content-center">
     <Col xs={12} sm={6} md={3}>
       <Button
         className="btn mt-4 mb-4"
@@ -275,7 +275,7 @@ const LaboratoryTest = () => {
 
 
     {/* Pagination */}
-    <Row className="mb-3">
+    <Row className="mb-3 mt-5">
 
 
 

@@ -952,8 +952,10 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   <div className='container-fluid justify-content-center'>
  
   <div className='row g-3 my-2 justify-content-center'>
+  <h1 className='row mt-4 justify-content-center'>Patient Summary</h1>
   <Row className="mb-3 mt-4 justify-content-center">
   <Col md="2" className="me-4">
+    
     <div
       className="mt-3 input-group"
       style={{

@@ -8,7 +8,95 @@ const SALT_ROUNDS = 10
 
 // Export the router with the attached 'db' connection
 module.exports = (db) => {
+
     // Attach the 'db' connection to all route handlers before returning the router
+    function findFirstInstance(arr) {
+        let returnObj = {
+          presumptve_tb: 0,
+          latent_tb: 0,
+          confirmed_tb: 0,
+          no_tb: 0,
+        };
+      
+        for (let i = 0; i < arr.length; i++) {
+          if (returnObj.presumptve_tb === 0 && arr[i].presumptive_tb === 1) {
+            returnObj.presumptve_tb = arr[i].DGDate;
+          }
+      
+          if (returnObj.latent_tb === 0 && arr[i].latent_tb === 1) {
+            returnObj.latent_tb = arr[i].DGDate;
+          }
+      
+          if (
+            returnObj.confirmed_tb === 0 &&
+            (arr[i].cli_diagnosed === 1 || arr[i].baconfirmed === 1)
+          ) {
+            returnObj.confirmed_tb = arr[i].DGDate;
+          }
+      
+          if (returnObj.no_tb === 0 && arr[i].no_tb === 1) {
+            returnObj.no_tb = arr[i].DGDate;
+          }
+      
+          // Break the loop if all first instances are found
+          if (
+            returnObj.presumptve_tb !== 0 &&
+            returnObj.latent_tb !== 0 &&
+            returnObj.confirmed_tb !== 0 &&
+            returnObj.no_tb !== 0
+          ) {
+            break;
+          }
+        }
+      
+        return returnObj;
+      }
+    
+    router.get('/getttimelineinfo/:caseid', (req, res) => {
+        const caseid = req.params.caseid
+
+        const getFirstHealthAssessment = `SELECT assessment_date
+        FROM pedtbdss_new.td_healthassessment
+        WHERE CaseNo = ${caseid}
+        LIMIT 1;`
+
+        const getDiagnosisByCase = `SELECT * 
+        FROM pedtbdss_new.td_ptdiagnosis t1 
+        JOIN pedtbdss_new.md_diagnosisrules t2 ON t1.RuleNo = t2.RuleNo
+        WHERE CaseNo = ${caseid};	`
+
+        db.query(getFirstHealthAssessment, (err, results) => {
+            if (err) {
+                res.status(500).json(err);
+                console.log(err)
+            }
+            else if (results.length == 0){ //if no results found
+                const noHAObj = {
+                    healthAssessment: 0,
+                    presumptve_tb: 0,
+                    latent_tb: 0,
+                    confirmed_tb: 0,
+                    no_tb: 0
+                }
+                res.send(noHAObj);
+            } else {
+
+                db.query(getDiagnosisByCase, (err2, results2) => {
+                    if (err2) {
+                        res.status(500).json(err2);
+                        console.log(err2)
+                    } else {
+                        const responseObj = {
+                            healthAssessment: results[0].assessment_date,
+                            ...findFirstInstance(results2)
+                        };
+                        res.send(responseObj)
+                    }
+                });
+            }
+        });
+    })
+
     router.post('/newpatient', authenticateToken, async (req, res) => {
 
         const userid = req.user.userNo

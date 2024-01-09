@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import add from '../assets/add.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, Collapse  } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
 function AddAssessPersist(props) {
@@ -33,6 +33,17 @@ function AddAssessPersist(props) {
     const [rpPersistDisabled, setRPPersistDisabled] = useState(true);
     const [decPersistDisabled, setDecPersistDisabled] = useState(true);
     const [newPersistDisabled, setNEWPersistDisabled] = useState(true);
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [OtherDropdownOpen, setOtherDropdownOpen] = useState(false);
+
+    const handleDropdownToggle = () => {
+      setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const handleOtherDropdowntoggle = () => {
+      setOtherDropdownOpen(!OtherDropdownOpen);
+    };
 
     const calculateBMI = () => {
       if (bodyWeight && height) {
@@ -579,42 +590,53 @@ function AddAssessPersist(props) {
           </Col>
         </Row>
 
+        
+
         {/* Additional Symptoms to Verify EPTB */}
         <Row className="mt-1 justify-content-center">
           <Col lg="8">
           <p> <strong>Additional Symptoms to Verify EPTB</strong> </p>
-            <Card className="mb-4">
-              <Card.Body>
-                <Row>
-                  <Col sm="9">
-                    <Card.Text>Symptom</Card.Text>
-                  </Col>
-                  <Col sm="2">
-                    <Card.Text>Symptomatic</Card.Text>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Lumps anywhere on the body */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Lumps anywhere on the body</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='non_painful_ecl' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Drowsiness */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Drowsiness</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='drowsy' onChange={handleChange}/>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
+              <Card className="mb-4">
+                <Card.Body>
+                  <Row 
+                    onClick={handleDropdownToggle} 
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <Col sm="9">
+                      <Card.Text>{isDropdownOpen ? 'Symptom' : <strong style={{ textDecoration: 'underline' }}>Click here to dropdown</strong>}</Card.Text>
+                    </Col>
+                    <Col sm="2">
+                      <Card.Text>{isDropdownOpen ? 'Symptomatic' : ''}</Card.Text>
+                    </Col>
+                  </Row>
+                  <hr />
+                  {/* Lumps anywhere on the body */}
+                  <Row>
+                    <Col>
+                      <div className={`collapse ${isDropdownOpen ? 'show' : ''}`}>
+                        <Row>
+                          <Col sm="9">
+                            <Form.Label className="text-muted">Lumps anywhere on the body</Form.Label>
+                          </Col>
+                          <Col sm="2">
+                            <input type="checkbox" name='non_painful_ecl' onChange={handleChange}/>
+                          </Col>
+                        </Row>
+                        <hr />
+                        {/* Drowsiness */}
+                        <Row>
+                          <Col sm="9">
+                            <Form.Label className="text-muted">Drowsiness</Form.Label>
+                          </Col>
+                          <Col sm="2">
+                            <input type="checkbox" name='drowsy' onChange={handleChange}/>
+                          </Col>
+                        </Row>
+                      </div>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
           </Col>
         </Row>
 
@@ -624,184 +646,190 @@ function AddAssessPersist(props) {
           <p><strong>Other Assessments</strong> </p>
             <Card className="mb-4">
               <Card.Body>
-                <Row>
+                <Row onClick={handleOtherDropdowntoggle} style={{ cursor: 'pointer' }}>
                   <Col sm="9">
-                    <Card.Text>Assessment</Card.Text>
+                    <Card.Text>{OtherDropdownOpen ? 'Assessment' : <strong style={{ textDecoration: 'underline' }}>Click here to dropdown</strong>}</Card.Text>
                   </Col>
                   <Col sm="2">
-                    <Card.Text>Yes</Card.Text>
+                    <Card.Text>{OtherDropdownOpen ? 'Yes' : ''}</Card.Text>
                   </Col>
                 </Row>
                 <hr/>
                 {/* Was the patient previously diagnosed with TB? */}
                 <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Was the patient previously diagnosed with TB?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='prevPTB_diagnosed' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Are you unable to stand? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Are you unable to stand?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='can_stand' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Are you living with a person with HIV? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Are you living with a person with HIV?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='plhiv' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Do you have HIV? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Do you have HIV?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='hiv' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Does your mother have HIV? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Does your mother have HIV?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='mother_hiv' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Do you have a history of smoking? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Do you have a history of smoking?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='smoking' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Do you have a history of drinking? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Do you have a history of drinking?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='drinking' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Do you have a history of sexual activity? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Do you have a history of sexual activity?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='sex_active' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Do you have a history of renal disease? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Do you have a history of renal disease?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='renal_disease' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Do you have a history of malnutrition? */}
-                <Row>
-                  <Col sm="9">
-                    <Form.Label className="text-muted">Do you have a history of malnutrition?</Form.Label>
-                  </Col>
-                  <Col sm="2">
-                    <input type="checkbox" name='malnutrition' onChange={handleChange}/>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Other Health Issues */}
-                <Row>
-                  <Col sm="8">
-                    <Form.Label className="text-muted">Other Health Issues</Form.Label>
-                  </Col>
-                  <Col sm="4">
-                    <Form.Group as={Col} md="12">
-                      <Form.Control
-                        type="text" 
-                        name="other_health_issues"
-                        value={assessFormValues.other_health_issues}
-                        onChange={handleChange}
-                        placeholder='Health Issues'
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Other Medications */}
-                <Row>
-                  <Col sm="8">
-                    <Form.Label className="text-muted">Other Medications</Form.Label>
-                  </Col>
-                  <Col sm="4">
-                    <Form.Group as={Col} md="12">
-                      <Form.Control
-                        type="text" 
-                        name="other_meds"
-                        value={assessFormValues.other_meds}
-                        onChange={handleChange}
-                        placeholder='Medications'
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Possible of drug to drug interactions */}
-                <Row>
-                  <Col sm="8">
-                    <Form.Label className="text-muted">Possible of drug to drug interactions</Form.Label>
-                  </Col>
-                  <Col sm="4">
-                    <Form.Group as={Col} md="12">
-                      <Form.Control
-                        type="text" 
-                        name="other_dd_interacts"
-                        value={assessFormValues.other_dd_interacts}
-                        onChange={handleChange}
-                        placeholder='Possible interactions'
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <hr />
-                {/* Other Co-morbidities */}
-                <Row>
-                  <Col sm="8">
-                    <Form.Label className="text-muted">Other Co-morbidities</Form.Label>
-                  </Col>
-                  <Col sm="4">
-                    <Form.Group as={Col} md="12">
-                      <Form.Control
-                        type="text" 
-                        name="other_comorbid"
-                        value={assessFormValues.other_comorbid}
-                        onChange={handleChange}
-                        placeholder='Co-morbidities'
-                      />
-                    </Form.Group>
+                  <Col>
+                    <div className={`collapse ${OtherDropdownOpen ? 'show' : ''}`}>
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Was the patient previously diagnosed with TB?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='prevPTB_diagnosed' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Are you unable to stand? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Are you unable to stand?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='can_stand' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Are you living with a person with HIV? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Are you living with a person with HIV?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='plhiv' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Do you have HIV? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Do you have HIV?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='hiv' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Does your mother have HIV? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Does your mother have HIV?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='mother_hiv' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Do you have a history of smoking? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Do you have a history of smoking?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='smoking' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Do you have a history of drinking? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Do you have a history of drinking?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='drinking' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Do you have a history of sexual activity? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Do you have a history of sexual activity?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='sex_active' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Do you have a history of renal disease? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Do you have a history of renal disease?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='renal_disease' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Do you have a history of malnutrition? */}
+                      <Row>
+                        <Col sm="9">
+                          <Form.Label className="text-muted">Do you have a history of malnutrition?</Form.Label>
+                        </Col>
+                        <Col sm="2">
+                          <input type="checkbox" name='malnutrition' onChange={handleChange}/>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Other Health Issues */}
+                      <Row>
+                        <Col sm="8">
+                          <Form.Label className="text-muted">Other Health Issues</Form.Label>
+                        </Col>
+                        <Col sm="4">
+                          <Form.Group as={Col} md="12">
+                            <Form.Control
+                              type="text" 
+                              name="other_health_issues"
+                              value={assessFormValues.other_health_issues}
+                              onChange={handleChange}
+                              placeholder='Health Issues'
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Other Medications */}
+                      <Row>
+                        <Col sm="8">
+                          <Form.Label className="text-muted">Other Medications</Form.Label>
+                        </Col>
+                        <Col sm="4">
+                          <Form.Group as={Col} md="12">
+                            <Form.Control
+                              type="text" 
+                              name="other_meds"
+                              value={assessFormValues.other_meds}
+                              onChange={handleChange}
+                              placeholder='Medications'
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Possible of drug to drug interactions */}
+                      <Row>
+                        <Col sm="8">
+                          <Form.Label className="text-muted">Possible of drug to drug interactions</Form.Label>
+                        </Col>
+                        <Col sm="4">
+                          <Form.Group as={Col} md="12">
+                            <Form.Control
+                              type="text" 
+                              name="other_dd_interacts"
+                              value={assessFormValues.other_dd_interacts}
+                              onChange={handleChange}
+                              placeholder='Possible interactions'
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <hr />
+                      {/* Other Co-morbidities */}
+                      <Row>
+                        <Col sm="8">
+                          <Form.Label className="text-muted">Other Co-morbidities</Form.Label>
+                        </Col>
+                        <Col sm="4">
+                          <Form.Group as={Col} md="12">
+                            <Form.Control
+                              type="text" 
+                              name="other_comorbid"
+                              value={assessFormValues.other_comorbid}
+                              onChange={handleChange}
+                              placeholder='Co-morbidities'
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    </div>
                   </Col>
                 </Row>
               </Card.Body>

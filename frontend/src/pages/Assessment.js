@@ -235,8 +235,8 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
 
       
 
-      <hr/>
-      <Row className="justify-content-center">
+      
+      <Row className="text-center justify-content-center">
     <Col xs={12} sm={6} md={3}>
       <Button
         className="btn mt-4 mb-4"
@@ -261,8 +261,8 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
       </Button>
     </Col>
   </Row>    
-
-      <Row className="mb-5 mt-2 justify-content-center">
+  <hr/>
+      <Row className="mb-5 mt-5 justify-content-center">
       <Col lg="8">
       <p> <strong> Assessment Record </strong> </p>
       {assessData.length > 0 ? (

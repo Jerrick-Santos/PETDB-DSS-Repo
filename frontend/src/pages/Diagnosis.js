@@ -254,13 +254,13 @@ const endIndex = startIndex + itemsPerPage;
                   start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
                   PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
      
-          <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
+          <Row className="justify-content-center" style={{ color:'black'}}>
             <Col lg="11">
               
             </Col>
 
             {caseData.case_status === "O" ? (
-            <Col lg="11" className="d-flex justify-content-center">
+            <Col lg="11" className="d-flex mb-3 justify-content-center">
                {/* Conditionally render the button */}
                
                 <button
