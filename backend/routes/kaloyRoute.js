@@ -70,7 +70,7 @@ module.exports = (db) => {
                 res.status(500).json(err);
                 console.log(err)
             }
-            else if (!results){ //if no results found
+            else if (results.length == 0){ //if no results found
                 const noHAObj = {
                     healthAssessment: 0,
                     presumptve_tb: 0,
