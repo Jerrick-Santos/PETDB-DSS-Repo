@@ -1,6 +1,6 @@
 
 import NavBar from '../../components/NavBar';
-import { Link } from 'react-router-dom';
+import { useParams  } from 'react-router-dom';
 
 import React, { useState, useEffect,PureComponent } from 'react';
 import { LineChart, Line } from 'recharts';
@@ -17,7 +17,7 @@ const PatientSummaryPTB = () => {
 
   const [chartData, setChartData] = useState([]); // Assume you have your data here
 
-
+  const { year } = useParams()
   const [bcdResistantTotal, setBcdResistantTotal] = useState(0);
   const [bcdSensitiveTotal, setBcdSensitiveTotal] = useState(0);
   const [clinicalTotal, setClinicalTotal] = useState(0);
@@ -92,7 +92,7 @@ const PatientSummaryPTB = () => {
 
   useEffect(() => {
 
-    axios.get(`http://localhost:4000/api/chartData/${currentYear}`)
+    axios.get(`http://localhost:4000/api/chartData/${year}`)
       .then((response) => {
         setChartData(response.data);
     
@@ -559,7 +559,7 @@ const PatientSummaryPTB = () => {
         // Handle any errors that occurred during the request
         console.error('Error fetching data:', error);
       });
-  }, [currentYear]);
+  }, []);
 
     function resetAllVariables() {
       setBcdResistantTotal(0);
@@ -751,54 +751,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
      {/* Showing 4 summary cards which will have a clickable function that affects the overall patient table
         once backend has been implemented*/}
   <div className='container-fluid justify-content-center'>
-  <Row className="mb-3 mt-4 justify-content-center">
-    
-            
-    <Col md="9" className="me-4">
-          
-          <div
-    className="mt-3 input-group"
-    style={{
-      maxWidth: '290px',
-      display: 'flex',
-      backgroundColor: '#0077B6',
-      borderRadius: '6px', // Adding borderRadius for rounding the outer div
-      overflow: 'hidden', // Ensuring content doesn't overflow rounded corners
-    }}
-  >
-    <div
-      style={{
-        backgroundColor: '#0077B6',
-        width: '30px',
-        height: '100%',
-      }}
-    >
-      <img className="ms-1 mt-2" src={filter} style={{height:"20px"}}alt="" />
-    </div>
-    <select
-      className="form-select"
-      onChange={(e) => {
-        resetAllVariables(); // Call the resetAllVariables function before updating currentYear
-        setCurrentYear(e.target.value);
-      }}
-    >
-
-      {years.map((data, index) => (
-        <>
-            <option value={data.DiagnosisYear}>{data.DiagnosisYear}</option>
-
-            </>
-          ))}
-      
-  
-      {/* Add more cities as needed */}
-    </select>
-  </div>
-
-    </Col>
-
-
-</Row>
+ 
   <Row className='row g-3 my-2 justify-content-center'>
     <div className='col-md-2 p-1'>
       <div className={`p-3 shadow-sm d-flex justify-content-around rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>
