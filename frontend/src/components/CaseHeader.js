@@ -17,10 +17,20 @@ const CaseHeader = (props) => {
         axios.get(`http://localhost:4000/api/getttimelineinfo/${props.caseNo}`)
         .then(res => {
             console.log(res);
-    
+
             // Check if res.data is an object and has the expected properties
-            if (typeof res.data === 'object' && res.data.hasOwnProperty('healthAssessment')) {
-                setTimelineData(res.data);
+            if (typeof res.data === 'object' && res.data.hasOwnProperty('date') && res.data.hasOwnProperty('sequence')) {
+                const { date, sequence } = res.data;
+                const orderedTimelineData = Object.keys(sequence)
+                    .filter(index => sequence[index] !== -1)
+                    .sort((a, b) => sequence[a] - sequence[b])
+                    .reduce((acc, index) => {
+                        acc[index] = date[index];
+                        return acc;
+                    }, {});
+                
+                setTimelineData(orderedTimelineData);
+                console.log(orderedTimelineData);
             } else {
                 // Log the entire response to understand the structure
                 console.log("Invalid data format received", res.data);
@@ -30,14 +40,6 @@ const CaseHeader = (props) => {
             console.error(err);
         })
     }, [props.caseNo]);
-
-    const timelineSteps = [
-        { key: 'healthAssessment', label: '1st Assessment' },
-        { key: 'presumptve_tb', label: 'Presumptive Diagnosed' },
-        { key: 'latent_tb', label: 'Latent Diagnosed' },
-        { key: 'confirmed_tb', label: 'Confirmed Diagnosis' },
-        { key: 'no_tb', label: 'No TB' },
-    ]
 
     return (
         <Row className="mt-5 justify-content-center" style={{ color:'black'}}>
@@ -89,17 +91,15 @@ const CaseHeader = (props) => {
 
                     <div class="row text-center mb-5 me-4">
                         <div class="col">
-                            <div class="timeline-steps aos-init aos-animate" data-aos="fade-up">
-                                {timelineSteps.map(step => (
-                                timelineData[step.key] !== 0 && (
-                                    <div class="timeline-step" key={step.key}>
-                                    <div class="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content="And here's some amazing content. It's very engaging. Right?" data-original-title="2003">
-                                        <div class="inner-circle"></div>
-                                        <p class="h6 text-muted mt-3 mb-1">{timelineData[step.key] !== 0 ? new Date(timelineData[step.key]).toLocaleDateString().replaceAll("/", "-") : null}</p>
-                                        <p class="h6 mb-0 mb-lg-0">{step.label}</p>
+                        <div className="timeline-steps aos-init aos-animate" data-aos="fade-up">
+                                {Object.keys(timelineData).map((key, index) => (
+                                    <div className="timeline-step" key={index}>
+                                        <div className="timeline-content" data-toggle="popover" data-trigger="hover" data-placement="top" title="" data-content={`And here's some amazing content. It's very engaging. Right?`} data-original-title={key}>
+                                            <div className="inner-circle"></div>
+                                            <p className="h6 mt-3 mb-1">{new Date(timelineData[key]).toLocaleDateString().replaceAll("/", "-")}</p>
+                                            <p className="h6 text-muted mb-0 mb-lg-0">{mapLabel(key)}</p>
+                                        </div>
                                     </div>
-                                    </div>
-                                )
                                 ))}
                             </div>
                         </div>
@@ -109,6 +109,17 @@ const CaseHeader = (props) => {
             </Col>
         </Row>
     )
+}
+
+const mapLabel = (key) => {
+    const labelMap = {
+        healthAssessment: '1st Assessment',
+        presumptve_tb: 'Presumptive Diagnosed',
+        latent_tb: 'Latent Diagnosed',
+        confirmed_tb: 'Confirmed Diagnosis',
+        no_tb: 'No TB',
+    };
+    return labelMap[key] || key;
 }
 
 export default CaseHeader
