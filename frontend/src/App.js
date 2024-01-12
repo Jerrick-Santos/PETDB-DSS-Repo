@@ -74,9 +74,9 @@ function App() {
 
                     {/* BHW routes */}
                     <Route path="/home"  element={<PatientSummaryWithAccess/>}/>
-                    <Route path="/home1" element={<PatientSummaryPTBWithAccess/>}/>
-                    <Route path="/home2" element={<PatientSummaryEPTBWithAccess/>}/>
-                    <Route path="/home3" element={<PatientSummaryClosedWithAccess/>}/>
+                    <Route path="/home1/:year" element={<PatientSummaryPTBWithAccess/>}/>
+                    <Route path="/home2/:year" element={<PatientSummaryEPTBWithAccess/>}/>
+                    <Route path="/home3/:year" element={<PatientSummaryClosedWithAccess/>}/>
                     <Route path='/home/:status/:year' element={<PatientSummaryDrilldownWithAccess/>}/>
 
 

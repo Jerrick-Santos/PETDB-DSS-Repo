@@ -33,7 +33,7 @@ let dbPool;
 function createDBPool() {
     dbPool = mysql.createPool({
         user: 'root',
-        port: 3310,
+        port: 3306,
         host: 'localhost',
         database: 'pedtbdss_new',
         password: '12345',
