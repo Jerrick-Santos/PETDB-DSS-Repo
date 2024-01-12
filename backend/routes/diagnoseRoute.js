@@ -548,8 +548,9 @@ module.exports = (db) => {
             }
 
             if (assessmentResults.length === 0) {
-                results.assessment = null;
-                res.status(500).json({ error: "No Assessment Data Found: Please Provide Health Assessment" });
+                // results.assessment = null;
+                res.send({ error: "No Assessment Data Found: Please Provide Health Assessment" });
+                return;
             } else {
                     const {
                         //Module Inputs

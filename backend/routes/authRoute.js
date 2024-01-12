@@ -71,7 +71,7 @@ module.exports = (db) => {
                               tokenContent.last_name = last_name;
                               tokenContent.user_type = user_type;
                               tokenContent.BGYNo = BGYNo;
-                  
+
                               const oneDayInSeconds = 24 * 60 * 60;
                   
                               const accessToken = jwt.sign(
