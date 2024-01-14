@@ -56,15 +56,30 @@ function DiagnosisFeedbackModel(props) {
     }, []); 
 
 
+    useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const diag_result = await axios.get('http://localhost:4000/api/getDiagnosisResults')
+              setDiagResult(diag_result.data)
+          } catch (error) {
+              console.error(error)
+          }
+      }
+      fetchData()
+  },[])
+
+
     const [testOptions, setTestOptions] = useState([]);
     const [HAOptions, setHAOptions] = useState([]);
-    const [feedbackForm, setFeedbackForm] = useState({ ruleno: props.ruleNo, recodiagnosis: '', AssessNo: '',  hafeedback: ''})
+    const [feedbackForm, setFeedbackForm] = useState({ DGNo: props.DGNo, recodiagnosis: '', hafeedback: '', recoEPTBpositive: -1})
     const [labtestfeedbackForm, setLabtestFeedbackForm] = useState([{ DGResultsNo: '', labtestRemarks: '' }]);
+    const [diagResult, setDiagResult] = useState([])
 
     const [recodiagnosisError, setRecodiagnosisError] = useState('');
     const [AssessNoError, setAssessNoError] = useState('');
     const [hafeedbackError, setHafeedbackError] = useState('');
     const [labtestfeedbackError, setLabtestFeedbackError] = useState([]);
+    
 
     const addNewField = () => {
       setLabtestFeedbackForm([...labtestfeedbackForm, { DGResultsNo: '', labtestRemarks: '' }]);
@@ -84,17 +99,20 @@ function DiagnosisFeedbackModel(props) {
     };
 
     const handleChange = (e) => {
-      const { name, value } = e.target;
+      const { name, value, type, checked } = e.target;
+    
+      // For checkbox, set the value to 1 when checked, otherwise 0
+      const updatedValue = type === 'checkbox' ? (checked ? 1 : -1) : value;
     
       // Create a copy of the existing feedbackForm state
       const updatedFeedbackForm = { ...feedbackForm };
     
       // Update the corresponding field in the copy with the new value
-      updatedFeedbackForm[name] = value;
+      updatedFeedbackForm[name] = updatedValue;
     
       // Set the updated state for feedbackForm
       setFeedbackForm(updatedFeedbackForm);
-      console.log(feedbackForm)
+      console.log(feedbackForm);
     };
 
     const validate = () => {
@@ -105,19 +123,6 @@ function DiagnosisFeedbackModel(props) {
       } 
       setRecodiagnosisError(recodiagnosisError)
 
-      let AssessNoError = '';
-      if (!feedbackForm.AssessNo) {
-        AssessNoError = 'Required';
-      } 
-      setAssessNoError(AssessNoError)
-
-
-      let hafeedbackError = '';
-      if (!feedbackForm.hafeedback) {
-        hafeedbackError = 'Required';
-      } 
-      setAssessNoError(hafeedbackError)
-
       const labtestFeedbackErrors = labtestfeedbackForm.map((field, index) => {
         let error = '';
         if (!field.DGResultsNo || !field.labtestRemarks) {
@@ -127,8 +132,7 @@ function DiagnosisFeedbackModel(props) {
       });
     
       setLabtestFeedbackError(labtestFeedbackErrors);
-
-      if (recodiagnosisError || AssessNoError || hafeedbackError || labtestFeedbackErrors.some(error => error !== '')) {
+      if (recodiagnosisError || labtestFeedbackErrors.some(error => error !== '')) {
         return false;
       }
 
@@ -167,9 +171,10 @@ function DiagnosisFeedbackModel(props) {
         }
 
 
-        setFeedbackForm({ ruleno: props.ruleNo, recodiagnosis: '', AssessNo: '',  hafeedback: ''})
+        setFeedbackForm({ DGNo: props.DGNo, recodiagnosis: '', hafeedback: '', recoEPTBpositive: -1})
         setLabtestFeedbackForm([{ DGResultsNo: '', labtestRemarks: '' }])
         handleClose();
+        window.location.reload();
     }
 
   return (
@@ -181,73 +186,56 @@ function DiagnosisFeedbackModel(props) {
                 type="button"
                 onClick={handleShow}
             >
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add Diagnosis Feedback
+                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/> Add Dissenting Diagnosis
             </button>
 
 
         <Modal show={show} onHide={handleClose} backdrop={ 'static' } size='xl'>
     <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-        <Modal.Title>Diagnosis Feedback</Modal.Title>
+        <Modal.Title>Dissenting Feedback</Modal.Title>
     </Modal.Header>
     <Modal.Body>
       <Form noValidate>
-
+      <p> System Diagnosis: <strong> {props.sys_diagosis} </strong> </p>
         <Row className="mt-4 justify-content-center">
         <Col lg="8">
-        <p> <strong> Feebdack Form </strong> </p>
+
             <Card className="mb-4">
               <Card.Body>
-                <Row>
-                  <Col sm="9">
-                    <Card.Text>Feedback</Card.Text>
-                  </Col>
-                  <Col sm="2">
-                    <Card.Text></Card.Text>
-                  </Col>
-                </Row>
                 <hr/>
                 { /* Recommended Diagnosis */ }
                 <Row>
                   <Col sm="8">
-                    <Form.Label className="text-muted">Recommended Diagnosis *</Form.Label>
+                    <Form.Label className="text-muted">Physician's Diagnosis *</Form.Label>
                   </Col>
                   <Col sm="4">  
                     <Form.Group as={Col} md="12">
-                        <Form.Control
-                          type="textarea" 
-                          name="recodiagnosis"
-                          value={feedbackForm.recodiagnosis}
-                          onChange={handleChange}
-                          placeholder=''
-                          isInvalid={recodiagnosisError}
-                        />
-                        <Form.Control.Feedback type='invalid'>{recodiagnosisError}</Form.Control.Feedback>
-                      </Form.Group>                    
-                    </Col>
-                </Row>
-                <Row>
-                  <Col sm="8">
-                    <Form.Label className="text-muted">Health Assessment *</Form.Label>
-                  </Col>
-                  <Col sm="4">
-                  <Form.Group as={Col} md="12">
-                        <Form.Control
+                    <Form.Control
                             as="select"
-                            name="AssessNo"
-                            value={feedbackForm.AssessNo}
+                            name="recodiagnosis"
+                            value={feedbackForm.recodiagnosis}
                             onChange={handleChange}
-                            isInvalid={AssessNoError}
+                            isInvalid={recodiagnosisError}
                         >
                             <option value="">Select an option</option>
-                            {HAOptions.map((option, index) => (
-                                <option key={option.AssessNo} value={option.AssessNo}>
-                                    {formatDate(option.assessment_date)}
+                            {diagResult.map((option, index) => (
+                                <option key={index} value={option.DRDescription}>
+                                    {option.DRDescription}
                                 </option>
                             ))}
-                        </Form.Control>
-                        <Form.Control.Feedback type='invalid'>{AssessNoError}</Form.Control.Feedback>
-                      </Form.Group>             
+                        </Form.Control>   
+                        <Form.Control.Feedback type='invalid'>{recodiagnosisError}</Form.Control.Feedback>
+                      </Form.Group>     
                     </Col>
+                </Row>
+
+                <Row>
+                <Col sm="8">
+                    <Form.Label className="text-muted">Is diagnosis Extrapulmonary? </Form.Label>
+                  </Col>
+                <Col sm="4">
+                    <input type="checkbox" name='recoEPTBpositive' onChange={handleChange}/>
+                  </Col>
                 </Row>
 
                 <Row>
@@ -262,9 +250,7 @@ function DiagnosisFeedbackModel(props) {
                           value={feedbackForm.hafeedback}
                           onChange={handleChange}
                           placeholder=''
-                          isInvalid={hafeedbackError}
                         />
-                        <Form.Control.Feedback type='invalid'>{hafeedbackError}</Form.Control.Feedback>
                       </Form.Group>                    
                     </Col>
                 </Row>
@@ -313,7 +299,7 @@ function DiagnosisFeedbackModel(props) {
                 {/* Dropdown */}
                 <Row>
                   <Col sm="8">
-                    <Form.Label className="text-muted">Lab Test*</Form.Label>
+                    <Form.Label className="text-muted">Lab Tests considered for diagnosis*</Form.Label>
                   </Col>
                   <Col sm="4">
                     <Form.Group as={Col} md="12">

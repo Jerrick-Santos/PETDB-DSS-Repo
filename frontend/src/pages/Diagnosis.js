@@ -120,6 +120,11 @@ const endIndex = startIndex + itemsPerPage;
       setActivePage(1);
     }
   };
+
+  function loadPage() {
+    setReload(!reload);
+    setActivePage(1);
+  }
   
   useEffect(() => {
     axios.get(`http://localhost:4000/api/getalldiagnosis/${id}`)
@@ -298,6 +303,8 @@ const endIndex = startIndex + itemsPerPage;
             {diagnosisData.slice(startIndex, endIndex).map((diagnosis, index) => (
               <>
               <hr/>
+              <Row>
+              <Col style={{ color: diagnosis.reco_diagnosis !== null ? "#B4B4B4" : "" }}>
                 <Row>
                 <Col lg="2"> 
                   <Badge bg="secondary"> Date Diagnosed: </Badge> 
@@ -327,7 +334,9 @@ const endIndex = startIndex + itemsPerPage;
 
               <Row>
                 <Col lg="2"> 
-                  <Badge bg="secondary"> Diagnosis: </Badge> 
+                  <Badge bg={diagnosis.reco_diagnosis !== null ? "secondary" : "primary"}>
+                  SYSTEM Diagnosis:
+                </Badge> 
                 </Col>
                 <Col lg="8"> 
                   <strong>
@@ -444,11 +453,42 @@ const endIndex = startIndex + itemsPerPage;
 
                   : (" ")}
             </Col>
+            
         </Row>
+        </Col>
+         </Row>  
+
+
+          {diagnosis.reco_diagnosis !== null ? (
+          <Row className="mt-3">
+
+          <Row>
+            <Col lg="2"> 
+              <Badge bg="secondary">
+                Physician Date Diagnosed:
+              </Badge>
+            </Col>
+            <Col lg="8"> 
+              <strong> {new Date(diagnosis.date).toLocaleDateString()}</strong>
+            </Col>
+            </Row>
+            <Row>
+            <Col lg="2"> 
+              <Badge bg="primary">
+                PHYSICIAN'S Diagnosis:
+              </Badge>
+            </Col>
+            <Col lg="8"> 
+              <strong>{diagnosis.reco_diagnosis} {diagnosis.recoEPTBpositive === 1 ?  "(Extrapulmonary)" : ""}</strong>
+            </Col>
+            </Row>
+
+          </Row>
+        ) : null}
 
         <Row className="mt-3">
           <Col>
-              <DiagnosisFeedbackModal caseNum={id} ruleNo={diagnosis.RuleNo}/>
+              <DiagnosisFeedbackModal caseNum={id} DGNo={diagnosis.DGNo} sys_diagosis={diagnosis.diagnosis} />
           </Col>
         </Row>
         

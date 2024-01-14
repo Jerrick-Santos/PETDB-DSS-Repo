@@ -297,9 +297,12 @@ module.exports = (db) => {
 
     router.get('/getalldiagnosis/:caseid', (req, res) => {
         const caseid = req.params.caseid
-        const getAllDiagnosisQuery = `SELECT * FROM PEDTBDSS_new.TD_PTDIAGNOSIS d
-        JOIN PEDTBDSS_new.MD_DIAGNOSISRULES r ON d.RuleNo = r.RuleNo WHERE CaseNo = ${caseid}
-        ORDER BY DGNo DESC `
+        const getAllDiagnosisQuery = `SELECT * 
+        FROM pedtbdss_new.td_diagnosisfeedback t1
+        RIGHT JOIN pedtbdss_new.td_ptdiagnosis t2 ON t1.DGNo = t2.DGNo
+        JOIN pedtbdss_new.md_diagnosisrules t3 ON t2.RuleNo = t3.RuleNo
+        WHERE t2.CaseNo = ${caseid}
+        ORDER BY t2.DGNo DESC; `
 
         db.query(getAllDiagnosisQuery, (err, results) => {
             if (err) {
@@ -327,6 +330,9 @@ module.exports = (db) => {
         });
     })
 
+
+
+
     // GET HEALTH ASSESSMENTS TAKEN BY PATIENT WITHIN A CASE
 
     router.get('/gethealthassessments/:caseid', (req, res) => {
@@ -342,16 +348,51 @@ module.exports = (db) => {
             }
         });
     })
+
+
+    // GET LAB TESTS TAKEN BY PATIENT WITHIN A CASE
+
+    router.get('/getdissentinglist', (req, res) => {
+            const getDissentingList = `SELECT *
+            FROM pedtbdss_new.td_diagnosisfeedback t1 
+            JOIN pedtbdss_new.td_ptdiagnosis t2 ON t1.DGNo = t2.DGNo
+            JOIN pedtbdss_new.md_diagnosisrules t3 ON t2.RuleNo = t3.RuleNo;`
+    
+            db.query(getDissentingList, (err, results) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    res.send(results)
+                }
+            });
+    })
+
+
+    router.get('/getdissentingiteminfo/:caseid', (req, res) => {
+        const caseid = req.params.caseid
+        const getDissentingItemInfo = `SELECT *
+        FROM pedtbdss_new.td_diagnosisfeedback t1 
+        JOIN pedtbdss_new.td_labtestfeedback t2 ON t1.feedback_id = t2.feedback_id
+        WHERE t1.DGNo = ${caseid};`
+
+        db.query(getDissentingItemInfo, (err, results) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(results)
+            }
+        });
+})
+
     //ADD FEEDBACK
     router.post('/addfeedback/:caseid', (req, res) => {
         const caseid = req.params.caseid
-        const { ruleno, recodiagnosis, AssessNo, hafeedback, labtestfeedback } = req.body;
-        const assessNoQuery = `SELECT AssessNo FROM PEDTBDSS_new.TD_HEALTHASSESSMENT WHERE CaseNo = ${caseid}`;
+        const { DGNo, recodiagnosis, hafeedback, labtestfeedback, recoEPTBpositive } = req.body;
 
                     // STEP 2: Add to TD_DIAGNOSISFEEDBACK
-                    db.query(`INSERT INTO PEDTBDSS_new.TD_DIAGNOSISFEEDBACK(Ruleno, reco_diagnosis, AssessNo, ha_feedback, CaseNo) 
+                    db.query(`INSERT INTO PEDTBDSS_new.TD_DIAGNOSISFEEDBACK(DGNo, reco_diagnosis, ha_feedback, date, recoEPTBpositive) 
                     VALUES (?, ?, ?, ?, ?)`, 
-                    [ruleno, recodiagnosis, AssessNo, hafeedback, caseid], 
+                    [DGNo, recodiagnosis, hafeedback, new Date().toISOString().split('T')[0], recoEPTBpositive], 
                     (error8, InsertResult) => {
                         if (error8) {
                             res.status(500).json(error8);
