@@ -368,12 +368,12 @@ module.exports = (db) => {
     })
 
 
-    router.get('/getdissentingiteminfo/:caseid', (req, res) => {
-        const caseid = req.params.caseid
+    router.get('/getdissentingiteminfo/:dgno', (req, res) => {
+        const dgno = req.params.dgno
         const getDissentingItemInfo = `SELECT *
         FROM pedtbdss_new.td_diagnosisfeedback t1 
         JOIN pedtbdss_new.td_labtestfeedback t2 ON t1.feedback_id = t2.feedback_id
-        WHERE t1.DGNo = ${caseid};`
+        WHERE t1.DGNo = ${dgno};`
 
         db.query(getDissentingItemInfo, (err, results) => {
             if (err) {
