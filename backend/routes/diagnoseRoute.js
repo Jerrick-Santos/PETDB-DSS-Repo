@@ -297,12 +297,70 @@ module.exports = (db) => {
 
     router.get('/getalldiagnosis/:caseid', (req, res) => {
         const caseid = req.params.caseid
-        const getAllDiagnosisQuery = `SELECT * 
-        FROM pedtbdss_new.td_diagnosisfeedback t1
-        RIGHT JOIN pedtbdss_new.td_ptdiagnosis t2 ON t1.DGNo = t2.DGNo
-        JOIN pedtbdss_new.md_diagnosisrules t3 ON t2.RuleNo = t3.RuleNo
+        const getAllDiagnosisQuery = `SELECT 
+        t1.alldiag_id, 
+        t1.sysdiag_id,
+        t1.phydiag_id, 
+        t2.DGNo,
+        t2.DGDate AS date, 
+        t2.CaseNo, 
+        t3.diagnosis,
+        t3.EPTBpositive, 
+        t3.presumptive_tb, 
+        t3.cli_diagnosed, 
+        t3.baconfirmed, 
+        t3.drug_res, 
+        t3.drug_sens, 
+        t3.multi_res, 
+        t3.latent_tb, 
+        t3.no_tb, 
+        t3.need_eval, 
+        t3.need_xray, 
+        t3.need_mtb, 
+        t3.need_tst, 
+        t3.need_igra, 
+        t3.need_dst,
+        t3.need_followup,
+        t2.need_hiv,
+        t3.has_TBcontact
+        FROM pedtbdss_new.td_alldiagnosis t1
+        JOIN pedtbdss_new.td_ptdiagnosis t2 ON t1.sysdiag_id = t2.DGNo
+        LEFT JOIN pedtbdss_new.md_diagnosisrules t3 ON t2.RuleNo = t3.RuleNo
         WHERE t2.CaseNo = ${caseid}
-        ORDER BY t2.DGNo DESC; `
+        
+        UNION
+        
+        SELECT 
+        t1.alldiag_id, 
+        t1.sysdiag_id,
+        t1.phydiag_id,
+        NULL AS DGNo,
+        t2.date,
+        t3.CaseNo, 
+        t2.reco_diagnosis AS diagnosis, 
+        t2.recoEPTBpositive AS EPTBpositive, 
+        NULL AS presumptive_tb, 
+        NULL AS cli_diagnosed, 
+        NULL AS baconfirmed, 
+        NULL AS drug_res, 
+        NULL AS drug_sens, 
+        NULL AS multi_res, 
+        NULL AS latent_tb, 
+        NULL AS no_tb, 
+        NULL AS need_eval, 
+        t2.req_xray AS need_xray, 
+        t2.req_mtb AS need_mtb, 
+        t2.req_tst AS need_tst, 
+        t2.req_igra AS need_igra, 
+        t2.req_dst AS need_dst,
+        t2.req_followup AS need_followup,
+        t2.need_hiv,
+        NULL AS has_TBcontact
+        FROM pedtbdss_new.td_alldiagnosis t1
+        JOIN pedtbdss_new.td_diagnosisfeedback t2 ON t1.phydiag_id = t2.feedback_id
+        JOIN pedtbdss_new.td_ptdiagnosis t3 ON t2.DGNo = t3.DGNo
+        WHERE t3.CaseNo = ${caseid}
+        ORDER BY alldiag_id DESC;`
 
         db.query(getAllDiagnosisQuery, (err, results) => {
             if (err) {
@@ -387,12 +445,41 @@ module.exports = (db) => {
     //ADD FEEDBACK
     router.post('/addfeedback/:caseid', (req, res) => {
         const caseid = req.params.caseid
-        const { DGNo, recodiagnosis, hafeedback, labtestfeedback, recoEPTBpositive } = req.body;
+        const { DGNo, 
+                recodiagnosis, 
+                hafeedback, 
+                labtestfeedback, 
+                recoEPTBpositive,
+                req_xray, 
+                req_mtb, 
+                req_tst, 
+                req_igra, 
+                req_dst,
+                req_followup,
+                need_hiv } = req.body;
 
                     // STEP 2: Add to TD_DIAGNOSISFEEDBACK
-                    db.query(`INSERT INTO PEDTBDSS_new.TD_DIAGNOSISFEEDBACK(DGNo, reco_diagnosis, ha_feedback, date, recoEPTBpositive) 
-                    VALUES (?, ?, ?, ?, ?)`, 
-                    [DGNo, recodiagnosis, hafeedback, new Date().toISOString().split('T')[0], recoEPTBpositive], 
+                    db.query(`INSERT INTO PEDTBDSS_new.TD_DIAGNOSISFEEDBACK(
+                    DGNo,
+                    reco_diagnosis, 
+                    ha_feedback, 
+                    date, 
+                    recoEPTBpositive, 
+                    req_xray, 
+                    req_mtb, 
+                    req_tst, 
+                    req_igra, 
+                    req_dst,
+                    req_followup,
+                    need_hiv ) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+                    [DGNo, recodiagnosis, hafeedback, new Date().toISOString().split('T')[0], recoEPTBpositive, req_xray, 
+                    req_mtb, 
+                    req_tst, 
+                    req_igra, 
+                    req_dst,
+                    req_followup,
+                    need_hiv], 
                     (error8, InsertResult) => {
                         if (error8) {
                             res.status(500).json(error8);
@@ -401,6 +488,7 @@ module.exports = (db) => {
                         else{
 
                             //STEP 3: Store insert_id as a variable
+                            console.log( "INSERT RESULT: ", InsertResult)
                             const feedback_id = InsertResult.insertId;
                             console.log("Successfully added to TD_DIAGNOSISFEEDBACK with ID:", feedback_id);
                             console.log(labtestfeedback)
@@ -422,14 +510,43 @@ module.exports = (db) => {
                                             return;
                                         } else {
                                             console.log("LabTest feedback inserted successfully");
-                                            res.status(200).json({ message:" LabTest feedback inserted successfully" });
-                                            return;
+                                            
+                                            db.query(
+                                                `INSERT INTO PEDTBDSS_new.TD_ALLDIAGNOSIS (phydiag_id) VALUES (?)`,
+                                                [feedback_id],
+                                                (errorAllDiagnosis, AllDiagnosisInsertResult) => {
+                                                    if (errorAllDiagnosis) {
+                                                        console.log(errorLab)
+                                                        res.status(500).json({ error: "Error inserting All Diagnosis feedback" });
+                                                        return;
+                                                    } else {
+                                                        console.log("Inserted into ALLDIAGNOSIS");
+            
+                                                        res.status(200).json({ message:" LabTest feedback inserted successfully and Inserted to All Diagnosis" });
+                                                        return;
+                                                    }
+                                                }
+                                            );
                                         }
                                     }
                                 );
                             } else {
-                                res.status(200).json({ message: "Successfully Added Feedback without Labtests" });
-                                return;
+                                db.query(
+                                    `INSERT INTO PEDTBDSS_new.TD_ALLDIAGNOSIS (phydiag_id) VALUES (?)`,
+                                    [feedback_id],
+                                    (errorAllDiagnosis, AllDiagnosisInsertResult) => {
+                                        if (errorAllDiagnosis) {
+                                            console.log(errorLab)
+                                            res.status(500).json({ error: "Error inserting All Diagnosis feedback" });
+                                            return;
+                                        } else {
+                                            console.log("Inserted into ALLDIAGNOSIS");
+
+                                            res.status(200).json({ message:" Successfully Added Feedback without Labtests and Inserted to All Diagnosis" });
+                                            return;
+                                        }
+                                    }
+                                );
                             }
 
                         }
@@ -897,7 +1014,10 @@ module.exports = (db) => {
     
                                                                     if(prevRule === RuleNo && prevRule != null){
                                                                         res.status(200).json({sameCase: 1})
-                                                                        console.log("No Change")
+
+                                                                    
+
+                                                                        console.log("No Change", prevRule, RuleNo)
                                                                         return;
                                                                     
                                                                     }
@@ -921,9 +1041,25 @@ module.exports = (db) => {
                                                                                     return;
                                                                                 }
                                                                                 else{
-                                                                                    console.log("INSERT RESULT: ")
-                                                                                    console.log(InsertResult)
-                                                                                    res.status(200).json(InsertResult)
+                                                                                    db.query(
+                                                                                        `INSERT INTO PEDTBDSS_new.TD_ALLDIAGNOSIS (sysdiag_id) VALUES (?)`,
+                                                                                        [InsertResult.insertId],
+                                                                                        (errorAllDiagnosis, AllDiagnosisInsertResult) => {
+                                                                                            if (errorAllDiagnosis) {
+                                                                                                console.log(errorAllDiagnosis)
+                                                                                                res.status(500).json({ error: "Error inserting All Diagnosis feedback" });
+                                                                                                return;
+                                                                                            } else {
+                                                                                                console.log("Inserted into ALLDIAGNOSIS");
+                                                    
+                                                                                                res.status(200).json({ message:"  Inserted to All Diagnosis" });
+                                                                                                return;
+                                                                                            }
+                                                                                        }
+                                                                                    );
+                                                                                    // console.log("INSERT RESULT: ")
+                                                                                    // console.log(InsertResult)
+                                                                                    // res.status(200).json(InsertResult)
                                                                                 }
                                                                             })
                                         

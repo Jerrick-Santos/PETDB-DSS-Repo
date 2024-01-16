@@ -304,13 +304,13 @@ const endIndex = startIndex + itemsPerPage;
               <>
               <hr/>
               <Row>
-              <Col style={{ color: diagnosis.reco_diagnosis !== null ? "#B4B4B4" : "" }}>
+              <Col>
                 <Row>
                 <Col lg="2"> 
                   <Badge bg="secondary"> Date Diagnosed: </Badge> 
                 </Col>
                 <Col lg="2"> 
-                   <strong> {new Date(diagnosis.DGDate).toLocaleDateString()}</strong>
+                   <strong> {new Date(diagnosis.date).toLocaleDateString()}</strong>
                 </Col>
               </Row>
 
@@ -328,14 +328,17 @@ const endIndex = startIndex + itemsPerPage;
                 ( diagnosis.baconfirmed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === -1 && diagnosis.multi_res === 1) ? "Bacteriologically Confirmed - Multi-Drug Resistant " :
                 ( diagnosis.latent_tb === 1 ) ? "Latent  " :
                 ( diagnosis.no_tb === 1 ) ? "NO TB" :
+                (diagnosis.sysdiag_id === null ) ? diagnosis.diagnosis :
                         "NONE"}
                 </Col>
               </Row>
 
               <Row>
                 <Col lg="2"> 
-                  <Badge bg={diagnosis.reco_diagnosis !== null ? "secondary" : "primary"}>
-                  SYSTEM Diagnosis:
+                  <Badge bg={diagnosis.sysdiag_id !== null ? "primary" : "success"}>
+
+                    {(diagnosis.sysdiag_id !== null) ? "SYSTEM Diagnosis: " : "PHYSICIAN'S Diagnosis: "}
+                  
                 </Badge> 
                 </Col>
                 <Col lg="8"> 
@@ -352,19 +355,22 @@ const endIndex = startIndex + itemsPerPage;
                 ( diagnosis.cli_diagnosed === 1  && diagnosis.drug_res === -1 && diagnosis.drug_sens === 1) ? "Clinically Diagnosed - Drug Sensitive " :
                 ( diagnosis.latent_tb === 1 ) ? "Latent  " :
                 ( diagnosis.no_tb === 1 ) ? "NO TB" :
+                (diagnosis.sysdiag_id === null ) ? diagnosis.diagnosis :
                         "NONE"}
                         
                         {
                 ( diagnosis.no_tb === 1 ) ? "" :
-                ( diagnosis.EPTBpositive === 1 ) ? "PTB with EPTB Signs" :
+                ( diagnosis.EPTBpositive === 1 ) ? " PTB with EPTB Signs" :
                         "PTB"}  </strong>
                 </Col>
               </Row>
 
               {
-                ( diagnosis.no_tb === 1 ) ? "" : 
+                ( diagnosis.no_tb === 1 ||  diagnosis.diagnosis === "NO TB") ? "" : 
                 <Row className="mt-4">
-                <Col style={{fontSize:"18px"}}> {(diagnosis.need_eval === 1 && !diagnosis.diagnosis.includes("Refer to specialist") ) ? "The following tests are needed for further evaluation:" :
+                <Col style={{fontSize:"18px"}}> {((diagnosis.need_eval === 1 || 
+                (diagnosis.need_xray === 1 || diagnosis.need_mtb === 1 || diagnosis.need_tst === 1 || diagnosis.need_igra === 1 || 
+                  diagnosis.need_dst === 1)) && !diagnosis.diagnosis.includes("Refer to specialist") ) ? "The following tests are needed for further evaluation:" :
                             "Please Refer to a specialist for further Management"} </Col>
                 </Row>
               }
@@ -423,7 +429,7 @@ const endIndex = startIndex + itemsPerPage;
 
         <Row className="mt-1">
             <Col style={{fontSize:"18px"}}>
-            {(diagnosis.no_tb === -1 || diagnosis.latent_tb === 1) ? "Please advice patient and parent to avoid close contact to contain the spread of TB." : " "}
+            {(diagnosis.no_tb === -1 || diagnosis.latent_tb === 1 || diagnosis.diagnosis !== "NO TB") ? "Please advice patient and parent to avoid close contact to contain the spread of TB." : " "}
 
                </Col>
         </Row>
@@ -441,13 +447,13 @@ const endIndex = startIndex + itemsPerPage;
         <Row className="mt-1">
             <Col style={{ fontSize: "18px" }}>
                 The patient is advised to undergo:
-                {diagnosis.presumptive_tb === 1 ? (
+                {diagnosis.presumptive_tb || diagnosis.diagnosis.includes("Presumptive") ? (
                     <span style={{ fontWeight: "bold" }}> TB Preventive Treatment (TPT)</span>
-                ) : diagnosis.cli_diagnosed === 1 || diagnosis.baconfirmed === 1 ? (
+                ) : diagnosis.cli_diagnosed === 1 || diagnosis.baconfirmed || diagnosis.diagnosis.includes("Confirmed") || diagnosis.diagnosis.includes("Clinically") ? (
                     <span style={{ fontWeight: "bold" }}> TB Treatment</span>
                 ) : diagnosis.has_TBcontact === 1 ? (
                     <span style={{ fontWeight: "bold" }}> TB Preventive Treatment (TPT)</span>
-                ) : diagnosis.no_tb === 1 ? (
+                ) : diagnosis.no_tb === 1 || diagnosis.diagnosis.includes("NO TB")? (
                   <span style={{ fontWeight: "bold" }}> No Treatment Necessary </span>
                   )
 
@@ -458,39 +464,14 @@ const endIndex = startIndex + itemsPerPage;
         </Col>
          </Row>  
 
-
-          {diagnosis.reco_diagnosis !== null ? (
-          <Row className="mt-3">
-
-          <Row>
-            <Col lg="2"> 
-              <Badge bg="secondary">
-                Physician Date Diagnosed:
-              </Badge>
-            </Col>
-            <Col lg="8"> 
-              <strong> {new Date(diagnosis.date).toLocaleDateString()}</strong>
-            </Col>
-            </Row>
-            <Row>
-            <Col lg="2"> 
-              <Badge bg="primary">
-                PHYSICIAN'S Diagnosis:
-              </Badge>
-            </Col>
-            <Col lg="8"> 
-              <strong>{diagnosis.reco_diagnosis} {diagnosis.recoEPTBpositive === 1 ?  "(Extrapulmonary)" : ""}</strong>
-            </Col>
-            </Row>
-
-          </Row>
-        ) : null}
-
-        <Row className="mt-3">
+        {(diagnosis.sysdiag_id !== null) ? ( <Row className="mt-3">
           <Col>
+                  <hr/>
+              <p>If the designated Physician differs from the SYSTEM'S DIAGNOSIS. Click on the <span>"Add Dissenting Diagnosis" </span> Button</p>
               <DiagnosisFeedbackModal caseNum={id} DGNo={diagnosis.DGNo} sys_diagosis={diagnosis.diagnosis} />
           </Col>
-        </Row>
+        </Row>) : null}
+       
         
 
                    </>

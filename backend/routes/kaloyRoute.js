@@ -31,29 +31,29 @@ module.exports = (db) => {
         let sequence = 1
       
         for (let i = 0; i < arr.length; i++) {
-          if (dateObj.presumptve_tb === 0 && arr[i].presumptive_tb === 1) {
-            dateObj.presumptve_tb = arr[i].DGDate;
+          if (dateObj.presumptve_tb === 0 && (arr[i].presumptive_tb === 1 || arr[i].diagnosis.includes("Presumptive"))) {
+            dateObj.presumptve_tb = arr[i].date;
             sequenceObj.presumptve_tb = sequence
             sequence++
           }
       
-          if (dateObj.latent_tb === 0 && arr[i].latent_tb === 1) {
-            dateObj.latent_tb = arr[i].DGDate;
+          if (dateObj.latent_tb === 0 && (arr[i].latent_tb === 1 || arr[i].diagnosis.includes("Latent"))) {
+            dateObj.latent_tb = arr[i].date;
             sequenceObj.latent_tb = sequence
             sequence++
           }
       
           if (
             dateObj.confirmed_tb === 0 &&
-            (arr[i].cli_diagnosed === 1 || arr[i].baconfirmed === 1)
+            (arr[i].cli_diagnosed === 1 || (arr[i].baconfirmed === 1 || arr[i].diagnosis.includes("Clinically") ||  arr[i].diagnosis.includes("Confirmed")))
           ) {
-            dateObj.confirmed_tb = arr[i].DGDate;
+            dateObj.confirmed_tb = arr[i].date;
             sequenceObj.confirmed_tb = sequence
             sequence++
           }
       
-          if (dateObj.no_tb === 0 && arr[i].no_tb === 1) {
-            dateObj.no_tb = arr[i].DGDate;
+          if (dateObj.no_tb === 0 && (arr[i].no_tb === 1 || arr[i].diagnosis.includes("NO TB"))) {
+            dateObj.no_tb = arr[i].date;
             sequenceObj.no_tb = sequence
             sequence++
           }
@@ -84,10 +84,69 @@ module.exports = (db) => {
         WHERE CaseNo = ${caseid}
         LIMIT 1;`
 
-        const getDiagnosisByCase = `SELECT * 
-        FROM pedtbdss_new.td_ptdiagnosis t1 
-        JOIN pedtbdss_new.md_diagnosisrules t2 ON t1.RuleNo = t2.RuleNo
-        WHERE CaseNo = ${caseid};	`
+        const getDiagnosisByCase = `SELECT 
+        t1.alldiag_id, 
+        t1.sysdiag_id,
+        t1.phydiag_id, 
+        t2.DGNo,
+        t2.DGDate AS date, 
+        t2.CaseNo, 
+        t3.diagnosis,
+        t3.EPTBpositive, 
+        t3.presumptive_tb, 
+        t3.cli_diagnosed, 
+        t3.baconfirmed, 
+        t3.drug_res, 
+        t3.drug_sens, 
+        t3.multi_res, 
+        t3.latent_tb, 
+        t3.no_tb, 
+        t3.need_eval, 
+        t3.need_xray, 
+        t3.need_mtb, 
+        t3.need_tst, 
+        t3.need_igra, 
+        t3.need_dst,
+        t3.need_followup,
+        t2.need_hiv,
+        t3.has_TBcontact
+        FROM pedtbdss_new.td_alldiagnosis t1
+        JOIN pedtbdss_new.td_ptdiagnosis t2 ON t1.sysdiag_id = t2.DGNo
+        LEFT JOIN pedtbdss_new.md_diagnosisrules t3 ON t2.RuleNo = t3.RuleNo
+        WHERE t2.CaseNo = ${caseid}
+        
+        UNION
+        
+        SELECT 
+        t1.alldiag_id, 
+        t1.sysdiag_id,
+        t1.phydiag_id,
+        NULL AS DGNo,
+        t2.date,
+        t3.CaseNo, 
+        t2.reco_diagnosis AS diagnosis, 
+        t2.recoEPTBpositive AS EPTBpositive, 
+        NULL AS presumptive_tb, 
+        NULL AS cli_diagnosed, 
+        NULL AS baconfirmed, 
+        NULL AS drug_res, 
+        NULL AS drug_sens, 
+        NULL AS multi_res, 
+        NULL AS latent_tb, 
+        NULL AS no_tb, 
+        NULL AS need_eval, 
+        t2.req_xray AS need_xray, 
+        t2.req_mtb AS need_mtb, 
+        t2.req_tst AS need_tst, 
+        t2.req_igra AS need_igra, 
+        t2.req_dst AS need_dst,
+        t2.req_followup AS need_followup,
+        t2.need_hiv,
+        NULL AS has_TBcontact
+        FROM pedtbdss_new.td_alldiagnosis t1
+        JOIN pedtbdss_new.td_diagnosisfeedback t2 ON t1.phydiag_id = t2.feedback_id
+        JOIN pedtbdss_new.td_ptdiagnosis t3 ON t2.DGNo = t3.DGNo
+        WHERE t3.CaseNo = ${caseid};`
 
         db.query(getFirstHealthAssessment, (err, results) => {
             if (err) {
@@ -119,6 +178,7 @@ module.exports = (db) => {
                         res.status(500).json(err2);
                         console.log(err2)
                     } else {
+                        console.log(results2)
                         const responseObj = {
                             ...findFirstInstance(results2, results[0].assessment_date)
                         };

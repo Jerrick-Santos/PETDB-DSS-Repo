@@ -71,7 +71,18 @@ function DiagnosisFeedbackModel(props) {
 
     const [testOptions, setTestOptions] = useState([]);
     const [HAOptions, setHAOptions] = useState([]);
-    const [feedbackForm, setFeedbackForm] = useState({ DGNo: props.DGNo, recodiagnosis: '', hafeedback: '', recoEPTBpositive: -1})
+    const [feedbackForm, setFeedbackForm] = useState({ DGNo: props.DGNo, 
+    recodiagnosis: '', 
+    hafeedback: '', 
+    recoEPTBpositive: -1, 
+    req_xray: -1, 
+    req_mtb: -1, 
+    req_tst: -1, 
+    req_igra: -1, 
+    req_dst: -1,
+    req_followup: -1, 
+    need_hiv: -1
+  })
     const [labtestfeedbackForm, setLabtestFeedbackForm] = useState([{ DGResultsNo: '', labtestRemarks: '' }]);
     const [diagResult, setDiagResult] = useState([])
 
@@ -171,7 +182,14 @@ function DiagnosisFeedbackModel(props) {
         }
 
 
-        setFeedbackForm({ DGNo: props.DGNo, recodiagnosis: '', hafeedback: '', recoEPTBpositive: -1})
+        setFeedbackForm({ DGNo: props.DGNo, recodiagnosis: '', hafeedback: '', recoEPTBpositive: -1, 
+        req_xray: -1, 
+        req_mtb: -1, 
+        req_tst: -1, 
+        req_igra: -1, 
+        req_dst: -1,
+        req_followup: -1, 
+        need_hiv: -1})
         setLabtestFeedbackForm([{ DGResultsNo: '', labtestRemarks: '' }])
         handleClose();
         window.location.reload();
@@ -196,17 +214,21 @@ function DiagnosisFeedbackModel(props) {
     </Modal.Header>
     <Modal.Body>
       <Form noValidate>
-      <p> System Diagnosis: <strong> {props.sys_diagosis} </strong> </p>
+      
         <Row className="mt-4 justify-content-center">
         <Col lg="8">
 
             <Card className="mb-4">
+              
               <Card.Body>
+
+              <p> System Diagnosis: <strong className='text-danger'> {props.sys_diagosis} </strong> </p>
                 <hr/>
                 { /* Recommended Diagnosis */ }
                 <Row>
+                
                   <Col sm="8">
-                    <Form.Label className="text-muted">Physician's Diagnosis *</Form.Label>
+                    <Form.Label className="text-muted">Physician's Recommended Diagnosis *</Form.Label>
                   </Col>
                   <Col sm="4">  
                     <Form.Group as={Col} md="12">
@@ -239,6 +261,69 @@ function DiagnosisFeedbackModel(props) {
                 </Row>
 
                 <Row>
+                <Col sm="8">
+                    <Form.Label className="text-muted">Request XRAY Test?</Form.Label>
+                  </Col>
+                <Col sm="4">
+                    <input type="checkbox" name='req_xray' onChange={handleChange}/>
+                  </Col>
+                </Row>
+
+                <Row>
+                <Col sm="8">
+                    <Form.Label className="text-muted">Request MTB/RIF Test?</Form.Label>
+                  </Col>
+                <Col sm="4">
+                    <input type="checkbox" name='req_mtb' onChange={handleChange}/>
+                  </Col>
+                </Row>
+
+                <Row>
+                <Col sm="8">
+                    <Form.Label className="text-muted">Request TST Test?</Form.Label>
+                  </Col>
+                <Col sm="4">
+                    <input type="checkbox" name='req_tst' onChange={handleChange}/>
+                  </Col>
+                </Row>
+
+                <Row>
+                <Col sm="8">
+                    <Form.Label className="text-muted">Request IGRA Test?</Form.Label>
+                  </Col>
+                <Col sm="4">
+                    <input type="checkbox" name='req_igra' onChange={handleChange}/>
+                  </Col>
+                </Row>
+
+                <Row>
+                <Col sm="8">
+                    <Form.Label className="text-muted">Request DST Test?</Form.Label>
+                  </Col>
+                <Col sm="4">
+                    <input type="checkbox" name='req_dst' onChange={handleChange}/>
+                  </Col>
+                </Row>
+
+                <Row>
+                <Col sm="8">
+                    <Form.Label className="text-muted">Request Follow Up?</Form.Label>
+                  </Col>
+                <Col sm="4">
+                    <input type="checkbox" name='req_followup' onChange={handleChange}/>
+                  </Col>
+                </Row>
+
+                <Row>
+                <Col sm="8">
+                    <Form.Label className="text-muted">Request HIV Test?</Form.Label>
+                  </Col>
+                <Col sm="4">
+                    <input type="checkbox" name='need_hiv' onChange={handleChange}/>
+                  </Col>
+                </Row>
+
+                <Row>
                   <Col sm="8">
                     <Form.Label className="text-muted">Health Assessment Feedback</Form.Label>
                   </Col>
@@ -259,6 +344,15 @@ function DiagnosisFeedbackModel(props) {
             </Card>
           </Col>
         </Row>
+
+        <Col className="d-flex justify-content-center">
+
+
+        <p>What Laboratory Tests were considered in this diagnosis? (Click "Add Lab Test" Button)</p>
+          
+        </Col>
+                          
+        
 
         <Col className="d-flex justify-content-center">
 
@@ -298,8 +392,9 @@ function DiagnosisFeedbackModel(props) {
 
                 {/* Dropdown */}
                 <Row>
+                  
                   <Col sm="8">
-                    <Form.Label className="text-muted">Lab Tests considered for diagnosis*</Form.Label>
+                    <Form.Label className="text-muted">Type of Lab Test*</Form.Label>
                   </Col>
                   <Col sm="4">
                     <Form.Group as={Col} md="12">
