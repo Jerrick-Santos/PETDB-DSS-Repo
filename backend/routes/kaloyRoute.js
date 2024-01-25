@@ -9,6 +9,45 @@ const SALT_ROUNDS = 10
 // Export the router with the attached 'db' connection
 module.exports = (db) => {
 
+    router.get('/getreport', (req, res) => {
+        const presumptive = parseInt(req.query.presumptive, 10);
+        const fromDate = req.query.fromDate;
+        const toDate = req.query.toDate;
+
+        let variable = "";
+        if (presumptive === 1){
+            variable = "Presumptive";
+        } else if (presumptive === 0){
+            variable = "Latent";
+        }
+        console.log(presumptive)
+        console.log(presumptive)
+        console.log(variable)
+        console.log(fromDate)
+        console.log(toDate)
+
+        db.query(` SELECT  B.diagnosis, COUNT(*) as NumberofPresumptiveCases
+                            FROM 	(SELECT DISTINCT CaseNo, tdp.DGDate
+                                    FROM	td_ptdiagnosis tdp JOIN md_diagnosisrules mdd ON tdp.RuleNo = mdd.RuleNo
+                                    WHERE	mdd.diagnosis LIKE '%${variable}%') A	JOIN (	SELECT  tdp.CaseNo, mdd.diagnosis
+                                                                                            FROM	td_ptdiagnosis tdp JOIN md_diagnosisrules mdd ON tdp.RuleNo = mdd.RuleNo
+                                                                                            WHERE	mdd.diagnosis NOT LIKE '%${variable}%') B ON A.CaseNo = B.CaseNo
+                            WHERE	 A.DGDate BETWEEN "${fromDate}" AND "${toDate}"
+                            GROUP BY B.diagnosis;`, (err, results) => {
+                                if (err) {
+                                    console.log(err)
+                                } else {
+                                    results.forEach(result => {
+                                        console.log(result.age);
+                                    });
+                                    res.send(results)
+                                    console.log(results)
+                                }
+                            })
+
+        
+    })
+
 
     // Attach the 'db' connection to all route handlers before returning the router
     function findFirstInstance(arr, healthAssesmentDate) {

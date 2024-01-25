@@ -214,6 +214,9 @@ const NavBar = () => {
         <Nav.Link className="text-light" href="/allpatient">
           View Patients
         </Nav.Link>
+        <Nav.Link className="text-light" href="/diagnosisreport">
+          Diagnosis Report
+        </Nav.Link>
       </Nav>
       <Nav className="ms-auto me-4">
       <Dropdown drop="down" alignLeft>

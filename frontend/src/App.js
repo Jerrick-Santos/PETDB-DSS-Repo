@@ -7,6 +7,7 @@ import CloseContacts from './pages/CloseContacts'
 import Treatments from './pages/Treatments'
 import AddPatient from './pages/AddPatient';
 import ViewPatient from './pages/ViewPatient';
+import GenerateReport from './pages/GenerateReport';
 import Case from './pages/Case';
 import LaboratoryTest from './pages/LaboratoryTest';
 import Diagnosis from './pages/Diagnosis';
@@ -52,6 +53,7 @@ const TreatmentsWithAccess = withAccessControl(Treatments, ['BHW']);
 const SimilarCasesWithAccess = withAccessControl(SimilarCases, ['BHW']);
 const AddPatientWithAccess = withAccessControl(AddPatient, ['BHW']);
 const ViewPatientWithAccess = withAccessControl(ViewPatient, ['BHW']);
+const GenerateReportWithAccess = withAccessControl(GenerateReport, ['BHW']);
 const CaseWithAccess = withAccessControl(Case, ['BHW']);
 
 
@@ -90,6 +92,7 @@ function App() {
                     <Route path="/similarcases/:id" element={<SimilarCasesWithAccess/>}/>
                     <Route path="/addpatient" element={<AddPatientWithAccess/>}/>
                     <Route path="/allpatient" element={<ViewPatientWithAccess/>}/>
+                    <Route path="/diagnosisreport" element={<GenerateReportWithAccess/>}/>
                     
                     <Route path="/case/:id" element={<CaseWithAccess/>}/>
                     <Route path="/addpatient/:id" element={<AddPatientWithAccess/>}/>
