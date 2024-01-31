@@ -67,8 +67,25 @@ function AddCloseContactModal(props) {
           const contactsResult = await axios.get(`http://localhost:4000/api/getSimilarContacts/${formValues.first_name}/${formValues.middle_initial}/${formValues.last_name}`);
 
           console.log(patientResult.data, contactsResult.data)
+          // problem: sometimes there can be duplicate records between patients who have both a close contact record and a patient record
+          const patient_id_set = new Set()
+          patientResult.data.map((patient) => {
+            patient_id_set.add(patient.PatientNo)
+          })
 
+          var combinedDataTest = [...patientResult.data]
+          contactsResult.data.map((contacts) => {
+            if (contacts.PatientNo && patient_id_set.has(contacts.PatientNo)) {
+                combinedDataTest = [...combinedData, contacts]
+            }
+          })
+          
           const combinedData = [...patientResult.data, ...contactsResult.data];
+
+          console.log("COMBINED DATA TEST COMPARISON")
+          console.log(combinedData)
+          console.log(combinedDataTest)
+
           return {
             combinedData: combinedData
           } 

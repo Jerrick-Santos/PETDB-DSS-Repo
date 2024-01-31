@@ -3,7 +3,7 @@
     "body-parser": "^1.20.2"
   },
   "scripts": {
-    "start": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run start-frontend\"",
+    "start": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run start\"",
     "start-backend": "echo 'Please start the backend server directly'",
     "start-frontend": "serve -s build"
   },
