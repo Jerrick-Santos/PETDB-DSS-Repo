@@ -1036,7 +1036,7 @@ module.exports = (db) => {
                                                                             [new Date().toISOString().split('T')[0], caseid, RuleNo, userid, need_hiv, dataIdObject.healthassess_id, dataIdObject.xray_id, dataIdObject.mtb_id, dataIdObject.tst_id, dataIdObject.igra_id, dataIdObject.dst_id], 
                                                                             (error8, InsertResult) => {
                                                                                 if (error8) {
-                                                                                    console.log("EEEOOOOOOOR")
+                                                                                    console.log("Error: ")
                                                                                     res.status(500).json(error8);
                                                                                     return;
                                                                                 }
