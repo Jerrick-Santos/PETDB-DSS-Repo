@@ -1,1 +1,0 @@
-mysql -u root -p > pedtb_11_20_23_clean.sql
