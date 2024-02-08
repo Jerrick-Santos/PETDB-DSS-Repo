@@ -3,8 +3,8 @@ const cors = require('cors');
 const app = express();
 const mysql = require('mysql');
 const MainRoutes = require('./routes/mainRoute');
-const kaloyRoute = require('./routes/kaloyRoute');
-const raymondRoute = require('./routes/raymondRoute');
+const healthAssessmentRoute = require('./routes/healthAssessmentRoute');
+const closeContactRoute = require('./routes/closeContactRoute');
 const diagnoseRoute = require('./routes/diagnoseRoute');
 const simCasesRoute = require('./routes/simCasesRoute');
 const authRoute = require('./routes/authRoute');
@@ -83,8 +83,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', MainRoutes(dbPool));
-app.use('/api', kaloyRoute(dbPool));
-app.use('/api', raymondRoute(dbPool));
+app.use('/api', healthAssessmentRoute(dbPool));
+app.use('/api', closeContactRoute(dbPool));
 app.use('/api', diagnoseRoute(dbPool));
 app.use('/api', simCasesRoute(dbPool));
 app.use('/api', authRoute(dbPool));
