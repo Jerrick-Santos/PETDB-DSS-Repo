@@ -1,7 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
-import React, {useState, useEffect} from 'react';
-import edit from '../assets/edit.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import React, {useState, useEffect} from 'react'
+import { Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import add from '../assets/add.png';
 import Form from 'react-bootstrap/Form';
@@ -217,12 +216,8 @@ function AddIGRAModal(props) {
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>
-
-
     </>
-      
   );
 }
 
 export default AddIGRAModal;
-

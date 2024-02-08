@@ -1,10 +1,9 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Navbar, Nav, Card, Row, Col, ButtonGroup, Button } from 'react-bootstrap';
+import { Navbar, Nav, Card, Row, Col, Button } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
-import add from '../assets/add.png';
 import noresult from "../assets/noresult.png";
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
@@ -152,7 +151,8 @@ const Assessment = () => {
     (_, index) => startPage + index,
   );
 
-const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
+  const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
+
   return (
     <div>
       <NavBar/>
@@ -163,42 +163,38 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
        
           <Navbar expand="sm" className="mt-4 pb-0">
             <Nav>
-            <Link to={`/closecontacts/${caseNum}`}>
-          <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-            <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
-          </button>
-          </Link>
-          <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-            <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
-          </button>
-          <Link to={`/labtest/${caseNum}`}> 
-          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={test} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
-          </button>
-          </Link>
-          <Link to={`/diagnosis/${caseNum}`}> 
-          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={diagnose} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
-          </button>
-          </Link>
-          <Link to={`/treatments/${caseNum}`}> 
-          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatment History
-          </button>
-          </Link>
-          <Link to={`/similarcases/${caseNum}`}> 
-          <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
-          <img src={similar} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
-          </button>
-          </Link>
-            
+              <Link to={`/closecontacts/${caseNum}`}>
+                <button className="btn ms-1" style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+                  <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Close Contacts
+                </button>
+              </Link>
+              <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+                <img src={assessment} className="mb-1" style={{height:"25px"}} alt="" /> Assessment
+              </button>
+              <Link to={`/labtest/${caseNum}`}> 
+                <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+                <img src={test} className="mb-1" style={{height:"25px"}} alt="" /> Laboratory Tests
+                </button>
+              </Link>
+              <Link to={`/diagnosis/${caseNum}`}> 
+                <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+                <img src={diagnose} className="mb-1" style={{height:"25px"}} alt="" /> Diagnosis
+                </button>
+              </Link>
+              <Link to={`/treatments/${caseNum}`}> 
+                <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+                <img src={treatment} className="mb-1" style={{height:"25px"}} alt="" /> Treatment History
+                </button>
+              </Link>
+              <Link to={`/similarcases/${caseNum}`}> 
+                <button className="btn ms-1 " style={{ color: "#03045E", backgroundColor: 'white', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
+                <img src={similar} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
+                </button>
+              </Link>
             </Nav>
-          
           </Navbar>
-         
         </Col>
       </Row>
-      
       
       <Row className="justify-content-center" >
         <Col lg="10" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '5px', borderStyle: 'solid', borderRadius: '20px' }}>
@@ -230,11 +226,6 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
       <CaseHeader caseNo={caseNum} case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
                   start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
                   PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
-     
-     
-
-      
-
       
       <Row className="text-center justify-content-center">
     <Col xs={12} sm={6} md={3}>
@@ -243,7 +234,6 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
         style={{ color: "white", backgroundColor: '#0077B6', minWidth: '300px' }}
         type="button"
         onClick={handleButtonClick}
-        // disabled={isLoading || patientData.case_status === 'C'}
       >
         {isLoading ? (
           <>
@@ -278,8 +268,6 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
                           </thead>
 
                           <tbody>
-            
-        
             
             {assessData.slice(startIndex, endIndex).map((ass, index) => (
               <>
@@ -442,8 +430,6 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
                     ))}
              </tbody>
                         </table>
-
-
           
           </Card.Body>
         </Card>
@@ -467,11 +453,10 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
                       </Card.Body>
                     </Card>
                   )}
-      
  
       <Row className="mb-4">
                     
-                      {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
+    {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
     {caseData.case_status === "O" ?
     <>
      {assessData.length > 0 ? (
@@ -544,8 +529,6 @@ const minAssessNo = Math.min(...assessData.map(a => a.AssessNo));
                       ) : null}
                     </Col>
                   </Row>
-
-  
 
       {/* Shows the recommended next course of action */}
       

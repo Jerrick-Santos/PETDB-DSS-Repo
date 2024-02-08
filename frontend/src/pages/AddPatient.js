@@ -3,19 +3,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
-import edit from '../assets/edit.png';
-import user from '../assets/user.png';
-import distance from '../assets/distance.png';
-import assessment from '../assets/assessment.png';
-import treatment from '../assets/treatment.png';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import { Alert } from 'react-bootstrap';
 
 const AddPatient = () => {
-
 
     function formatDate(datestring) {
         const date = new Date(datestring);
@@ -579,11 +573,6 @@ const AddPatient = () => {
 
         updatedPatient[name] = name === 'last_name' ? value.toUpperCase() : newValue;
 
-        // if (name === 'birthdate') {
-        //     // also update calculatedAge
-            
-        // }
-
         setPatient(updatedPatient);
     };
 
@@ -632,8 +621,6 @@ const AddPatient = () => {
                 emergency_name: res.data[0].contact_person,
                 e_contactno: res.data[0].contact_num,
                 e_email: res.data[0].contact_email,
-                //birthdate: new Date(res.data[0].birthdate).toISOString().split('T')[0],
-                //age: getAge(new Date(res.data[0].birthdate).toISOString().split('T')[0]),
                 id
               }));
             })
@@ -649,14 +636,10 @@ const AddPatient = () => {
     }, [patient])
 
     // calculate age for when birthdate is passed from parameter
-    
-
 
   return (
-
     <div>
       <NavBar/>
-
             <Modal show={showConsentModal} onHide={handleCloseConsentModal}  backdrop={ 'static' } size='lg'>
                 <Modal.Header style={{color:'white', backgroundColor: "#0077B6"}}>
                     <Modal.Title>Privacy Consent Reminder</Modal.Title>
@@ -1343,451 +1326,6 @@ const AddPatient = () => {
                 </div>
             </Form>
         </Modal.Body>                            
-      {/*<form className="mt-4 justify-content-center">
-            <Row className="mb-2 justify-content-center">
-                 <div className="form-group col-md-11">
-                    <p style={{fontSize:"25px"}}> <strong> New Patient Information  </strong> </p>
-                </div>
-            </Row>
-            
-      
-            <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-4">
-                    <label for="inputFirstName">First Name</label>
-                    <input type="text" class="form-control" id="inputFirstName" name='first_name' onChange={handleChange} placeholder="First Name" value={patient.first_name}/>
-                    {firstNameError && (
-                        <p style={{color: 'red'}}>{firstNameError}</p>  
-                    )}
-                </div>
-
-                <div className="form-group col-md-3">
-                    <label for="inputMI">Middle Name</label>
-                    <input type="text" class="form-control" id="inputMI" name='middle_initial' onChange={handleChange} placeholder="Middle Name" value={patient.middle_initial}/>
-                    {middleNameError && (
-                        <p style={{color: 'red'}}>{middleNameError}</p>
-                    )}
-                </div>
-
-                <div className="form-group col-md-4">
-                    <label for="inputLastName">Last Name</label>
-                    <input type="text" class="form-control" id="inputLastName" name='last_name' onChange={handleChange} placeholder="Last Name" value={patient.last_name} />
-                    {lastNameError && (
-                        <p style={{color: 'red'}}>{lastNameError}</p>
-                    )}
-                </div>
-              </Row>
-              <Row className="mb-5 justify-content-center">
-                <div className="form-group col-md-2">
-                    <label for="inputBirthdate">Birthdate</label>
-                    <input type="date" class="form-control" id="inputBirthdate" name='birthdate' onChange={handleChange} value={patient.birthdate} />
-                    {birthdateError && (
-                        <p style={{color: 'red'}}>{birthdateError}</p>
-                    )}
-                </div>
-                
-                <div className="form-group col-md-2">
-                <label for="inputSex">Sex</label>
-                <select id="inputSex" class="form-control" name='sex' onChange={handleChange} value={patient.sex} >
-                    <option selected>Select</option>
-                    <option value="M" >Male</option>
-                    <option value="F" >Female</option>
-                </select>
-                    {sexError && (
-                        <p style={{color: 'red'}}>{sexError}</p>
-                    )}
-                </div>
-
-                <div className="form-group col-md-1">
-                    <label for="inputAge">Age</label>
-                    <input type="number" class="form-control" id="inputAge"  name='age' value={calculatedAge !== null ? calculatedAge : ''} readOnly placeholder="Age"/>
-                </div>
-
-                <div className="form-group col-md-2">
-                    <label for="inputNationality">Nationality</label>
-                    <input type="text" class="form-control" id="inputNationality"  name='nationality' onChange={handleChange} placeholder="Nationality"/>
-                    {nationalityError && (
-                        <p style={{color: 'red'}}>{nationalityError}</p>
-                    )}
-                </div>
-                
-                <div className="form-group col-md-2">
-                    <label for="inputWeight">Body Weight</label>
-                    <input type="number" class="form-control" id="inputWeight"  name='initial_bodyweight' onChange={handleChange} placeholder="Weight (kg)"/> 
-                    {bodyWeightError && (
-                        <p style={{color: 'red'}}>{bodyWeightError}</p>
-                    )}
-                </div>
-                
-                <div className="form-group col-md-2">
-                    <label for="inputHeight">Height</label>
-                    <input type="number" class="form-control" id="inputHeight"  name='initial_height' onChange={handleChange} placeholder="Height (cm)"/>
-                    {heightError && (
-                        <p style={{color: 'red'}}>{heightError}</p>
-                    )}
-                </div>
-            </Row>
-            <hr/>
-
-            <Row className="mb-2 justify-content-center">
-                 <div className="form-group col-md-11">
-                    <p style={{fontSize:"25px"}}> <strong> Permanent Address  </strong> </p>
-                </div>
-            </Row>
-            
-            <Row className="mb-5 justify-content-center">
-                <div class="form-group col-md-1">
-                    <label for="inputPermHouseNo">House #</label>
-                    <input type="text" class="form-control" id="inputPermHouseNo" name='per_houseno' onChange={handleChange}  placeholder="House No."/>
-                    {permHouseError && (
-                        <p style={{color: 'red'}}>{permHouseError}</p>  
-                    )}
-                </div>
-                
-                <div class="form-group col-md-1">
-                    <label for="inputPermStreet">Street</label>
-                    <input type="text" class="form-control" id="inputPermStreet" name='per_street' onChange={handleChange}  placeholder="Street"/>
-                    {permStreetError && (
-                        <p style={{color: 'red'}}>{permStreetError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputPermRegion">Region</label>
-                    <select className="form-select" name="per_region" value={patient.per_region} onChange={(e)=>{
-                        handleChange(e);
-                        handleRegionChange(e);
-                    }}>
-                        <option value="">Select</option>
-                    
-                    {regionData.map((hi, index) => (
-                    <>
-                    <option value={hi.region_id}>{hi.region_name}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {permRegionError && (
-                        <p style={{color: 'red'}}>{permRegionError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputPermProvince">Province</label>
-                    <select className="form-select" name="per_province" disabled={patient.per_region === ""} value={patient.per_province} onChange={(e)=>{
-                        handleChange(e);
-                        handleProvinceChange(e);
-                    }}>
-                        <option value="">Select</option>
-                    
-                    {provinceData.map((hi, index) => (
-                    <>
-                    <option value={hi.province_id}>{hi.province_name}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {permProvinceError && (
-                        <p style={{color: 'red'}}>{permProvinceError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputPermCity">City</label>
-                    <select className="form-select" name="per_city" value={patient.per_city} disabled={patient.per_province === ""} onChange={(e)=>{
-                        handleChange(e);
-                        handleCityChange(e);
-                    }}>
-                        <option value="">Select</option>
-                    
-                    {cityData.map((hi, index) => (
-                    <>
-                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {permCityError && (
-                        <p style={{color: 'red'}}>{permCityError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputPermBarangay">Barangay</label>
-                    <select className="form-select" name="per_barangay" value={patient.per_barangay} disabled={patient.per_city === ""} onChange={handleChange}>
-                        <option value="">Select</option>
-                    
-                    {barangayData.map((hi, index) => (
-                    <>
-                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {permBarangayError && (
-                        <p style={{color: 'red'}}>{permBarangayError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-1">
-                    <label for="inputPermZip">Zip Code</label>
-                    <input type="text" class="form-control" id="inputPermZip" name='per_zipcode' onChange={handleChange}  placeholder="Zip"/>
-                    {permZipError && (
-                        <p style={{color: 'red'}}>{permZipError}</p>  
-                    )}
-                </div>
-                
-            </Row>
-
-            <Row className="mb-2 justify-content-center">
-                 <div className="form-group col-md-11">
-                    <p> <strong style={{fontSize:"25px"}}> Current Address&nbsp;  </strong> <label>
-                        <input
-                            type="checkbox"
-                            checked={isAutoFillActive}
-                            onChange={handleAutoFill}
-                        />
-                        &nbsp;Same as Permanent Address
-                    </label></p>
-                </div>
-            </Row>
-
-            <Row className="mb-5 justify-content-center">
-            <div class="form-group col-md-1">
-                    <label for="inputCurrHouseNo">House #</label>
-                    <input type="text" class="form-control" id="inputCurrHouseNo" name='curr_houseno' value={isAutoFillActive ? patient.per_houseno : patient.curr_houseno} onChange={handleChange}  placeholder="House No." disabled={isCurrentAddressDisabled}/>
-                    {currHouseError && (
-                        <p style={{color: 'red'}}>{currHouseError}</p>  
-                    )}
-                </div>
-                
-                <div class="form-group col-md-1">
-                    <label for="inputCurrStreet">Street</label>
-                    <input type="text" class="form-control" id="inputCurrStreet" name='curr_street' value={isAutoFillActive ? patient.per_street : patient.curr_street} onChange={handleChange}  placeholder="Street" disabled={isCurrentAddressDisabled}/>
-                    {currStreetError && (
-                        <p style={{color: 'red'}}>{currStreetError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputCurrRegion">Region</label>
-                    <select className="form-select" name="curr_region" value={patient.curr_region} onChange={(e)=>{
-                        handleChange(e);
-                        handleCurrRegionChange(e);
-                    }} disabled={isCurrentAddressDisabled}>
-                        <option value="">Select</option>
-                    
-                    {currRegionData.map((hi, index) => (
-                    <>
-                    <option value={hi.region_id}>{hi.region_name}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {currRegionError && (
-                        <p style={{color: 'red'}}>{currRegionError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputCurrProvince">Province</label>
-                    <select className="form-select" name="curr_province" value={patient.curr_province}  onChange={(e)=>{
-                        handleChange(e);
-                        handleCurrProvinceChange(e);
-                    }} disabled={isCurrentAddressDisabled || patient.curr_region === ""}>
-                        <option value="">Select</option>
-                    
-                    {currProvinceData.map((hi, index) => (
-                    <>
-                    <option value={hi.province_id}>{hi.province_name}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {currProvinceError && (
-                        <p style={{color: 'red'}}>{currProvinceError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputCurrCity">City</label>
-                    <select className="form-select" name="curr_city" value={patient.curr_city} onChange={(e)=>{
-                        handleChange(e);
-                        handleCurrCityChange(e);
-                    }} disabled={isCurrentAddressDisabled || patient.curr_province === ""}>
-                        <option value="">Select</option>
-                    
-                    {currCityData.map((hi, index) => (
-                    <>
-                    <option value={hi.municipality_id}>{hi.municipality_name}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {currCityError && (
-                        <p style={{color: 'red'}}>{currCityError}</p>  
-                    )}
-                </div>
-
-                <div class="form-group col-md-2">
-                    <label for="inputCurrBarangay">Barangay</label>
-                    <select className="form-select" name="curr_barangay" value={patient.curr_barangay} onChange={handleChange} disabled={isCurrentAddressDisabled || patient.curr_city === ""}>
-                        <option value="">Select</option>
-                    
-                    {currBarangayData.map((hi, index) => (
-                    <>
-                    <option value={hi.barangay_id}>{hi.barangay_name}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {currBarangayError && (
-                        <p style={{color: 'red'}}>{currBarangayError}</p>  
-                    )}
-                </div> 
-
-                <div class="form-group col-md-1">
-                    <label for="inputCurrZip">Zip Code</label>
-                    <input type="text" class="form-control" id="inputCurrZip" name='curr_zipcode' value={isAutoFillActive ? patient.per_zipcode : patient.curr_zipcode} onChange={handleChange}  placeholder="Zip" disabled={isCurrentAddressDisabled}/>
-                    {currZipError && (
-                        <p style={{color: 'red'}}>{currZipError}</p>  
-                    )}
-                </div>
-                
-            </Row>
-
-            <hr/>
-
-            <Row className="mb-2 justify-content-center">
-                 <div className="form-group col-md-11">
-                    <p style={{fontSize:"25px"}}> <strong> Contacts  </strong> </p>
-                </div>
-            </Row>
-
-            <Row className="mt-2 mb-3 justify-content-center">
-                <div class="form-group col-md-3">
-                    <label for="inputGuardianName">Name of Guardian</label>
-                    <input type="text" class="form-control" id="inputGuardianName" name='guardian_name' onChange={handleChange} placeholder="Name"/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputGuardianRelationship">Relationship</label>
-                    <input type="text" class="form-control" id="inputGuardianRelationship" name='g_relationship' onChange={handleChange} placeholder="Relationship"/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputGuardianBirth">Birthdate</label>
-                    <input type="date" class="form-control" id="inputGuardianBirth" name='g_birthdate' onChange={handleChange} placeholder="Guardian's Name"/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputGuardianContact">Contact #</label>
-                    <input type="text" class="form-control" id="inputGuardianContact" name='g_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputGuardianEmail">Email</label>
-                    <input type="text" class="form-control" id="inputGuardianEmail" name='g_email' onChange={handleChange} placeholder="sample@sample.com"/>
-                </div>
-            </Row>
-
-            <Row className="mt-2 mb-3 justify-content-center">
-                <div class="form-group col-md-3">
-                    <label for="inputMotherName">Name of Mother</label>
-                    <input type="text" class="form-control" id="inputMotherName" name='mother_name' onChange={handleChange} placeholder="Name"/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputMotherBirth">Birthdate</label>
-                    <input type="date" class="form-control" id="inputMotherBirth" name='m_birthdate' onChange={handleChange} placeholder="Mother's Name"/>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputMotherContact">Contact #</label>
-                    <input type="text" class="form-control" id="inputMotherContact" name='m_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputMotherEmail">Email</label>
-                    <input type="text" class="form-control" id="inputMotherEmail" name='m_email' onChange={handleChange} placeholder="sample@sample.com"/>
-                </div>
-            </Row>
-
-            <Row className="mt-2 mb-3 justify-content-center">
-                <div class="form-group col-md-3">
-                    <label for="inputFatherName">Name of Father</label>
-                    <input type="text" class="form-control" id="inputFatherName" name='father_name' onChange={handleChange} placeholder="Name"/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputFatherBirth">Birthdate</label>
-                    <input type="date" class="form-control" id="inputFatherBirth" name='f_birthdate' onChange={handleChange} placeholder="Father's Name"/>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputFatherContact">Contact #</label>
-                    <input type="text" class="form-control" id="inputFatherContact" name='f_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx"/>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="inputFatherEmail">Email</label>
-                    <input type="text" class="form-control" id="inputFatherEmail" name='f_email' onChange={handleChange} placeholder="sample@sample.com"/>
-                </div>
-            </Row>
-
-            <Row className="mt-2 mb-5 justify-content-center">
-                <div class="form-group col-md-3">
-                    <label for="inputEmergencyName">Emergency Contact Name</label>
-                    <input type="text" class="form-control" id="inputEmergencyName" name='emergency_name' onChange={handleChange} placeholder="Name" value={patient.emergency_name}/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputEmergencyRelationship">Relationship</label>
-                    <input type="text" class="form-control" id="inputEmergencyRelationship" name='e_relationship' onChange={handleChange} placeholder="Relationship"/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputEmergencyBirth">Birthdate</label>
-                    <input type="date" class="form-control" id="inputEmergencyBirth" name='e_birthdate' onChange={handleChange} placeholder="Mother's Name" />
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputEmergencyContact">Contact #</label>
-                    <input type="text" class="form-control" id="inputEmergencyContact" name='e_contactno' onChange={handleChange} placeholder="09xx-xxx-xxxx" value={patient.e_contactno}/>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputEmergencyEmail">Email</label>
-                    <input type="text" class="form-control" id="inputEmergencyEmail" name='e_email' onChange={handleChange} placeholder="sample@sample.com" value={patient.e_email} />
-                </div>
-            </Row>
-
-            <hr/>
-
-            <Row className="mb-2 justify-content-center">
-                 <div className="form-group col-md-11">
-                    <p style={{fontSize:"25px"}}> <strong> Initial Case Reference  </strong> </p>
-                </div>
-            </Row>
-
-            <Row className="mt-2 mb-3 justify-content-center">
-                <div class="form-group col-md-3">
-                    <label for="inputCaseRefno">Initial Case Reference No.</label>
-                    <input type="text" class="form-control" id="inputCaseRefno" name='case_refno' onChange={handleChange} placeholder="Case Ref No."/>
-                    {caserefError && (
-                        <p style={{color: 'red'}}>{caserefError}</p>  
-                    )}
-                </div>
-            </Row>
-  
-            <div className="d-flex justify-content-center mt-5 mb-4" >
-              <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleSubmit}>
-                Save Information
-              </button>
-          </div>
-                    </form>*/}
-
             <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
                 <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}} closeButton>
                     <Modal.Title>Patient Added!</Modal.Title>
@@ -1805,12 +1343,9 @@ const AddPatient = () => {
                     </Link>
                 </Modal.Footer>
             </Modal>
-
-      </Col>
+        </Col>
     </Row>
-
     </div>
-    
   );
 };
 

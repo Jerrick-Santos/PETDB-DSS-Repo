@@ -2,22 +2,15 @@ import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
 import add from '../assets/add.png';
 import axios from 'axios';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
-import { Link, useParams } from 'react-router-dom';
-import FormControl from 'react-bootstrap/FormControl'
+import { Row, Col  } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
-import ViewSimilarPatientModal from '../components/ViewSimilarPatientModal'
 
 function AddTreatmentModal(props) {
    
     const[show,setShow] = useState(false)
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
     const id=props.caseID;
-
-
     const [formValues, setFormValues] = useState({
         CaseNo: id,
         Medicine:'',
@@ -99,101 +92,91 @@ function AddTreatmentModal(props) {
     }
   return (
         <>
+    <button className="btn mb-4" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
+        <img src={add} className="me-1 mb-1" style={{height:"20px"}}/>     Add a Treatment
+    </button>
 
-            <button className="btn mb-4" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
-                <img src={add} className="me-1 mb-1" style={{height:"20px"}}/>     Add a Treatment
-              </button>
-
-        <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
-    <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-        <Modal.Title>Add a Treatment</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
-            <Row className="mb-3 justify-content-center">
-                {/* For Medicine */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='Medicine'>
-                    <Form.Label><strong>Medicine:</strong></Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        name='Medicine'
-                        onChange={handleChange}
-                        value={formValues.Medicine}
-                        isInvalid={medError}
-                    />
-                    <Form.Control.Feedback type='invalid'>{medError}</Form.Control.Feedback>
-                </Form.Group>
-                {/* For Dosage */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='Dosage'>
-                    <Form.Label><strong>Dosage:</strong></Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        name='Dosage'
-                        onChange={handleChange}
-                        value={formValues.Dosage}
-                        isInvalid={dosageError}
-                    />
-                    <Form.Control.Feedback type='invalid'>{dosageError}</Form.Control.Feedback>
-                </Form.Group>
-                {/* For Frequency */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='Frequency'>
-                    <Form.Label><strong>Frequency:</strong></Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        name='Frequency'
-                        onChange={handleChange}
-                        value={formValues.Frequency}
-                        isInvalid={freqError}
-                    />
-                    <Form.Control.Feedback type='invalid'>{freqError}</Form.Control.Feedback>
-                </Form.Group>
-                {/* For Start Date */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='StartDate'>
-                    <Form.Label><strong>Start Date:</strong></Form.Label>
-                    <Form.Control
-                        required
-                        type='date'
-                        name='StartDate'
-                        onChange={handleChange}
-                        isInvalid={startdateError}
-                    />
-                    <Form.Control.Feedback type='invalid'>{startdateError}</Form.Control.Feedback>
-                </Form.Group>
-                {/* For End Date */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='EndDate'>
-                    <Form.Label><strong>End Date:</strong></Form.Label>
-                    <Form.Control
-                        required
-                        type='date'
-                        name='EndDate'
-                        onChange={handleChange}
-                        isInvalid={enddateError}
-                    />
-                    <Form.Control.Feedback type='invalid'>{enddateError}</Form.Control.Feedback>
-                </Form.Group>
-                <Form.Label><strong>Current treatment?&nbsp;&nbsp;&nbsp;</strong><input type="checkbox" name='isCurrent' onChange={handleChange}/></Form.Label>
-            </Row>
-        </Form>
-    </Modal.Body>
-    <Modal.Footer >
-        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
-        <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
-    </Modal.Footer>
-</Modal>
-
-
+    <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
+        <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
+            <Modal.Title>Add a Treatment</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <Form noValidate onSubmit={handleSubmit}>
+                <Row className="mb-3 justify-content-center">
+                    {/* For Medicine */}
+                    <Form.Group as={Col} md="12" className='mb-3' controlId='Medicine'>
+                        <Form.Label><strong>Medicine:</strong></Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='Medicine'
+                            onChange={handleChange}
+                            value={formValues.Medicine}
+                            isInvalid={medError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{medError}</Form.Control.Feedback>
+                    </Form.Group>
+                    {/* For Dosage */}
+                    <Form.Group as={Col} md="12" className='mb-3' controlId='Dosage'>
+                        <Form.Label><strong>Dosage:</strong></Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='Dosage'
+                            onChange={handleChange}
+                            value={formValues.Dosage}
+                            isInvalid={dosageError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{dosageError}</Form.Control.Feedback>
+                    </Form.Group>
+                    {/* For Frequency */}
+                    <Form.Group as={Col} md="12" className='mb-3' controlId='Frequency'>
+                        <Form.Label><strong>Frequency:</strong></Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='Frequency'
+                            onChange={handleChange}
+                            value={formValues.Frequency}
+                            isInvalid={freqError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{freqError}</Form.Control.Feedback>
+                    </Form.Group>
+                    {/* For Start Date */}
+                    <Form.Group as={Col} md="12" className='mb-3' controlId='StartDate'>
+                        <Form.Label><strong>Start Date:</strong></Form.Label>
+                        <Form.Control
+                            required
+                            type='date'
+                            name='StartDate'
+                            onChange={handleChange}
+                            isInvalid={startdateError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{startdateError}</Form.Control.Feedback>
+                    </Form.Group>
+                    {/* For End Date */}
+                    <Form.Group as={Col} md="12" className='mb-3' controlId='EndDate'>
+                        <Form.Label><strong>End Date:</strong></Form.Label>
+                        <Form.Control
+                            required
+                            type='date'
+                            name='EndDate'
+                            onChange={handleChange}
+                            isInvalid={enddateError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{enddateError}</Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Label><strong>Current treatment?&nbsp;&nbsp;&nbsp;</strong><input type="checkbox" name='isCurrent' onChange={handleChange}/></Form.Label>
+                </Row>
+            </Form>
+        </Modal.Body>
+        <Modal.Footer >
+            <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+            <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+        </Modal.Footer>
+    </Modal>
     </>
-      
   );
 }
 
-
-
-
-
-
 export default AddTreatmentModal;
-

@@ -1,18 +1,12 @@
-
-
-import React, { useState, useEffect,PureComponent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LineChart, Line } from 'recharts';
-import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, XAxis, YAxis, CartesianGrid, } from 'recharts';
-import { Navbar, Nav, Card, Row, Col, ButtonGroup, Button, Dropdown } from 'react-bootstrap';
+import { PieChart, Pie, Cell, Legend, Tooltip, XAxis, YAxis, CartesianGrid, } from 'recharts';
+import { Row, Col } from 'react-bootstrap';
 import filter from '../../assets/filter.png'
 import Spinner from "react-bootstrap/Spinner";
-
-
 import NavBar from '../../components/NavBar';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
-
 
 const PatientSummary = () => {
 
@@ -90,8 +84,6 @@ const PatientSummary = () => {
   const [closedNov, setClosedNov] = useState(0);
   const [closedDec, setClosedDec] = useState(0);
 
- 
-
   const [years, setYears] = useState([]);
   const [currentYear, setCurrentYear] = useState(0);
 
@@ -167,8 +159,6 @@ const PatientSummary = () => {
     setClosedNov(0);
     setClosedDec(0);
   }
-  
-
   
   useEffect(() => {
     axios.get("http://localhost:4000/api/chartyear")
@@ -305,7 +295,6 @@ const PatientSummary = () => {
             setClosedDec((prev) => prev  + data.ClosedCasesWithSRNo1 + data.ClosedCasesWithSRNo3 + data.ClosedCasesWithSRNo4 + data.ClosedCasesWithSRNo5);
             setClosedTotal((prev) => prev  + data.ClosedCasesWithSRNo1 + data.ClosedCasesWithSRNo3 + data.ClosedCasesWithSRNo4 + data.ClosedCasesWithSRNo5);
           } 
-
 
 
           if (data.DiagnosisMonth === 1 && data.DiagnosisType.includes('Presumptive')) {
@@ -758,16 +747,9 @@ const PatientSummary = () => {
             setEptbDec((prev) => prev  +  data.OpenCasesWithEPTB);
             setEptbTotal((prev) => prev  +  data.OpenCasesWithEPTB);
           } 
-          
-          
-          
-          
-     
         });
 
        setIsLoading(false)
-
-        
         
       })
       .catch((error) => {
@@ -775,10 +757,6 @@ const PatientSummary = () => {
         console.error('Error fetching data:', error);
       });
   }, [currentYear]);
-  
-
- 
-  
 
     const data01 = [
         { name: 'Presumptive', value: presumptiveTotal },
@@ -906,23 +884,22 @@ const PatientSummary = () => {
     const COLORS1 = ['#03045E', '#204C08', '#7C6C03', '#B4460E', '#7E0B0B'];
 
     const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-  return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
+      return (
+        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+          {`${(percent * 100).toFixed(0)}%`}
+        </text>
+      );
+    };
      
   return (
     <div>
     <NavBar/>
     <div className='px-3'>
-
 
     {isLoading ? (
                 <div
@@ -954,131 +931,124 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   <div className='row g-3 my-2 justify-content-center'>
   <h1 className='row mt-4 justify-content-center'>Patient Summary</h1>
   <Row className="mb-3 mt-4 justify-content-center">
-  <Col md="2" className="me-4">
-    
-    <div
-      className="mt-3 input-group"
-      style={{
-        maxWidth: '290px',
-        display: 'flex',
-        backgroundColor: '#0077B6',
-        borderRadius: '6px',
-        overflow: 'hidden',
-      }}
-    >
+    <Col md="2" className="me-4">
       <div
+        className="mt-3 input-group"
         style={{
+          maxWidth: '290px',
+          display: 'flex',
           backgroundColor: '#0077B6',
-          width: '30px',
-          height: '100%',
+          borderRadius: '6px',
+          overflow: 'hidden',
         }}
       >
-        <img className="ms-1 mt-2" src={filter} style={{ height: '20px' }} alt="" />
+        <div
+          style={{
+            backgroundColor: '#0077B6',
+            width: '30px',
+            height: '100%',
+          }}
+        >
+          <img className="ms-1 mt-2" src={filter} style={{ height: '20px' }} alt="" />
+        </div>
+        <select
+          className="form-select"
+          onChange={(e) => {
+            resetAllVariables();
+            setCurrentYear(e.target.value);
+          }}
+        >
+          {years.map((data, index) => (
+                  <>
+                      <option value={data.DiagnosisYear}>{data.DiagnosisYear}</option>
+
+                      </>
+                    ))}
+        </select>
       </div>
-      <select
-        className="form-select"
-        onChange={(e) => {
-          resetAllVariables();
-          setCurrentYear(e.target.value);
-        }}
-      >
-         {years.map((data, index) => (
-                <>
-                    <option value={data.DiagnosisYear}>{data.DiagnosisYear}</option>
-
-                    </>
-                  ))}
-      </select>
-    </div>
-  </Col>
-  <Col md="8" className="mt-3 d-flex justify-content-end">
-   
-  </Col>
-</Row>
-
- 
-    <Row className="mb-3 mt-4 justify-content-center">
+    </Col>
+    <Col md="8" className="mt-3 d-flex justify-content-end">
+    </Col>
+  </Row>
+  <Row className="mb-3 mt-4 justify-content-center">
     <div className='col-md-2 p-1'>
       <Link to={`/home/0/${currentYear}`}>
-      <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>
-        <div>
-          <h3 className='text-light fs-1'>{data01[0].value}</h3>
-          <p className='text-light fs-5'>{data01[0].name}</p>
+        <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[0], minHeight: "250px" }}>
+          <div>
+            <h3 className='text-light fs-1'>{data01[0].value}</h3>
+            <p className='text-light fs-5'>{data01[0].name}</p>
+          </div>
+          <i className='bi bi-cart-plus p-3 fs-1'></i>
         </div>
-        <i className='bi bi-cart-plus p-3 fs-1'></i>
-      </div>
       </Link>
     </div>
     <div className='col-md-2 p-1'>
       <Link to={`/home/1/${currentYear}`}>
-      <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[1], minHeight: "250px" }}>
-        <div>
-          <h3 className='text-light fs-1'>{data01[1].value}</h3>
-          <p className='text-light fs-5'>{data01[1].name}</p>
+        <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[1], minHeight: "250px" }}>
+          <div>
+            <h3 className='text-light fs-1'>{data01[1].value}</h3>
+            <p className='text-light fs-5'>{data01[1].name}</p>
+          </div>
+          <i className='bi bi-cart-plus p-3 fs-1'></i>
         </div>
-        <i className='bi bi-cart-plus p-3 fs-1'></i>
-      </div>
       </Link>
     </div>
     <div className='col-md-2 p-1'>
       <Link to={`/home1/${currentYear}`}>
-      <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[2], minHeight: "250px" }}>
-        <div>
-          <h3 className='text-light fs-1'>{data01[2].value}</h3>
-          <p className='text-light fs-5'>{data01[2].name}</p>
+        <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[2], minHeight: "250px" }}>
+          <div>
+            <h3 className='text-light fs-1'>{data01[2].value}</h3>
+            <p className='text-light fs-5'>{data01[2].name}</p>
+          </div>
+          <i className='bi bi-cart-plus p-3 fs-1'></i>
         </div>
-        <i className='bi bi-cart-plus p-3 fs-1'></i>
-      </div>
       </Link>
     </div>
     <div className='col-md-2 p-1'>
       <Link to={`/home2/${currentYear}`}>
-      <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[3], minHeight: "250px" }}>
-        <div>
-          <h3 className='text-light fs-1'>{data01[3].value}</h3>
-          <p className='text-light fs-5'>{data01[3].name}</p>
+        <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[3], minHeight: "250px" }}>
+          <div>
+            <h3 className='text-light fs-1'>{data01[3].value}</h3>
+            <p className='text-light fs-5'>{data01[3].name}</p>
+          </div>
+          <i className='bi bi-cart-plus p-3 fs-1'></i>
         </div>
-        <i className='bi bi-cart-plus p-3 fs-1'></i>
-      </div>
       </Link>
     </div>
     <div className='col-md-2 p-1'>
       <Link to={`/home3/${currentYear}`}>
-      <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[4], minHeight: "250px" }}>
-        <div>
-          <h3 className='text-light fs-1'>{data01[4].value}</h3>
-          <p className='text-light fs-5'>{data01[4].name}</p>
+        <div className={`p-3 shadow-sm d-flex justify-content-around align-items-center rounded summary-card`} style={{ backgroundColor: COLORS1[4], minHeight: "250px" }}>
+          <div>
+            <h3 className='text-light fs-1'>{data01[4].value}</h3>
+            <p className='text-light fs-5'>{data01[4].name}</p>
+          </div>
+          <i className='bi bi-cart-plus p-3 fs-1'></i>
         </div>
-        <i className='bi bi-cart-plus p-3 fs-1'></i>
-      </div>
       </Link>
     </div>
-    </Row>
-    <Row className="mb-3 mt-4 justify-content-center">
-
-                    <PieChart width={450} height={400}  className="justify-content-center me-1" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '2px', borderStyle: 'solid', borderRadius: '20px' }}>
-                    <Pie
-                        dataKey="value"
-                        isAnimationActive={true}
-                        data={data01}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={160}
-                        fill="#8884d8"
-                        labelLine={false}
-                        label={renderCustomizedLabel}
-                    >
-                        {data01.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS1[index % COLORS1.length]} />
-                        ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend formatter={(value, entry, index) => <span style={{ color: COLORS1[index % COLORS1.length] }}>{value}</span>} />
-                    </PieChart>
-                
-           
-            <div className="justify-content-center" style={{ color:'#0077B6', borderColor: '#0077B6', maxWidth: '700px', borderWidth: '2px', borderStyle: 'solid', borderRadius: '20px' }}>
-            <LineChart
+  </Row>
+  <Row className="mb-3 mt-4 justify-content-center">
+    <PieChart width={450} height={400}  className="justify-content-center me-1" style={{ color:'#0077B6', borderColor: '#0077B6', borderWidth: '2px', borderStyle: 'solid', borderRadius: '20px' }}>
+      <Pie
+          dataKey="value"
+          isAnimationActive={true}
+          data={data01}
+          cx="50%"
+          cy="50%"
+          outerRadius={160}
+          fill="#8884d8"
+          labelLine={false}
+          label={renderCustomizedLabel}
+      >
+          {data01.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS1[index % COLORS1.length]} />
+          ))}
+      </Pie>
+      <Tooltip />
+      <Legend formatter={(value, entry, index) => <span style={{ color: COLORS1[index % COLORS1.length] }}>{value}</span>} />
+    </PieChart>
+      <div className="justify-content-center" style={{ color:'#0077B6', borderColor: '#0077B6', maxWidth: '700px', borderWidth: '2px', borderStyle: 'solid', borderRadius: '20px' }}>
+        <LineChart
           width={700}
           height={400}
           data={data}
@@ -1089,11 +1059,11 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
           {Object.keys(linesVisibility).map((key, index) => (
               linesVisibility[key] && (
                 <Line
@@ -1105,22 +1075,14 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
               )
             ))}
         </LineChart>
-                
-            </div>
-            </Row>
+      </div>
+    </Row>
   </div>
- 
 </div>
-
 </>
-              )}
-
-       
-
-
-    </div>
-    
-    </div>
+)}
+</div>
+</div>
   );
 };
 

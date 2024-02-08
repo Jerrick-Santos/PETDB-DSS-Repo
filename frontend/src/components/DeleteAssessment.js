@@ -1,21 +1,12 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
-import add from '../assets/add.png';
-import { Button, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import bin from '../assets/bin.png'
-import {Link} from 'react-router-dom';
-
-
-
-
 
 function DeleteAssessment(props) {
     const [show, setShow] = useState(false);
     const [isReferenced, setIsReferenced] = useState(false);
     const [reference, setReference] = useState(null);
-
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -49,18 +40,14 @@ function DeleteAssessment(props) {
         }catch(err){
             console.log(err)
         }
-       
     }
 
     const [formValues, setFormValues] = useState({
-
         isActive: 0
     });
 
     return (
         <>
-            
-            
             <img
                 src={bin}
                 onClick={handleShow}

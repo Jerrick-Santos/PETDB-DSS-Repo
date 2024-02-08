@@ -1,7 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
-import edit from '../assets/edit.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import add from '../assets/add.png';
 import Form from 'react-bootstrap/Form';
@@ -12,7 +11,6 @@ function AddTSTModal(props) {
     const[hiData, setHIData] = useState([])
 
     useEffect(() => {
-
         axios.get(`http://localhost:4000/api/hiwithtests/3`)
           .then((response) => {
             setHIData(response.data)
@@ -138,96 +136,92 @@ function AddTSTModal(props) {
   return (
         <>
 
-        <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleShow}> 
+    <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} onClick={handleShow}> 
         <img src={add} className="me-1 mb-1" style={{height:"20px"}}/>    Add TST </button>
 
-        <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
-    <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
-        <Modal.Title>Add TST Test Results</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-        <Form noValidate onSubmit={handleSubmit}>
-            <Row className="mb-3 justify-content-center">
-                {/* For HI Number */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='HINo'>
-                    <Form.Label><strong>Issued by:</strong></Form.Label>
-                    <Form.Select
-                        aria-label="HINo"
-                        name="HINo"
-                        value={tstValues.HINo}
-                        onChange={(e) => {
-                            const selectedValue = e.target.value;
-                            const newHINo = selectedValue === "0" ? null : selectedValue;
-                            handleChange({ target: { name: "HINo", value: newHINo } });
-                        }}
-                        isInvalid={HINoError}
-                        >
-                        <option value="">Select</option>
-                        {hiData.map((hi, index) => (
-                            <option key={hi.HINo} value={hi.HINo}>
-                            {hi.HIName}
-                            </option>
-                        ))}
-                        <option value="0">Others</option>
-                        </Form.Select>
-                    <Form.Control.Feedback type='invalid'>{HINoError}</Form.Control.Feedback>
-                </Form.Group>
-                {/* For Issue Date */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='issue_date'>
-                    <Form.Label><strong>Issued on:</strong></Form.Label>
-                    <Form.Control
-                        required
-                        type='date'
-                        name='issue_date'
-                        onChange={handleChange}
-                        value={tstValues.issue_date}
-                        isInvalid={dateError}
-                    />
-                    <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
-                </Form.Group>
-                {/* For Reference Number */}
-                <Form.Group as={Col} md="12" className='mb-3' controlId='test_refno'>
-                    <Form.Label><strong>Reference Number:</strong></Form.Label>
-                    <Form.Control
-                        required
-                        type='text'
-                        name='test_refno'
-                        onChange={handleChange}
-                        value={tstValues.test_refno}
-                        isInvalid={testError}
-                    />
-                    <Form.Control.Feedback type='invalid'>{testError}</Form.Control.Feedback>
-                </Form.Group>
-                {/* For Test Value */}
-                <Form.Group as={Col} md="12" controlId='TestValue'>
-                    <Form.Label><strong>Results:</strong></Form.Label>
-                    <Form.Select
-                        aria-label="TestValue"
-                        name='TestValue'
-                        value={tstValues.TestValue}
-                        onChange={handleChange}
-                        isInvalid={valueError}>
+    <Modal show={show} onHide={handleClose} backdrop={ 'static' }>
+        <Modal.Header  style={{color:'white', backgroundColor: "#0077B6"}}>
+            <Modal.Title>Add TST Test Results</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <Form noValidate onSubmit={handleSubmit}>
+                <Row className="mb-3 justify-content-center">
+                    {/* For HI Number */}
+                    <Form.Group as={Col} md="12" className='mb-3' controlId='HINo'>
+                        <Form.Label><strong>Issued by:</strong></Form.Label>
+                        <Form.Select
+                            aria-label="HINo"
+                            name="HINo"
+                            value={tstValues.HINo}
+                            onChange={(e) => {
+                                const selectedValue = e.target.value;
+                                const newHINo = selectedValue === "0" ? null : selectedValue;
+                                handleChange({ target: { name: "HINo", value: newHINo } });
+                            }}
+                            isInvalid={HINoError}
+                            >
                             <option value="">Select</option>
-                            <option value="&gt;10 MM">&gt;10 MM</option>
-                            <option value="&lt;10 MM">&lt;10 MM</option>
-                            <option value="10">10</option>
-                    </Form.Select>
-                    <Form.Control.Feedback type='invalid'>{valueError}</Form.Control.Feedback>
-                </Form.Group>
-            </Row>
-        </Form>
-    </Modal.Body>
-    <Modal.Footer >
-        <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
-        <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
-    </Modal.Footer>
-</Modal>
-
-
+                            {hiData.map((hi, index) => (
+                                <option key={hi.HINo} value={hi.HINo}>
+                                {hi.HIName}
+                                </option>
+                            ))}
+                            <option value="0">Others</option>
+                            </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{HINoError}</Form.Control.Feedback>
+                    </Form.Group>
+                    {/* For Issue Date */}
+                    <Form.Group as={Col} md="12" className='mb-3' controlId='issue_date'>
+                        <Form.Label><strong>Issued on:</strong></Form.Label>
+                        <Form.Control
+                            required
+                            type='date'
+                            name='issue_date'
+                            onChange={handleChange}
+                            value={tstValues.issue_date}
+                            isInvalid={dateError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{dateError}</Form.Control.Feedback>
+                    </Form.Group>
+                    {/* For Reference Number */}
+                    <Form.Group as={Col} md="12" className='mb-3' controlId='test_refno'>
+                        <Form.Label><strong>Reference Number:</strong></Form.Label>
+                        <Form.Control
+                            required
+                            type='text'
+                            name='test_refno'
+                            onChange={handleChange}
+                            value={tstValues.test_refno}
+                            isInvalid={testError}
+                        />
+                        <Form.Control.Feedback type='invalid'>{testError}</Form.Control.Feedback>
+                    </Form.Group>
+                    {/* For Test Value */}
+                    <Form.Group as={Col} md="12" controlId='TestValue'>
+                        <Form.Label><strong>Results:</strong></Form.Label>
+                        <Form.Select
+                            aria-label="TestValue"
+                            name='TestValue'
+                            value={tstValues.TestValue}
+                            onChange={handleChange}
+                            isInvalid={valueError}>
+                                <option value="">Select</option>
+                                <option value="&gt;10 MM">&gt;10 MM</option>
+                                <option value="&lt;10 MM">&lt;10 MM</option>
+                                <option value="10">10</option>
+                        </Form.Select>
+                        <Form.Control.Feedback type='invalid'>{valueError}</Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
+            </Form>
+        </Modal.Body>
+        <Modal.Footer >
+            <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
+            <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
+        </Modal.Footer>
+    </Modal>
     </>
-      
   );
 }
 
 export default AddTSTModal;
-

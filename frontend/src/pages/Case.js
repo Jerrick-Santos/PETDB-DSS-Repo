@@ -1,11 +1,8 @@
 import '../index.css';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
-import edit from '../assets/edit.png';
 import user from '../assets/user.png';
 import distance from '../assets/distance.png';
-import assessment from '../assets/assessment.png';
-import treatment from '../assets/treatment.png';
 import { Link, useParams} from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -35,16 +32,17 @@ const Case = () => {
       });
     
 
-}, []);
+  }, []);
 
-useEffect(() => {
-  // Check if any case_status is 'O'
-  const hasOpenCase = caseData.some(item => item.case_status === 'O');
-  const hasDied = caseData.some(item => item.SRDescription === 'Died');
-  // Set allClosed to false if there's an 'O', otherwise true
-  setShowAddCase(!hasOpenCase && !hasDied);
-}, [caseData]);
-///PAGINATION LOGIC
+  useEffect(() => {
+    // Check if any case_status is 'O'
+    const hasOpenCase = caseData.some(item => item.case_status === 'O');
+    const hasDied = caseData.some(item => item.SRDescription === 'Died');
+    // Set allClosed to false if there's an 'O', otherwise true
+    setShowAddCase(!hasOpenCase && !hasDied);
+  }, [caseData]);
+
+  ///PAGINATION LOGIC
   // Add these state variables
   const [activePage, setActivePage] = useState(1); // Active page number
   const itemsPerPage = 10; // Number of items per page
@@ -97,7 +95,6 @@ useEffect(() => {
        {/* Navigation within the page, Patient Info Page is highlighted and directs user to another page when clicked */}
        <Row className="justify-content-center">
           <Col lg="10">
-       
           <Navbar expand="sm" className="mt-4 pb-0">
             <Nav>
             <Link to={`/patient/${patientNum}`}>
@@ -109,13 +106,8 @@ useEffect(() => {
             <button className="btn ms-1" style={{ color: "white", backgroundColor: '#0077B6', borderBottomLeftRadius: "0", borderBottomRightRadius: "0" }} type="button">
               <img src={distance} className="mb-1" style={{height:"25px"}} alt="" /> Cases
             </button>
-
-            
-            
             </Nav>
-          
           </Navbar>
-         
         </Col>
       </Row>
       
@@ -260,22 +252,13 @@ useEffect(() => {
                       ) : null}
                     </Col>
                   </Row>
-
-
-
-
         </Col>
 </Row>
 
 </>
               )}
-        
-      
-        
-       
       </Col>
     </Row>
-
     </div>
     
   );

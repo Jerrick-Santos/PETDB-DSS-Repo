@@ -311,8 +311,6 @@ function AddCloseContactModal(props) {
         console.log(formValues)
     }, [formValues])
     // -------------------------------------------------------
-
-
   
 
   return (
@@ -541,15 +539,8 @@ function AddCloseContactModal(props) {
             </>)}
         </Modal.Footer>
     </Modal>
-
-
     </>
-      
   );
 }
 
-
-
-
 export default AddCloseContactModal;
-

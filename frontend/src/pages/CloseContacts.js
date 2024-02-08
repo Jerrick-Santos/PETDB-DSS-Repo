@@ -1,14 +1,11 @@
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col, Badge, Accordion  } from 'react-bootstrap';
+import { Navbar, Nav, Row, Col, Badge, Accordion  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
-import edit from '../assets/edit.png';
 import noresult from "../assets/noresult.png";
-import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';
-import add from '../assets/add.png';
 import { Link, useParams } from 'react-router-dom';
 import AddCloseContactModal from '../components/AddCloseContactModal';
 import axios from 'axios';
@@ -28,7 +25,6 @@ const CloseContacts = () => {
   const [closeContactListData, setCloseContactListData] = useState([]);
   const [latestCase, setLatestCase] = useState([]);
   const [caseData, setCaseData] = useState([])
-
 
   useEffect(() => {
     async function fetchData() {
@@ -90,11 +86,9 @@ const CloseContacts = () => {
     setActivePage1(pageNumber);
   };
 
-
   // Calculate the index range for the current page
   const startIndex1 = (activePage1 - 1) * itemsPerPage;
   const endIndex1 = startIndex1 + itemsPerPage;
- 
 
   return (
     <div>
@@ -134,11 +128,8 @@ const CloseContacts = () => {
           <img src={similar} className="mb-1" style={{height:"25px"}} alt="" /> Similar Cases
           </button>
           </Link>
-          
           </Nav>
-        
         </Navbar>
-       
       </Col>
     </Row>
     
@@ -173,7 +164,6 @@ const CloseContacts = () => {
       <CaseHeader caseNo={caseNum} case_refno={caseData.case_refno} PatientNo={caseData.PatientNo} patient_name={caseData.patient_name}
                   start_date={caseData.start_date} end_date={caseData.end_date} case_status={caseData.case_status}
                   PRESref={caseData.PRESref} LATENTref={caseData.LATENTref}/>
-     
       
       {/* Shows all relevant information of the patient */}
       
@@ -281,8 +271,6 @@ const CloseContacts = () => {
                   ))
                 }
                 </tbody>
-                
-               
             </table>
       ) : (
         <>
@@ -317,10 +305,9 @@ const CloseContacts = () => {
                     {/*LOGIC: if walang laman ung assessment, then new sya, if meron then old */}
               
                       <Col className="ms-4">
-                      {caseData.case_status === "O" ?
-              <AddCloseContactModal id={caseNum} show={latestCase}/> : null}
+                        {caseData.case_status === "O" ?
+                        <AddCloseContactModal id={caseNum} show={latestCase}/> : null}
                       </Col>
-              
                   
                   <Col className="d-flex justify-content-end me-5">
                     {closeContactListData.length > 0 ? (
@@ -336,8 +323,6 @@ const CloseContacts = () => {
                     ) : null}
                   </Col>
                 </Row>
-          
-
                 </>
               )}
 
@@ -345,10 +330,6 @@ const CloseContacts = () => {
   </Row>
 
   </div>
-  
-    
-
-       
   );
 };
 

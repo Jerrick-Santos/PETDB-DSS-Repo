@@ -1,8 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
-import edit from '../assets/edit.png';
-import xray from '../assets/xray.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import add from '../assets/add.png';
 import Form from 'react-bootstrap/Form';
@@ -13,7 +11,6 @@ function AddDSTModal(props) {
     const[hiData, setHIData] = useState([])
 
     useEffect(() => {
-
         axios.get(`http://localhost:4000/api/hiwithtests/9`)
           .then((response) => {
             setHIData(response.data)
@@ -32,9 +29,6 @@ function AddDSTModal(props) {
         // Handle any errors that occurred during the request
         console.error('Error fetchingdata:', error);
         });
-        
-  
-
     }, []);
 
     const [dstValues, setDstValues] = useState({
@@ -302,14 +296,8 @@ function AddDSTModal(props) {
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>
-
-
     </>
-      
   );
 }
-
-
-
 
 export default AddDSTModal;
