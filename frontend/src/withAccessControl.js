@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import NavBar from './components/NavBar';
 import lock from './assets/lock.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Navbar, Card, Row, Col  } from 'react-bootstrap';
 import Spinner from "react-bootstrap/Spinner";
 // Define your access denied component
 const AccessDenied = () => (
