@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import add from '../assets/add.png';
-import { Navbar, Nav, Card, Row, Col, Collapse  } from 'react-bootstrap';
+import { Card, Row, Col  } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
 function AddAssessPersist(props) {
@@ -90,19 +90,11 @@ function AddAssessPersist(props) {
         not_eating_well:0,
         new_weeks:0,
         new_persist:0,
-        //gibbus_deform:0,
         non_painful_ecl:0,
-        //stiff_neck:0,
         drowsy:0,
-        //pleural_effusion:0,
-        //pericard_effusion:0,
-        //dist_abdomen:0,
-        //non_painful_ejoint:0,
-        //tuberculin_hyper:0,
         can_stand:0,
         ass_body_weight:null,
         ass_height:null,
-        //diabetes:0,
         plhiv:0,
         hiv:0,
         mother_hiv:0,
@@ -123,7 +115,6 @@ function AddAssessPersist(props) {
     const [bodyweightError, setBodyWeightError] = useState('');
     const [heightError, setHeightError] = useState('');
     const [bodyTempError, setTempError] = useState('');
-    //const [bloodPressError, setBPError] = useState('');
 
     const validate = () => {
       let bodyweightError = '';
@@ -145,12 +136,6 @@ function AddAssessPersist(props) {
         bodyTempError = 'Must be a valid number';
       }
       setTempError(bodyTempError);
-
-      // let bloodPressError = '';
-      // if (!assessFormValues.ass_bp) {
-      //   bloodPressError = 'Required field';
-      // }
-      // setBPError(bloodPressError);
 
       if (bodyweightError || heightError || bodyTempError) {
         return false;
@@ -234,8 +219,6 @@ function AddAssessPersist(props) {
         }
         
         // Update assessFormValues with the latest weight, height, and BMI
-        
-        
         try{
             const updatedAssessFormValues = {
                       ...assessFormValues,
@@ -248,10 +231,7 @@ function AddAssessPersist(props) {
         }catch(err){
             console.log(err)
         }
-
-        
     }
-
   return (
         <>
 
@@ -837,518 +817,13 @@ function AddAssessPersist(props) {
           </Col>
         </Row>
       </Form>
-    {/*<form className="mt-3 justify-content-center">
-    <div>
-
-
-      <Row className="mt-2 justify-content-center">
-
-    
-          <Col sm="5">
-          <label className="text-muted">Assessed By</label>
-          
-            <input
-              type="text"
-              className="form-control"
-              name="assessment_date"
-              value={props.firstName + " " +props.lastName}
-              disabled
-            />
-          </Col>
-          <Col sm="3">
-          <label className="text-muted">Assessment Date</label>
-            <input
-              type="text"
-              className="form-control"
-              name="assessment_date"
-              value={assessFormValues.assessment_date}
-              disabled
-            />
-            </Col>
-      </Row>
-
-      <Row className="mt-5 justify-content-center">
-<Col lg="8">
-    <p> <strong> Vital Signs</strong> </p>
-    <Card className="mb-4">
-      <Card.Body>
-        <Row>
-          <Col sm="9">
-            <Card.Text>Assessment</Card.Text>
-          </Col>
-          <Col sm="2">
-            <Card.Text></Card.Text>
-          </Col>
-        </Row>
-        <hr/>
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Body Weight</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_body_weight' value={assessFormValues.ass_body_weight} onChange={handleChange} placeholder='in kilograms' />
-                {bodyweightError && (
-                        <p style={{color: 'red'}}>{bodyweightError}</p>  
-                )}
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Height</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_height' value={assessFormValues.ass_height} onChange={handleChange} placeholder='in centimeters' />
-                {heightError && (
-                        <p style={{color: 'red'}}>{heightError}</p>  
-                )}
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Body Mass Index</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_bmi' value={bmi} onChange={handleChange} readOnly />
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Body Temperature</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_temp' value={assessFormValues.ass_temp} onChange={handleChange} placeholder='in Celsius' />
-                {bodyTempError && (
-                        <p style={{color: 'red'}}>{bodyTempError}</p>  
-                )}
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Blood Pressure</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='ass_bp' value={assessFormValues.ass_bp} onChange={handleChange} placeholder='systolic/diastolic' />
-                {bloodPressError && (
-                        <p style={{color: 'red'}}>{bloodPressError}</p>  
-                )}
-              </Card.Text>
-          </Col>
-        </Row>
-       
-      </Card.Body>
-    </Card>
-  </Col>
-</Row>
-      <Row className="mt-1 justify-content-center">
-  <Col lg="8">
-    <p> <strong> Cardinal Symptoms</strong> </p>
-    <Card className="mb-4">
-      <Card.Body>
-        <Row>
-          <Col sm="3">
-            <Card.Text>Symptom</Card.Text>
-          </Col>
-          <Col sm="3">
-            <Card.Text>Symptomatic</Card.Text>
-          </Col>
-          <Col sm="3">
-            <Card.Text>2 weeks</Card.Text>
-          </Col>
-          <Col sm="3">
-            <Card.Text>Persistence</Card.Text>
-          </Col>
-
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="3">
-            <Card.Text className="text-muted">Cough</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='cough' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='c_weeks' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='c_persist' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="3">
-            <Card.Text className="text-muted">Fever</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='fever' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='fe_weeks' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='fe_persist' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="3">
-            <Card.Text className="text-muted">Night Sweats</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='night_sweats' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='ns_weeks' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='ns_persist' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="3">
-            <Card.Text className="text-muted">Weight Loss</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='weight_loss' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='wl_weeks' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='wl_persist' onChange={handleChange}/>
-          </Col>
-        </Row>
-      </Card.Body>
-    </Card>
-  </Col>
-</Row>
-
-<Row className="mt-1 justify-content-center">
-  <Col lg="8">
-    <p> <strong> Additional Symptoms if with TB Contact</strong> </p>
-    <Card className="mb-4">
-      <Card.Body>
-        <Row>
-          <Col sm="3">
-            <Card.Text>Symptom</Card.Text>
-          </Col>
-          <Col sm="3">
-            <Card.Text>Symptomatic</Card.Text>
-          </Col>
-          <Col sm="3">
-            <Card.Text>2 weeks</Card.Text>
-          </Col>
-          <Col sm="3">
-            <Card.Text>Persistence</Card.Text>
-          </Col>
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="3">
-            <Card.Text className="text-muted">Fatigue</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='fatigue' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='fat_weeks' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='fat_persist' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="3">
-            <Card.Text className="text-muted">Reduced Playfulness</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='red_playfulness' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='rp_weeks' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='rp_persist' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="3">
-            <Card.Text className="text-muted">Decreased Activities</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='dec_acts' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='da_weeks' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='da_persist' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="3">
-            <Card.Text className="text-muted">Not Eating Well</Card.Text>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='not_eating_well' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='new_weeks' onChange={handleChange}/>
-          </Col>
-          <Col sm="3">
-            <input type="checkbox" name='new_persist' onChange={handleChange}/>
-          </Col>
-        </Row>
-      </Card.Body>
-    </Card>
-  </Col>
-</Row>
-
-<Row className="mt-1 justify-content-center">
-<Col lg="8">
-    <p> <strong> Additional Symptoms to Verify EPTB </strong> </p>
-    <Card className="mb-4">
-      <Card.Body>
-        <Row>
-          <Col sm="9">
-            <Card.Text>Symptom</Card.Text>
-          </Col>
-          <Col sm="2">
-            <Card.Text>Symptomatic</Card.Text>
-          </Col>
-        </Row>
-        <hr />
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Lumps anywhere on the body</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='non_painful_ecl' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Drowsiness</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='drowsy' onChange={handleChange}/>
-          </Col>
-        </Row>
-        
-      </Card.Body>
-    </Card>
-  </Col>
-</Row>
-
-<Row className="mt-2 justify-content-center">
-<Col lg="8">
-    <p> <strong> Other Assessments</strong> </p>
-    <Card className="mb-4">
-      <Card.Body>
-        <Row>
-          <Col sm="9">
-            <Card.Text>Assessment</Card.Text>
-          </Col>
-          <Col sm="2">
-            <Card.Text>Yes</Card.Text>
-          </Col>
-        </Row>
-        <hr/>
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Was the patient previously diagnosed with TB?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='prevPTB_diagnosed' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Are you unable to stand?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='can_stand' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Are you living with a person with HIV?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='plhiv' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Do you have HIV?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='hiv' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Does your mother have HIV?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='mother_hiv' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Do you have a history of smoking?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='smoking' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Do you have a history of drinking?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='drinking' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Do you have a history of sexual activity?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='sex_active' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Do you have a history of renal disease?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='renal_disease' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="9">
-            <Card.Text className="text-muted">Do you have a history of malnutrition?</Card.Text>
-          </Col>
-          <Col sm="2">
-            <input type="checkbox" name='malnutrition' onChange={handleChange}/>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Other Health Issues</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='other_health_issues' value={assessFormValues.other_health_issues} onChange={handleChange} placeholder='Health Issues' />
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Other Medications</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='other_meds' value={assessFormValues.other_meds} onChange={handleChange} placeholder='Medications' />
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Possible of drug to drug interactions</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='other_dd_interacts' value={assessFormValues.other_dd_interacts} onChange={handleChange} placeholder='Possible interactions' />
-              </Card.Text>
-          </Col>
-        </Row>
-        <hr />
-
-        <Row>
-          <Col sm="8">
-            <Card.Text className="text-muted">Other Co-morbidities</Card.Text>
-          </Col>
-          <Col sm="4">
-            <Card.Text>
-                <input type="text" className="form-control" name='other_comorbid' value={assessFormValues.other_comorbid} onChange={handleChange} placeholder='Co-morbidities' />
-              </Card.Text>
-          </Col>
-        </Row>
-        
-      </Card.Body>
-    </Card>
-  </Col>
-</Row>
-
-
-
-</div>
-                </form>*/}
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
         <button type="submit" onClick={handleClose}  className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>
-
-
     </>
-      
   );
 }
-
-
-
-
 export default AddAssessPersist;
-
