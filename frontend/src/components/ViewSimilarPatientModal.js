@@ -1,10 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState} from 'react';
 import add from '../assets/add.png';
-import axios from 'axios';
-import { Navbar, Nav, Card, Row, Col, ModalBody  } from 'react-bootstrap';
-import { Link, useParams } from 'react-router-dom';
-import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form';
 
 function ViewSimilarPatientModal(props) {

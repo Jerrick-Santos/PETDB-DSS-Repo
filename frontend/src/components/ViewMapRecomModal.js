@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Row, Col, Accordion, Badge  } from 'react-bootstrap';
 import axios from 'axios';
 import MapRecom from './MapRecom';

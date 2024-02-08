@@ -1,7 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
-import add from '../assets/add.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import edit from '../assets/edit.png'
 import Form from 'react-bootstrap/Form';
@@ -256,52 +255,7 @@ function UpdateXray(props) {
                 </Form.Group>
             </Row>
         </Form>
-        
-                {/*<div className="mt-3"> 
-                    <label> <strong>Issued by: </strong></label>
-                    <select className="form-select" name="HINo" value={formValues.HINo} onChange={handleChange}>
-                        <option value="">Select</option>
-                    
-                    {hiData.map((hi, index) => (
-                    <>
-                    <option value={hi.HINo}>{hi.HIName}</option>
-                    
-                        </>
-                            ))}
-        
-
-                    </select>
-                    {HINoError && (
-                        <p style={{color: 'red'}}>{HINoError}</p>  
-                    )}
-                </div>
-                <div className="mt-3">
-                    <label><strong>Issued on:</strong></label>
-                    <input type="date" className="form-control" name='issue_date' value={formValues.issue_date} onChange={handleChange}/>
-                    {dateError && (
-                        <p style={{color: 'red'}}>{dateError}</p>  
-                    )}
-                </div>
-                <div className="mt-3">
-                    <label><strong>Reference Number:</strong></label>
-                    <input type="text" className="form-control" name='test_refno' value={formValues.test_refno} onChange={handleChange}/>
-                    {testError && (
-                        <p style={{color: 'red'}}>{testError}</p>  
-                    )}
-                </div>
-                <div className="mt-3"> 
-                    <label> <strong>Xray Results: </strong></label>
-                    <select className="form-select" name='TestValue' value={formValues.TestValue} onChange={handleChange}>
-                        <option value="">Select</option>
-                        <option value="With Signs of TB">With Signs of TB</option>
-                        <option value="No signs">No signs</option>
-                        <option value="Undetermined">Undetermined</option>
-                    </select>
-                    {valueError && (
-                        <p style={{color: 'red'}}>{valueError}</p>  
-                    )}
-                </div>*/}
-            </>
+    </>
         )}
     </Modal.Body>
     <Modal.Footer >

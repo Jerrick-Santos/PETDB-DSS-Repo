@@ -1,7 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
-import add from '../assets/add.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import edit from '../assets/edit.png'
 import Form from 'react-bootstrap/Form';

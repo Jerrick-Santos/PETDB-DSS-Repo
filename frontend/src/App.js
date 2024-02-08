@@ -24,12 +24,10 @@ import PatientSummaryClosed from './pages/Home/PatientSummaryClosed';
 import ViewPatientDrilldown from './pages/ViewPatientDrilldown';
 import SimilarCases from './pages/SimilarCases';
 import UserList from './adminpages/UserList';
-import TestRoute from './pages/TestRoute';
-import ProtectedRoute from './ProtectedRoute';
 import withAccessControl from './withAccessControl';
 import SignUpBHC from './adminpages/SignUpBHC';
 
-{/* admin routes */}
+/* admin routes */
 const AdminLabTestwithAccess = withAccessControl(AdminLabTest, ['admin'])
 const AdminHIWithAccess = withAccessControl(AdminHI, ['admin']);
 const HIInfoWithAccess = withAccessControl(HIInfo, ['admin']);
@@ -37,7 +35,7 @@ const BHCInfowithAccess = withAccessControl(BHCInfo, ['admin'])
 const UserListwithAccess = withAccessControl(UserList, ['admin'])
 
 
-{/* BHW routes */}
+/* BHW routes */
 const PatientSummaryWithAccess = withAccessControl(PatientSummary, ['BHW']);
 const PatientSummaryPTBWithAccess = withAccessControl(PatientSummaryPTB, ['BHW']);
 const PatientSummaryEPTBWithAccess = withAccessControl(PatientSummaryEPTB, ['BHW']);
@@ -59,7 +57,7 @@ const CaseWithAccess = withAccessControl(Case, ['BHW']);
 
 function App() {
   return (
-      <>
+      
       <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Login/>} />
@@ -97,11 +95,11 @@ function App() {
                     <Route path="/case/:id" element={<CaseWithAccess/>}/>
                     <Route path="/addpatient/:id" element={<AddPatientWithAccess/>}/>
 
-                    <Route path="/test" element={<TestRoute/>}/>
+                    
                     
                 </Routes>
             </BrowserRouter>
-      </>
+      
   );
 }
 

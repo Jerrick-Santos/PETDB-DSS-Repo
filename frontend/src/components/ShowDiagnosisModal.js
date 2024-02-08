@@ -1,7 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState} from 'react';
-import add from '../assets/add.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Row, Col  } from 'react-bootstrap';
 import ViewMapRecomModal from './ViewMapRecomModal';
 
 

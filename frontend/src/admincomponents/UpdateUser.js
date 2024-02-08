@@ -1,9 +1,8 @@
 import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
-import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import axios from "axios";
 import edit from "../assets/edit.png";
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
 function UpdateUser(props) {
@@ -110,6 +109,7 @@ function UpdateUser(props) {
           onClick={handleShow}
           className="mb-4 me-1 clickable"
           style={{ height: "20px" }}
+          alt="Update User Button"
         />
       ) : null}
 
@@ -181,71 +181,6 @@ function UpdateUser(props) {
             </Row>
           </Form>
 
-          {/*<form className="mt-3 justify-content-center">
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputFirstName">User ID</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="IDNo"
-                  value={formValues.IDNo}
-                  onChange={handleChange}
-                />
-                    {IDnoError && (
-                        <p style={{color: 'red'}}>{IDnoError}</p>  
-                    )}
-              </div>
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputOperatingHours">First Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="first_name"
-                  value={formValues.first_name}
-                  onChange={handleChange}
-                />
-                    {firstNameError && (
-                        <p style={{color: 'red'}}>{firstNameError}</p>  
-                    )}
-              </div>
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputCurrHouseNo">Middle Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="middle_name"
-                  value={formValues.middle_name}
-                  onChange={handleChange}
-                />
-                    {middleNameError && (
-                        <p style={{color: 'red'}}>{middleNameError}</p>  
-                    )}
-              </div>
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputCurrHouseNo">Last Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="last_name"
-                  value={formValues.last_name}
-                  onChange={handleChange}
-                />
-                    {lastNameError && (
-                        <p style={{color: 'red'}}>{lastNameError}</p>  
-                    )}
-              </div>
-            </Row>
-                    </form>*/}
         </Modal.Body>
         <Modal.Footer>
           <button

@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import NavBar from "../components/NavBar";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import Pagination from "react-bootstrap/Pagination";
 import Badge from "react-bootstrap/Badge";
 import filter from "../assets/filter.png";

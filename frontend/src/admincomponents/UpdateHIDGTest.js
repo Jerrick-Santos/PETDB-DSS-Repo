@@ -1,9 +1,8 @@
 import Modal from "react-bootstrap/Modal";
-import React, { useState, useEffect } from "react";
-import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import { Row, Col } from "react-bootstrap";
 import axios from "axios";
 import edit from "../assets/edit.png";
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 function UpdateHIDGTest(props) {
   const [show, setShow] = useState(false);
@@ -70,6 +69,7 @@ const validate = () => {
           onClick={handleShow}
           className="mb-4 me-1 clickable"
           style={{ height: "20px" }}
+          alt="Update Diagnostic Test Button"
         />
       ) : null}
     

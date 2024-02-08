@@ -1,15 +1,12 @@
 import '../index.css';
 import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
-import edit from '../assets/edit.png';
 import user from '../assets/user.png';
 import distance from '../assets/distance.png';
-import assessment from '../assets/assessment.png';
-import treatment from '../assets/treatment.png';
-import { Link, useParams} from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useParams } from 'react';
 import axios from 'axios';
 import Spinner from "react-bootstrap/Spinner";
+import { Link } from 'react-router-dom';
 
 const PatientInfo = () => {
 

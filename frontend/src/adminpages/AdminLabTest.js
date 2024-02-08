@@ -1,11 +1,10 @@
 import search from '../assets/search.png';
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Card, Row, Col  } from 'react-bootstrap';
 import AdminNavBar from '../admincomponents/AdminNavBar';
 import axios from 'axios';
 import CreateDiagnosticTest from '../admincomponents/CreateDiagnosticTest';
-import { Link, useParams } from 'react-router-dom';
 import Spinner from "react-bootstrap/Spinner";
 import Badge from "react-bootstrap/Badge";
 import UpdateDiagnosticTest from '../admincomponents/UpdateDiagnosticTest';

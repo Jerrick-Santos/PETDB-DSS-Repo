@@ -5,7 +5,7 @@ import { Card, Row, Col } from "react-bootstrap";
 import AdminNavBar from "../admincomponents/AdminNavBar";
 import axios from "axios";
 import CreateHIModal from "../admincomponents/CreateHIModal";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import filter from "../assets/filter.png";
 import sort from "../assets/sort.png";
@@ -98,8 +98,8 @@ const AdminHI = () => {
   if (selectedSort === "1") {
     filteredHiData5.sort((a, b) => {
       // Compare two items for sorting in descending order (Z-A)
-      const nameA = a.HIName; // Replace 'propertyToSort' with the actual property name you want to sort by
-      const nameB = b.HIName; // Replace 'propertyToSort' with the actual property name you want to sort by
+      const nameA = a.HIName; 
+      const nameB = b.HIName;
 
       // Use localeCompare to perform a case-insensitive comparison
       return nameB.localeCompare(nameA);

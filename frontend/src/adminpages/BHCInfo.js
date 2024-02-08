@@ -1,13 +1,12 @@
 import search from '../assets/search.png';
 import '../index.css';
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Card, Row, Col  } from 'react-bootstrap';
 import AdminNavBar from '../admincomponents/AdminNavBar';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 import AssignBHCModal from '../admincomponents/AssignBHCModal';
 import Pagination from 'react-bootstrap/Pagination';
-import Badge from "react-bootstrap/Badge";
 import DeleteBHCHI from '../admincomponents/DeleteBHCHI';
 import Spinner from "react-bootstrap/Spinner";
 import noresult from "../assets/noresult.png";

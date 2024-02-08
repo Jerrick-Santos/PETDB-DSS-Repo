@@ -1,17 +1,8 @@
-import search from "../assets/search.png";
 import "../index.css";
-import React, { useState, useEffect } from "react";
-import Modal from 'react-bootstrap/Modal';
+import React, { useState } from "react";
 import NavBar from "../components/NavBar";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import { Navbar, Nav, Card, Row, Col, Button } from "react-bootstrap";
-import Pagination from "react-bootstrap/Pagination";
-import Badge from "react-bootstrap/Badge";
-import filter from "../assets/filter.png";
-import sort from "../assets/sort.png";
-import noresult from "../assets/noresult.png";
-import Spinner from "react-bootstrap/Spinner";
+import {  Card, Row, Col, Button } from "react-bootstrap";
 
 const GenerateReport = () => {
 

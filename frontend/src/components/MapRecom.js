@@ -4,7 +4,6 @@ import { Row, Col, Badge  } from 'react-bootstrap';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import { MBTiles } from 'leaflet.offline';
 import L from "leaflet";
-import axios from 'axios';
 import pin from '../assets/redpin.png';
 
 function MapRecom(props) {

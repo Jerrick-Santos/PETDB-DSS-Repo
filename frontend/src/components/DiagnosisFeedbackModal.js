@@ -2,7 +2,7 @@ import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import add from '../assets/add.png';
-import { Navbar, Nav, Card, Row, Col  } from 'react-bootstrap';
+import { Card, Row, Col  } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 
 function DiagnosisFeedbackModel(props) {

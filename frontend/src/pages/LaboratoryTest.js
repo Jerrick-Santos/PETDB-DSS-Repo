@@ -2,8 +2,6 @@ import '../index.css';
 import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Card, Row, Col, ButtonGroup, Button } from 'react-bootstrap';
 import NavBar from '../components/NavBar';
-import edit from '../assets/edit.png';
-import user from '../assets/user.png';
 import distance from '../assets/distance.png';
 import assessment from '../assets/assessment.png';
 import treatment from '../assets/treatment.png';

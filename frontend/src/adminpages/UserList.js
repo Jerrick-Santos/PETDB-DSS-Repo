@@ -2,7 +2,7 @@ import search from "../assets/search.png";
 import "../index.css";
 import React, { useState, useEffect } from "react";
 import { Card, Row, Col } from "react-bootstrap";
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import AdminNavBar from "../admincomponents/AdminNavBar";
 import axios from "axios";
 import Badge from "react-bootstrap/Badge";

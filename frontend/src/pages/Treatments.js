@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
 import NavBar from "../components/NavBar";
 import noresult from "../assets/noresult.png";
-import add from "../assets/add.png";
 import distance from "../assets/distance.png";
 import assessment from "../assets/assessment.png";
 import treatment from "../assets/treatment.png";

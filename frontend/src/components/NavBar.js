@@ -1,9 +1,7 @@
 import React, { useState, useEffect,PureComponent } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import icon from "../assets/icon.png";
-import view from "../assets/view.png";
-import { Navbar, Nav, Card, Row, Col, ButtonGroup, Button, Dropdown } from 'react-bootstrap';
+import { Navbar, Nav, Row,  Dropdown } from 'react-bootstrap';
 import Modal from "react-bootstrap/Modal";
 
 const NavBar = () => {
