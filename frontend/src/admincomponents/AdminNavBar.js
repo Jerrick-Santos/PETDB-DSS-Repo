@@ -1,11 +1,8 @@
-import React, { useState, useEffect,PureComponent } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import icon from "../assets/icon.png";
-import view from "../assets/view.png";
-import { Navbar, Nav, Card, Row, Col, ButtonGroup, Button, Dropdown } from 'react-bootstrap';
+import { Navbar, Nav, Row, Dropdown } from 'react-bootstrap';
 import Modal from "react-bootstrap/Modal";
-
 
 const AdminNavBar = () => {
   const handleLogout = () => {
@@ -182,65 +179,59 @@ const AdminNavBar = () => {
     </Navbar>
 
       <Modal show={show} onHide={handleClose} backdrop={"static"}>
-      <Modal.Header style={{ color: "white", backgroundColor: "#0077B6" }}>
-        <Modal.Title>Change Password</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <form className="mt-3 justify-content-center">
-          
-          <Row className="mb-3 justify-content-center">
-            <div className="form-group col-md-12">
-              <label for="inputOperatingHours">Old Password</label>
-              <input
-                type={showPassword ? "text" : "password"} // Toggle input type
-                className="form-control"
-                name="oldPw"
-                value={pwValues.oldPw}
-                onChange={handlePasswordChange}
-              />
-                {oldPwError && (
-                        <p style={{color: 'red'}}>{oldPwError}</p>  
-                    )}
-            </div>
-          </Row>
-
-          <Row className="mb-3 justify-content-center">
-            <div className="form-group col-md-12">
-              <label for="inputOperatingHours">New Password</label>
-              <input
-                type={showPassword ? "text" : "password"} // Toggle input type
-                className="form-control"
-                name="pw"
-                value={formValues.pw}
-                onChange={handleChange}
-              />
-                             {pwError && (
-                        <p style={{color: 'red'}}>{pwError}</p>  
-                    )}
-            </div>
-
-           
-          </Row>
-
+        <Modal.Header style={{ color: "white", backgroundColor: "#0077B6" }}>
+          <Modal.Title>Change Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form className="mt-3 justify-content-center">
             <Row className="mb-3 justify-content-center">
-            <div className="form-group col-md-12">
-              <label for="inputOperatingHours">Confirm Password</label>
-              <input
-                type={showPassword ? "text" : "password"} // Toggle input type
-                className="form-control"
-                name="confirmPw"
-                value={pwValues.confirmPw}
-                onChange={handlePasswordChange}
-              />
-                {confirmPwError && (
-                        <p style={{color: 'red'}}>{confirmPwError}</p>  
-                    )}
-            </div>
+              <div className="form-group col-md-12">
+                <label for="inputOperatingHours">Old Password</label>
+                <input
+                  type={showPassword ? "text" : "password"} // Toggle input type
+                  className="form-control"
+                  name="oldPw"
+                  value={pwValues.oldPw}
+                  onChange={handlePasswordChange}
+                />
+                  {oldPwError && (
+                          <p style={{color: 'red'}}>{oldPwError}</p>  
+                      )}
+              </div>
             </Row>
 
-         
-        </form>
-      </Modal.Body>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <label for="inputOperatingHours">New Password</label>
+                <input
+                  type={showPassword ? "text" : "password"} // Toggle input type
+                  className="form-control"
+                  name="pw"
+                  value={formValues.pw}
+                  onChange={handleChange}
+                />
+                              {pwError && (
+                          <p style={{color: 'red'}}>{pwError}</p>  
+                      )}
+              </div>
+            </Row>
+            <Row className="mb-3 justify-content-center">
+              <div className="form-group col-md-12">
+                <label for="inputOperatingHours">Confirm Password</label>
+                <input
+                  type={showPassword ? "text" : "password"} // Toggle input type
+                  className="form-control"
+                  name="confirmPw"
+                  value={pwValues.confirmPw}
+                  onChange={handlePasswordChange}
+                />
+                  {confirmPwError && (
+                          <p style={{color: 'red'}}>{confirmPwError}</p>  
+                      )}
+              </div>
+              </Row>
+          </form>
+        </Modal.Body>
       <Modal.Footer>
         <button
           className="btn"

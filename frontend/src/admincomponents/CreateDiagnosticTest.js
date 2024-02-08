@@ -8,11 +8,8 @@ import Form from 'react-bootstrap/Form';
 function CreateDiagnosticTest() {
    
     const[show,setShow] = useState(false)
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-
     const [formValues, setFormValues] = useState({
         DGTestName:'',
         DGValidityMonths:'',
@@ -43,7 +40,6 @@ function CreateDiagnosticTest() {
         if (testNameError || validityError) {
           return false;
         }
-    
         return true;
     }
 
@@ -69,7 +65,6 @@ function CreateDiagnosticTest() {
     }
   return (
         <>
-
             <button className="btn" style={{ color: "white", backgroundColor: '#0077B6'}} type="button" onClick={handleShow}>
                 <img src={add} className="me-1 mb-1" style={{height:"20px"}}/>     Create a Test
               </button>
@@ -109,43 +104,14 @@ function CreateDiagnosticTest() {
                 </div>
             </Row>
         </Form>
-    {/*<form className="mt-3 justify-content-center">
-            <Row className="mb-3 justify-content-center">
-                <div className="form-group col-md-8">
-                    <label for="inputFirstName">Diagnostic Test Name</label>
-                    <input type="text" class="form-control" name="DGTestName" value={formValues.DGTestName} onChange={handleChange} placeholder="Test Name"/>
-                    {testNameError && (
-                        <p style={{color: 'red'}}>{testNameError}</p>  
-                    )}
-                </div>
-                <div className="form-group col-md-4">
-                    <label for="inputFirstName">Validity</label>
-                    <input type="number" class="form-control" name="DGValidityMonths" value={formValues.DGValidityMonths} onChange={handleChange} placeholder="months"/>
-                    {validityError && (
-                        <p style={{color: 'red'}}>{validityError}</p>  
-                    )}
-                </div>
-            </Row>
-
-           
-          
-            
-                    </form>*/}
     </Modal.Body>
     <Modal.Footer >
         <button className="btn" onClick={handleSubmit} style={{color:'white', backgroundColor: "#0077B6"}}>Save</button>
         <button type="submit" onClick={handleClose} className="btn btn-secondary">Close</button>
     </Modal.Footer>
 </Modal>
-
-
     </>
-      
   );
 }
 
-
-
-
 export default CreateDiagnosticTest;
-

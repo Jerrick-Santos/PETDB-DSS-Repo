@@ -1,16 +1,14 @@
 import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
 import add from "../assets/add.png";
-import { Navbar, Nav, Card, Row, Col } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import axios from "axios";
 import Form from 'react-bootstrap/Form';
 
 function AddUser(props) {
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
   const [formValues, setFormValues] = useState({
     first_name: "",
     middle_name: "",
@@ -22,8 +20,6 @@ function AddUser(props) {
     user_type: "BHW",
     passwordChanged: 0,
   });
-
-
 
   const [IDnoError, setIDError] = useState('');
   const [firstNameError, setFirstError] = useState('');
@@ -54,7 +50,6 @@ function AddUser(props) {
         });
     }
   }, [formValues.IDNo]);
-
 
   const validate = () => {
     let IDnoError = '';
@@ -117,6 +112,7 @@ function AddUser(props) {
       console.log(err);
     }
   };
+
   return (
     <>
       <button
@@ -211,88 +207,6 @@ function AddUser(props) {
               </div>
             </Row>
           </Form>
-
-          {/*<form className="mt-3 justify-content-center">
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputFirstName">User ID</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="IDNo"
-                  value={formValues.IDNo}
-                  onChange={handleChange}
-                />
-                    {IDnoError && (
-                        <p style={{color: 'red'}}>{IDnoError}</p>  
-                    )}
-              </div>
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputOperatingHours">First Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="first_name"
-                  value={formValues.first_name}
-                  onChange={handleChange}
-                />
-                    {firstNameError && (
-                        <p style={{color: 'red'}}>{firstNameError}</p>  
-                    )}
-              </div>
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputCurrHouseNo">Middle Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="middle_name"
-                  value={formValues.middle_name}
-                  onChange={handleChange}
-                />
-                    {middleNameError && (
-                        <p style={{color: 'red'}}>{middleNameError}</p>  
-                    )}
-              </div>
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputCurrHouseNo">Last Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="last_name"
-                  value={formValues.last_name}
-                  onChange={handleChange}
-                />
-                    {lastNameError && (
-                        <p style={{color: 'red'}}>{lastNameError}</p>  
-                    )}
-              </div>
-            </Row>
-
-            <Row className="mb-3 justify-content-center">
-              <div className="form-group col-md-12">
-                <label for="inputOperatingHours">Initial Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  name="pw"
-                  value={formValues.pw}
-                  onChange={handleChange}
-                />
-                    {initialPassError && (
-                        <p style={{color: 'red'}}>{initialPassError}</p>  
-                    )}
-              </div>
-            </Row>
-                    </form>*/}
         </Modal.Body>
         <Modal.Footer>
           <button

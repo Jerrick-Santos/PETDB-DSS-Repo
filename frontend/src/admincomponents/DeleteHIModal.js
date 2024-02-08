@@ -1,21 +1,16 @@
 import Modal from 'react-bootstrap/Modal';
 import React, {useState, useEffect} from 'react';
-import add from '../assets/add.png';
 import { Button, Row, Col  } from 'react-bootstrap';
 import axios from 'axios';
 import bin from '../assets/bin.png'
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import check from "../assets/check.png";
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
-
-
 
 function DeleteHIModal(props) {
     const [show, setShow] = useState(false);
     const [isReferenced, setIsReferenced] = useState(false);
     const [reference, setReference] = useState(null);
     const navigate = useNavigate();
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -23,7 +18,6 @@ function DeleteHIModal(props) {
         axios.get(`http://localhost:4000/api/checkhiref/${props.HINo}`)
             .then((response) => {
                 setReference(response.data[0]);
-
                 try {
                     if (response.data[0].total_references > 0) {
                         setIsReferenced(true);
@@ -39,12 +33,10 @@ function DeleteHIModal(props) {
                 // Handle any errors that occurred during the request
                 console.error('Error fetching data:', error);
             });
-
             setFormValues((prev) => ({
               ...prev,
               isActive: !props.isActive
             }));
-  
     }, [props.HINo]); // Adding props.HINo as dependency
 
     const handleDelete = async e => {
@@ -55,11 +47,9 @@ function DeleteHIModal(props) {
         }catch(err){
             console.log(err)
         }
-       
     }
 
     const [formValues, setFormValues] = useState({
-
         isActive: false
     });
 
@@ -71,32 +61,31 @@ function DeleteHIModal(props) {
         }catch(err){
             console.log(err)
         }
-       
     }
 
     return (
         <>  
             {props.isActive === 1 ? (
   
-    <img
-      src={bin}
-      onClick={handleShow}
-      className="mt-1 clickable"
-      style={{ height: "30px" }}
-      alt="Delete Record"
-    />
+              <img
+                src={bin}
+                onClick={handleShow}
+                className="mt-1 clickable"
+                style={{ height: "30px" }}
+                alt="Delete Record"
+              />
 
-) : (
+              ) : (
 
-    <img
-      src={check}
-      onClick={handleShow}
-      className="mt-1 clickable"
-      style={{ height: "30px" }}
-      alt="Reactivate Record"
-    />
+              <img
+                src={check}
+                onClick={handleShow}
+                className="mt-1 clickable"
+                style={{ height: "30px" }}
+                alt="Reactivate Record"
+              />
 
-)}
+          )}
           
             <Modal show={show} onHide={handleClose} backdrop={'static'} size="md">
                 <Modal.Header style={{ color: "white", backgroundColor: props.isActive === 1 ? "#dc3545" : "#138313" }}>

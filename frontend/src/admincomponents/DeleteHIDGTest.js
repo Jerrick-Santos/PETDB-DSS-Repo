@@ -1,17 +1,14 @@
 import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
-import add from "../assets/add.png";
 import { Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import bin from "../assets/bin.png";
 import check from "../assets/check.png";
-import { Link } from "react-router-dom";
 
 function DeleteHIDGTest(props) {
   const [show, setShow] = useState(false);
   const [isReferenced, setIsReferenced] = useState(false);
   const [reference, setReference] = useState(null);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -69,7 +66,6 @@ function DeleteHIDGTest(props) {
 
   return (
     <>
-      
       {props.isActive === 1 ? (
         <>
           <img
@@ -89,25 +85,23 @@ function DeleteHIDGTest(props) {
           />
         </>
       )}
-      
 
       <Modal show={show} onHide={handleClose} backdrop={"static"} size="md">
       <Modal.Header style={{ color: "white", backgroundColor: props.isActive === 1 ? "#dc3545" : "#138313" }}>
             <Modal.Title>
-            {isReferenced && props.isActive === 1 ? (
-            <>
-              Deactivate Offered Diagnostic Test
-            </>
-          ) : !isReferenced && props.isActive === 1 ? (
-            <>
-              Delete Offered Diagnostic Test
-            </>
-          ) : (
-            <>
-              Reactivate Offered Diagnostic Test
-            </>
-          )}
-            
+              {isReferenced && props.isActive === 1 ? (
+                <>
+                  Deactivate Offered Diagnostic Test
+                </>
+              ) : !isReferenced && props.isActive === 1 ? (
+                <>
+                  Delete Offered Diagnostic Test
+                </>
+              ) : (
+                <>
+                  Reactivate Offered Diagnostic Test
+                </>
+              )}
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>

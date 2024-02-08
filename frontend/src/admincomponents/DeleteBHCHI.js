@@ -1,17 +1,11 @@
 import Modal from "react-bootstrap/Modal";
-import React, { useState, useEffect } from "react";
-import add from "../assets/add.png";
+import React, { useState } from "react";
 import { Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import bin from "../assets/bin.png";
-import check from "../assets/check.png";
-import { Link } from "react-router-dom";
 
 function DeleteBHCHI(props) {
   const [show, setShow] = useState(false);
-  const [isReferenced, setIsReferenced] = useState(false);
-  const [reference, setReference] = useState(null);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -26,27 +20,21 @@ function DeleteBHCHI(props) {
     }
     window.location.reload();
   };
-
   
   return (
     <>
-      
-      
-          <img
-            src={bin}
-            onClick={handleShow}
-            className="mb-4 clickable"
-            style={{ height: "20px" }}
-          />
-   
-         
-      
+      <img
+        src={bin}
+        onClick={handleShow}
+        className="mb-4 clickable"
+        style={{ height: "20px" }}
+      />
 
       <Modal show={show} onHide={handleClose} backdrop={"static"} size="md">
-      <Modal.Header style={{ color: "white", backgroundColor: "#dc3545"}}>
-            <Modal.Title>
+        <Modal.Header style={{ color: "white", backgroundColor: "#dc3545"}}>
+          <Modal.Title>
             Remove Nearby Health Institution
-            </Modal.Title>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
          
